@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+       <PagSeguro_PagSeguro>
+          <version>1.0.0</version>
+       </PagSeguro_PagSeguro>
+    </modules>
+ 
+    <global>
+		<blocks>
+			<pagseguro>
+				<class>PagSeguro_PagSeguro_Block</class>
+			</pagseguro>
+		</blocks>
+ 
+
+        <models>
+            <pagseguro>
+                <class>PagSeguro_PagSeguro_Model</class>
+            </pagseguro>
+        </models>
+ 
+        <resources>
+            <pagseguro_setup>
+                <setup>
+                    <module>PagSeguro_PagSeguro</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </pagseguro_setup>
+            <pagseguro_write>
+                <connection>
+                  <use>core_write</use>
+                </connection>
+            </pagseguro_write>
+            <pagseguro_read>
+               <connection>
+                <use>core_read</use>
+              </connection>
+            </pagseguro_read>
+        </resources>
+    </global>
+	<!-- Controller -->
+	<frontend> 
+        <routers>
+           <pagseguro>
+                <use>standard</use>
+                <args>
+                    <module>PagSeguro_PagSeguro</module>
+                    <frontName>pagseguro</frontName>
+                </args>
+           </pagseguro>
+        </routers>
+    </frontend>	
+ 
+
+    <default>
+        <payment>
+            <pagseguro>
+                <active>0</active>
+				<model>PagSeguro_PagSeguro_Model_PaymentMethod</model>               
+                <title>PagSeguro</title>
+                <allowspecific>0</allowspecific>
+            </pagseguro>
+         </payment>
+    </default>
+</config>
