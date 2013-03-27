@@ -78,7 +78,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
         $_charset = $this->getConfigData('charset');
 		
 		//Module version
-		PagSeguroLibrary::setModuleVersion('magento-v'.$this->Module_Version);
+		PagSeguroLibrary::setModuleVersion('magento-v.'.$this->Module_Version);
         
         //Setup Charset
         if ( $_charset != NULL and !empty( $_charset ) ) {
