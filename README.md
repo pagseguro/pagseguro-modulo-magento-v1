@@ -48,6 +48,13 @@ Para acessar e configurar o módulo acesse o menu System -> Configuration -> Pay
 Changelog
 ---------
 ---
+1.1
+
+ - Adicionado: Links para criação de conta e token;
+ - Adicionado: Url padrão de retorno caso não seja informada;
+ - Correção: Redefinição de envio do frete;
+ - Correção: Ajuste no envio de taxas;
+
 1.0
 
  - Versão inicial. Integração com API de Pagamento do PagSeguro.
