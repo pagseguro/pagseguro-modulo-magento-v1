@@ -19,6 +19,12 @@
                 <class>PagSeguro_PagSeguro_Model</class>
             </pagseguro>
         </models>
+        
+         <helpers>
+            <pagseguro>
+                <class>PagSeguro_Pagseguro_Helper</class>
+            </pagseguro>
+        </helpers>
  
         <resources>
             <pagseguro_setup>

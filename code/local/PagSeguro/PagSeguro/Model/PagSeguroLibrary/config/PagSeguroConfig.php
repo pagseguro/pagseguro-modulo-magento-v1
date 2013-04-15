@@ -15,7 +15,7 @@ $PagSeguroConfig['credentials']['email'] = "your@email.com";
 $PagSeguroConfig['credentials']['token'] = "your_token_here";
 
 $PagSeguroConfig['application'] = Array();
-$PagSeguroConfig['application']['charset'] = "ISO-8859-1"; // UTF-8, ISO-8859-1
+$PagSeguroConfig['application']['charset'] = "UTF-8"; // UTF-8, ISO-8859-1
 
 $PagSeguroConfig['log'] = Array();
 $PagSeguroConfig['log']['active'] = FALSE;

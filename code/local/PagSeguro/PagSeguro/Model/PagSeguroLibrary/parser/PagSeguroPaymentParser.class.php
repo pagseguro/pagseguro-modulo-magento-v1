@@ -144,6 +144,11 @@ class PagSeguroPaymentParser extends PagSeguroServiceParser {
 			$data['redirectURL'] = $payment->getRedirectURL();
 		}
 
+		// notificationURL
+		if ($payment->getNotificationURL() != null){
+			$data['notificationURL'] = $payment->getNotificationURL();
+		}
+                
 		return $data;
 		
 	}

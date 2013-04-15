@@ -81,6 +81,14 @@ class PagSeguroPaymentRequest  {
     private $maxUses;
 	
     /**
+     * Determines for which url PagSeguro will send the order related notifications codes.
+     * 
+     * Optional. Any change happens in the transaction status, a new notification request will be send
+     * to this url. You can use that for update the related order.
+     */
+    private $notificationURL;
+    
+    /**
      * @return the sender
      *
      * Party that will be sending the Uri to where the PagSeguro payment page should redirect the user after the payment information is processed.
@@ -424,6 +432,24 @@ class PagSeguroPaymentRequest  {
         $this->maxUses = $maxUses;
     }
 	
+    /**
+     * Get the notification status url
+     * 
+     * @return type
+     */
+    public function getNotificationURL(){
+        return $this->notificationURL;
+    }
+   
+    /**
+     * Sets the url that PagSeguro will send the new notifications statuses
+     * 
+     * @param type $notificationURL
+     */
+    public function setNotificationURL($notificationURL){
+        $this->notificationURL = $notificationURL;
+    }
+    
     /**
      * Calls the PagSeguro web service and register this request for payment
      * 

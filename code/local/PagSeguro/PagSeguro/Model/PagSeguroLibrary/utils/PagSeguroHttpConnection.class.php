@@ -84,8 +84,14 @@ class PagSeguroHttpConnection{
 		); 
                 
 		// adding module version
-		if (!is_null(PagSeguroLibrary::getModuleVersion()))
-			array_push($options[CURLOPT_HTTPHEADER], 'module-description: '.PagSeguroLibrary::getModuleVersion());
+		if (!is_null(PagSeguroLibrary::getModuleVersion())){
+                    array_push($options[CURLOPT_HTTPHEADER], 'module-description: '.PagSeguroLibrary::getModuleVersion());
+                }
+                
+		// adding CMS version
+		if (!is_null(PagSeguroLibrary::getCMSVersion())){
+			array_push($options[CURLOPT_HTTPHEADER], 'cms-description: '.PagSeguroLibrary::getCMSVersion());
+		}
                 
 		$options = ($options + $methodOptions);
                 

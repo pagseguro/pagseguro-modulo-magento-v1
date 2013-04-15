@@ -58,7 +58,7 @@ class PagSeguroSender {
 	 * @param String $name
 	 */
 	public function setName($name) {
-		$this->name = $name;
+            $this->name = PagSeguroHelper::formatString($name, 50, '');
 	}
 	
 	/**

@@ -1,4 +1,24 @@
 <?php
+
+/*
+************************************************************************
+Copyright [2013] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+*/
+
+
 include_once ('PagSeguroLibrary/PagSeguroLibrary.php');
 include_once ('Defines.php');
 
@@ -19,7 +39,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
     protected $_canUseCheckout          = true;
     protected $_canUseForMultishipping  = true;
 
-	private $Module_Version = '1.0'; 
+    private $Module_Version = '1.1.0'; 
  
     private $Order;
     private $Shipping_Data;
@@ -53,7 +73,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
             $this->Order = $Order;
             $this->Shipping_Data = $this->getShippingData();
         } else {
-            throw new Exception( "[PagSeguroModuleException] Message: Parâmetro Inválido para o método setOrder()." );
+            throw new Exception( "[PagSeguroModuleException] Message: Parï¿½metro Invï¿½lido para o mï¿½todo setOrder()." );
         }
     }
     
@@ -76,9 +96,14 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
     {
         $_activeLog = $this->getConfigData('log');       
         $_charset = $this->getConfigData('charset');
-		
+                     
+        Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->saveAllStatusPagSeguro();
+		  
 		//Module version
 		PagSeguroLibrary::setModuleVersion('magento-v.'.$this->Module_Version);
+                
+                // CMS version
+                PagSeguroLibrary::setCMSVersion('magento-v.'.Mage::getVersion());
         
         //Setup Charset
         if ( $_charset != NULL and !empty( $_charset ) ) {
@@ -105,7 +130,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	   
        $PaymentRequest = new PagSeguroPaymentRequest();
         
-       $PaymentRequest->setCurrency( CURRENCY );
+       $PaymentRequest->setCurrency( PagSeguroCurrencies::getIsoCodeByName("REAL") );
        
        $PaymentRequest->setReference( $this->Order->getId() ); //Order ID
        
@@ -114,13 +139,15 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
        $PaymentRequest->setItems( $this->getItensInformation() );  //Itens
        
        $PaymentRequest->setShippingType( SHIPPING_TYPE ); 
-       $PaymentRequest->setShippingCost( SHIPPING_COST );
+       $PaymentRequest->setShippingCost( number_format($this->Order->getBaseShippingInclTax(), 2, '.', '') );
+       
+       $PaymentRequest->setNotificationURL( $this->getNotificationURL());
        
        //Define Redirect Url
        $redirect_url = $this->getRedirectUrl();
        if ( !empty( $redirect_url ) and $redirect_url != NULL ) {
            $PaymentRequest->setRedirectURL( $redirect_url );
-       }
+       } 
        
        //Define Extra Amount Information
        $_discount_amount = $this->getDiscountAmount();
@@ -134,10 +161,23 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
            $redirect_html = $this->createRedirectPaymentHtml( $payment_url );
            
        } catch ( PagSeguroServiceException $ex ) {
+           Mage::log($message);
            throw new Exception( "[PagSeguroModuleException] Message: " . $ex->getMessage() , $ex->getCode() , $ex->getPrevious() );
        }
-       
+           
     return $redirect_html;
+    }
+    
+    /**
+     * 
+     * @return Notification URL
+     */
+    private function getNotificationURL(){
+        
+        $notification_url = $this->getConfigData('notification');
+            
+            return ( $notification_url != null && $notification_url != "" ) ? $notification_url : Mage::getUrl().'pagseguro/notification/send/';
+        
     }
     
     /**
@@ -151,7 +191,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
        $PagSeguroAddress = new PagSeguroAddress();
        $PagSeguroAddress->setCity( $this->Shipping_Data['city'] );
        $PagSeguroAddress->setPostalCode( $this->Shipping_Data['postcode'] );
-       $PagSeguroAddress->setState( $this->Shipping_Data['region'] );
+       $PagSeguroAddress->setState(strtoupper($this->Shipping_Data['region']) );
        $PagSeguroAddress->setStreet( $this->Shipping_Data['street'] );
        
        $PagSeguroShipping->setAddress( $PagSeguroAddress );
@@ -182,7 +222,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
         }
         
         //Shipping 
-        $shipping_tax = self::toFloat( $this->Order->getShippingAmount() ); 
+  /*      $shipping_tax = self::toFloat( $this->Order->getShippingAmount() ); 
         if ( $shipping_tax > 0 ) {
             $PagSeguroSpTaxItem = new PagSeguroItem();
             $PagSeguroSpTaxItem->setDescription( $this->Order->getShippingDescription() );
@@ -203,7 +243,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
             $PagSeguroTaxItem->setQuantity(1);
             
             array_push($PagSeguroItens, $PagSeguroTaxItem);
-        }
+        }*/
         
     return $PagSeguroItens;
     }
@@ -222,7 +262,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
      * 
      * @return PagSeguroAccountCredentials
      */
-    private function getCredentialsInformation()
+    public function getCredentialsInformation()
     {
         $adm_email = $this->getConfigData('email');
         $adm_token = $this->getConfigData('token');
@@ -345,4 +385,4 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
     }
 	 
 }
-?>
+

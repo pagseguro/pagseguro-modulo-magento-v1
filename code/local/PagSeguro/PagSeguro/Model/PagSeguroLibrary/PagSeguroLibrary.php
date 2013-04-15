@@ -19,20 +19,21 @@ limitations under the License.
 
 /*
  * PagSeguro Library Class
- * Version: 2.1.3
- * Date: 29/01/2013
+ * Version: 2.1.5
+ * Date: 15/04/2013
  */
 define('PAGSEGURO_LIBRARY', TRUE);
 require_once "loader".DIRECTORY_SEPARATOR."PagSeguroAutoLoader.class.php";
 class PagSeguroLibrary {
 	
-	const VERSION = "2.1.3";
-	private static $library;
-	private static $path;
+	const VERSION = "2.1.5";
 	public static $resources;
 	public static $config;
 	public static $log;
+	private static $path;
+	private static $library;
 	private static $module_version;
+	private static $cms_version;
 	
 	private function __construct() {
 		self::$path 	 = (dirname(__FILE__));
@@ -81,12 +82,20 @@ class PagSeguroLibrary {
 		return self::$path;
 	}
 	
-        public final static function getModuleVersion() {
+	public final static function getModuleVersion() {
 		return self::$module_version;
 	}
         
-        public static function setModuleVersion($version) {
-		return self::$module_version = $version;
+	public final static function setModuleVersion($version) {
+		self::$module_version = $version;
+	}
+        
+	public final static function getCMSVersion() {
+		return self::$cms_version;
+	}
+        
+	public final static function setCMSVersion($version) {
+		self::$cms_version = $version;
 	}
 }
 PagSeguroLibrary::init();
