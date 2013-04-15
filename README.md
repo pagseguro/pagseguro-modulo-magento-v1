@@ -1,18 +1,16 @@
 Módulo de integração PagSeguro para Magento
 ===========================================
 ---
-
-
 Descrição
 ---------
 ---
 Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como opção de pagamento em sua loja. O módulo utiliza as seguintes funcionalidades que o PagSeguro oferece na forma de APIs:
 
- - Integração com a API de Pagamentos
+ - Integração com a [API de Pagamentos]
 
 
 Requisitos
----------
+----------
 ---
  - [Magento] Community 1.7.0.2
  - [PHP] 5.1.6+
@@ -22,7 +20,7 @@ Requisitos
 
 
 Instalação
----------
+----------
 ---
  - Certifique-se de que não há instalação de outros módulos para o PagSeguro em seu sistema;
  - Baixe o repositório como arquivo zip ou faça um clone;
@@ -32,7 +30,7 @@ Instalação
 
 
 Configuração
----------
+------------
 ---
 Para acessar e configurar o módulo acesse o menu System -> Configuration -> Payment methods -> PagSeguro. As opções disponíveis estão descritas abaixo.
 
@@ -77,12 +75,10 @@ Achou e corrigiu um bug ou tem alguma feature em mente e deseja contribuir?
 
 * Faça um fork.
 * Adicione sua feature ou correção de bug.
-* Adicione seu nome na lista de contribuidores no README.md.
 * Envie um pull request no GitHub.
 
 
   [API de Pagamentos]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-pagamentos.html
-  [API de Notificações]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html
   [e-mail]: <mailto:desenvolvedores@pagseguro.com.br>
   [fórum]: http://forum.imasters.com.br/forum/244-gateways-e-meios-de-pagamento-online-pagseguro
   [Dúvidas?]: https://pagseguro.uol.com.br/desenvolvedor/comunidade.jhtml
