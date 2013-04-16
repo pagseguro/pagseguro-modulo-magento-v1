@@ -39,7 +39,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
     protected $_canUseCheckout          = true;
     protected $_canUseForMultishipping  = true;
 
-    private $Module_Version = '1.1.0'; 
+    private $Module_Version = '1.1'; 
  
     private $Order;
     private $Shipping_Data;

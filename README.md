@@ -7,6 +7,7 @@ Descrição
 Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como opção de pagamento em sua loja. O módulo utiliza as seguintes funcionalidades que o PagSeguro oferece na forma de APIs:
 
  - Integração com a [API de Pagamentos]
+ - Integração com a [API de Notificações]
 
 
 Requisitos
@@ -50,10 +51,11 @@ Changelog
 ---
 1.1
 
- - Adicionado: Links para criação de conta e token;
- - Adicionado: Url padrão de retorno caso não seja informada;
- - Correção: Redefinição de envio do frete;
- - Correção: Ajuste no envio de taxas;
+ - Adicionado: Integração com API de Notificação do PagSeguro.
+ - Adicionado: Links para criação de conta e token.
+ - Adicionado: Url padrão de retorno caso não seja informada.
+ - Correção: Redefinição de envio do frete.
+ - Correção: Ajuste no envio de taxas.
 
 1.0
 
@@ -70,7 +72,7 @@ Notas
 
 
 [Dúvidas?]
----------
+----------
 ---
 Mande um [e-mail] ou acesse o [fórum] de discussões.
 
@@ -86,6 +88,7 @@ Achou e corrigiu um bug ou tem alguma feature em mente e deseja contribuir?
 
 
   [API de Pagamentos]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-pagamentos.html
+  [API de Notificações]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html
   [e-mail]: <mailto:desenvolvedores@pagseguro.com.br>
   [fórum]: http://forum.imasters.com.br/forum/244-gateways-e-meios-de-pagamento-online-pagseguro
   [Dúvidas?]: https://pagseguro.uol.com.br/desenvolvedor/comunidade.jhtml

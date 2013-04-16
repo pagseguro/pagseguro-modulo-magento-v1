@@ -19,7 +19,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>Status.</comment>
+                            <comment>Deseja habilitar o m&#243;dulo?</comment>
                         </active>
                         
                         <title translate="label">
@@ -29,7 +29,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-			    <comment>Titulo.</comment>
+			    <comment>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</comment>
                         </title>
                         
 			<email translate="label">
@@ -39,7 +39,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>Não tem conta no PagSeguro? &lt;a href=&quot;https://pagseguro.uol.com.br/registration/registration.jhtml?ep=5&amp;tipo=cadastro#!vendedor&quot; target=&quot;_blank&quot;&gt; Crie uma nova conta&lt;/a&gt; selecionando o tipo vendedor ou empresarial.</comment>
+                            <comment>N&#227;o tem conta no PagSeguro? Clique &lt;a href=&quot;https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&amp;tipo=cadastro#!vendedor&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; e cadastre-se gr&#225;tis.</comment>
                         </email>
 						<token translate="label">
                             <label>TOKEN</label>
@@ -48,17 +48,17 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>Não tem ou não sabe seu token? &lt;a href=&quot;https://pagseguro.uol.com.br/integracao/token-de-seguranca.jhtml&quot; target=&quot;_blank&quot;&gt; Criar um novo token de segurança. &lt;/a&gt;</comment>
+                            <comment>N&#227;o tem ou n&#227;o sabe seu token? Clique &lt;a href=&quot;https://pagseguro.uol.com.br/integracao/token-de-seguranca.jhtml&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; para gerar um novo.</comment>
                         </token>
                         
 			<url translate="label">
-                            <label>URL DE RETORNO</label>
+                            <label>URL DE REDIRECIONAMENTO</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>5</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                           <comment>Ao final do fluxo de pagamento no PagSeguro, seu cliente será redirecionado para a URL indicada acima.  &lt;br /&gt;Para tanto, é preciso que você ative o recebimento de  &lt;a href=&quot;https://pagseguro.uol.com.br/integracao/pagamentos-via-api.jhtml&quot; target=&quot;_blank&quot; &gt;Pagamentos via API&lt;/a&gt;.</comment>
+                           <comment>Ao final do fluxo de pagamento, seu cliente ser&#225; redirecionado de volta para sua loja ou para a URL que voc&#234; informar neste campo. Clique &lt;a href=&quot;https://pagseguro.uol.com.br/integracao/pagamentos-via-api.jhtml&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; para ativar este servi&#231;o.</comment>
                         </url>
                         
                         <notification translate="label">
@@ -67,7 +67,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                           <comment>&lt;a href=&quot;https://pagseguro.uol.com.br/integracao/notificacao-de-transacoes.jhtml&quot; target=&quot;_blank&quot; &gt;Clique aqui&lt;/a&gt; e cadastre a url padrão (www.seusite.com.br/index.php/pagseguro/notification/send/) ou a url que você personaliza acima.</comment>
+                           <comment>Sempre que uma transa&#231;&#227;o mudar de status, o PagSeguro envia uma notifica&#231;&#227;o para sua loja ou para a URL que voc&#234; informar neste campo.</comment>
                         </notification>
                         
                         <charset translate="label">
@@ -99,7 +99,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                           <comment>Caminho para o arquivo de Log.</comment>
+                           <comment>Caminho para o arquivo de log.</comment>
                         </log_file>
 						
                     </fields>
