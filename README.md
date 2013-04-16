@@ -39,8 +39,8 @@ Para acessar e configurar o módulo acesse o menu System -> Configuration -> Pay
  - **nome de exibição**: define o nome que será utilizado para o meio de pagamento.
  - **e-mail**: e-mail cadastrado no PagSeguro.
  - **token**: token cadastrado no PagSeguro.
- - **url de redirecionamento**: ao final do fluxo de pagamento no PagSeguro, seu cliente será redirecionado automaticamente para a página de confirmação em sua loja ou então para a URL que você informar neste campo. Para ativar o redirecionamento ao final do pagamento é preciso ativar o serviço de [Pagamentos via API].
- - **url de notificação**: para receber e processar automaticamente os novos status das transações com o PagSeguro você deve ativar o serviço de [Notificação de Transações] e informar a URL que aparece dentro da tela de configurações do módulo.
+ - **url de redirecionamento**: ao final do fluxo de pagamento no PagSeguro, seu cliente será redirecionado automaticamente para a página de confirmação em sua loja ou então para a URL que você informar neste campo. Para ativar o redirecionamento ao final do pagamento é preciso ativar o serviço de [Pagamentos via API]. Obs.: Esta URL é informada automaticamente e você só deve alterá-la caso deseje que seus clientes sejam redirecionados para outro local.
+ - **url de notificação**: Sempre que uma transação mudar de status, o PagSeguro envia uma notificação para sua loja ou para a URL que você informar neste campo. Obs.: Esta URL é informada automaticamente e você só deve alterá-la caso deseje receber as notificações em outro local.
  - **charset**: codificação do seu sistema (ISO-8859-1 ou UTF-8).
  - **log**: ativa/desativa a geração de logs.
  - **diretório**: informe o local a partir da raíz de instalação do Magento onde se deseja criar o arquivo de log. Ex.: /logs/ps.log. Caso não informe nada, o log será gravado dentro da pasta ../PagSeguroLibrary/PagSeguro.log.
