@@ -105,15 +105,17 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
     * Update Cms
     */
    private function _updateCms(){
-       $arrayValue =  $this->_helper->returnOrderStByStPagSeguro($this->objTransaction->getStatus()->getValue());
+    $arrayValue =  $this->_helper->returnOrderStByStPagSeguro($this->objTransaction->getStatus()->getValue());
        
+    if($this->_lastStatus() != $arrayValue['status']){   
         if( $this->_helper->_existsStatus($arrayValue['status']) ){
             $this->_updateOrders($arrayValue['status']);
         } else {
             $this->_helper->saveStatusPagSeguro($arrayValue);
             $this->_updateOrders($arrayValue['status']);
         }
-   }
+    }
+ }
    
    /**
     * Update
@@ -133,6 +135,17 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
             echo $exc->getTraceAsString();
         } 
    }
+   
+   /**
+    * 
+    * @param type $value
+    * @return type
+    */
+   private function _lastStatus(){
+       $obj = Mage::getModel('sales/order')->load($this->reference);
+       return $obj['status'];  
+   }
+   
 }
 
 

@@ -147,7 +147,10 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
        $redirect_url = $this->getRedirectUrl();
        if ( !empty( $redirect_url ) and $redirect_url != NULL ) {
            $PaymentRequest->setRedirectURL( $redirect_url );
-       } 
+       } else {
+		   $PaymentRequest->setRedirectURL( Mage::getUrl().'checkout/onepage/success/' );
+        }
+
        
        //Define Extra Amount Information
        $_discount_amount = $this->getDiscountAmount();
