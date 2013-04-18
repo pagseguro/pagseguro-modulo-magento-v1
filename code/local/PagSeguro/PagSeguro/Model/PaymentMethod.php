@@ -139,7 +139,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
        $PaymentRequest->setItems( $this->getItensInformation() );  //Itens
        
        $PaymentRequest->setShippingType( SHIPPING_TYPE ); 
-       $PaymentRequest->setShippingCost( number_format($this->Order->getBaseShippingInclTax(), 2, '.', '') );
+        $PaymentRequest->setShippingCost( number_format($this->Order->getShippingAmount(), 2, '.', '') );
        
        $PaymentRequest->setNotificationURL( $this->getNotificationURL());
        
@@ -151,12 +151,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 		   $PaymentRequest->setRedirectURL( Mage::getUrl().'checkout/onepage/success/' );
         }
 
-       
-       //Define Extra Amount Information
-       $_discount_amount = $this->getDiscountAmount();
-       if ( $_discount_amount != 0 ) {
-           $PaymentRequest->setExtraAmount( $_discount_amount );
-       }
+        //Define Extra Amount Information
+      $PaymentRequest->setExtraAmount( $this->_extraAmount()); 
 
        try {
            
@@ -169,6 +165,17 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
        }
            
     return $redirect_html;
+    }
+    
+     /**
+     * Extra Amount
+     * @return extra amount
+     */
+    private function _extraAmount(){
+       $_tax_amount = self::toFloat($this->Order->getTaxAmount());
+       $_discount_amount = self::toFloat( $this->Order->getBaseDiscountAmount() );
+       
+       return PagSeguroHelper::decimalFormat( $_discount_amount + $_tax_amount );  
     }
     
     /**
@@ -250,17 +257,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
         
     return $PagSeguroItens;
     }
-    
-    /**
-     * Get Order Discount Amount
-     * 
-     * @return discount amount
-     */
-    private function getDiscountAmount()
-    {
-        return self::toFloat( $this->Order->getBaseDiscountAmount() );
-    }
-    
+       
     /**
      * 
      * @return PagSeguroAccountCredentials
