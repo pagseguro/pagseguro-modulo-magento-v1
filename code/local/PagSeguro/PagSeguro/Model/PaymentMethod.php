@@ -113,7 +113,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
         //Setup Log
         if ( $_activeLog == 1 ) { 
             $_log_file = $this->getConfigData('log_file');
-            if ( self::checkFile( $_log_file ) ) {
+            if ( self::checkFile(  Mage::getBaseDir().'/'.$_log_file ) ) {
                 PagSeguroConfig::activeLog( $_log_file );
             } else {
                 PagSeguroConfig::activeLog(); //Default Log
