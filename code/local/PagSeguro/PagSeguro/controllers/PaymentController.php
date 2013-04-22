@@ -65,12 +65,9 @@ class PagSeguro_PagSeguro_PaymentController extends Mage_Core_Controller_Front_A
                 
                 $PagSeguroPaymentModel->setOrder($Order); 
                 echo $PagSeguroPaymentModel->getRedirectPaymentHtml();
-                
-                
+                                
                 $Order->save();              
-                $this->getCheckout()->clear();
-                $this->getCheckout()->unsetData();  
-                
+                              
             } catch ( Exception $ex ) {
                 Mage::log( $ex->getMessage() );
                 $this->_redirectUrl('/'); 
