@@ -40,7 +40,7 @@ Para acessar e configurar o módulo acesse o menu System -> Configuration -> Pay
  - **e-mail**: e-mail cadastrado no PagSeguro.
  - **token**: token cadastrado no PagSeguro.
  - **url de redirecionamento**: ao final do fluxo de pagamento no PagSeguro, seu cliente será redirecionado automaticamente para a página de confirmação em sua loja ou então para a URL que você informar neste campo. Para ativar o redirecionamento ao final do pagamento é preciso ativar o serviço de [Pagamentos via API]. Obs.: Esta URL é informada automaticamente e você só deve alterá-la caso deseje que seus clientes sejam redirecionados para outro local.
- - **url de notificação**: Sempre que uma transação mudar de status, o PagSeguro envia uma notificação para sua loja ou para a URL que você informar neste campo. Obs.: Esta URL é informada automaticamente e você só deve alterá-la caso deseje receber as notificações em outro local.
+ - **url de notificação**: sempre que uma transação mudar de status, o PagSeguro envia uma notificação para sua loja ou para a URL que você informar neste campo. Obs.: Esta URL é informada automaticamente e você só deve alterá-la caso deseje receber as notificações em outro local.
  - **charset**: codificação do seu sistema (ISO-8859-1 ou UTF-8).
  - **log**: ativa/desativa a geração de logs.
  - **diretório**: informe o local a partir da raíz de instalação do Magento onde se deseja criar o arquivo de log. Ex.: /logs/ps.log. Caso não informe nada, o log será gravado dentro da pasta ../PagSeguroLibrary/PagSeguro.log.
@@ -84,7 +84,7 @@ Achou e corrigiu um bug ou tem alguma feature em mente e deseja contribuir?
 
 * Faça um fork.
 * Adicione sua feature ou correção de bug.
-* Envie um pull request no GitHub.
+* Envie um pull request no [GitHub].
 
 
   [API de Pagamentos]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-pagamentos.html
@@ -99,3 +99,4 @@ Achou e corrigiu um bug ou tem alguma feature em mente e deseja contribuir?
   [SPL]: http://php.net/manual/en/book.spl.php
   [cURL]: http://php.net/manual/en/book.curl.php
   [DOM]: http://php.net/manual/en/book.dom.php
+  [GitHub]: https://github.com/pagseguro/magento
