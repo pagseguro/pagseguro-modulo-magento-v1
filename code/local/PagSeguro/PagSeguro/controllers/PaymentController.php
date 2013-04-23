@@ -77,5 +77,5 @@ class PagSeguro_PagSeguro_PaymentController extends Mage_Core_Controller_Front_A
             $this->_redirectUrl('/'); 
         }
      }
-     
+
 }

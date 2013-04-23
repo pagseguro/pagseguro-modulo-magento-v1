@@ -38,7 +38,7 @@ class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data {
     private function _createArraySt(){
         $this->arraySt = array(
             0 => array("status" => "iniciado_ps", "label" => "Iniciado"),
-            1 => array("status" => "aguardando_pagemento_ps", "label" => "Agurdando Pagamento"),
+            1 => array("status" => "aguardando_pagemento_ps", "label" => "Aguardando Pagamento"),
             2 => array("status" => "em_analise_ps", "label" => "Em análise"),
             3 => array("status" => "paga_ps", "label" => "Paga"),
             4 => array("status" => "disponivel_ps", "label" => "Disponível"),
