@@ -74,7 +74,7 @@ Notas
 [Dúvidas?]
 ----------
 ---
-Mande um [e-mail] ou acesse o [fórum] de discussões.
+Em caso de dúvidas mande um e-mail para desenvolvedores@pagseguro.com.br
 
 
 Contribuições
@@ -89,8 +89,6 @@ Achou e corrigiu um bug ou tem alguma feature em mente e deseja contribuir?
 
   [API de Pagamentos]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-pagamentos.html
   [API de Notificações]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html
-  [e-mail]: <mailto:desenvolvedores@pagseguro.com.br>
-  [fórum]: http://forum.imasters.com.br/forum/244-gateways-e-meios-de-pagamento-online-pagseguro
   [Dúvidas?]: https://pagseguro.uol.com.br/desenvolvedor/comunidade.jhtml
   [Pagamentos via API]: https://pagseguro.uol.com.br/integracao/pagamentos-via-api.jhtml
   [Notificação de Transações]: https://pagseguro.uol.com.br/integracao/notificacao-de-transacoes.jhtml
