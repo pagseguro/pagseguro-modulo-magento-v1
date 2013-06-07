@@ -49,6 +49,11 @@ Para acessar e configurar o módulo acesse o menu System -> Configuration -> Pay
 Changelog
 ---------
 ---
+
+1.2
+ - Correção: Erro ao finalizar compra.
+
+
 1.1
 
  - Adicionado: Integração com API de Notificação do PagSeguro.
