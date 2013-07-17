@@ -1,81 +1,70 @@
 <?php
 
 /*
-************************************************************************
-Copyright [2013] [PagSeguro Internet Ltda.]
+ ************************************************************************
+ Copyright [2013] [PagSeguro Internet Ltda.]
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-************************************************************************
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ ************************************************************************
+ */
 
+class PagSeguro_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action {
+	/**
+	 * Get Checkout Session
+	 */
+	private function getCheckout() {
+		return Mage::getSingleton('checkout/session');
+	}
 
-class PagSeguro_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
-{
-    /**
-     * Get Checkout Session  
-     */
-    private function getCheckout()
-    {
-        return Mage::getSingleton('checkout/session');
-    }
-    
-    /**
-     * Get the Order of Checkout
-     */
-    private function getOrder()
-    {
-        return Mage::getModel('sales/order')->load( $this->getCheckout()->getLastOrderId() );
-    }
-    
-    /**
-     * Get PagSeguro Model instance
-     */
-    private function getPagSeguroPaymentModel()
-    {
-        return Mage::getSingleton('PagSeguro_PagSeguro_Model_PaymentMethod'); //Model
-    }    
-    
-    /**
-     * Process the payment request and redirect to PagSeguro Gateway
-     */
-    public function requestAction()
-    {   
-        $Order = $this->getOrder(); //Order Data
-        
-        $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel();
-	
+	/**
+	 * Get the Order of Checkout
+	 */
+	private function getOrder() {
+		return Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
+	}
 
-        if ( ( $Order->getState() == Mage_Sales_Model_Order::STATE_NEW ) and 
-             ( $Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode() ) and 
-             ( $Order->getId() ) 
-           ) 
-        {
-            
-            try {
-                
-                $PagSeguroPaymentModel->setOrder($Order); 
-                echo $PagSeguroPaymentModel->getRedirectPaymentHtml();
-                                
-                $Order->save();              
-                              
-            } catch ( Exception $ex ) {
-                Mage::log( $ex->getMessage() );
-                $this->_redirectUrl('/'); 
-            }
-        
-        } else {
-            $this->_redirectUrl('/'); 
-        }
-     }
+	/**
+	 * Get PagSeguro Model instance
+	 */
+	private function getPagSeguroPaymentModel() {
+		return Mage::getSingleton('PagSeguro_PagSeguro_Model_PaymentMethod'); //Model
+		}
+
+	/**
+	 * Process the payment request and redirect to PagSeguro Gateway
+	 */
+	public function requestAction() {
+		$Order = $this->getOrder(); //Order Data
+
+		$PagSeguroPaymentModel = $this->getPagSeguroPaymentModel();
+
+		if (($Order->getState() == Mage_Sales_Model_Order::STATE_NEW) and ($Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode()) and ($Order->getId())) {
+
+			try {
+
+				$PagSeguroPaymentModel->setOrder($Order);
+				echo $PagSeguroPaymentModel->getRedirectPaymentHtml();
+
+				$Order->save();
+
+			} catch (Exception $ex) {
+				Mage::log($ex->getMessage());
+				$this->_redirectUrl('/');
+			}
+
+		} else {
+			$this->_redirectUrl('/');
+		}
+	}
 
 }
