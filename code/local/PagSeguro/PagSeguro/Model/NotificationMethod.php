@@ -20,7 +20,8 @@
 
 include_once('PagSeguroLibrary/PagSeguroLibrary.php');
 
-class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Method_Abstract {
+class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Method_Abstract
+{
 
 	private $notificationType;
 
@@ -41,7 +42,8 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
 	/**
 	 * Construct
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		parent::__construct();
 
 		$this->_helper = Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data');
@@ -52,7 +54,8 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
 	 * @param type $objCredential
 	 * @param type $post
 	 */
-	public function initialize($objCredential, $post) {
+	public function initialize($objCredential, $post)
+	{
 
 		$this->objCredential = $objCredential;
 		$this->post = $post;
@@ -72,7 +75,8 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
 	/**
 	 * Create Notification
 	 */
-	private function _createNotification() {
+	private function _createNotification()
+	{
 		$this->notificationType = (isset($this->post['notificationType']) && trim($this->post['notificationType']) != "") ? $this->post['notificationType'] : null;
 		$this->notificationCode = (isset($this->post['notificationCode']) && trim($this->post['notificationCode']) != "") ? $this->post['notificationCode'] : null;
 	}
@@ -80,14 +84,16 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
 	/**
 	 * Initialize Objects
 	 */
-	private function _initializeObjects() {
+	private function _initializeObjects()
+	{
 		$this->_createNotificationType();
 	}
 
 	/**
 	 * Create Notification Type
 	 */
-	private function _createNotificationType() {
+	private function _createNotificationType()
+	{
 		$this->objNotificationType = new PagSeguroNotificationType();
 		$this->objNotificationType->setByType('TRANSACTION');
 	}
@@ -95,7 +101,8 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
 	/**
 	 * Create Transaction
 	 */
-	private function _createTransaction() {
+	private function _createTransaction()
+	{
 		$this->objTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential, $this->notificationCode);
 		$this->reference = $this->objTransaction->getReference();
 	}
@@ -103,7 +110,8 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
 	/**
 	 * Update Cms
 	 */
-	private function _updateCms() {
+	private function _updateCms()
+	{
 		$arrayValue = $this->_helper->returnOrderStByStPagSeguro($this->objTransaction->getStatus()->getValue());
 
 		if ($this->_lastStatus() != $arrayValue['status']) {
@@ -120,7 +128,8 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
 	 * Update
 	 * @param type $status
 	 */
-	private function _updateOrders($status) {
+	private function _updateOrders($status)
+	{
 
 		$obj = Mage::getModel('sales/order')->load($this->reference);
 		$obj->setStatus($status);
@@ -128,9 +137,12 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
 		$history = $obj->addStatusHistoryComment('', false);
 		$history->setIsCustomerNotified(false);
 
-		try {
+		try
+		{
 			$obj->save();
-		} catch (Exception $exc) {
+		}
+		catch (Exception $exc)
+		{
 			echo $exc->getTraceAsString();
 		}
 	}
@@ -140,7 +152,8 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
 	 * @param type $value
 	 * @return type
 	 */
-	private function _lastStatus() {
+	private function _lastStatus()
+	{
 		$obj = Mage::getModel('sales/order')->load($this->reference);
 		return $obj['status'];
 	}

@@ -24,7 +24,8 @@ include_once('Defines.php');
 /**
  * PagSeguro payment model
  */
-class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstract {
+class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstract
+{
 
 	protected $_code = 'pagseguro';
 	protected $_isGateway = true;
@@ -45,7 +46,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @return type
 	 */
-	private function getShippingData() {
+	private function getShippingData()
+	{
 		$isOrderVirtual = $this->Order->getIsVirtual();
 		$OrderParams = NULL;
 		if ($isOrderVirtual) {
@@ -62,7 +64,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @param type $Order
 	 */
-	public function setOrder($Order) {
+	public function setOrder($Order)
+	{
 		if ($Order != NULL and !empty($Order)) {
 			$this->Order = $Order;
 			$this->Shipping_Data = $this->getShippingData();
@@ -76,7 +79,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @return PaymentRequestURL
 	 */
-	public function getRedirectPaymentHtml() {
+	public function getRedirectPaymentHtml()
+	{
 		$this->setPagSeguroConfig();
 		return $this->createPaymentRequest();
 	}
@@ -85,7 +89,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 * Set Config's to PagSeguro API
 	 *
 	 */
-	private function setPagSeguroConfig() {
+	private function setPagSeguroConfig()
+	{
 		$_activeLog = $this->getConfigData('log');
 		$_charset = $this->getConfigData('charset');
 
@@ -118,7 +123,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @return string
 	 */
-	private function createPaymentRequest() {
+	private function createPaymentRequest()
+	{
 
 		$PaymentRequest = new PagSeguroPaymentRequest();
 
@@ -146,10 +152,13 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 		//Define Extra Amount Information
 		$PaymentRequest->setExtraAmount($this->_extraAmount());
 
-		try {
+		try
+		{
 			$payment_url = $PaymentRequest->register($this->getCredentialsInformation());
 			$redirect_html = $this->createRedirectPaymentHtml($payment_url);
-		} catch (PagSeguroServiceException $ex) {
+		}
+		catch (PagSeguroServiceException $ex)
+		{
 			Mage::log($ex->getMessage());
 			die("[PagSeguroModuleException] Message: " . $ex->getMessage());
 		}
@@ -161,7 +170,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 * Extra Amount
 	 * @return extra amount
 	 */
-	private function _extraAmount() {
+	private function _extraAmount()
+	{
 		$_tax_amount = self::toFloat($this->Order->getTaxAmount());
 		$_discount_amount = self::toFloat($this->Order->getBaseDiscountAmount());
 
@@ -172,7 +182,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @return Notification URL
 	 */
-	private function getNotificationURL() {
+	private function getNotificationURL()
+	{
 
 		$notification_url = $this->getConfigData('notification');
 
@@ -183,7 +194,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @return PagSeguroShipping
 	 */
-	private function getShippingInformation() {
+	private function getShippingInformation()
+	{
 		$PagSeguroShipping = new PagSeguroShipping();
 
 		$PagSeguroAddress = new PagSeguroAddress();
@@ -201,7 +213,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @return PagSeguroItem
 	 */
-	private function getItensInformation() {
+	private function getItensInformation()
+	{
 		$Itens = $this->Order->getAllVisibleItems();
 
 		$PagSeguroItens = array();
@@ -225,7 +238,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @return PagSeguroAccountCredentials
 	 */
-	public function getCredentialsInformation() {
+	public function getCredentialsInformation()
+	{
 		$adm_email = $this->getConfigData('email');
 		$adm_token = $this->getConfigData('token');
 		$credentials = new PagSeguroAccountCredentials($adm_email, $adm_token);
@@ -237,7 +251,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @return PagSeguroSender
 	 */
-	private function getSenderInformation() {
+	private function getSenderInformation()
+	{
 		$PagSeguroSender = new PagSeguroSender();
 
 		$PagSeguroSender->setEmail($this->Order['customer_email']);
@@ -250,7 +265,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 * Redirect to pagseguro request controller after user click in 'PLACE ORDER'
 	 *
 	 */
-	public function getOrderPlaceRedirectUrl() {
+	public function getOrderPlaceRedirectUrl()
+	{
 		return Mage::getUrl($this->getCode() . '/payment/request');
 	}
 
@@ -259,7 +275,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 * @return string
 	 */
 
-	private function getRedirectUrl() {
+	private function getRedirectUrl()
+	{
 		return $this->getConfigData('url');
 	}
 
@@ -269,7 +286,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 * @param String $_url
 	 * @return string
 	 */
-	private function createRedirectPaymentHtml($_url) {
+	private function createRedirectPaymentHtml($_url)
+	{
 		$html = '   <html>
                         <head>
                             <title>PagSeguro</title>
@@ -296,7 +314,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 * @param string $_endchars
 	 * @return string
 	 */
-	private static function fixStringLength($_value, $_length, $_endchars = '...') {
+	private static function fixStringLength($_value, $_length, $_endchars = '...')
+	{
 		if (!empty($_value) and !empty($_length)) {
 
 			$_cut_len = (int) $_length - (int) strlen($_endchars);
@@ -316,7 +335,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 * @param $_value
 	 * @return float
 	 */
-	private static function toFloat($_value) {
+	private static function toFloat($_value)
+	{
 		return (float) $_value;
 	}
 
@@ -326,12 +346,16 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 * @param string $filename
 	 * @return boolean
 	 */
-	private static function checkFile($_file) {
-		try {
+	private static function checkFile($_file)
+	{
+		try
+		{
 			$f = fopen($_file, 'a');
 			$_file_exist = TRUE;
 			fclose($f);
-		} catch (Exception $ex) {
+		}
+		catch (Exception $ex)
+		{
 			$_file_exist = FALSE;
 			Mage::logException($ex);
 		}
