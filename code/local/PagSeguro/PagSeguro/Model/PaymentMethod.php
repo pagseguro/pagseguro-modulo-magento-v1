@@ -79,11 +79,13 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 *
 	 * @return PaymentRequestURL
 	 */
-	public function getRedirectPaymentHtml()
-	{
-		$this->setPagSeguroConfig();
-		return $this->createPaymentRequest();
-	}
+	public function getRedirectPaymentHtml($Order) {
+        $this->setPagSeguroConfig();
+        $payment_url =  $this->createPaymentRequest();
+        $Order->save();
+        
+        return $payment_url;
+    }
 
 	/**
 	 * Set Config's to PagSeguro API
@@ -152,18 +154,14 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 		//Define Extra Amount Information
 		$PaymentRequest->setExtraAmount($this->_extraAmount());
 
-		try
-		{
-			$payment_url = $PaymentRequest->register($this->getCredentialsInformation());
-			$redirect_html = $this->createRedirectPaymentHtml($payment_url);
-		}
-		catch (PagSeguroServiceException $ex)
-		{
-			Mage::log($ex->getMessage());
-			die("[PagSeguroModuleException] Message: " . $ex->getMessage());
-		}
+		try {
+            $payment_url = $PaymentRequest->register($this->getCredentialsInformation());
+        } catch (PagSeguroServiceException $ex) {
+            Mage::log($ex->getMessage());
+            $this->_redirectUrl(Mage::getUrl() . 'checkout/onepage'); 
+        }
 
-		return $redirect_html;
+        return $payment_url;
 	}
 
 	/**
@@ -189,6 +187,15 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 
 		return ($notification_url != null && $notification_url != "") ? $notification_url : Mage::getUrl() . 'pagseguro/notification/send/';
 	}
+        
+        private function _addressConfig($fullAddress,$valor = 0) {
+            require_once(dirname(__FILE__).'/AddressConfig.php');
+            if($valor == 0) {
+                return AddressConfig::trataEndereco($fullAddress);                
+            } else {
+                return AddressConfig::trataEstado($fullAddress);                
+            }
+        }
 
 	/**
 	 *
@@ -196,15 +203,26 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	 */
 	private function getShippingInformation()
 	{
+                $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
+                
+                $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street'],0);
+                $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
+                $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
+                $district = is_null($fullAddress[3]) ? '' : $fullAddress[3];
+                
 		$PagSeguroShipping = new PagSeguroShipping();
 
 		$PagSeguroAddress = new PagSeguroAddress();
 		$PagSeguroAddress->setCity($this->Shipping_Data['city']);
 		$PagSeguroAddress->setPostalCode($this->Shipping_Data['postcode']);
-		$PagSeguroAddress->setState(strtoupper($this->Shipping_Data['region']));
-		$PagSeguroAddress->setStreet($this->Shipping_Data['street']);
-
+		$PagSeguroAddress->setState($this->_addressConfig($this->Shipping_Data['region'],1));
+		$PagSeguroAddress->setStreet($street);
+                $PagSeguroAddress->setNumber($number);
+                $PagSeguroAddress->setComplement($complement);
+                $PagSeguroAddress->setDistrict($district);
+                
 		$PagSeguroShipping->setAddress($PagSeguroAddress);
+                
 
 		return $PagSeguroShipping;
 	}
@@ -278,32 +296,6 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	private function getRedirectUrl()
 	{
 		return $this->getConfigData('url');
-	}
-
-	/**
-	 * Create the html redirect to pagseguro gateway.
-	 *
-	 * @param String $_url
-	 * @return string
-	 */
-	private function createRedirectPaymentHtml($_url)
-	{
-		$html = '   <html>
-                        <head>
-                            <title>PagSeguro</title>
-                        </head>
-                        <body>
-                            <div id= "_pagseguro_redirect">
-                                <h2>Redirecionando para o PagSeguro!</h2>
-                                <p><h3>Para redirecionar manualmente <a href="' . $_url . '">Clique aqui</a></h3></p>
-                                <script type="text/javascript">
-                                    window.setTimeout(function(){ location.href = "' . $_url . '" },1500);
-                                </script>
-                            </div>
-                        </body>
-                    </html>';
-
-		return $html;
 	}
 
 	/**
