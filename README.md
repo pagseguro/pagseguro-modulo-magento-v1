@@ -1,4 +1,4 @@
-Módulo de integração PagSeguro para Magento
+﻿Módulo de integração PagSeguro para Magento
 ===========================================
 ---
 Descrição
@@ -49,6 +49,11 @@ Para acessar e configurar o módulo acesse o menu System -> Configuration -> Pay
 Changelog
 ---------
 ---
+
+1.3
+ - Remoção da janela intermediária de redirecionamento para o PagSeguro;
+ - Agora é exibido uma mensagem amigável ao comprador caso ocorra algum erro com a compra;
+ - Melhorando tratamento dos dados de endereço que são enviados ao PagSeguro.
 
 1.2
  - Correção: Erro ao finalizar compra.
