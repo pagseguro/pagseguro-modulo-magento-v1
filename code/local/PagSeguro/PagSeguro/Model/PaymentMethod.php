@@ -82,11 +82,19 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	public function getRedirectPaymentHtml($Order) {
         $this->setPagSeguroConfig();
         $payment_url =  $this->createPaymentRequest();
+        
+        //limpar o cart
+        $cart = Mage::getSingleton('checkout/cart');
+        foreach (Mage::getSingleton('checkout/session')->getQuote()->getItemsCollection() as $item) {
+           $cart->removeItem($item->getId());
+        }
+        $cart->save();
+        
         $Order->save();
         
         return $payment_url;
-    }
-
+        }
+        
 	/**
 	 * Set Config's to PagSeguro API
 	 *

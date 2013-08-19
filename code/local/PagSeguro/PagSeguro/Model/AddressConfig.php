@@ -119,12 +119,12 @@ class AddressConfig
           $endereco = $end;
       }
       
-      $endereco=self::tiraNumeroFinal($endereco);
+      //$endereco=self::tiraNumeroFinal($endereco);
       
       //if($complemento=='')list($numero,$complemento)=self::separaNumeroComplemento($numero);
     }
       
-    return array(self::endtrim($endereco),self::endtrim($numero),self::endtrim($complemento),self::endtrim($bairro));
+    return array(self::endtrim(substr($endereco,0,69)),self::endtrim($numero),self::endtrim($complemento),self::endtrim($bairro));
   }
   
   static function trataEstado($estadoOriginal){

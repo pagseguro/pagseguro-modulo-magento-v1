@@ -53,7 +53,10 @@ class PagSeguro_PagSeguro_PaymentController extends Mage_Core_Controller_Front_A
         $Order = $this->getOrder(); //Order Data
         
         $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel();
-	
+        
+        $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
+            
+        $feedback = ($fileOSC == false ? 'checkout/onepage' : 'onepagecheckout');
 
         if ( ( $Order->getState() == Mage_Sales_Model_Order::STATE_NEW ) and 
              ( $Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode() ) and 
@@ -69,12 +72,12 @@ class PagSeguro_PagSeguro_PaymentController extends Mage_Core_Controller_Front_A
             } catch ( Exception $ex ) {
                 Mage::log( $ex->getMessage() );
                 Mage::getSingleton('core/session')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
-                $this->_redirectUrl(Mage::getUrl() . 'checkout/onepage'); 
+                $this->_redirectUrl(Mage::getUrl() . $feedback); 
             }
         
         } else {
             Mage::getSingleton('core/session')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
-            $this->_redirectUrl(Mage::getUrl() . 'checkout/onepage'); 
+            $this->_redirectUrl(Mage::getUrl() . $feedback); 
         }
      }
 
