@@ -37,7 +37,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	protected $_canUseInternal = true;
 	protected $_canUseCheckout = true;
 	protected $_canUseForMultishipping = true;
-	private $Module_Version = '1.3';
+	private $Module_Version = '1.4';
 	private $Order;
 	private $Shipping_Data;
 
@@ -196,13 +196,9 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 		return ($notification_url != null && $notification_url != "") ? $notification_url : Mage::getUrl() . 'pagseguro/notification/send/';
 	}
         
-        private function _addressConfig($fullAddress,$valor = 0) {
+        private function _addressConfig($fullAddress) {
             require_once(dirname(__FILE__).'/AddressConfig.php');
-            if($valor == 0) {
-                return AddressConfig::trataEndereco($fullAddress);                
-            } else {
-                return AddressConfig::trataEstado($fullAddress);                
-            }
+            return AddressConfig::trataEndereco($fullAddress);                
         }
 
 	/**
@@ -213,7 +209,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 	{
                 $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
                 
-                $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street'],0);
+                $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street']);
                 $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
                 $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
                 $district = is_null($fullAddress[3]) ? '' : $fullAddress[3];
@@ -223,7 +219,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 		$PagSeguroAddress = new PagSeguroAddress();
 		$PagSeguroAddress->setCity($this->Shipping_Data['city']);
 		$PagSeguroAddress->setPostalCode($this->Shipping_Data['postcode']);
-		$PagSeguroAddress->setState($this->_addressConfig($this->Shipping_Data['region'],1));
+		$PagSeguroAddress->setState($this->Shipping_Data['region']);
 		$PagSeguroAddress->setStreet($street);
                 $PagSeguroAddress->setNumber($number);
                 $PagSeguroAddress->setComplement($complement);

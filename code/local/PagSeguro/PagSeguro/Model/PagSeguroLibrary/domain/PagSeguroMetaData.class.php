@@ -19,18 +19,50 @@
  */
 
 /**
- * Abstract class that represents a PagSeguro credential
+ * Represent a metadata
  */
-abstract class PagSeguroCredentials
+class PagSeguroMetaData
 {
 
     /**
-     * @return array a map of name value pairs that compose this set of credentials
+     * @var array
      */
-    abstract public function getAttributesMap();
+    private $items;
 
     /**
-     * @return string a string that represents the current object
+     * @param array $items
      */
-    abstract public function toString();
+    public function __construct(array $items = null)
+    {
+        if (!is_null($items) && count($items) > 0) {
+            $this->setItems($items);
+        }
+    }
+
+    /**
+     * @param PagSeguroMetaDataItem $metaDataItem
+     */
+    public function addItem(PagSeguroMetaDataItem $metaDataItem)
+    {
+        $this->items[] = $metaDataItem;
+    }
+
+    /**
+     * @param array $items
+     */
+    public function setItems(array $items)
+    {
+        $this->items = $items;
+    }
+
+    /**
+     * @return array
+     */
+    public function getItems()
+    {
+        if ($this->items == null) {
+            $this->items = array();
+        }
+        return $this->items;
+    }
 }
