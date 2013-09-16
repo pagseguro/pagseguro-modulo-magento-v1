@@ -13,7 +13,7 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 Requisitos
 ----------
 ---
- - [Magento] Community 1.7.0.2
+ - [Magento] Community 1.5.x, 1.6.x, 1.7.x
  - [PHP] 5.1.6+
  - [SPL]
  - [cURL]
@@ -49,6 +49,14 @@ Para acessar e configurar o módulo acesse o menu System -> Configuration -> Pay
 Changelog
 ---------
 ---
+
+1.4
+ - Verificar se o ambiente atende os requisitos;
+ - Não utilizar URLs de localhost para notificação/redirecionamento;
+ - Compatibilidade com OSC-Magento-Brasil;
+ - Atualização da lib PagSeguro PHP;
+ - Compatibilidade com Magetento 1.5.x e 1.6.x;
+
 
 1.3
  - Remoção da janela intermediária de redirecionamento para o PagSeguro;
