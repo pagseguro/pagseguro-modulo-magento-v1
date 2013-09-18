@@ -73,17 +73,17 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
                 Mage::log($ex->getMessage());
                 Mage::getSingleton('core/session')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
                 $this->_redirectUrl(Mage::getUrl() . $feedback);
-                $this->__canceledStatus($Order);
+                $this->_canceledStatus($Order);
             }
         
         } else {
             Mage::getSingleton('core/sessio$canceled')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
             $this->_redirectUrl(Mage::getUrl() . $feedback);
-            $this->__canceledStatus($Order);
+            $this->_canceledStatus($Order);
         }
     }
     
-    private function __canceledStatus($Order)
+    private function _canceledStatus($Order)
     {
         $canceled =  Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->returnOrderStByStPagSeguro(self::CANCELADO);
         

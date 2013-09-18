@@ -137,8 +137,8 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends WidgetGrid
                     'filter'    => false,
                     'sortable'  => false,
                     'index'     => 'stores',
-                    'is_system' => true
-                ));
+                    'is_system' => true)
+            );
         }
         $this->addRssList('rss/order/new', Mage::helper('sales')->__('New Order RSS'));
 
@@ -231,5 +231,4 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends WidgetGrid
     {
         return $this->getUrl('*/*/grid', array('_current'=>true));
     }
-
 }

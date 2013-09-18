@@ -22,6 +22,7 @@ include_once('PagSeguroLibrary/PagSeguroLibrary.php');
 include_once('Defines.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
+
 /**
  * PagSeguro payment model
  */

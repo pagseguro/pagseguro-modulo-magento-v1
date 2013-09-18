@@ -1,4 +1,5 @@
-<?php if (!defined('PAGSEGURO_LIBRARY')) {
+<?php 
+if (!defined('PAGSEGURO_LIBRARY')) {
     die('No direct script access allowed');
 }
 /*

@@ -33,7 +33,7 @@ class PagSeguro_PagSeguro_Model_Values
         return array(
                         array("value" => "UTF-8" , "label" => "UTF-8" ),
                         array("value" => "ISO-8859-1" , "label" => "ISO-8859-1" )
-                    ); 
+                    );
     }
     
     //Mensagens de alerta caso haja erro no cURL, versão do PHP, SPL e/ou DOM.

@@ -68,7 +68,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
         if ($this->objNotificationType->getValue() == $this->notificationType) {
             $this->_createTransaction();
             
-            if ($this->objTransaction){
+            if ($this->objTransaction) {
                 $this->_updateCms();
             }
         }
@@ -126,7 +126,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
         }
     }
    
-   /**
+    /**
     * Update
     * @param type $status
     */
