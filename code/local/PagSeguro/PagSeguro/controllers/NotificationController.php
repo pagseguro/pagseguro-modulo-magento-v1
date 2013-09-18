@@ -32,7 +32,7 @@ class PagSeguro_PagSeguro_NotificationController extends Mage_Core_Controller_Fr
      * Notification Action
      */
     public function sendAction()
-    {  
+    {
         $this->createObjects();
         $this->createCredential();
             

@@ -50,7 +50,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
     private function getShippingData()
     {
         $isOrderVirtual = $this->Order->getIsVirtual();
-        $OrderParams = NULL;
+        $OrderParams = null;
         if ($isOrderVirtual) {
                 $OrderParams = $this->Order->getBillingAddress();
         } else {
@@ -67,7 +67,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
      */
     public function setOrder($Order)
     {
-        if ($Order != NULL and !empty($Order)) {
+        if ($Order != null and !empty($Order)) {
                 $this->Order = $Order;
                 $this->Shipping_Data = $this->getShippingData();
         } else {
@@ -115,7 +115,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
         PagSeguroLibrary::setCMSVersion('magento' . ':' . Mage::getVersion());
 
         //Setup Charset
-        if ($_charset != NULL and !empty($_charset)) {
+        if ($_charset != null and !empty($_charset)) {
                 PagSeguroConfig::setApplicationCharset($_charset);
         }
 
@@ -154,7 +154,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
 
         //Define Redirect Url
         $redirect_url = $this->getRedirectUrl();
-        if (!empty($redirect_url) and $redirect_url != NULL) {
+        if (!empty($redirect_url) and $redirect_url != null) {
                 $PaymentRequest->setRedirectURL($redirect_url);
         } else {
                 $PaymentRequest->setRedirectURL(Mage::getUrl() . 'checkout/onepage/success/');
@@ -167,7 +167,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
             $payment_url = $PaymentRequest->register($this->getCredentialsInformation());
         } catch (PagSeguroServiceException $ex) {
             Mage::log($ex->getMessage());
-            $this->_redirectUrl(Mage::getUrl() . 'checkout/onepage'); 
+            $this->_redirectUrl(Mage::getUrl() . 'checkout/onepage');
         }
 
         return $payment_url;
@@ -199,7 +199,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
     private function _addressConfig($fullAddress)
     {
         require_once(dirname(__FILE__).'/AddressConfig.php');
-        return AddressConfig::trataEndereco($fullAddress);                
+        return AddressConfig::trataEndereco($fullAddress);
     }
 
     /**
@@ -344,15 +344,12 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
      */
     private static function checkFile($_file)
     {
-        try
-        {
+        try {
             $f = fopen($_file, 'a');
-            $_file_exist = TRUE;
+            $_file_exist = true;
             fclose($f);
-        }
-        catch (Exception $ex)
-        {
-            $_file_exist = FALSE;
+        } catch (Exception $ex) {
+            $_file_exist = false;
             Mage::logException($ex);
         }
         return $_file_exist;

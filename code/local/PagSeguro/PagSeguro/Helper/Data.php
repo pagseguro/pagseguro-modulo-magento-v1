@@ -17,7 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************
 */
-class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data 
+class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
 {
         
     private $arraySt;
@@ -60,7 +60,7 @@ class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
         return (array_key_exists($value, $this->arraySt) ? $this->arraySt[$value] : false);
     }
 
-   /**
+    /**
     * get array status
     * @return type
     */
@@ -75,7 +75,7 @@ class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     public function saveAllStatusPagSeguro()
     {
         foreach ($this->arraySt as $key => $value) {
-            if(!$this->_existsStatus($value['status'])) {
+            if (!$this->_existsStatus($value['status'])) {
                 $this->objStatus->setStatus($value['status'])
                        ->setLabel($value['label']);
                 $this->objStatus->save();
@@ -89,7 +89,7 @@ class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
      */
     public function saveStatusPagSeguro(array $value)
     {
-        if(!$this->_existsStatus($value['status'])) {
+        if (!$this->_existsStatus($value['status'])) {
             $this->objStatus->setStatus($value['status'])
                  ->setLabel($value['label']);
             $this->objStatus->save();

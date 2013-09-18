@@ -30,9 +30,9 @@ class PagSeguro_PagSeguro_Model_Values
     public function toOptionArray()
     {
         self::alertMessage();
-        return array( 
-                        array("value" => "UTF-8" , "label" => "UTF-8" ), 
-                        array("value" => "ISO-8859-1" , "label" => "ISO-8859-1" ) 
+        return array(
+                        array("value" => "UTF-8" , "label" => "UTF-8" ),
+                        array("value" => "ISO-8859-1" , "label" => "ISO-8859-1" )
                     ); 
     }
     
@@ -42,12 +42,12 @@ class PagSeguro_PagSeguro_Model_Values
     {
         $requirements = PagSeguroConfig::validateRequirements();
         $required = array();
-        foreach ($requirements as $key => $value){
+        foreach ($requirements as $key => $value) {
             if ($value != '') {
                 $required[] = $value;
             }
         }
-        if(!empty($required)) {
+        if (!empty($required)) {
             $message = "Requerimentos para o sistema funcionar:";
             foreach ($required as $value) {
                 $message .= "<br>".$value;

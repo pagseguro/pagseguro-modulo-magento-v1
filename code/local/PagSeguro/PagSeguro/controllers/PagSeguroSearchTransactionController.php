@@ -51,5 +51,5 @@ class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends Mage_Core
     private function _createTransaction()
     {
         $this->objTransaction = PagSeguroTransactionSearchService::searchByCode($this->objCredentials, $this->transactionCode);
-    }     
+    }
 }

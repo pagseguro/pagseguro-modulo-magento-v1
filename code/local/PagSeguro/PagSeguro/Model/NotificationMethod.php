@@ -63,10 +63,10 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
         $this->_createNotification();
         $this->_initializeObjects();
         
-        if($this->objNotificationType->getValue() == $this->notificationType) {
+        if ($this->objNotificationType->getValue() == $this->notificationType) {
             $this->_createTransaction();
             
-            if($this->objTransaction){
+            if ($this->objTransaction){
                 $this->_updateCms();
             }
         }
@@ -98,7 +98,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
         $this->objNotificationType->setByType('TRANSACTION');
     }
     
-   /**
+    /**
     * Create Transaction
     */
     private function _createTransaction()
@@ -107,15 +107,15 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
         $this->reference = $this->objTransaction->getReference();
     }
    
-   /**
+    /**
     * Update Cms
     */
     private function _updateCms()
     {
         $arrayValue =  $this->_helper->returnOrderStByStPagSeguro($this->objTransaction->getStatus()->getValue());
 
-        if($this->_lastStatus() != $arrayValue['status']) {
-            if( $this->_helper->_existsStatus($arrayValue['status'])) {
+        if ($this->_lastStatus() != $arrayValue['status']) {
+            if ($this->_helper->_existsStatus($arrayValue['status'])) {
                 $this->_updateOrders($arrayValue['status']);
             } else {
                 $this->_helper->saveStatusPagSeguro($arrayValue);
@@ -137,48 +137,48 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
         $history->setIsCustomerNotified(false);
        
         try {
-//            Create invoice automaticamente
-//            try {
-//                if(!$obj->canInvoice()){
-//                   Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
-//                }
-//                $invoice = Mage::getModel('sales/service_order', $obj)->prepareInvoice();
-//
-//                if (!$invoice->getTotalQty()) {
-//                   Mage::throwException(Mage::helper('core')->__('Cannot create an invoice without products.'));
-//                }
-//                $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
-//                $invoice->register();
-//                $invoice['transaction_id'] = $this->objTransaction->getCode();
-//                $transactionSave = Mage::getModel('core/resource_transaction')
-//                ->addObject($invoice)
-//                ->addObject($invoice->getOrder());
-//                $transactionSave->save();
-//            }catch (Mage_Core_Exception $e) {
-//            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             $this->_insertCode();
             $obj->save();
             
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
-        } 
+        }
     }
    
     private function _insertCode()
     {
-        $read= Mage::getSingleton('core/resource')->getConnection('core_read'); 
-        $value=$read->query("SELECT `order_id` FROM `pagseguro_sales_code` WHERE `order_id` = $this->reference" );
-        $row = $value->fetch(); 
+        $read= Mage::getSingleton('core/resource')->getConnection('core_read');
+        $value = $read->query("SELECT `order_id` FROM `pagseguro_sales_code` WHERE `order_id` = $this->reference");
+        $row = $value->fetch();
 
-        if($row == false) {
+        if ($row == false) {
             $transactionId = $this->objTransaction->getCode();
             $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-            $sql = "INSERT INTO `pagseguro_sales_code` (`order_id`,`transaction_code`) VALUES ('$this->reference','$transactionId')"; 
+            $sql = "INSERT INTO `pagseguro_sales_code` (`order_id`,`transaction_code`) VALUES ('$this->reference','$transactionId')";
             $connection->query($sql);
         }
     }
    
-   /**
+    /**
     * 
     * @param type $value
     * @return type
@@ -186,6 +186,6 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
     private function _lastStatus()
     {
         $obj = Mage::getModel('sales/order')->load($this->reference);
-        return $obj['status'];  
+        return $obj['status'];
     }
 }
