@@ -19,19 +19,20 @@ limitations under the License.
 */
 include_once ('PagSeguroLibrary/PagSeguroLibrary.php');
 
-class PagSeguro_PagSeguro_NotificationController extends Mage_Core_Controller_Front_Action{
+class PagSeguro_PagSeguro_NotificationController extends Mage_Core_Controller_Front_Action
+{
  
-        private $objPagSeguro;
-        
-        private $objCredential;
-        
-        private $objNotification;
+    private $objPagSeguro;
+
+    private $objCredential;
+
+    private $objNotification;
 
     /**
      * Notification Action
      */
-    public function sendAction(){  
-
+    public function sendAction()
+    {  
         $this->createObjects();
         $this->createCredential();
             
@@ -41,7 +42,8 @@ class PagSeguro_PagSeguro_NotificationController extends Mage_Core_Controller_Fr
     /**
      * Create Objects
      */
-    private function createObjects(){
+    private function createObjects()
+    {
         $this->objPagSeguro =  Mage::getSingleton('PagSeguro_PagSeguro_Model_PaymentMethod');
         $this->objNotification = Mage::getSingleton('PagSeguro_PagSeguro_Model_NotificationMethod');
     }
@@ -49,8 +51,8 @@ class PagSeguro_PagSeguro_NotificationController extends Mage_Core_Controller_Fr
     /**
      * Create Credential
      */
-    private function createCredential(){
-     $this->objCredential = $this->objPagSeguro->getCredentialsInformation();
+    private function createCredential()
+    {
+        $this->objCredential = $this->objPagSeguro->getCredentialsInformation();
     }
 }
-

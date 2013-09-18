@@ -38,7 +38,8 @@ class PagSeguro_PagSeguro_Model_Values
     
     //Mensagens de alerta caso haja erro no cURL, versão do PHP, SPL e/ou DOM.
     // mas só serão lançadas caso seja efetuado o save.
-    public function alertMessage(){
+    public function alertMessage()
+    {
         $requirements = PagSeguroConfig::validateRequirements();
         $required = array();
         foreach ($requirements as $key => $value){
@@ -48,14 +49,11 @@ class PagSeguro_PagSeguro_Model_Values
         }
         if(!empty($required)) {
             $message = "Requerimentos para o sistema funcionar:";
-            foreach ($required as $value){
+            foreach ($required as $value) {
                 $message .= "<br>".$value;
             }
 
             Mage::getSingleton('core/session')->addError($message);
         }
-        
     }
-    
 }
-?>

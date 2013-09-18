@@ -17,25 +17,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************
 */
-class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data {
+class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data 
+{
         
-        private $arraySt;
-        
-        private $objStatus;
+    private $arraySt;
 
-        /**
-         * Construct
-         */
-        public function __construct() {
-            $this->_createArraySt();
-            
-        }
+    private $objStatus;
+
+    /**
+     * Construct
+     */
+    public function __construct()
+    {
+        $this->_createArraySt();
+
+    }
         
-    
-        /**
-         * Create Array Status PagSeguro
-         */
-    private function _createArraySt(){
+    /**
+     * Create Array Status PagSeguro
+     */
+    private function _createArraySt()
+    {
         $this->arraySt = array(
             0 => array("status" => "iniciado_ps", "label" => "Iniciado"),
             1 => array("status" => "aguardando_pagamento_ps", "label" => "Aguardando Pagamento"),
@@ -44,39 +46,40 @@ class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data {
             4 => array("status" => "disponivel_ps", "label" => "Disponível"),
             5 => array("status" => "em_disputa_ps", "label" => "Em Disputa"),
             6 => array("status" => "devolvida_ps", "label" => "Devolvida"),
-            7 => array("status" => "cancelada_ps", "label" => "Cancelada") 
+            7 => array("status" => "cancelada_ps", "label" => "Cancelada")
         );
     }
-    
+
     /**
      * Return payment status by key PagSeguro 
      * @param type $value
      * @return type
      */
-    public function returnOrderStByStPagSeguro($value){
-       return ( array_key_exists($value, $this->arraySt ) ? $this->arraySt[$value] : false );
+    public function returnOrderStByStPagSeguro($value)
+    {
+        return (array_key_exists($value, $this->arraySt) ? $this->arraySt[$value] : false);
     }
-    
+
    /**
     * get array status
     * @return type
     */
-    public function getArraySt(){
-       return $this->arraySt;
+    public function getArraySt()
+    {
+        return $this->arraySt;
     }
-    
+
     /**
      * Save Status PagSeguro 
      */
-    public function saveAllStatusPagSeguro(){
-
-        foreach ( $this->arraySt as $key => $value ) {
-            
-           if( !$this->_existsStatus($value['status']) ){
-               $this->objStatus->setStatus($value['status'])
-                      ->setLabel($value['label']);
-               $this->objStatus->save();
-           }
+    public function saveAllStatusPagSeguro()
+    {
+        foreach ($this->arraySt as $key => $value) {
+            if(!$this->_existsStatus($value['status'])) {
+                $this->objStatus->setStatus($value['status'])
+                       ->setLabel($value['label']);
+                $this->objStatus->save();
+            }
         }
     }
     
@@ -84,12 +87,12 @@ class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data {
      * Save Status PagSeguro
      * @param array $value
      */
-    public function saveStatusPagSeguro(array $value){
-        
-        if( !$this->_existsStatus($value['status']) ){
-                 $this->objStatus->setStatus($value['status'])
-                      ->setLabel($value['label']);
-                 $this->objStatus->save();
+    public function saveStatusPagSeguro(array $value)
+    {
+        if(!$this->_existsStatus($value['status'])) {
+            $this->objStatus->setStatus($value['status'])
+                 ->setLabel($value['label']);
+            $this->objStatus->save();
         }
     }
     
@@ -98,12 +101,10 @@ class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data {
      * @param type $status
      * @return type
      */
-    public function _existsStatus($status){
-        
-        $this->objStatus = Mage::getModel('sales/order_status')
-                              ->load($status);
-        
-        return ( $this->objStatus->getStatus() ) ? true : false;  
-    } 
- }
+    public function _existsStatus($status)
+    {
+        $this->objStatus = Mage::getModel('sales/order_status')->load($status);
 
+        return ($this->objStatus->getStatus()) ? true : false;  
+    } 
+}

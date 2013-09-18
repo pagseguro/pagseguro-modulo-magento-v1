@@ -20,7 +20,8 @@ limitations under the License.
 
 include_once ('PagSeguroLibrary/PagSeguroLibrary.php');
 
-class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Method_Abstract{
+class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Method_Abstract
+{
     
     private $notificationType;
     
@@ -42,7 +43,8 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
     /**
      * Construct
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         
         $this->_helper = Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data');
@@ -53,42 +55,45 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
      * @param type $objCredential
      * @param type $post
      */
-    public function initialize($objCredential, $post){
-
+    public function initialize($objCredential, $post)
+    {
         $this->objCredential = $objCredential;
         $this->post = $post;
         
         $this->_createNotification();
         $this->_initializeObjects();
         
-        if($this->objNotificationType->getValue() == $this->notificationType){
+        if($this->objNotificationType->getValue() == $this->notificationType) {
             $this->_createTransaction();
             
-                if($this->objTransaction){
-                    $this->_updateCms();
-                }
-         }
+            if($this->objTransaction){
+                $this->_updateCms();
+            }
+        }
     }
     
     /**
      * Create Notification
      */
-    private function _createNotification(){
-        $this->notificationType = ( isset($this->post['notificationType']) && trim($this->post['notificationType']) != "" ) ? $this->post['notificationType'] : null;
-        $this->notificationCode = ( isset($this->post['notificationCode']) && trim($this->post['notificationCode']) != "" ) ? $this->post['notificationCode'] : null;
+    private function _createNotification()
+    {
+        $this->notificationType = (isset($this->post['notificationType']) && trim($this->post['notificationType']) != "") ? $this->post['notificationType'] : null;
+        $this->notificationCode = (isset($this->post['notificationCode']) && trim($this->post['notificationCode']) != "") ? $this->post['notificationCode'] : null;
     }
     
     /**
      * Initialize Objects
      */
-    private function _initializeObjects(){
+    private function _initializeObjects()
+    {
         $this->_createNotificationType();
     }
     
     /**
      * Create Notification Type
      */
-    private function _createNotificationType(){
+    private function _createNotificationType()
+    {
         $this->objNotificationType = new PagSeguroNotificationType();
         $this->objNotificationType->setByType('TRANSACTION');
     }
@@ -96,33 +101,35 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
    /**
     * Create Transaction
     */
-   private function _createTransaction(){
-       $this->objTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential, $this->notificationCode);
-       $this->reference = $this->objTransaction->getReference();
-   }
+    private function _createTransaction()
+    {
+        $this->objTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential, $this->notificationCode);
+        $this->reference = $this->objTransaction->getReference();
+    }
    
    /**
     * Update Cms
     */
-   private function _updateCms(){
-    $arrayValue =  $this->_helper->returnOrderStByStPagSeguro($this->objTransaction->getStatus()->getValue());
-       
-    if($this->_lastStatus() != $arrayValue['status']){   
-        if( $this->_helper->_existsStatus($arrayValue['status']) ){
-            $this->_updateOrders($arrayValue['status']);
-        } else {
-            $this->_helper->saveStatusPagSeguro($arrayValue);
-            $this->_updateOrders($arrayValue['status']);
+    private function _updateCms()
+    {
+        $arrayValue =  $this->_helper->returnOrderStByStPagSeguro($this->objTransaction->getStatus()->getValue());
+
+        if($this->_lastStatus() != $arrayValue['status']) {
+            if( $this->_helper->_existsStatus($arrayValue['status'])) {
+                $this->_updateOrders($arrayValue['status']);
+            } else {
+                $this->_helper->saveStatusPagSeguro($arrayValue);
+                $this->_updateOrders($arrayValue['status']);
+            }
         }
     }
- }
    
    /**
     * Update
     * @param type $status
     */
-   private function _updateOrders($status){
-       
+    private function _updateOrders($status)
+    {
         $obj = Mage::getModel('sales/order')->load($this->reference);
         $obj->setStatus($status);
         
@@ -130,22 +137,55 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Me
         $history->setIsCustomerNotified(false);
        
         try {
+//            Create invoice automaticamente
+//            try {
+//                if(!$obj->canInvoice()){
+//                   Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
+//                }
+//                $invoice = Mage::getModel('sales/service_order', $obj)->prepareInvoice();
+//
+//                if (!$invoice->getTotalQty()) {
+//                   Mage::throwException(Mage::helper('core')->__('Cannot create an invoice without products.'));
+//                }
+//                $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+//                $invoice->register();
+//                $invoice['transaction_id'] = $this->objTransaction->getCode();
+//                $transactionSave = Mage::getModel('core/resource_transaction')
+//                ->addObject($invoice)
+//                ->addObject($invoice->getOrder());
+//                $transactionSave->save();
+//            }catch (Mage_Core_Exception $e) {
+//            }
+            $this->_insertCode();
             $obj->save();
+            
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
         } 
-   }
+    }
+   
+    private function _insertCode()
+    {
+        $read= Mage::getSingleton('core/resource')->getConnection('core_read'); 
+        $value=$read->query("SELECT `order_id` FROM `pagseguro_sales_code` WHERE `order_id` = $this->reference" );
+        $row = $value->fetch(); 
+
+        if($row == false) {
+            $transactionId = $this->objTransaction->getCode();
+            $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+            $sql = "INSERT INTO `pagseguro_sales_code` (`order_id`,`transaction_code`) VALUES ('$this->reference','$transactionId')"; 
+            $connection->query($sql);
+        }
+    }
    
    /**
     * 
     * @param type $value
     * @return type
     */
-   private function _lastStatus(){
-       $obj = Mage::getModel('sales/order')->load($this->reference);
-       return $obj['status'];  
-   }
-   
+    private function _lastStatus()
+    {
+        $obj = Mage::getModel('sales/order')->load($this->reference);
+        return $obj['status'];  
+    }
 }
-
-

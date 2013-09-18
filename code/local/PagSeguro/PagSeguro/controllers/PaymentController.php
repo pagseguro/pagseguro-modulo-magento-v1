@@ -18,9 +18,9 @@ limitations under the License.
 ************************************************************************
 */
 
-
 class PagSeguro_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
 {
+    const CANCELADO = 7;
     /**
      * Get Checkout Session  
      */
@@ -58,27 +58,35 @@ class PagSeguro_PagSeguro_PaymentController extends Mage_Core_Controller_Front_A
             
         $feedback = ($fileOSC == false ? 'checkout/onepage' : 'onepagecheckout');
 
-        if ( ( $Order->getState() == Mage_Sales_Model_Order::STATE_NEW ) and 
-             ( $Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode() ) and 
-             ( $Order->getId() ) 
-           ) 
-        {
+        if (($Order->getState() == Mage_Sales_Model_Order::STATE_NEW) and 
+            ($Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode()) and 
+            ($Order->getId()) 
+           ) {
             
-            try {
-                
-                $PagSeguroPaymentModel->setOrder($Order); 
-                $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($Order));              
-                              
-            } catch ( Exception $ex ) {
-                Mage::log( $ex->getMessage() );
-                Mage::getSingleton('core/session')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
-                $this->_redirectUrl(Mage::getUrl() . $feedback); 
-            }
+        try {
+
+            $PagSeguroPaymentModel->setOrder($Order); 
+            $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($Order));              
+
+        } catch (Exception $ex) {
+            Mage::log($ex->getMessage());
+            Mage::getSingleton('core/session')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
+            $this->_redirectUrl(Mage::getUrl() . $feedback);
+            $this->__canceledStatus($Order);
+        }
         
         } else {
-            Mage::getSingleton('core/session')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
-            $this->_redirectUrl(Mage::getUrl() . $feedback); 
+            Mage::getSingleton('core/sessio$canceled')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
+            $this->_redirectUrl(Mage::getUrl() . $feedback);
+            $this->__canceledStatus($Order);
         }
-     }
-
+    }
+    
+    private function __canceledStatus($Order)
+    {
+        $canceled =  Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->returnOrderStByStPagSeguro(self::CANCELADO);
+        
+        $Order->setStatus($canceled['status']);
+        $Order->save();
+    }
 }

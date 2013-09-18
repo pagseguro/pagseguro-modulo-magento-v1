@@ -20,7 +20,8 @@ limitations under the License.
 
 include_once ('PagSeguroLibrary/PagSeguroLibrary.php');
 
-class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends Mage_Core_Controller_Front_Action{
+class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends Mage_Core_Controller_Front_Action
+{
     
     private $transactionCode;
     
@@ -28,7 +29,8 @@ class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends Mage_Core
     
     private $objTransaction;
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->transactionCode = $_GET['transactionCode'];
         $this->_createCredential();
         $this->_createTransaction();
@@ -37,16 +39,17 @@ class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends Mage_Core
     /**
      * Create Credential 
      */
-    private function _createCredential(){
-           $this->objPagSeguro =  Mage::getSingleton('PagSeguro_PagSeguro_Model_pagseguro');
-           $this->objCredential = $this->objPagSeguro->getCredentialsInformation();
+    private function _createCredential()
+    {
+        $this->objPagSeguro =  Mage::getSingleton('PagSeguro_PagSeguro_Model_pagseguro');
+        $this->objCredential = $this->objPagSeguro->getCredentialsInformation();
     }
     
     /**
      * Create Transaction
      */
-    private function _createTransaction(){
+    private function _createTransaction()
+    {
         $this->objTransaction = PagSeguroTransactionSearchService::searchByCode($this->objCredentials, $this->transactionCode);
     }     
 }
-
