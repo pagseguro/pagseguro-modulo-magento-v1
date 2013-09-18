@@ -68,12 +68,13 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
     {
 
         $this->addColumn(
-            'real_order_id', array(
+            'real_order_id',
+            array(
                 'header'=> Mage::helper('sales')->__('Order #'),
                 'width' => '80px',
                 'type'  => 'text',
                 'index' => 'increment_id')
-            );
+        );
 
         if (!Mage::app()->isSingleStoreMode()) {
             $this->addColumn('store_id',
