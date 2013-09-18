@@ -17,7 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************
 */
-class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
+class Pagseguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
 {
         
     private $arraySt;
@@ -105,6 +105,6 @@ class PagSeguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     {
         $this->objStatus = Mage::getModel('sales/order_status')->load($status);
 
-        return ($this->objStatus->getStatus()) ? true : false;  
-    } 
+        return ($this->objStatus->getStatus()) ? true : false;
+    }
 }
