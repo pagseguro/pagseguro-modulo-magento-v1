@@ -19,7 +19,9 @@ limitations under the License.
 */
 include_once ('PagSeguroLibrary/PagSeguroLibrary.php');
 
-class PagSeguro_PagSeguro_NotificationController extends Mage_Core_Controller_Front_Action
+use Mage_Core_Controller_Front_Action as FrontAction;
+
+class PagSeguro_PagSeguro_NotificationController extends FrontAction
 {
  
     private $objPagSeguro;

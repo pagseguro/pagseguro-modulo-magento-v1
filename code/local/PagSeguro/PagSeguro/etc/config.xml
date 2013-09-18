@@ -29,7 +29,7 @@
             <pagseguro_setup>
                 <setup>
                     <module>PagSeguro_PagSeguro</module>
-                   <!-- <class>PagSeguro_PagSeguro_Model_Resource_Setup</class> -->
+                    <class>PagSeguro_PagSeguro_Model_Resource_Setup</class> 
                 </setup>
                 <connection>
                     <use>core_setup</use>

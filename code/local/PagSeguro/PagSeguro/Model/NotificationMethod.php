@@ -20,7 +20,9 @@ limitations under the License.
 
 include_once ('PagSeguroLibrary/PagSeguroLibrary.php');
 
-class PagSeguro_PagSeguro_Model_NotificationMethod extends Mage_Payment_Model_Method_Abstract
+use Mage_Payment_Model_Method_Abstract as MethodAbstract;
+
+class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
 {
     
     private $notificationType;

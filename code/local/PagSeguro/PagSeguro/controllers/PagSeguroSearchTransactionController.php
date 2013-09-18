@@ -20,7 +20,9 @@ limitations under the License.
 
 include_once ('PagSeguroLibrary/PagSeguroLibrary.php');
 
-class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends Mage_Core_Controller_Front_Action
+use Mage_Core_Controller_Front_Action as FrontAction;
+
+class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends FrontAction
 {
     
     private $transactionCode;

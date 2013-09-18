@@ -21,10 +21,11 @@
 include_once('PagSeguroLibrary/PagSeguroLibrary.php');
 include_once('Defines.php');
 
+use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 /**
  * PagSeguro payment model
  */
-class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstract
+class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 {
     protected $_code = 'pagseguro';
     protected $_isGateway = true;
@@ -36,7 +37,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '1.4';
+    private $Module_Version = '1.5';
     private $Order;
     private $Shipping_Data;
 

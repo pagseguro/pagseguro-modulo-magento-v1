@@ -18,7 +18,9 @@ limitations under the License.
 ************************************************************************
 */
 
-class PagSeguro_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
+use Mage_Core_Controller_Front_Action as FrontAction;
+
+class PagSeguro_PagSeguro_PaymentController extends FrontAction
 {
     const CANCELADO = 7;
     /**

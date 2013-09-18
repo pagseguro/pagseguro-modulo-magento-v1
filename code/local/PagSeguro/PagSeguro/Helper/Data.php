@@ -17,7 +17,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************
 */
-class Pagseguro_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
+use Mage_Payment_Helper_Data as HelperData;
+
+class PagSeguro_PagSeguro_Helper_Data extends HelperData
 {
         
     private $arraySt;

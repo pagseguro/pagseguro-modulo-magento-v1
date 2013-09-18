@@ -1,5 +1,6 @@
 <?php
 
+
 class AddressConfig
 {
     static function endtrim($e)
