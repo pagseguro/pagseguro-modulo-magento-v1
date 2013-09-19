@@ -24,7 +24,7 @@ limitations under the License.
  */
 include_once ('PagSeguroLibrary/config/PagSeguroConfig.class.php');
 
-class PagSeguro_PagSeguro_Model_Values
+class pagseguro_pagseguro_model_values
 {
     
     public function toOptionArray()
