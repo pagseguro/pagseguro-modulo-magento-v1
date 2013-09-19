@@ -15,8 +15,8 @@ class AddressConfig
         for ($i=0; $i<strlen($quebrado[0]); $i++) {
             if (is_numeric(substr($quebrado[0], $i, 1))) {
                 return array(
-                    substr($quebrado[0], 0, $i), 
-                    substr($quebrado[0], $i), 
+                    substr($quebrado[0], 0, $i),
+                    substr($quebrado[0], $i),
                     $quebrado[1]
                     );
             }
