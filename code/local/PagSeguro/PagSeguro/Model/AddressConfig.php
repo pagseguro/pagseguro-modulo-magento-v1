@@ -65,7 +65,7 @@ class AddressConfig
         $complemento='';
         $bairro='';
 
-        $quebrado=preg_split('/[-, \\n]/', $end);
+        $quebrado=preg_split('/[-,\\n]/', $end);
 
         if (sizeof($quebrado) == 4) {
             list($endereco, $numero, $complemento, $bairro)=$quebrado;
