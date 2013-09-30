@@ -10,7 +10,7 @@ class AddressConfig
 
     static function ordenaDados($texto)
     {
-        $quebrado=preg_split('/[-, \\n]/', $texto);
+        $quebrado=preg_split('/[-,\\n]/', $texto);
 
         for ($i=0; $i<strlen($quebrado[0]); $i++) {
             if (is_numeric(substr($quebrado[0], $i, 1))) {
