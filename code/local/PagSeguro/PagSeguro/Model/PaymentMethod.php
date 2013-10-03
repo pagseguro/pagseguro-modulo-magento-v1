@@ -131,6 +131,12 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
             }
         }
     }
+    
+    private function _validator(){
+        require_once(dirname(__FILE__).'/Updates.php');
+        
+        Updates::createTableModule();
+    }
 
     /**
      * Create PagSeguro payment request html with payment url
@@ -139,6 +145,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private function createPaymentRequest()
     {
+        $this->_validator();
+        
         $PaymentRequest = new PagSeguroPaymentRequest();
 
         $PaymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));

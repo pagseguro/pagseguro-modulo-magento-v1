@@ -30,6 +30,8 @@ class PagSeguro_PagSeguro_Model_Values
     public function toOptionArray()
     {
         self::alertMessage();
+        self::_validator();
+        
         return array(
                         array("value" => "UTF-8" , "label" => "UTF-8" ),
                         array("value" => "ISO-8859-1" , "label" => "ISO-8859-1" )
@@ -55,5 +57,11 @@ class PagSeguro_PagSeguro_Model_Values
 
             Mage::getSingleton('core/session')->addError($message);
         }
+    }
+    
+    private function _validator(){
+        require_once(dirname(__FILE__).'/Updates.php');
+        
+        Updates::createTableModule();
     }
 }

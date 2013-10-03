@@ -16,6 +16,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends WidgetGrid
         $this->setDefaultSort('created_at');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
+        
     }
 
     /**
@@ -30,14 +31,17 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends WidgetGrid
 
     protected function _prepareCollection()
     {
+        require_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/Updates.php');
+
         $collection = Mage::getResourceModel($this->_getCollectionClass());
-        $collection->getSelect()->joinLeft('pagseguro_sales_code', 'main_table.entity_id = pagseguro_sales_code.order_id', array('transaction_code'));
+        Updates::createTableModule($collection);
+//        $collection->getSelect()->joinLeft('pagseguro_sales_code', 'main_table.entity_id = pagseguro_sales_code.order_id', array('transaction_code'));
         //$collection->printlogquery(true);exit;
         
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
-
+    
     protected function _prepareColumns()
     {
 

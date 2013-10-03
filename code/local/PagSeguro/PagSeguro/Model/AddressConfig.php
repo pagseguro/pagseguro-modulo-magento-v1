@@ -1,14 +1,13 @@
 <?php
 
-
 class AddressConfig
 {
-    static function endtrim($e)
+    private static function endtrim($e)
     {
         return preg_replace('/^\W+|\W+$/', '', $e);
     }
 
-    static function ordenaDados($texto)
+    private static function ordenaDados($texto)
     {
         $quebrado=preg_split('/[-,\\n]/', $texto);
 
@@ -41,24 +40,24 @@ class AddressConfig
         );
     }
 
-    static function separaNumeroComplemento($n)
-    {
-        $semnumeros=self::dados('semnumeros');
-        $n = self::endtrim($n);
-        foreach ($semnumeros as $sn) {
-            if ($n == $sn) { 
-                return array($n, '');
-            }
-            if (substr($n, 0, strlen($sn)) == $sn) {
-                return array(substr($n, 0, strlen($sn)), substr($n, strlen($sn)));
-            }
-        }
-        $q=preg_split('/\D/', $n);
-        $pos=strlen($q[0]);
-        return array(substr($n, 0, $pos), substr($n, $pos));
-    }
+    //    private static function separaNumeroComplemento($n)
+    //    {
+    //        $semnumeros=self::dados('semnumeros');
+    //        $n = self::endtrim($n);
+    //        foreach ($semnumeros as $sn) {
+    //            if ($n == $sn) { 
+    //                return array($n, '');
+    //            }
+    //            if (substr($n, 0, strlen($sn)) == $sn) {
+    //                return array(substr($n, 0, strlen($sn)), substr($n, strlen($sn)));
+    //            }
+    //        }
+    //        $q=preg_split('/\D/', $n);
+    //        $pos=strlen($q[0]);
+    //        return array(substr($n, 0, $pos), substr($n, $pos));
+    //    }
 
-    static function trataEndereco($end)
+    public static function trataEndereco($end)
     {
         $endereco=$end;
         $numero='s/nº';
