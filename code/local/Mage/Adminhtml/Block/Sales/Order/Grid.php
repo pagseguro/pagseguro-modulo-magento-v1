@@ -35,7 +35,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends WidgetGrid
 
         $collection = Mage::getResourceModel($this->_getCollectionClass());
         Updates::createTableModule($collection);
-//        $collection->getSelect()->joinLeft('pagseguro_sales_code', 'main_table.entity_id = pagseguro_sales_code.order_id', array('transaction_code'));
+		//$collection->getSelect()->joinLeft('pagseguro_sales_code', 'main_table.entity_id = pagseguro_sales_code.order_id', array('transaction_code'));
         //$collection->printlogquery(true);exit;
         
         $this->setCollection($collection);

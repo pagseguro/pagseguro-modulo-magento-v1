@@ -132,7 +132,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         }
     }
     
-    private function _validator(){
+    private function _validator()
+	{
         require_once(dirname(__FILE__).'/Updates.php');
         
         Updates::createTableModule();
