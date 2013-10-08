@@ -85,9 +85,7 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
     
     private function _canceledStatus($Order)
     {
-        $canceled =  Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->returnOrderStByStPagSeguro(self::CANCELADO);
-        
-        $Order->setStatus($canceled['status']);
+        $Order->cancel();
         $Order->save();
     }
 }

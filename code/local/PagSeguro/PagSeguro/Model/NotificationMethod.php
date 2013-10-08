@@ -139,25 +139,6 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $history->setIsCustomerNotified(false);
        
         try {
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             $this->_insertCode();
             $obj->save();
             

@@ -7,11 +7,12 @@ class Updates
     //tabela 'pagseguro_sales_code'
     public static function createTableModule($collection = null)
     {
-        $sql = "SHOW TABLES LIKE 'pagseguro_sales_code'";
+        $table_prefix = (string)Mage::getConfig()->getTablePrefix();
+        $sql = "SHOW TABLES LIKE '" . $table_prefix . "pagseguro_sales_code'";
         $table_exists = Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($sql);
-
+        
         if (!count($table_exists)) {
-            $sql = "CREATE TABLE IF NOT EXISTS `pagseguro_sales_code` (
+            $sql = "CREATE TABLE IF NOT EXISTS `". $table_prefix ."pagseguro_sales_code` (
                     `entity_id` int(11) NOT NULL auto_increment,
                     `order_id` int(11),
                     `transaction_code` varchar(80) NOT NULL,
