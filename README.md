@@ -50,6 +50,9 @@ Changelog
 ---------
 ---
 
+1.5
+ - Armazenar no Magento o ID da transação feita no PagSeguro;
+  
 1.4
  - Verificar se o ambiente atende os requisitos;
  - Não utilizar URLs de localhost para notificação/redirecionamento;
