@@ -52,9 +52,6 @@ class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends FrontActi
      */
     private function _createTransaction()
     {
-        $this->objTransaction = PagSeguroTransactionSearchService::searchByCode(
-            $this->objCredentials,
-            $this->transactionCode
-        );
+        $this->objTransaction = PagSeguroTransactionSearchService::searchByCode($this->objCredentials, $this->transactionCode);
     }
 }

@@ -76,11 +76,6 @@ class AddressConfig
             $endereco = $end;
         }
 
-        return array(
-            self::endtrim(substr($endereco, 0, 69)),
-            self::endtrim($numero),
-            self::endtrim($complemento),
-            self::endtrim($bairro)
-        );
+        return array(self::endtrim(substr($endereco, 0, 69)), self::endtrim($numero), self::endtrim($complemento), self::endtrim($bairro));
     }
 }
