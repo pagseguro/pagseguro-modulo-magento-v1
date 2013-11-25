@@ -45,7 +45,7 @@ class AddressConfig
     //        $semnumeros=self::dados('semnumeros');
     //        $n = self::endtrim($n);
     //        foreach ($semnumeros as $sn) {
-    //            if ($n == $sn) { 
+    //            if ($n == $sn) {
     //                return array($n, '');
     //            }
     //            if (substr($n, 0, strlen($sn)) == $sn) {
