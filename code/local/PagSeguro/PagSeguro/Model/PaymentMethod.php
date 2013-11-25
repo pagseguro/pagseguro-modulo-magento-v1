@@ -73,7 +73,9 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
                 $this->Order = $Order;
                 $this->Shipping_Data = $this->getShippingData();
         } else {
-                throw new Exception("[PagSeguroModuleException] Message: Parâmetro Inválido para o método setOrder().");
+                throw new Exception(
+                    "[PagSeguroModuleException] Message: Parâmetro Inválido para o método setOrder()."
+                );
         }
     }
 
@@ -204,7 +206,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     {
         $notification_url = $this->getConfigData('notification');
 
-        return ($notification_url != null && $notification_url != "") ? $notification_url : Mage::getUrl() . 'pagseguro/notification/send/';
+        return ($notification_url != null && $notification_url != "") ?
+            $notification_url : Mage::getUrl() . 'pagseguro/notification/send/';
     }
 
     private function _addressConfig($fullAddress)
