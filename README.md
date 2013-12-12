@@ -50,6 +50,9 @@ Changelog
 ---------
 ---
 
+1.6
+ - Code cleanup e correção de bug
+
 1.5
  - Armazenar no Magento o ID da transação feita no PagSeguro;
   
