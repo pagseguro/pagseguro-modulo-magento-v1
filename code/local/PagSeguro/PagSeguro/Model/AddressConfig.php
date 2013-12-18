@@ -40,23 +40,6 @@ class AddressConfig
         );
     }
 
-    //    private static function separaNumeroComplemento($n)
-    //    {
-    //        $semnumeros=self::dados('semnumeros');
-    //        $n = self::endtrim($n);
-    //        foreach ($semnumeros as $sn) {
-    //            if ($n == $sn) {
-    //                return array($n, '');
-    //            }
-    //            if (substr($n, 0, strlen($sn)) == $sn) {
-    //                return array(substr($n, 0, strlen($sn)), substr($n, strlen($sn)));
-    //            }
-    //        }
-    //        $q=preg_split('/\D/', $n);
-    //        $pos=strlen($q[0]);
-    //        return array(substr($n, 0, $pos), substr($n, $pos));
-    //    }
-
     public static function trataEndereco($end)
     {
         $endereco=$end;
@@ -76,11 +59,6 @@ class AddressConfig
             $endereco = $end;
         }
 
-        return array(
-            self::endtrim(substr($endereco, 0, 69)),
-            self::endtrim($numero),
-            self::endtrim($complemento),
-            self::endtrim($bairro)
-        );
+        return array(self::endtrim(substr($endereco, 0, 69)), self::endtrim($numero), self::endtrim($complemento), self::endtrim($bairro));
     }
 }

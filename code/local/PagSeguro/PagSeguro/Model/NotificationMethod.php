@@ -79,12 +79,8 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
      */
     private function _createNotification()
     {
-        $this->notificationType = (
-            isset($this->post['notificationType']) &&
-            trim($this->post['notificationType']) != "") ? $this->post['notificationType'] : null;
-        $this->notificationCode = (
-            isset($this->post['notificationCode']) &&
-            trim($this->post['notificationCode']) != "") ? $this->post['notificationCode'] : null;
+        $this->notificationType = (isset($this->post['notificationType']) && trim($this->post['notificationType']) != "") ? $this->post['notificationType'] : null;
+        $this->notificationCode = (isset($this->post['notificationCode']) && trim($this->post['notificationCode']) != "") ? $this->post['notificationCode'] : null;
     }
     
     /**
@@ -109,10 +105,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
     */
     private function _createTransaction()
     {
-        $this->objTransaction = PagSeguroNotificationService::checkTransaction(
-            $this->objCredential,
-            $this->notificationCode
-        );
+        $this->objTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential, $this->notificationCode);
         $this->reference = $this->objTransaction->getReference();
     }
    
@@ -163,8 +156,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
         if ($row == false) {
             $transactionId = $this->objTransaction->getCode();
             $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-            $sql = "INSERT INTO `pagseguro_sales_code` (`order_id`,`transaction_code`)
-                VALUES ('$this->reference','$transactionId')";
+            $sql = "INSERT INTO `pagseguro_sales_code` (`order_id`,`transaction_code`) VALUES ('$this->reference','$transactionId')";
             $connection->query($sql);
         }
     }
