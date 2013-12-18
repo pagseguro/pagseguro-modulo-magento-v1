@@ -23,6 +23,8 @@ use Mage_Core_Controller_Front_Action as FrontAction;
 class PagSeguro_PagSeguro_PaymentController extends FrontAction
 {
     const CANCELADO = 7;
+    const MENSAGEM = 'Desculpe, infelizmente, houve um erro durante o checkout. 
+        Entre em contato com o administrador da loja, se o problema persistir.';
     /**
      * Get Checkout Session  
      */
@@ -71,13 +73,14 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
 
             } catch (Exception $ex) {
                 Mage::log($ex->getMessage());
-                Mage::getSingleton('core/session')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
+                Mage::getSingleton('core/session')->addError(self::MENSAGEM);
                 $this->_redirectUrl(Mage::getUrl() . $feedback);
                 $this->_canceledStatus($Order);
             }
         
         } else {
-            Mage::getSingleton('core/sessio$canceled')->addError('Desculpe, infelizmente, houve um erro durante o checkout. Entre em contato com o administrador da loja, se o problema persistir.');
+            
+            Mage::getSingleton('core/sessio$canceled')->addError(self::MENSAGEM);
             $this->_redirectUrl(Mage::getUrl() . $feedback);
             $this->_canceledStatus($Order);
         }

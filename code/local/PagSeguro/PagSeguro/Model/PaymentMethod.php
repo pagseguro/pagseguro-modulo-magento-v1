@@ -38,7 +38,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '1.5';
+    private $Module_Version = '1.6';
     private $Order;
     private $Shipping_Data;
 
@@ -73,7 +73,9 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
                 $this->Order = $Order;
                 $this->Shipping_Data = $this->getShippingData();
         } else {
-                throw new Exception("[PagSeguroModuleException] Message: Parâmetro Inválido para o método setOrder().");
+                throw new Exception(
+                    "[PagSeguroModuleException] Message: Parâmetro Inválido para o método setOrder()."
+                );
         }
     }
 
@@ -204,7 +206,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     {
         $notification_url = $this->getConfigData('notification');
 
-        return ($notification_url != null && $notification_url != "") ? $notification_url : Mage::getUrl() . 'pagseguro/notification/send/';
+        return ($notification_url != null && $notification_url != "") ?
+            $notification_url : Mage::getUrl() . 'pagseguro/notification/send/';
     }
 
     private function _addressConfig($fullAddress)
@@ -219,22 +222,13 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private function getShippingInformation()
     {
-    	$fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
-    	
-    	$street = "";
-    	$number = "";
-    	$complement = "";
-    	$complement = "";
-    	
-    	if ($fileOSC) {
-	        $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
-	
-	        $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street']);
-	        $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
-	        $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
-	        $complement = is_null($fullAddress[3]) ? '' : $fullAddress[3];
-    	}
-    	
+        $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
+
+        $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street']);
+        $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
+        $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
+        $district = is_null($fullAddress[3]) ? '' : $fullAddress[3];
+
         $PagSeguroShipping = new PagSeguroShipping();
 
         $PagSeguroAddress = new PagSeguroAddress();
