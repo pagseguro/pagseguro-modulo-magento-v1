@@ -230,7 +230,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     	$complement = "";
     	$complement = "";
     	
-    	if (!$fileOSC) {
+    	if ($fileOSC) {
     		
 	        $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
 	
