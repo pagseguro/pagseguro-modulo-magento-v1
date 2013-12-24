@@ -13,7 +13,7 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 Requisitos
 ----------
 ---
- - [Magento] Community 1.5.x, 1.6.x, 1.7.x
+ - [Magento] Community 1.5.x, 1.6.x, 1.7.x, 1.8.x
  - [PHP] 5.1.6+
  - [SPL]
  - [cURL]
@@ -50,8 +50,11 @@ Changelog
 ---------
 ---
 
+1.7
+ - Ajustes no tratamento de endereços;
+
 1.6
- - Code cleanup e correção de bug
+ - Code cleanup e correção de bug;
 
 1.5
  - Armazenar no Magento o ID da transação feita no PagSeguro;
