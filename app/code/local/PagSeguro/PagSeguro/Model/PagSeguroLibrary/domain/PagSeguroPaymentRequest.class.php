@@ -618,12 +618,13 @@ class PagSeguroPaymentRequest
     /**
      * Calls the PagSeguro web service and register this request for payment
      *
-     * @param PagSeguroCredentials $credentials
-     * @return String The URL to where the user needs to be redirected to in order to complete the payment process
+     * @param PagSeguroCredentials $credentials, lighbox
+     * @return String The URL to where the user needs to be redirected to in order to complete the payment process or
+     * the CODE when use lightbox
      */
-    public function register(PagSeguroCredentials $credentials)
+    public function register(PagSeguroCredentials $credentials, $onlyCheckoutCode = false)
     {
-        return PagSeguroPaymentService::createCheckoutRequest($credentials, $this);
+        return PagSeguroPaymentService::createCheckoutRequest($credentials, $this, $onlyCheckoutCode);
     }
 
     /**

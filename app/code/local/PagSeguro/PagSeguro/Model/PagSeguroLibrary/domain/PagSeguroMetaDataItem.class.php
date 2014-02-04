@@ -93,7 +93,7 @@ class PagSeguroMetaDataItem
      */
     public function setValue($value)
     {
-        $this->value = $this->_normalizeParameter($value);
+        $this->value = $this->normalizeParameter($value);
     }
 
     /**
@@ -121,7 +121,7 @@ class PagSeguroMetaDataItem
      * @param string $parameterValue
      * @return string
      */
-    private function _normalizeParameter($parameterValue)
+    private function normalizeParameter($parameterValue)
     {
 
         $parameterValue = PagSeguroHelper::formatString($parameterValue, 100, '');

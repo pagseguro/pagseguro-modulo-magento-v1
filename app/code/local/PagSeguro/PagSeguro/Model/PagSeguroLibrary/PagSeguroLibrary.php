@@ -20,17 +20,13 @@
 
 /*
  * PagSeguro Library Class
- * Version: 2.1.8
- * Date: 21/08/2013
+ * Version: 2.2.0
+ * Date: 26/11/2013
  */
-define('PAGSEGURO_LIBRARY', true);
-
-require_once "loader" . DIRECTORY_SEPARATOR . "PagSeguroAutoLoader.class.php";
-
 class PagSeguroLibrary
 {
 
-    const VERSION = "2.1.8";
+    const VERSION = "2.2.0";
     public static $resources;
     public static $config;
     public static $log;
@@ -38,6 +34,7 @@ class PagSeguroLibrary
     private static $library;
     private static $module_version;
     private static $cms_version;
+    private static $php_version;
 
     private function __construct()
     {
@@ -50,6 +47,7 @@ class PagSeguroLibrary
 
     public static function init()
     {
+        require_once "loader" . DIRECTORY_SEPARATOR . "PagSeguroAutoLoader.class.php";
         self::verifyDependencies();
         if (self::$library == null) {
             self::$library = new PagSeguroLibrary();
@@ -103,6 +101,16 @@ class PagSeguroLibrary
     final public static function setModuleVersion($version)
     {
         self::$module_version = $version;
+    }
+
+    final public static function getPHPVersion()
+    {
+        return self::$php_version = phpversion();
+    }
+    
+    final public static function setPHPVersion($version)
+    {
+        self::$php_version = $version;
     }
 
     final public static function getCMSVersion()
