@@ -25,6 +25,7 @@ class PagSeguroXmlParser
 
     public function __construct($xml)
     {
+		$xml = mb_convert_encoding($xml, "UTF-8", "UTF-8,ISO-8859-1"); 
         $parser = xml_parser_create();
         if (!xml_parse($parser, $xml)) {
             throw new Exception(

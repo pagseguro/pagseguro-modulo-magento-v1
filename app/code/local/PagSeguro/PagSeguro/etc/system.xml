@@ -15,7 +15,7 @@
                             <label>ATIVAR MÓDULO</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>1</sort_order>
+                            <sort_order>01</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -25,17 +25,17 @@
                         <title translate="label">
                             <label>NOME DE EXIBIÇÃO</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>2</sort_order>
+                            <sort_order>02</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-			    <comment>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</comment>
+			    			<comment>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</comment>
                         </title>
                         
-			<email translate="label">
+						<email translate="label">
                             <label>E-MAIL</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>3</sort_order>
+                            <sort_order>03</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -44,17 +44,17 @@
 						<token translate="label">
                             <label>TOKEN</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>4</sort_order>
+                            <sort_order>04</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>N&#227;o tem ou n&#227;o sabe seu token? Clique &lt;a href=&quot;https://pagseguro.uol.com.br/integracao/token-de-seguranca.jhtml&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; para gerar um novo.</comment>
                         </token>
                         
-			<url translate="label">
+						<url translate="label">
                             <label>URL DE REDIRECIONAMENTO</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>5</sort_order>
+                            <sort_order>05</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -63,7 +63,7 @@
                         
                         <notification translate="label">
                             <label>URL DE NOTIFICAÇÃO</label>
-                            <sort_order>6</sort_order>
+                            <sort_order>06</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -74,33 +74,44 @@
                             <label>CHARSET</label>
                             <frontend_type>select</frontend_type>
                             <source_model>pagseguro/values</source_model>
-                            <sort_order>7</sort_order>
+                            <sort_order>07</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>Defina o charset de acordo com a codificação do seu sistema.</comment>
-			</charset>
-                        
-			<log translate="label">
+						</charset>
+			                        
+						<log translate="label">
                             <label>LOG</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>8</sort_order>
+                            <sort_order>08</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>Criar arquivo de log?</comment>
                         </log>
                         
-			<log_file translate="label">
+						<log_file translate="label">
                             <label>DIRETÓRIO</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>9</sort_order>
+                            <sort_order>09</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                            <comment>Caminho para o arquivo de log.</comment>
                         </log_file>
+                        
+                        <checkout translate="label">
+                            <label>CHECKOUT</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>pagseguro/checkout</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>Selecione o tipo de checkout desejado.</comment>
+						</checkout>
 						
                     </fields>
                 </pagseguro>

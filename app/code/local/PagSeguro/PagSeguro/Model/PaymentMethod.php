@@ -38,10 +38,10 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '1.7';
+    private $Module_Version = '1.6';
     private $Order;
     private $Shipping_Data;
-
+    
     const REAL = 'REAL';
 
     /**
@@ -74,7 +74,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
                 $this->Shipping_Data = $this->getShippingData();
         } else {
                 throw new Exception(
-                    "[PagSeguroModuleException] Message: Parâmetro Inválido para o método setOrder()."
+                    "[PagSeguroModuleException] Message: ParÃ¢metro InvÃ¡lido para o mÃ©todo setOrder()."
                 );
         }
     }
@@ -97,7 +97,19 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $cart->save();
 
         $Order->save();
-
+        
+        $checkout = $this->getRedirectCheckout();
+        
+        if($checkout == 'LIGHTBOX') {
+        	$resultado = parse_url($payment_url);
+        	parse_str($resultado['query']);
+        	if($code){
+        		return json_encode(array('code'=>$code,'redirect'=> $user_url_redirect,'urlCompleta' => $payment_url));
+        	} else {
+        		throw new Exception('Erro');
+        	}
+        }
+        
         return $payment_url;
     }
 
@@ -178,6 +190,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
         try {
             $payment_url = $PaymentRequest->register($this->getCredentialsInformation());
+            
         } catch (PagSeguroServiceException $ex) {
             Mage::log($ex->getMessage());
             $this->_redirectUrl(Mage::getUrl() . 'checkout/onepage');
@@ -230,7 +243,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     	$complement = "";
     	$complement = "";
     	
-    	if ($fileOSC) {
+    	if (!$fileOSC) {
     		
 	        $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
 	
@@ -326,6 +339,11 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     private function getRedirectUrl()
     {
         return $this->getConfigData('url');
+    }
+    
+    private function getRedirectCheckout()
+    {
+    	return $this->getConfigData('checkout');
     }
 
     /**

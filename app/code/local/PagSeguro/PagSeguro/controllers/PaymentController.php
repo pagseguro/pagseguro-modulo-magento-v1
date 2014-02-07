@@ -70,20 +70,40 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
             try {
 
                 $PagSeguroPaymentModel->setOrder($Order);
-                $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($Order));
-
+                
+                $checkout = $this->getRedirectCheckout();
+                
+                if($checkout == 'LIGHTBOX') {
+                	$retorno = $PagSeguroPaymentModel->getRedirectPaymentHtml($Order);
+					echo $retorno;
+                } else {
+                	$this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($Order));
+                }
+                
             } catch (Exception $ex) {
                 Mage::log($ex->getMessage());
                 Mage::getSingleton('core/session')->addError(self::MENSAGEM);
-                $this->_redirectUrl(Mage::getUrl() . $feedback);
+                if($checkout == 'PADRAO') {
+                	$this->_redirectUrl(Mage::getUrl() . $feedback);
+                }
                 $this->_canceledStatus($Order);
             }
-        
+            
         } else {
-            Mage::getSingleton('core/sessio$canceled')->addError(self::MENSAGEM);
-            $this->_redirectUrl(Mage::getUrl() . $feedback);
+        	Mage::getSingleton('core/sessio$canceled')->addError(self::MENSAGEM);
+            if($checkout == 'PADRAO') {
+            	$this->_redirectUrl(Mage::getUrl() . $feedback);
+            }
             $this->_canceledStatus($Order);
         }
+        
+        
+        
+    }
+    
+    private function getRedirectCheckout()
+    {
+    	return Mage::getStoreConfig('payment/pagseguro/checkout', '1');
     }
     
     private function _canceledStatus($Order)
