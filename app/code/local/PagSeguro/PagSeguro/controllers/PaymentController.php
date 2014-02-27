@@ -59,9 +59,14 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
         
         $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel();
         
+        $enabledOSC = false;
         $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
+        
+        if($fileOSC) {
+            $enabledOSC = Mage::helper('onepagecheckout')->isOnepageCheckoutEnabled();
+        }
             
-        $feedback = ($fileOSC == false ? 'checkout/onepage' : 'onepagecheckout');
+        $feedback = ($enabledOSC == false ? 'checkout/onepage' : 'onepagecheckout');
 
         if (($Order->getState() == Mage_Sales_Model_Order::STATE_NEW) and
             ($Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode()) and

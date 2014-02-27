@@ -32,9 +32,14 @@
 <script type="text/javascript" src="<?php echo $this->getJsUrl('varien/accordion.js') ?>"></script>
 <?php 
 	$checkout = Mage::getStoreConfig('payment/pagseguro/checkout', '1');
-	$fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
+	$enabledOSC = false;
+    $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
+    
+    if($fileOSC) {
+        $enabledOSC = Mage::helper('onepagecheckout')->isOnepageCheckoutEnabled();
+    }
 	
-	if($checkout == 'LIGHTBOX' && !$fileOSC) {
+	if($checkout == 'LIGHTBOX' && !$enabledOSC) {
 ?>
 	<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/pagseguro.js') ?>"></script>
 <?php } else { ?>
