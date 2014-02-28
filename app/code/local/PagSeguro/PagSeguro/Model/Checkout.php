@@ -9,7 +9,7 @@ class PagSeguro_PagSeguro_Model_Checkout
 	{
 		return array(
 				array("value" => "PADRAO" , "label" =>  utf8_encode("Padrão")),
-				array("value" => "LIGHTBOX" , "label" => "LightBox" )
+				array("value" => "LIGHTBOX" , "label" => "Lightbox" )
 		);
 	}
 }
