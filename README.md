@@ -13,7 +13,7 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 Requisitos
 ----------
 ---
- - [Magento] Community 1.5.x, 1.6.x, 1.7.x, 1.8.x
+ - [Magento] Community 1.5.x, 1.6.x, 1.7.x, 1.8.0.0
  - [PHP] 5.1.6+
  - [SPL]
  - [cURL]
