@@ -44,6 +44,7 @@ Para acessar e configurar o módulo acesse o menu System -> Configuration -> Pay
  - **charset**: codificação do seu sistema (ISO-8859-1 ou UTF-8).
  - **log**: ativa/desativa a geração de logs.
  - **diretório**: informe o local a partir da raíz de instalação do Magento onde se deseja criar o arquivo de log. Ex.: /logs/ps.log. Caso não informe nada, o log será gravado dentro da pasta ../PagSeguroLibrary/PagSeguro.log.
+ - **checkout**: especifica o modelo de checkout que será utilizado. É possível escolher entre checkout padrão e checkout lightbox.
 
 
 Changelog
