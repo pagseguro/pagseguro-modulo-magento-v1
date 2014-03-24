@@ -51,6 +51,9 @@ Changelog
 ---------
 ---
 
+1.9
+ - Correção de bug ao finalizar compra quando o compilador do Magento está ativado;
+
 1.8
  - Adicionado opção para utilização do Checkout Lightbox;
 
