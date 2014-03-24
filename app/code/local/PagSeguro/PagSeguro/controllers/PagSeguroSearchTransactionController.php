@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-include_once ('PagSeguroLibrary/PagSeguroLibrary.php');
+include_once (getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
 
 use Mage_Core_Controller_Front_Action as FrontAction;
 

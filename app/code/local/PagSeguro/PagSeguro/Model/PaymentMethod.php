@@ -18,8 +18,8 @@
  * ***********************************************************************
  */
 
-include_once('PagSeguroLibrary/PagSeguroLibrary.php');
-include_once('Defines.php');
+include_once (getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/Defines.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -148,7 +148,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     
     private function _validator()
     {
-        require_once(dirname(__FILE__).'/Updates.php');
+        require_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/Updates.php');
         
         Updates::createTableModule();
     }
@@ -225,7 +225,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
     private function _addressConfig($fullAddress)
     {
-        require_once(dirname(__FILE__).'/AddressConfig.php');
+        require_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/AddressConfig.php');
         return AddressConfig::trataEndereco($fullAddress);
     }
 
