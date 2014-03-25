@@ -263,7 +263,6 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $PagSeguroAddress->setStreet($street);
         $PagSeguroAddress->setNumber($number);
         $PagSeguroAddress->setComplement($complement);
-        $PagSeguroAddress->setDistrict($district);
 
         $PagSeguroShipping->setAddress($PagSeguroAddress);
 

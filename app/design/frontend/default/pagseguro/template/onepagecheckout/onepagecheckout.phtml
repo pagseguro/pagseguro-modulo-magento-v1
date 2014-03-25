@@ -50,7 +50,7 @@ $seq_http	= (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on');
 </script>
 <script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.lightbox.js"></script>
 <?php 
-	$checkout = Mage::getStoreConfig('payment/pagseguro/checkout', '1');
+	$checkout = Mage::getStoreConfig('payment/pagseguro/checkout');
 	if($checkout == 'LIGHTBOX') {
 ?>
 	<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/onepagecheckoutpagseguro.js') ?>"></script>

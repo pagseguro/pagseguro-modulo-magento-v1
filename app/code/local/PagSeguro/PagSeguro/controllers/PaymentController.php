@@ -108,7 +108,7 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
     
     private function getRedirectCheckout()
     {
-    	return Mage::getStoreConfig('payment/pagseguro/checkout', '1');
+    	return Mage::getStoreConfig('payment/pagseguro/checkout');
     }
     
     private function _canceledStatus($Order)
