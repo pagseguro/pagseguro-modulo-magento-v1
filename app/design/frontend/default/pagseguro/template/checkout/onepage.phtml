@@ -31,7 +31,7 @@
 </div>
 <script type="text/javascript" src="<?php echo $this->getJsUrl('varien/accordion.js') ?>"></script>
 <?php 
-	$checkout = Mage::getStoreConfig('payment/pagseguro/checkout', '1');
+	$checkout = Mage::getStoreConfig('payment/pagseguro/checkout');
 	$enabledOSC = false;
     $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
     

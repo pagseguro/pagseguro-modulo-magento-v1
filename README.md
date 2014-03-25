@@ -51,6 +51,9 @@ Changelog
 ---------
 ---
 
+2.0
+ - Correção de bug ao finalizar compra quando a instalação possui mais de uma store;
+
 1.9
  - Correção de bug ao finalizar compra quando o compilador do Magento está ativado;
 
