@@ -14,7 +14,7 @@ Requisitos
 ----------
 ---
  - [Magento] Community 1.5.x, 1.6.x, 1.7.x, 1.8.0.0
- - [PHP] 5.1.6+
+ - [PHP] 5.3.3+
  - [SPL]
  - [cURL]
  - [DOM]
