@@ -48,7 +48,7 @@
         </resources>
     </global>
     <!-- Controller -->
-    <frontend> 
+    <frontend>
         <routers>
             <pagseguro>
                 <use>standard</use>
@@ -58,14 +58,21 @@
                 </args>
             </pagseguro>
         </routers>
+        <layout>
+            <updates>
+                <pagseguro>
+                    <file>pagseguro_pagseguro.xml</file>
+                </pagseguro>
+            </updates>
+        </layout>
     </frontend>	
- 
+
 
     <default>
         <payment>
             <pagseguro>
                 <active>0</active>
-                <model>PagSeguro_PagSeguro_Model_PaymentMethod</model>               
+                <model>PagSeguro_PagSeguro_Model_PaymentMethod</model>
                 <title>PagSeguro</title>
                 <allowspecific>0</allowspecific>
             </pagseguro>

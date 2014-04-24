@@ -25,7 +25,7 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
     const CANCELADO = 7;
     
     const MENSAGEM = 'Desculpe, infelizmente, houve um erro durante o checkout.
-    		Entre em contato com o administrador da loja, se o problema persistir.';
+            Entre em contato com o administrador da loja, se o problema persistir.';
     /**
      * Get Checkout Session  
      */
@@ -33,7 +33,7 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
     {
         return Mage::getSingleton('checkout/session');
     }
-    
+
     /**
      * Get the Order of Checkout
      */
@@ -41,7 +41,7 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
     {
         return Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
     }
-    
+
     /**
      * Get PagSeguro Model instance
      */
@@ -49,7 +49,21 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
     {
         return Mage::getSingleton('PagSeguro_PagSeguro_Model_PaymentMethod'); //Model
     }
-    
+
+    /**
+     * Get PagSeguro Model instance
+     */
+    private function getPagSeguroHelloWorldModel()
+    {
+        return Mage::getSingleton('PagSeguro_PagSeguro_Model_Geral'); //Model
+    }
+
+    public function paymentAction()
+    {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
     /**
      * Process the payment request and redirect to PagSeguro Gateway
      */
@@ -105,12 +119,14 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
         
         
     }
-    
+
     private function getRedirectCheckout()
     {
-    	return Mage::getStoreConfig('payment/pagseguro/checkout');
+        $idStore = Mage::app()->getStore()->getCode();
+        Mage::log("ID_DA_LOJA:".$idStore);
+        return Mage::getStoreConfig('payment/pagseguro/checkout', $idStore);
     }
-    
+
     private function _canceledStatus($Order)
     {
         $Order->cancel();
