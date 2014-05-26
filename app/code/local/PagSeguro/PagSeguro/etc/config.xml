@@ -21,7 +21,7 @@
         
         <helpers>
             <pagseguro>
-                <class>PagSeguro_Pagseguro_Helper</class>
+                <class>PagSeguro_PagSeguro_Helper</class>
             </pagseguro>
         </helpers>
  
