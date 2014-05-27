@@ -69,6 +69,8 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
      */
     public function requestAction()
     {
+    
+    
         $Order = $this->getOrder(); //Order Data
         
         $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel();
@@ -76,9 +78,10 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
         $enabledOSC = false;
         $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
         
-        if($fileOSC) {
+        if ($fileOSC) {
             $enabledOSC = Mage::helper('onepagecheckout')->isOnepageCheckoutEnabled();
         }
+                
             
         $feedback = ($enabledOSC == false ? 'checkout/onepage' : 'onepagecheckout');
 
@@ -92,26 +95,29 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
                 
                 $checkout = $this->getRedirectCheckout();
                 
-                if($checkout == 'LIGHTBOX') {
-                	$retorno = $PagSeguroPaymentModel->getRedirectPaymentHtml($Order);
-					echo $retorno;
+                if ($checkout == 'LIGHTBOX') {
+                    $retorno = $PagSeguroPaymentModel->getRedirectPaymentHtml($Order);
+                    $this->_redirectUrl($retorno);
                 } else {
-                	$this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($Order));
+                    $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($Order));
                 }
+                
+                //after verify if the order was created, instantiates the sendEmail() method
+                $this->sendEmail();
                 
             } catch (Exception $ex) {
                 Mage::log($ex->getMessage());
                 Mage::getSingleton('core/session')->addError(self::MENSAGEM);
-                if($checkout == 'PADRAO') {
-                	$this->_redirectUrl(Mage::getUrl() . $feedback);
+                if ($checkout == 'PADRAO') {
+                    $this->_redirectUrl(Mage::getUrl() . $feedback);
                 }
                 $this->_canceledStatus($Order);
             }
             
         } else {
-        	Mage::getSingleton('core/sessio$canceled')->addError(self::MENSAGEM);
-            if($checkout == 'PADRAO') {
-            	$this->_redirectUrl(Mage::getUrl() . $feedback);
+            Mage::getSingleton('core/session/canceled')->addError(self::MENSAGEM);
+            if ($checkout == 'PADRAO') {
+                $this->_redirectUrl(Mage::getUrl() . $feedback);
             }
             $this->_canceledStatus($Order);
         }
@@ -120,13 +126,38 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
         
     }
 
+    /**
+     * Send a e-mail with shopping order.
+     */
+    private function sendEmail()
+    {
+        
+        $order = new Mage_Sales_Model_Order();
+        $incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+        $order->loadByIncrementId($incrementId);
+        try {
+            $order->sendNewOrderEmail();
+        } catch (Exception $ex) {
+            die($ex);
+        }
+        
+    }
+    
+    /**
+     * returns PagSeguro checkout configuration
+     * @return CheckoutStatus = 'LIGHTBOX' or 'PADRÃO'
+     */
     private function getRedirectCheckout()
     {
         $idStore = Mage::app()->getStore()->getCode();
         Mage::log("ID_DA_LOJA:".$idStore);
         return Mage::getStoreConfig('payment/pagseguro/checkout', $idStore);
+
     }
 
+    /**
+     * cancel order status
+     */
     private function _canceledStatus($Order)
     {
         $Order->cancel();

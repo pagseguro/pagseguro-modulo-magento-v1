@@ -18,8 +18,8 @@
  * ***********************************************************************
  */
 
-include_once (getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
-include_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/Defines.php');
+include_once (dir(__FILE__).'/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once(dir(__FILE__).'/Defines.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -103,7 +103,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         if ($checkout == 'LIGHTBOX') {
             $code = $this->base64url_encode($payment_url);
             
-            return Mage::getUrl('pagseguro/payment/payment',array(
+            return Mage::getUrl('pagseguro/payment/payment', array(
                 '_secure' => true, 'type' => 'geral', 'code' => $code
             ));
         }
@@ -150,7 +150,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     
     private function _validator()
     {
-        require_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/Updates.php');
+        require_once(dir(__FILE__).'/Updates.php');
         
         Updates::createTableModule();
     }
@@ -227,7 +227,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
     private function _addressConfig($fullAddress)
     {
-        require_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/AddressConfig.php');
+        require_once(dir(__FILE__).'/AddressConfig.php');
         return AddressConfig::trataEndereco($fullAddress);
     }
 
@@ -260,13 +260,13 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
         $PagSeguroAddress = new PagSeguroAddress();
         $PagSeguroAddress->setCity($this->Shipping_Data['city']);
-        $PagSeguroAddress->setPostalCode($this->Shipping_Data['postcode']);
+        $PagSeguroAddress->setPostalCode(self::fixPostalCode($this->Shipping_Data['postcode']));
         $PagSeguroAddress->setState($this->Shipping_Data['region']);
         $PagSeguroAddress->setStreet($street);
         $PagSeguroAddress->setNumber($number);
         $PagSeguroAddress->setComplement($complement);
         $PagSeguroAddress->setDistrict($district);
-
+        
         $PagSeguroShipping->setAddress($PagSeguroAddress);
 
         return $PagSeguroShipping;
@@ -398,5 +398,18 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
             Mage::logException($ex);
         }
         return $_file_exist;
+    }
+    
+    /**
+     *
+     * remove all non-numeric characters from Postal Code.
+     * @return fixedPostalCode
+     * 
+     */
+    public static function fixPostalCode($postalCode)
+    {
+        
+        return preg_replace("/[^0-9]/", "", $postalCode);
+        
     }
 }

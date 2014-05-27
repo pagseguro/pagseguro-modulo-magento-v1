@@ -2,9 +2,11 @@
 
 class Updates
 {
-    //Verifica se existe a tabela 'pagseguro_sales_code', caso nÃƒÂ£o exista, ÃƒÂ© apagado 
-    //o valor do 'core_resource', em sequencia ele cria automaticamente o 'core_resource' e a
-    //tabela 'pagseguro_sales_code'
+
+    /*
+     * Verify if exists 'pagseguro_sales_code', if doesn't reset the 'core_resource' value and 
+     * creates the 'core_resource' and the 'pagseguro_sales_code' table automatically. 
+     */
     public static function createTableModule($collection = null)
     {
         $table_prefix = (string)Mage::getConfig()->getTablePrefix();
@@ -29,16 +31,6 @@ class Updates
                 );
             }
         }
-        
-        // Adiciona os templates e skin necessÃ¡rios para o funcionamento do lighbox
-        $sql = "SELECT value FROM ". $table_prefix ."core_config_data WHERE path =";
-        $sqlTemplate = $sql. "'design/theme/template'";
-        $connectionTemplate = Mage::getSingleton('core/resource')->getConnection('core_read')->fetchOne($sqlTemplate);
 
-        if ($connectionTemplate != 'pagseguro') {
-            $sql = "INSERT INTO " . $table_prefix . "core_config_data (path, value) VALUES('design/theme/template' , 'pagseguro')     ON DUPLICATE KEY UPDATE path = 'design/theme/template', VALUE = 'pagseguro'";
-            $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-            $connection->query($sql);
-        }
     }
 }
