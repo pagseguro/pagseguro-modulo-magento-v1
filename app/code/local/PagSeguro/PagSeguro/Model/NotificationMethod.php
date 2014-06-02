@@ -18,40 +18,33 @@ limitations under the License.
 ************************************************************************
 */
 
-include_once (getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once (dirname(__FILE__).'/PagSeguroLibrary/PagSeguroLibrary.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
 class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
 {
-    
-    private $notificationType;
-    
-    private $notificationCode;
 
+    private $notificationType;
+    private $notificationCode;
     private $reference;
-    
     private $objCredential;
-    
     private $objNotificationType;
-    
     private $objTransaction;
-    
     private $post;
-    
     private $_helper;
-    
-    
+
     /**
      * Construct
      */
     public function __construct()
     {
+
         parent::__construct();
         
         $this->_helper = Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data');
     }
-    
+
     /**
      * Initialize
      * @param type $objCredential
@@ -64,7 +57,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
         
         $this->_createNotification();
         $this->_initializeObjects();
-        
+                
         if ($this->objNotificationType->getValue() == $this->notificationType) {
             $this->_createTransaction();
             
@@ -109,10 +102,12 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
     */
     private function _createTransaction()
     {
+
         $this->objTransaction = PagSeguroNotificationService::checkTransaction(
             $this->objCredential,
             $this->notificationCode
         );
+
         $this->reference = $this->objTransaction->getReference();
     }
    
@@ -156,9 +151,13 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
    
     private function _insertCode()
     {
-    	$table_prefix = (string)Mage::getConfig()->getTablePrefix();
+        $table_prefix = (string)Mage::getConfig()->getTablePrefix();
         $read= Mage::getSingleton('core/resource')->getConnection('core_read');
-        $value = $read->query("SELECT `order_id` FROM `" . $table_prefix . "pagseguro_sales_code` WHERE `order_id` = $this->reference");
+        
+        $value = $read->query(
+            "SELECT `order_id` FROM `" . $table_prefix . "pagseguro_sales_code` WHERE `order_id` = $this->reference"
+        );
+        
         $row = $value->fetch();
 
         if ($row == false) {

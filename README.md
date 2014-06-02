@@ -50,6 +50,8 @@ Para acessar e configurar o módulo acesse o menu System -> Configuration -> Pay
 Changelog
 ---------
 ---
+2.1
+ - Correção de bugs;
 
 2.0
  - Correção de bug ao finalizar compra quando a instalação possui mais de uma store;

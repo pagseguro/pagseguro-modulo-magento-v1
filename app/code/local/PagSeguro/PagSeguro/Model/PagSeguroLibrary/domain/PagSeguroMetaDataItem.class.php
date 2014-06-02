@@ -93,7 +93,7 @@ class PagSeguroMetaDataItem
      */
     public function setValue($value)
     {
-        $this->value = $this->normalizeParameter($value);
+        $this->value = $this->_normalizeParameter($value);
     }
 
     /**

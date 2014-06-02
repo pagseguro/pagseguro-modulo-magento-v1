@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!--
+************************************************************************
+Copyright [2014] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+-->
+<layout version="0.1.0">
+    <pagseguro_payment_payment>
+        <remove name="left"/>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="pagseguro/payment" name="payment" template="pagseguro/pagseguro/payment.phtml" />
+        </reference>
+    </pagseguro_payment_payment>
+    
+    <pagseguro_payment_payment>
+        <remove name="left"/>
+        <reference name="root">
+            <action method="setTemplate"><template>page/empty.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="pagseguro/return" name="return" template="pagseguro/pagseguro/return.phtml" />
+        </reference>
+    </pagseguro_payment_payment>
+
+    <pagseguro_payment_payment>
+        <remove name="left"/>
+        <reference name="root">
+            <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="pagseguro/error" name="error" template="pagseguro/pagseguro/error.phtml" />
+        </reference>
+    </pagseguro_payment_payment>
+</layout>

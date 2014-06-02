@@ -84,7 +84,7 @@ class PagSeguroPaymentService
                 case 'OK':
                     $PaymentParserData = PagSeguroPaymentParser::readSuccessXml($connection->getResponse());
 
-                    if ($onlyCheckoutCode) {
+					if ($onlyCheckoutCode) {
                         $paymentReturn = $PaymentParserData->getCode();
                     } else {
                         $paymentReturn = self::buildCheckoutUrl($connectionData, $PaymentParserData->getCode());

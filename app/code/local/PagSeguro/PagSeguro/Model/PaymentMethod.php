@@ -18,8 +18,8 @@
  * ***********************************************************************
  */
 
-include_once (getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
-include_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/Defines.php');
+include_once (dir(__FILE__).'/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once(dir(__FILE__).'/Defines.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -38,7 +38,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.0';
+    private $Module_Version = '2.1';
     private $Order;
     private $Shipping_Data;
     
@@ -100,17 +100,19 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         
         $checkout = $this->getRedirectCheckout();
         
-        if($checkout == 'LIGHTBOX') {
-        	$resultado = parse_url($payment_url);
-        	parse_str($resultado['query']);
-        	if($code){
-        		return json_encode(array('code'=>$code,'redirect'=> $user_url_redirect,'urlCompleta' => $payment_url));
-        	} else {
-        		throw new Exception('Erro');
-        	}
+        if ($checkout == 'LIGHTBOX') {
+            $code = $this->base64url_encode($payment_url);
+            
+            return Mage::getUrl('pagseguro/payment/payment', array(
+                '_secure' => true, 'type' => 'geral', 'code' => $code
+            ));
         }
-        
         return $payment_url;
+    }
+
+    private function base64url_encode($text)
+    {
+        return strtr(base64_encode($text), '+/=', '-_,');
     }
 
     /**
@@ -148,7 +150,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     
     private function _validator()
     {
-        require_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/Updates.php');
+        require_once(dir(__FILE__).'/Updates.php');
         
         Updates::createTableModule();
     }
@@ -225,7 +227,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
     private function _addressConfig($fullAddress)
     {
-        require_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/AddressConfig.php');
+        require_once(dir(__FILE__).'/AddressConfig.php');
         return AddressConfig::trataEndereco($fullAddress);
     }
 
@@ -236,34 +238,35 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     private function getShippingInformation()
     {
 
-    	$fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
-    	
-    	$street = "";
-    	$number = "";
-    	$complement = "";
-    	$complement = "";
-    	
-    	if (!$fileOSC) {
-    		
-	        $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
-	
-	        $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street']);
-	        $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
-	        $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
-	        $complement = is_null($fullAddress[3]) ? '' : $fullAddress[3];
-    	
-    	}
-    	
+        $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
+
+        $street = "";
+        $number = "";
+        $complement = "";
+        $complement = "";
+
+        if (!$fileOSC) {
+
+            $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
+    
+            $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street']);
+            $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
+            $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
+            $complement = is_null($fullAddress[3]) ? '' : $fullAddress[3];
+        
+        }
+        
         $PagSeguroShipping = new PagSeguroShipping();
 
         $PagSeguroAddress = new PagSeguroAddress();
         $PagSeguroAddress->setCity($this->Shipping_Data['city']);
-        $PagSeguroAddress->setPostalCode($this->Shipping_Data['postcode']);
+        $PagSeguroAddress->setPostalCode(self::fixPostalCode($this->Shipping_Data['postcode']));
         $PagSeguroAddress->setState($this->Shipping_Data['region']);
         $PagSeguroAddress->setStreet($street);
         $PagSeguroAddress->setNumber($number);
         $PagSeguroAddress->setComplement($complement);
-
+        $PagSeguroAddress->setDistrict($district);
+        
         $PagSeguroShipping->setAddress($PagSeguroAddress);
 
         return $PagSeguroShipping;
@@ -342,7 +345,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     
     private function getRedirectCheckout()
     {
-    	return $this->getConfigData('checkout');
+        return $this->getConfigData('checkout');
     }
 
     /**
@@ -395,5 +398,18 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
             Mage::logException($ex);
         }
         return $_file_exist;
+    }
+    
+    /**
+     *
+     * remove all non-numeric characters from Postal Code.
+     * @return fixedPostalCode
+     * 
+     */
+    public static function fixPostalCode($postalCode)
+    {
+        
+        return preg_replace("/[^0-9]/", "", $postalCode);
+        
     }
 }
