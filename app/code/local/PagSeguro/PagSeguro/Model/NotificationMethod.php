@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-include_once (dirname(__FILE__).'/PagSeguroLibrary/PagSeguroLibrary.php');
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "PagSeguroLibrary" . DIRECTORY_SEPARATOR . "PagSeguroLibrary.php";
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 

@@ -18,8 +18,8 @@
  * ***********************************************************************
  */
 
-include_once (dir(__FILE__).'/PagSeguroLibrary/PagSeguroLibrary.php');
-include_once(dir(__FILE__).'/Defines.php');
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "Defines.php";
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "PagSeguroLibrary" . DIRECTORY_SEPARATOR . "PagSeguroLibrary.php";
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -38,7 +38,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.1';
+    private $Module_Version = '2.2';
     private $Order;
     private $Shipping_Data;
     
@@ -150,7 +150,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     
     private function _validator()
     {
-        require_once(dir(__FILE__).'/Updates.php');
+        require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "Updates.php";
         
         Updates::createTableModule();
     }
@@ -227,7 +227,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
     private function _addressConfig($fullAddress)
     {
-        require_once(dir(__FILE__).'/AddressConfig.php');
+        require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "AddressConfig.php";
         return AddressConfig::trataEndereco($fullAddress);
     }
 
