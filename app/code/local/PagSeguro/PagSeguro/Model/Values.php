@@ -20,24 +20,25 @@ limitations under the License.
 
 
 /**
- * Admin Charset Options  
+ * Admin Charset Options
  */
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "PagSeguroLibrary" . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "PagSeguroConfig.class.php";
+require_once MAGENTO_ROOT . '/app/code/local/PagSeguro/PagSeguro/Model/Updates.php';
+require_once MAGENTO_ROOT . '/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/config/PagSeguroConfig.class.php';
 
 class PagSeguro_PagSeguro_Model_Values
 {
-    
+
     public function toOptionArray()
     {
         self::alertMessage();
         self::_validator();
-        
+
         return array(
-                        array("value" => "UTF-8" , "label" => "UTF-8" ),
-                        array("value" => "ISO-8859-1" , "label" => "ISO-8859-1" )
-                    );
+            array("value" => "UTF-8", "label" => "UTF-8"),
+            array("value" => "ISO-8859-1", "label" => "ISO-8859-1")
+        );
     }
-    
+
     //Mensagens de alerta caso haja erro no cURL, versão do PHP, SPL e/ou DOM.
     // mas só serão lançadas caso seja efetuado o save.
     public function alertMessage()
@@ -52,17 +53,15 @@ class PagSeguro_PagSeguro_Model_Values
         if (!empty($required)) {
             $message = "Requerimentos para o sistema funcionar:";
             foreach ($required as $value) {
-                $message .= "<br>".$value;
+                $message .= "<br>" . $value;
             }
 
             Mage::getSingleton('core/session')->addError($message);
         }
     }
-    
+
     private function _validator()
     {
-        require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "Updates.php";
-        
         Updates::createTableModule();
     }
 }

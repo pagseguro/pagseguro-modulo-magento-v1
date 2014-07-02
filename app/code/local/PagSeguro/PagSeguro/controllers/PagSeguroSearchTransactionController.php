@@ -18,19 +18,19 @@ limitations under the License.
 ************************************************************************
 */
 
-include_once (getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
+require_once MAGENTO_ROOT . '/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php';
 
 use Mage_Core_Controller_Front_Action as FrontAction;
 
 class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends FrontAction
 {
-    
+
     private $transactionCode;
-    
+
     private $objCredentials;
-    
+
     private $objTransaction;
-    
+
     public function __construct()
     {
         $this->transactionCode = $_GET['transactionCode'];
@@ -39,14 +39,14 @@ class PagSeguro_PagSeguro_PagSeguroSearchTransactionController extends FrontActi
     }
 
     /**
-     * Create Credential 
+     * Create Credential
      */
     private function _createCredential()
     {
-        $this->objPagSeguro =  Mage::getSingleton('PagSeguro_PagSeguro_Model_pagseguro');
+        $this->objPagSeguro = Mage::getSingleton('PagSeguro_PagSeguro_Model_pagseguro');
         $this->objCredential = $this->objPagSeguro->getCredentialsInformation();
     }
-    
+
     /**
      * Create Transaction
      */

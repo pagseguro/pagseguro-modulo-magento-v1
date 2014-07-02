@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "PagSeguroLibrary" . DIRECTORY_SEPARATOR . "PagSeguroLibrary.php";
+require_once MAGENTO_ROOT . '/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php';
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -41,7 +41,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
     {
 
         parent::__construct();
-        
+
         $this->_helper = Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data');
     }
 
@@ -54,19 +54,19 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
     {
         $this->objCredential = $objCredential;
         $this->post = $post;
-        
+
         $this->_createNotification();
         $this->_initializeObjects();
-                
+
         if ($this->objNotificationType->getValue() == $this->notificationType) {
             $this->_createTransaction();
-            
+
             if ($this->objTransaction) {
                 $this->_updateCms();
             }
         }
     }
-    
+
     /**
      * Create Notification
      */
@@ -79,7 +79,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
             isset($this->post['notificationCode']) &&
             trim($this->post['notificationCode']) != "") ? $this->post['notificationCode'] : null;
     }
-    
+
     /**
      * Initialize Objects
      */
@@ -87,7 +87,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
     {
         $this->_createNotificationType();
     }
-    
+
     /**
      * Create Notification Type
      */
@@ -96,10 +96,10 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $this->objNotificationType = new PagSeguroNotificationType();
         $this->objNotificationType->setByType('TRANSACTION');
     }
-    
+
     /**
-    * Create Transaction
-    */
+     * Create Transaction
+     */
     private function _createTransaction()
     {
 
@@ -110,13 +110,13 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
 
         $this->reference = $this->objTransaction->getReference();
     }
-   
+
     /**
-    * Update Cms
-    */
+     * Update Cms
+     */
     private function _updateCms()
     {
-        $arrayValue =  $this->_helper->returnOrderStByStPagSeguro($this->objTransaction->getStatus()->getValue());
+        $arrayValue = $this->_helper->returnOrderStByStPagSeguro($this->objTransaction->getStatus()->getValue());
 
         if ($this->_lastStatus() != $arrayValue['status']) {
             if ($this->_helper->_existsStatus($arrayValue['status'])) {
@@ -127,37 +127,37 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
             }
         }
     }
-   
+
     /**
-    * Update
-    * @param type $status
-    */
+     * Update
+     * @param type $status
+     */
     private function _updateOrders($status)
     {
         $obj = Mage::getModel('sales/order')->load($this->reference);
         $obj->setStatus($status);
-        
+
         $history = $obj->addStatusHistoryComment('', false);
         $history->setIsCustomerNotified(false);
-       
+
         try {
             $this->_insertCode();
             $obj->save();
-            
+
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
         }
     }
-   
+
     private function _insertCode()
     {
         $table_prefix = (string)Mage::getConfig()->getTablePrefix();
-        $read= Mage::getSingleton('core/resource')->getConnection('core_read');
-        
+        $read = Mage::getSingleton('core/resource')->getConnection('core_read');
+
         $value = $read->query(
             "SELECT `order_id` FROM `" . $table_prefix . "pagseguro_sales_code` WHERE `order_id` = $this->reference"
         );
-        
+
         $row = $value->fetch();
 
         if ($row == false) {
@@ -168,12 +168,12 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
             $connection->query($sql);
         }
     }
-   
+
     /**
-    * 
-    * @param type $value
-    * @return type
-    */
+     *
+     * @param type $value
+     * @return type
+     */
     private function _lastStatus()
     {
         $obj = Mage::getModel('sales/order')->load($this->reference);

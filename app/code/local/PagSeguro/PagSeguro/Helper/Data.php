@@ -21,7 +21,7 @@ use Mage_Payment_Helper_Data as HelperData;
 
 class PagSeguro_PagSeguro_Helper_Data extends HelperData
 {
-        
+
     private $arraySt;
 
     private $objStatus;
@@ -34,7 +34,7 @@ class PagSeguro_PagSeguro_Helper_Data extends HelperData
         $this->_createArraySt();
 
     }
-        
+
     /**
      * Create Array Status PagSeguro
      */
@@ -53,7 +53,7 @@ class PagSeguro_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-     * Return payment status by key PagSeguro 
+     * Return payment status by key PagSeguro
      * @param type $value
      * @return type
      */
@@ -63,28 +63,28 @@ class PagSeguro_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-    * get array status
-    * @return type
-    */
+     * get array status
+     * @return type
+     */
     public function getArraySt()
     {
         return $this->arraySt;
     }
 
     /**
-     * Save Status PagSeguro 
+     * Save Status PagSeguro
      */
     public function saveAllStatusPagSeguro()
     {
         foreach ($this->arraySt as $key => $value) {
             if (!$this->_existsStatus($value['status'])) {
                 $this->objStatus->setStatus($value['status'])
-                       ->setLabel($value['label']);
+                    ->setLabel($value['label']);
                 $this->objStatus->save();
             }
         }
     }
-    
+
     /**
      * Save Status PagSeguro
      * @param array $value
@@ -93,11 +93,11 @@ class PagSeguro_PagSeguro_Helper_Data extends HelperData
     {
         if (!$this->_existsStatus($value['status'])) {
             $this->objStatus->setStatus($value['status'])
-                 ->setLabel($value['label']);
+                ->setLabel($value['label']);
             $this->objStatus->save();
         }
     }
-    
+
     /**
      * Exists Status
      * @param type $status
