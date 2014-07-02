@@ -18,10 +18,8 @@
  * ***********************************************************************
  */
 
-require_once MAGENTO_ROOT . '/app/code/local/PagSeguro/PagSeguro/Model/Defines.php';
-require_once MAGENTO_ROOT . '/app/code/local/PagSeguro/PagSeguro/Model/Updates.php';
-require_once MAGENTO_ROOT . '/app/code/local/PagSeguro/PagSeguro/Model/AddressConfig.php';
-require_once MAGENTO_ROOT . '/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php';
+include_once (Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/Defines.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -43,7 +41,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     private $Module_Version = '2.2';
     private $Order;
     private $Shipping_Data;
-
+    
     const REAL = 'REAL';
 
     /**
@@ -56,9 +54,9 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $isOrderVirtual = $this->Order->getIsVirtual();
         $OrderParams = null;
         if ($isOrderVirtual) {
-            $OrderParams = $this->Order->getBillingAddress();
+                $OrderParams = $this->Order->getBillingAddress();
         } else {
-            $OrderParams = $this->Order->getShippingAddress();
+                $OrderParams = $this->Order->getShippingAddress();
         }
 
         return $OrderParams->getData();
@@ -72,12 +70,12 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     public function setOrder($Order)
     {
         if ($Order != null and !empty($Order)) {
-            $this->Order = $Order;
-            $this->Shipping_Data = $this->getShippingData();
+                $this->Order = $Order;
+                $this->Shipping_Data = $this->getShippingData();
         } else {
-            throw new Exception(
-                "[PagSeguroModuleException] Message: Parrâmetro Inválido para o método setOrder()."
-            );
+                throw new Exception(
+                    "[PagSeguroModuleException] Message: ParÃ¢metro InvÃ¡lido para o mÃ©todo setOrder()."
+                );
         }
     }
 
@@ -89,7 +87,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     public function getRedirectPaymentHtml($Order)
     {
         $this->setPagSeguroConfig();
-        $payment_url = $this->createPaymentRequest();
+        $payment_url =  $this->createPaymentRequest();
 
         //limpar o cart
         $cart = Mage::getSingleton('checkout/cart');
@@ -99,20 +97,15 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $cart->save();
 
         $Order->save();
-
+        
         $checkout = $this->getRedirectCheckout();
-
+        
         if ($checkout == 'LIGHTBOX') {
             $code = $this->base64url_encode($payment_url);
-
-            return Mage::getUrl(
-                'pagseguro/payment/payment',
-                array(
-                    '_secure' => true,
-                    'type' => 'geral',
-                    'code' => $code
-                )
-            );
+            
+            return Mage::getUrl('pagseguro/payment/payment',array(
+                '_secure' => true, 'type' => 'geral', 'code' => $code
+            ));
         }
         return $payment_url;
     }
@@ -141,7 +134,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
         //Setup Charset
         if ($_charset != null and !empty($_charset)) {
-            PagSeguroConfig::setApplicationCharset($_charset);
+                PagSeguroConfig::setApplicationCharset($_charset);
         }
 
         //Setup Log
@@ -154,9 +147,11 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
             }
         }
     }
-
+    
     private function _validator()
     {
+        require_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/Updates.php');
+        
         Updates::createTableModule();
     }
 
@@ -166,9 +161,9 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
      * @return string
      */
     private function createPaymentRequest()
-    {
+    {    	
         $this->_validator();
-
+        
         $PaymentRequest = new PagSeguroPaymentRequest();
 
         $PaymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));
@@ -187,9 +182,9 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         //Define Redirect Url
         $redirect_url = $this->getRedirectUrl();
         if (!empty($redirect_url) and $redirect_url != null) {
-            $PaymentRequest->setRedirectURL($redirect_url);
+                $PaymentRequest->setRedirectURL($redirect_url);
         } else {
-            $PaymentRequest->setRedirectURL(Mage::getUrl() . 'checkout/onepage/success/');
+                $PaymentRequest->setRedirectURL(Mage::getUrl() . 'checkout/onepage/success/');
         }
 
         //Define Extra Amount Information
@@ -197,7 +192,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
         try {
             $payment_url = $PaymentRequest->register($this->getCredentialsInformation());
-
+            
         } catch (PagSeguroServiceException $ex) {
             Mage::log($ex->getMessage());
             $this->_redirectUrl(Mage::getUrl() . 'checkout/onepage');
@@ -232,6 +227,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
     private function _addressConfig($fullAddress)
     {
+		require_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/AddressConfig.php');
         return AddressConfig::trataEndereco($fullAddress);
     }
 
@@ -242,7 +238,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     private function getShippingInformation()
     {
 
-         $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
+        $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
 
         $street = "";
         $number = "";
@@ -252,25 +248,25 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         if (!$fileOSC) {
 
             $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
-
+    
             $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street']);
             $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
             $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
             $complement = is_null($fullAddress[3]) ? '' : $fullAddress[3];
-
+        
         }
-
+        
         $PagSeguroShipping = new PagSeguroShipping();
 
         $PagSeguroAddress = new PagSeguroAddress();
         $PagSeguroAddress->setCity($this->Shipping_Data['city']);
-        $PagSeguroAddress->setPostalCode(self::fixPostalCode($this->Shipping_Data['postcode']));
+        $PagSeguroAddress->setPostalCode( self::fixPostalCode($this->Shipping_Data['postcode']) );
         $PagSeguroAddress->setState($this->Shipping_Data['region']);
         $PagSeguroAddress->setStreet($street);
         $PagSeguroAddress->setNumber($number);
-        $PagSeguroAddress->setComplement($complement);
+        $PagSeguroAddress->setComplement($complement);	
         $PagSeguroAddress->setDistrict($district);
-
+		
         $PagSeguroShipping->setAddress($PagSeguroAddress);
 
         return $PagSeguroShipping;
@@ -288,14 +284,14 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
         //CarShop Items
         foreach ($Itens as $item) {
-            $PagSeguroItem = new PagSeguroItem();
-            $PagSeguroItem->setId($item->getId());
-            $PagSeguroItem->setDescription(self::fixStringLength($item->getName(), 255));
-            $PagSeguroItem->setQuantity(self::toFloat($item->getQtyOrdered()));
-            $PagSeguroItem->setWeight(round($item->getWeight()));
-            $PagSeguroItem->setAmount(self::toFloat($item->getPrice()));
+                $PagSeguroItem = new PagSeguroItem();
+                $PagSeguroItem->setId($item->getId());
+                $PagSeguroItem->setDescription(self::fixStringLength($item->getName(), 255));
+                $PagSeguroItem->setQuantity(self::toFloat($item->getQtyOrdered()));
+                $PagSeguroItem->setWeight(round($item->getWeight()));
+                $PagSeguroItem->setAmount(self::toFloat($item->getPrice()));
 
-            array_push($PagSeguroItens, $PagSeguroItem);
+                array_push($PagSeguroItens, $PagSeguroItem);
         }
 
         return $PagSeguroItens;
@@ -346,7 +342,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     {
         return $this->getConfigData('url');
     }
-
+    
     private function getRedirectCheckout()
     {
         return $this->getConfigData('checkout');
@@ -363,7 +359,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     private static function fixStringLength($_value, $_length, $_endchars = '...')
     {
         if (!empty($_value) and !empty($_length)) {
-            $_cut_len = (int)$_length - (int)strlen($_endchars);
+            $_cut_len = (int) $_length - (int) strlen($_endchars);
 
             if (strlen($_value) > $_length) {
                 $str_cut = substr($_value, 0, $_cut_len);
@@ -382,7 +378,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private static function toFloat($_value)
     {
-        return (float)$_value;
+        return (float) $_value;
     }
 
     /**
@@ -403,17 +399,23 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         }
         return $_file_exist;
     }
-
-    /**
-     *
-     * remove all non-numeric characters from Postal Code.
-     * @return fixedPostalCode
-     *
-     */
-    public static function fixPostalCode($postalCode)
+	
+	/**
+	 *
+	 * remove all non-numeric characters from Postal Code.
+	 * @return fixedPostalCode
+	 * 
+	 */
+	public static function fixPostalCode($postalCode)
+	{
+		
+		return preg_replace("/[^0-9]/", "", $postalCode);
+		
+	}
+	public function canUseForMultishipping()
     {
-
-        return preg_replace("/[^0-9]/", "", $postalCode);
-
+        return $this->_canUseForMultishipping;
     }
+	
+	
 }
