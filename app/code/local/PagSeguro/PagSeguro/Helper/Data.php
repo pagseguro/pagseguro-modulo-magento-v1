@@ -108,5 +108,15 @@ class PagSeguro_PagSeguro_Helper_Data extends HelperData
         $this->objStatus = Mage::getModel('sales/order_status')->load($status);
 
         return ($this->objStatus->getStatus()) ? true : false;
-    }
+    }	
+	
+	public function getPageSeguroUrl()
+	{
+		$url = 'app/code/local/PagSeguro/PagSeguro/Model';
+		if(defined('COMPILER_INCLUDE_PATH') == null){ $url = getcwd() . '/' . $url;}
+		return $url;
+	}
+		
 }
+
+

@@ -18,8 +18,8 @@
  * ***********************************************************************
  */
 
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "Defines.php";
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "PagSeguroLibrary" . DIRECTORY_SEPARATOR . "PagSeguroLibrary.php";
+include_once (Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/Defines.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -38,7 +38,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.2';
+    private $Module_Version = '2.1';
     private $Order;
     private $Shipping_Data;
     
@@ -103,7 +103,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         if ($checkout == 'LIGHTBOX') {
             $code = $this->base64url_encode($payment_url);
             
-            return Mage::getUrl('pagseguro/payment/payment', array(
+            return Mage::getUrl('pagseguro/payment/payment',array(
                 '_secure' => true, 'type' => 'geral', 'code' => $code
             ));
         }
@@ -150,7 +150,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     
     private function _validator()
     {
-        require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "Updates.php";
+        require_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/Updates.php');
         
         Updates::createTableModule();
     }
@@ -161,7 +161,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
      * @return string
      */
     private function createPaymentRequest()
-    {
+    {    	
         $this->_validator();
         
         $PaymentRequest = new PagSeguroPaymentRequest();
@@ -227,7 +227,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
     private function _addressConfig($fullAddress)
     {
-        require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "AddressConfig.php";
+		require_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/AddressConfig.php');
         return AddressConfig::trataEndereco($fullAddress);
     }
 
@@ -260,13 +260,13 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
         $PagSeguroAddress = new PagSeguroAddress();
         $PagSeguroAddress->setCity($this->Shipping_Data['city']);
-        $PagSeguroAddress->setPostalCode(self::fixPostalCode($this->Shipping_Data['postcode']));
+        $PagSeguroAddress->setPostalCode( self::fixPostalCode($this->Shipping_Data['postcode']) );
         $PagSeguroAddress->setState($this->Shipping_Data['region']);
         $PagSeguroAddress->setStreet($street);
         $PagSeguroAddress->setNumber($number);
-        $PagSeguroAddress->setComplement($complement);
+        $PagSeguroAddress->setComplement($complement);	
         $PagSeguroAddress->setDistrict($district);
-        
+		
         $PagSeguroShipping->setAddress($PagSeguroAddress);
 
         return $PagSeguroShipping;
@@ -399,17 +399,23 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         }
         return $_file_exist;
     }
-    
-    /**
-     *
-     * remove all non-numeric characters from Postal Code.
-     * @return fixedPostalCode
-     * 
-     */
-    public static function fixPostalCode($postalCode)
+	
+	/**
+	 *
+	 * remove all non-numeric characters from Postal Code.
+	 * @return fixedPostalCode
+	 * 
+	 */
+	public static function fixPostalCode($postalCode)
+	{
+		
+		return preg_replace("/[^0-9]/", "", $postalCode);
+		
+	}
+	public function canUseForMultishipping()
     {
-        
-        return preg_replace("/[^0-9]/", "", $postalCode);
-        
+        return $this->_canUseForMultishipping;
     }
+	
+	
 }
