@@ -13,7 +13,7 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 Requisitos
 ----------
 ---
- - [Magento] Community 1.5.x, 1.6.x, 1.7.x, 1.8.0.0
+ - [Magento] Community 1.5.x, 1.6.x, 1.7.x, 1.8.1.0
  - [PHP] 5.3.3+
  - [SPL]
  - [cURL]
@@ -47,9 +47,18 @@ Para acessar e configurar o módulo acesse o menu System -> Configuration -> Pay
  - **checkout**: especifica o modelo de checkout que será utilizado. É possível escolher entre checkout padrão e checkout lightbox.
 
 
+Dúvidas?
+----------
+---
+Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum].
+
+
 Changelog
 ---------
 ---
+2.2
+ - Ajustes no tratamento das notificações, entre outros;
+
 2.1
  - Correção de bugs;
 
@@ -121,12 +130,6 @@ Notas
  - Para que ocorra normalmente a geração de logs, certifique-se que o diretório e o arquivo de log tenham permissões de leitura e escrita.
 
 
-[Dúvidas?]
-----------
----
-Em caso de dúvidas mande um e-mail para desenvolvedores@pagseguro.com.br
-
-
 Contribuições
 -------------
 ---
@@ -139,7 +142,7 @@ Achou e corrigiu um bug ou tem alguma feature em mente e deseja contribuir?
 
   [API de Pagamentos]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-pagamentos.html
   [API de Notificações]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html
-  [Dúvidas?]: https://pagseguro.uol.com.br/desenvolvedor/comunidade.jhtml
+  [fórum]: http://forum.pagseguro.uol.com.br/
   [Pagamentos via API]: https://pagseguro.uol.com.br/integracao/pagamentos-via-api.jhtml
   [Notificação de Transações]: https://pagseguro.uol.com.br/integracao/notificacao-de-transacoes.jhtml
   [Magento]: https://www.magentocommerce.com/

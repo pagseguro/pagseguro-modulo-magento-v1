@@ -22,7 +22,7 @@ limitations under the License.
 /**
  * Admin Charset Options  
  */
-include_once (getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/config/PagSeguroConfig.class.php');
+require_once (Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/PagSeguroLibrary/PagSeguroLibrary.php');
 
 class PagSeguro_PagSeguro_Model_Values
 {
@@ -61,7 +61,7 @@ class PagSeguro_PagSeguro_Model_Values
     
     private function _validator()
     {
-        require_once(getcwd().'/app/code/local/PagSeguro/PagSeguro/Model/Updates.php');
+        require_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/Updates.php');
         
         Updates::createTableModule();
     }

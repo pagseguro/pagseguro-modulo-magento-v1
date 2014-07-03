@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-include_once (dirname(__FILE__).'/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once (Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/PagSeguroLibrary/PagSeguroLibrary.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -72,12 +72,12 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
      */
     private function _createNotification()
     {
-        $this->notificationType = (
-            isset($this->post['notificationType']) &&
-            trim($this->post['notificationType']) != "") ? $this->post['notificationType'] : null;
-        $this->notificationCode = (
-            isset($this->post['notificationCode']) &&
-            trim($this->post['notificationCode']) != "") ? $this->post['notificationCode'] : null;
+       $this->notificationType = (
+           isset($this->post['notificationType']) &&
+           trim($this->post['notificationType']) != "") ? $this->post['notificationType'] : null;
+       $this->notificationCode = (
+           isset($this->post['notificationCode']) &&
+           trim($this->post['notificationCode']) != "") ? $this->post['notificationCode'] : null;
     }
     
     /**
@@ -102,7 +102,6 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
     */
     private function _createTransaction()
     {
-
         $this->objTransaction = PagSeguroNotificationService::checkTransaction(
             $this->objCredential,
             $this->notificationCode
@@ -153,11 +152,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
     {
         $table_prefix = (string)Mage::getConfig()->getTablePrefix();
         $read= Mage::getSingleton('core/resource')->getConnection('core_read');
-        
-        $value = $read->query(
-            "SELECT `order_id` FROM `" . $table_prefix . "pagseguro_sales_code` WHERE `order_id` = $this->reference"
-        );
-        
+        $value = $read->query("SELECT `order_id` FROM `" . $table_prefix . "pagseguro_sales_code` WHERE `order_id` = $this->reference");
         $row = $value->fetch();
 
         if ($row == false) {
