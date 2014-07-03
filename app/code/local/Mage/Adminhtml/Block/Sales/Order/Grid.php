@@ -77,7 +77,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends WidgetGrid
             array(
                 'header' => Mage::helper('sales')->__('Transaction ID'),
                 'index' => 'transaction_code',
-                'filter_index' => 'pagseguro_sales_code.transaction_code')
+                'filter_index' => 'pagseguro_sales_code.transaction_code'
             )
         );
 
