@@ -26,7 +26,7 @@ class Updates
             if (!is_null($collection)) {
                 $collection->getSelect()->joinLeft(
                     $table_prefix . 'pagseguro_sales_code',
-                    'main_table.entity_id = pagseguro_sales_code.order_id',
+                    'main_table.entity_id = '.$table_prefix.'pagseguro_sales_code.order_id',
                     array('transaction_code')
                 );
             }
