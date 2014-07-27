@@ -158,7 +158,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
         if ($row == false) {
             $transactionId = $this->objTransaction->getCode();
             $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-            $sql = "INSERT INTO " . $table_prefix . "`pagseguro_sales_code` (`order_id`,`transaction_code`)
+            $sql = "INSERT INTO `" . $table_prefix . "pagseguro_sales_code` (`order_id`,`transaction_code`)
                 VALUES ('$this->reference','$transactionId')";
             $connection->query($sql);
         }
