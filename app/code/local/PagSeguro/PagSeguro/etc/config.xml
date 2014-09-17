@@ -65,9 +65,7 @@
                 </pagseguro>
             </updates>
         </layout>
-    </frontend>	
-
-
+    </frontend>
     <default>
         <payment>
             <pagseguro>

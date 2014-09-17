@@ -34,5 +34,4 @@ class PagSeguro_PagSeguro_Block_Payment extends Mage_Core_Block_Template
     {
         return base64_decode(strtr($b64Text, '-_,', '+/='));
     }
-
 }

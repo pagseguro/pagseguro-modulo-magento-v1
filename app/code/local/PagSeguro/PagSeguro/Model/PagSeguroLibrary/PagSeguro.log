@@ -1,0 +1,436 @@
+{2014/09/10 09:58:40} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T09:58' )
+{2014/09/10 13:02:52} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen3',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:02:54} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen3',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}D4DF54E04A4A2B7994B1DFB9AE5D4D25 
+{2014/09/10 13:05:06} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen4',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:05:14} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen4',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}F66BE2D27979B3BEE48D0F9D52DF7683 
+{2014/09/10 10:39:37} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T10:39' )
+{2014/09/10 13:42:02} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen5',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:42:08} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen5',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}BE3D74D8AEAEB8F004AD2FAA1A2875BD 
+{2014/09/10 13:44:16} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen6',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:44:17} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen6',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}A0EBBB13EEEE433884A17F827607026B 
+{2014/09/10 13:46:10} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen7',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:46:18} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen7',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}941D4161B0B0DB4EE43A8FA7265AECAC 
+{2014/09/10 13:48:04} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen8',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:48:09} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen8',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}416F5983E0E0754BB4157F9FD6F72B4D 
+{2014/09/10 13:50:45} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen9',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:50:46} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen9',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}AE36835F717182EFF4431F96CCFBD0EC 
+{2014/09/10 13:52:31} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen10',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:52:36} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen10',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}5B1740C6BCBCA79EE426CFABC3A15C07 
+{2014/09/10 13:54:28} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen11',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:54:36} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen11',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}2F18B0B7D8D8F23774AD1F9A5D9E010A 
+{2014/09/10 13:56:30} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen12',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:56:34} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen12',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}0C27C5835C5C0EB884BEEF8DE58C6957 
+{2014/09/10 13:59:38} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen13',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 13:59:40} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen13',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}E5926555AEAE014114FB7FA86BED4E60 
+{2014/09/10 14:01:40} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen14',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:01:44} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen14',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}D8DC2701A0A00F9BB4FD5FA4E6F013C1 
+{2014/09/10 14:04:11} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen15',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:04:12} [Error] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen15',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - error [HTTP 401] - UNAUTHORIZED  
+{2014/09/10 14:05:18} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen16',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:05:20} [Error] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen16',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - error [HTTP 401] - UNAUTHORIZED  
+{2014/09/10 14:08:11} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen17',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:08:11} [Error] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen17',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - error [HTTP 401] - UNAUTHORIZED  
+{2014/09/10 14:09:42} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen18',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:09:47} [Error] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen18',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - error [HTTP 401] - UNAUTHORIZED  
+{2014/09/10 14:10:40} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen19',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:10:41} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen19',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}FA6BF7E00F0F9CBCC445BFA30F0235D1 
+{2014/09/10 14:12:56} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen20',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:13:03} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen20',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}F6A9F16B5D5D66EEE459DFB13495ACDD 
+{2014/09/10 14:18:48} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen21',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:18:55} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen21',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}730C1E6BEBEBE48664EBDFA9CA86D927 
+{2014/09/10 11:20:10} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T11:20' )
+{2014/09/10 14:22:08} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen22',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:22:09} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen22',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}7D085EEE6565E94DD474BFABD02937BA 
+{2014/09/10 11:24:47} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T11:24' )
+{2014/09/10 14:26:26} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen23',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/10 14:26:32} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen23',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}3E065959C5C528ADD407CF8B710680A4 
+{2014/09/10 11:28:22} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T11:28' )
+{2014/09/10 11:28:44} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T11:28' )
+{2014/09/10 11:29:06} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T11:29' )
+{2014/09/10 11:29:23} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T11:29' )
+{2014/09/10 11:29:29} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T11:29' )
+{2014/09/10 14:29:41} [Info] PagSeguroConciliation.Update(OrderStatusMagento: array (
+  'orderId' => 8,
+  'transactionCode' => '20444C52-A8AE-4C61-A867-377516DE2A6B',
+  'orderStatus' => 'paga_ps'
+))
+{2014/09/10 11:30:07} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T11:30' )
+{2014/09/10 14:30:28} [Info] PagSeguroConciliation.Update(OrderStatusMagento: array (
+  'orderId' => 4,
+  'transactionCode' => '7EEF1C19-6B1A-468E-88AF-BF6D01D5583C',
+  'orderStatus' => 'paga_ps'
+))
+{2014/09/10 14:30:44} [Info] PagSeguroConciliation.Update(OrderStatusMagento: array (
+  'orderId' => 14,
+  'transactionCode' => 'E276CF25-874A-4571-87ED-F4CDDD3BD973',
+  'orderStatus' => 'paga_ps'
+))
+{2014/09/10 11:52:01} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T11:52' )
+{2014/09/10 14:02:59} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-05T00:00 until 2014-09-10T14:02' )
+{2014/09/10 17:03:16} [Info] PagSeguroConciliation.Update(OrderStatusMagento: array (
+  'orderId' => 21,
+  'transactionCode' => '5C272878-628E-42C1-BD39-894F2D5AC27C',
+  'orderStatus' => 'paga_ps'
+))
+{2014/09/11 10:01:19} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-06T00:00 until 2014-09-11T10:01' )
+{2014/09/11 13:01:33} [Info] PagSeguroConciliation.Update(OrderStatusMagento: array (
+  'orderId' => 19,
+  'transactionCode' => '76E0D8BD-65D1-49A5-915A-22075E321094',
+  'orderStatus' => 'paga_ps'
+))
+{2014/09/11 16:51:56} [Info] PagSeguroAbandoned.Searched( '10 days - Range of dates 2014-09-11T00:00 until 2014-09-11T16:51' )
+{2014/09/11 16:54:10} [Info] PagSeguroAbandoned.Searched( '10 days - Range of dates 2014-09-01T00:00 until 2014-09-11T16:54' )
+{2014/09/11 16:55:31} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-06T00:00 until 2014-09-11T16:55' )
+{2014/09/11 16:56:55} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-06T00:00 until 2014-09-11T16:56' )
+{2014/09/11 19:58:44} [Info] PagSeguroAbandoned.Update(SendEmailAbandoned: array (
+  'orderId' => 13,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66917b8ba0a25c632f24'))
+{2014/09/11 19:58:48} [Info] PagSeguroAbandoned.Update(SendEmailAbandoned: array (
+  'orderId' => 11,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66911779b07d4f22bbe5'))
+{2014/09/11 19:59:57} [Info] PagSeguroAbandoned.Update(SendEmailAbandoned: array (
+  'orderId' => 13,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66917b8ba0a25c632f24'
+))
+{2014/09/11 20:00:01} [Info] PagSeguroAbandoned.Update(SendEmailAbandoned: array (
+  'orderId' => 11,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66911779b07d4f22bbe5'
+))
+{2014/09/11 20:00:05} [Info] PagSeguroAbandoned.Update(SendEmailAbandoned: array (
+  'orderId' => 9,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66919c4d6ac09a169bb0'
+))
+{2014/09/11 20:00:08} [Info] PagSeguroAbandoned.Update(SendEmailAbandoned: array (
+  'orderId' => 7,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66911cc835305e048745'
+))
+{2014/09/11 20:00:11} [Info] PagSeguroAbandoned.Update(SendEmailAbandoned: array (
+  'orderId' => 3,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66918068f22a18349657'
+))
+{2014/09/11 20:03:32} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 13,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66917b8ba0a25c632f24'
+))
+{2014/09/11 20:03:37} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 11,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66911779b07d4f22bbe5'
+))
+{2014/09/12 12:43:34} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen24',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/12 12:43:41} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen24',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}F6A372E5E4E48A6554C45FB4BC6CD0B7 
+{2014/09/12 12:45:45} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen25',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/12 12:45:47} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen25',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}E48D1290A9A93CDCC4EBFF8338C078D5 
+{2014/09/12 12:49:22} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen26',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/12 12:49:27} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen26',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}403D5E98CDCD118884982F900AAA3B5F 
+{2014/09/12 12:51:46} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen27',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/12 12:51:47} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen27',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}6435B6C852525CD884EC5FA47210CE91 
+{2014/09/12 09:57:37} [Info] PagSeguroConciliation.Searched( '30 days - Range of dates 2014-08-13T00:00 until 2014-09-12T09:57' )
+{2014/09/12 09:58:36} [Info] PagSeguroConciliation.Searched( '30 days - Range of dates 2014-08-13T00:00 until 2014-09-12T09:58' )
+{2014/09/12 12:58:59} [Info] PagSeguroConciliation.Update(OrderStatusMagento: array (
+  'orderId' => 20,
+  'transactionCode' => '1AEF3DAC-480E-4055-94F7-6FFA369894AC',
+  'orderStatus' => 'paga_ps'
+))
+{2014/09/12 10:49:02} [Info] PagSeguroConciliation.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T10:49' )
+{2014/09/12 13:49:15} [Info] PagSeguroConciliation.Update(OrderStatusMagento: array (
+  'orderId' => 6,
+  'transactionCode' => 'CA5A9DFA-E131-4B72-B859-1AE8BB4C3F61',
+  'orderStatus' => 'cancelada_ps'
+))
+{2014/09/12 10:49:43} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T10:49' )
+{2014/09/12 13:50:04} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 13,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66917b8ba0a25c632f24'
+))
+{2014/09/12 14:48:39} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen28',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/12 14:48:47} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen28',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}81E8FD435050ADCFF4EA9FB37AD728E4 
+{2014/09/12 14:53:33} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen29',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/12 14:53:34} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen29',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}E50AEC1ED6D6EF0334FD3FB253234140 
+{2014/09/12 12:53:52} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T12:53' )
+{2014/09/12 15:55:03} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 11,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66911779b07d4f22bbe5'
+))
+{2014/09/12 15:55:32} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 13,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66917b8ba0a25c632f24'
+))
+{2014/09/12 14:17:18} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T14:17' )
+{2014/09/12 17:17:46} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 17:37:45} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 28,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfabc3d3d7b74af0b3a5'
+))
+{2014/09/12 17:38:23} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 28,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfabc3d3d7b74af0b3a5'
+))
+{2014/09/12 17:44:05} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 17:44:36} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 17:44:56} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 17:45:23} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 17:45:53} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 17:46:14} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 17:46:36} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 17:47:05} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 17:47:43} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 15:13:02} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:13' )
+{2014/09/12 15:13:31} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:13' )
+{2014/09/12 18:14:00} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 13,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66917b8ba0a25c632f24'
+))
+{2014/09/12 18:14:31} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 13,
+  'recoveryCode' => '7df5a68dd88c50bb4e573bf85eeb66917b8ba0a25c632f24'
+))
+{2014/09/12 18:14:57} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 18:15:19} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/12 15:18:16} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:18' )
+{2014/09/12 15:21:00} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:21' )
+{2014/09/12 15:24:53} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:24' )
+{2014/09/12 15:28:13} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:28' )
+{2014/09/12 15:30:49} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:30' )
+{2014/09/12 15:33:15} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:33' )
+{2014/09/12 15:36:17} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:36' )
+{2014/09/12 15:37:32} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:37' )
+{2014/09/12 15:40:10} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:40' )
+{2014/09/12 15:41:58} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:41' )
+{2014/09/12 15:42:50} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:42' )
+{2014/09/12 15:45:39} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:45' )
+{2014/09/12 15:47:03} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T15:47' )
+{2014/09/12 16:03:07} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T16:03' )
+{2014/09/12 16:03:29} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T16:03' )
+{2014/09/12 16:03:46} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T16:03' )
+{2014/09/12 16:04:05} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T16:04' )
+{2014/09/12 16:04:31} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T16:04' )
+{2014/09/12 16:05:18} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T16:05' )
+{2014/09/12 16:05:30} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T16:05' )
+{2014/09/12 19:06:08} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 28,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfabc3d3d7b74af0b3a5'
+))
+{2014/09/12 16:13:29} [Info] PagSeguroAbandoned.Searched( '5 days - Range of dates 2014-09-07T00:00 until 2014-09-12T16:13' )
+{2014/09/12 19:26:34} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 28,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfabc3d3d7b74af0b3a5'
+))
+{2014/09/15 08:22:57} [Info] PagSeguroAbandoned.Searched( '10 days - Range of dates 2014-09-05T00:00 until 2014-09-15T08:22' )
+{2014/09/15 08:23:27} [Info] PagSeguroAbandoned.Searched( '10 days - Range of dates 2014-09-05T00:00 until 2014-09-15T08:23' )
+{2014/09/15 09:21:01} [Info] PagSeguroAbandoned.Searched( '10 days - Range of dates 2014-09-05T00:00 until 2014-09-15T09:21' )
+{2014/09/15 09:21:57} [Info] PagSeguroAbandoned.Searched( '10 days - Range of dates 2014-09-05T00:00 until 2014-09-15T09:21' )
+{2014/09/15 12:22:21} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/15 09:23:37} [Info] PagSeguroAbandoned.Searched( '10 days - Range of dates 2014-09-05T00:00 until 2014-09-15T09:23' )
+{2014/09/15 12:23:54} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 29,
+  'recoveryCode' => '7df5a68dd88c50bb27f38f0e2483bfab4fb9e40ac59234dd'
+))
+{2014/09/15 13:11:35} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen30',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - begin 
+{2014/09/15 13:11:39} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'sEOen30',
+  'SenderEmail' => 'decio.lemes.s2it@gmail.com',
+)) - end {1}A25C367C5C5C2A8114554FA03DFEE694 

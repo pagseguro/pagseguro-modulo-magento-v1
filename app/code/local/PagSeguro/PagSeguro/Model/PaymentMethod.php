@@ -18,10 +18,11 @@
  * ***********************************************************************
  */
 
-include_once (Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/PagSeguroLibrary/PagSeguroLibrary.php');
-include_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/Defines.php');
+include_once (Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once(Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/Defines.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
+
 
 /**
  * PagSeguro payment model
@@ -38,7 +39,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.2';
+    private $Module_Version = '2.2.4';
     private $Order;
     private $Shipping_Data;
     
@@ -86,10 +87,11 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     public function getRedirectPaymentHtml($Order)
     {
+    	
         $this->setPagSeguroConfig();
         $payment_url =  $this->createPaymentRequest();
 
-        //limpar o cart
+        // empty the cart
         $cart = Mage::getSingleton('checkout/cart');
         foreach (Mage::getSingleton('checkout/session')->getQuote()->getItemsCollection() as $item) {
             $cart->removeItem($item->getId());
@@ -99,15 +101,16 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $Order->save();
         
         $checkout = $this->getRedirectCheckout();
-        
+		
         if ($checkout == 'LIGHTBOX') {
             $code = $this->base64url_encode($payment_url);
             
             return Mage::getUrl('pagseguro/payment/payment',array(
                 '_secure' => true, 'type' => 'geral', 'code' => $code
             ));
-        }
-        return $payment_url;
+        } else {
+        	return $payment_url;			
+        }        
     }
 
     private function base64url_encode($text)
@@ -150,7 +153,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     
     private function _validator()
     {
-        require_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/Updates.php');
+        require_once(Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/Updates.php');
         
         Updates::createTableModule();
     }
@@ -161,14 +164,17 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
      * @return string
      */
     private function createPaymentRequest()
-    {    	
+    {
         $this->_validator();
         
+		// Get references that stored in the database
+		$reference = Mage::helper('PagSeguro')->getReadReferenceBank();
+				
         $PaymentRequest = new PagSeguroPaymentRequest();
 
         $PaymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));
 
-        $PaymentRequest->setReference($this->Order->getId()); //Order ID
+        $PaymentRequest->setReference($reference . $this->Order->getId()); //Order ID
 
         $PaymentRequest->setShipping($this->getShippingInformation()); //Shipping
         $PaymentRequest->setSender($this->getSenderInformation()); //Sender
@@ -190,9 +196,9 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
         //Define Extra Amount Information
         $PaymentRequest->setExtraAmount($this->_extraAmount());
 
-        try {
+        try {			
             $payment_url = $PaymentRequest->register($this->getCredentialsInformation());
-            
+			            
         } catch (PagSeguroServiceException $ex) {
             Mage::log($ex->getMessage());
             $this->_redirectUrl(Mage::getUrl() . 'checkout/onepage');
@@ -219,15 +225,20 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private function getNotificationURL()
     {
-        $notification_url = $this->getConfigData('notification');
-
-        return ($notification_url != null && $notification_url != "") ?
-            $notification_url : Mage::getUrl() . 'pagseguro/notification/send/';
+        if ($this->getConfigData('notification')) {
+    		$notification_url = $this->getConfigData('notification');
+    	} else {
+    		//default installation
+    		$storeId = 0;
+			$base = Mage::getStoreConfig('web/unsecure/base_url', $storeId);
+        	$notification_url = $base . 'pagseguro/notification/send/';
+    	}
+        return $notification_url;
     }
 
     private function _addressConfig($fullAddress)
     {
-		require_once(Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/AddressConfig.php');
+		require_once(Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/AddressConfig.php');
         return AddressConfig::trataEndereco($fullAddress);
     }
 
@@ -278,8 +289,8 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private function getItensInformation()
     {
-        $Itens = $this->Order->getAllVisibleItems();
-
+        $Itens = $this->Order->getAllVisibleItems();	
+		
         $PagSeguroItens = array();
 
         //CarShop Items

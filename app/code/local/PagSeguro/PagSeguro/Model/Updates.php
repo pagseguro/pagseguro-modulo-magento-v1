@@ -12,7 +12,7 @@ class Updates
         $table_prefix = (string)Mage::getConfig()->getTablePrefix();
         $sql = "SHOW TABLES LIKE '" . $table_prefix . "pagseguro_sales_code'";
         $table_exists = Mage::getSingleton('core/resource')->getConnection('core_read')->fetchAll($sql);
-        
+		
         if (!count($table_exists)) {
             $sql = "CREATE TABLE IF NOT EXISTS `". $table_prefix ."pagseguro_sales_code` (
                     `entity_id` int(11) NOT NULL auto_increment,
@@ -29,7 +29,10 @@ class Updates
                     'main_table.entity_id = pagseguro_sales_code.order_id',
                     array('transaction_code')
                 );
-            }
+            }					 
+            $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+            $connection->query($sql);
+            
         }
 
     }

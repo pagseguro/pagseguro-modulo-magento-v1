@@ -268,7 +268,7 @@ class PagSeguroAddress
     }
 
     /**
-     * Treat the state to pass in format waited of the PagSeguro
+     * Handle the state to pass in format expected in PagSeguro
      * @param type $defaultState
      * @return string
      */

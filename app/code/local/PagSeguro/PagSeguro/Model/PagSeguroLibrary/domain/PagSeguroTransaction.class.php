@@ -66,6 +66,13 @@ class PagSeguroTransaction
     private $status;
 
     /**
+     * Transaction cancellationSource
+     * @see PagSeguroTransactionCancellationSource
+     * @var PagSeguroTransactionCancellationSource
+     */
+    private $cancellationSource;
+
+    /**
      * Payment method
      * @see PagSeguroPaymentMethod
      * @var PagSeguroPaymentMethod
@@ -232,6 +239,24 @@ class PagSeguroTransaction
     public function setStatus(PagSeguroTransactionStatus $status)
     {
         $this->status = $status;
+    }
+
+     /**
+     * @return PagSeguroTransactionCancellationSource the transaction cancellation source
+     * @see PagSeguroTransactionCancellationSource
+     */
+    public function getCancellationSource()
+    {
+        return $this->cancellationSource;
+    }
+
+    /**
+     * Sets the transaction cancellation source
+     * @param PagSeguroTransactionCancellationSource $cancellationSource
+     */
+    public function setCancellationSource(PagSeguroTransactionCancellationSource $cancellationSource)
+    {
+        $this->cancellationSource = $cancellationSource;
     }
 
     /**

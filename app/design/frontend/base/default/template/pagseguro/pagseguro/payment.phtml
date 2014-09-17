@@ -17,11 +17,17 @@ limitations under the License.
 ************************************************************************
 */
 ?>
-
+<?php
+$baseUrl = Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model';
+include_once ($baseUrl . '/PagSeguroLibrary/resources/PagSeguroResources.php');
+include_once ($baseUrl . '/PagSeguroLibrary/config/PagSeguroConfig.php');
+$environment = $PagSeguroConfig['environment'];
+$ligthboxUrl = $PagSeguroResources['staticUrl'][$environment] ;
+?>
 <div class="page-head">
     <h2 class="sub-title">Finalizando sua compra com PagSeguro</h2>
 </div>
-<script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.lightbox.js"></script>
+<script type="text/javascript" src="<?php echo $ligthboxUrl;?>/pagseguro/api/v2/checkout/pagseguro.lightbox.js"></script>
 <script type="text/javascript">
 <?php $paymentData = $this->getConvertCode();?>
     function checkout(payment)

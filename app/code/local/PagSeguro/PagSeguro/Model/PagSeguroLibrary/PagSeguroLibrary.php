@@ -21,7 +21,7 @@
 class PagSeguroLibrary
 {
 
-    const VERSION = "2.2.2";
+    const VERSION = "2.2.4";
     public static $resources;
     public static $config;
     public static $log;
@@ -56,10 +56,6 @@ class PagSeguroLibrary
         $dependencies = true;
 
         try {
-            if (!function_exists('spl_autoload_register')) {
-                $dependencies = false;
-                throw new Exception("PagSeguroLibrary: Standard PHP Library (SPL) is required.");
-            }
 
             if (!function_exists('curl_init')) {
                 $dependencies = false;
@@ -70,6 +66,7 @@ class PagSeguroLibrary
                 $dependencies = false;
                 throw new Exception('PagSeguroLibrary: DOM XML extension is required.');
             }
+            
         } catch (Exception $e) {
             return $dependencies;
         }

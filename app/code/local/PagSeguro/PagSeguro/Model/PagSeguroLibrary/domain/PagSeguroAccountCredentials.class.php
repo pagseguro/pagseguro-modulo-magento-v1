@@ -36,7 +36,7 @@ class PagSeguroAccountCredentials extends PagSeguroCredentials
     private $token;
 
     /**
-     * Initializes a new instance of the PagSeguroAccountCredentials class
+     * Initializes a new instance of PagSeguroAccountCredentials class
      *
      * @throws Exception when credentials aren't provided.
      *

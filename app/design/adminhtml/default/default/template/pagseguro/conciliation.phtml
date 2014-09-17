@@ -1,0 +1,275 @@
+<?php
+
+/**
+************************************************************************
+Copyright [2014] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+*/
+
+?>
+<?php
+	Mage::helper('PagSeguro')->checkConciliationAccess();
+	$_SESSION['days'] = 0;	
+?>
+<img class="pagseguro_logo" src="<?php echo $this->getSkinUrl('pagseguro/images/logo.png'); ?>" />
+
+<div class="content-header">
+    <table cellspacing="0" class="grid-header">
+        <tr>
+            <th><h3><?php echo $this->__('Conciliation'); ?></h3></th>
+        </tr>
+    </table>
+</div>
+<p>
+	<?php 
+		$string .= 'This allows you to query the transactions received by you in a range of dates. ';
+		$string .= 'It can be used periodically to check if your system has received all notifications sent by ';
+		$string .= 'PagSeguro transactions in order to reconcile the transactions stored in your system with PagSeguro.';
+		echo $this->__($string);
+	 ?>
+</p>
+
+<form action="javascript:void(0)" method="post" >
+	<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
+	<label><?php echo $this->__('Days'); ?></label>
+	<select id='pagseguro_dias_btn' name='pagseguro_dias' class="select">
+        <option value='5'>5</option>
+        <option value='10'>10</option>
+        <option value='15'>15</option>
+        <option value='20'>20</option>
+        <option value='25'>25</option>
+        <option value='30'>30</option>
+    </select>
+    <input type="submit" class="pagseguro-button green-theme normal" value="<?php echo $this->__('Research');?>">
+</form>
+
+<table id="htmlgrid" class="grid" border="0" cellpadding="10" cellspacing="10" width="100%">
+	<thead>
+		<tr>
+			<th width="10%"><?php echo $this->__('Date');?></th>
+			<th width="15%">ID Magento</th>
+			<th width="25%" >ID PagSeguro</th>
+			<th width="15%">Status Magento</th>
+			<th width="15%">Status PagSeguro</th>
+			<th width="10%"><?php echo $this->__('Edit');?></th>
+			<th width="10%"><?php echo $this->__('Update');?></th>
+		</tr>
+	</thead>
+</table>
+
+<?php
+	$tooltip .= 'In the module installation PagSeguro a reference is created with five (5) ';
+	$tooltip .= 'random characters eg - # asf9 - that will be sent at the time of purchase. ';
+	$tooltip .= 'If no reference exists the PagSeguro your store will not return purchases to be reconciled.';
+	
+	$noTransaction = 'No transaction to be reconciled. Perform a search.';
+?>
+<p class="info"><?php echo $this->__('Do not see your old transactions to reconcile?'); ?> 
+    <a data-tooltip="<?php echo $this->__($tooltip); ?>">
+        <img alt="ajuda" src="<?php echo $this->getSkinUrl('pagseguro/images/help.png'); ?>">
+    </a>
+</p>
+
+<script type="text/javascript">	
+	var i = 0;	
+		
+	jQuery(document).ready(function(){   
+				     
+		var flow = 0;
+		var totalRows = 0;	
+		var page = 0;
+		var currentPage = 0;
+		var oTable;		
+		
+		
+		// Initiates the creation of the table dataTable
+		jQuery('#htmlgrid').dataTable({			
+			"info": false,
+			"lengthChange": false,
+			"searching": false,
+			"bStateSave": true,
+			"pageLength": 10,
+			"aoColumnDefs": [
+				{ 'bSortable': false, 'aTargets': [ 5, 6 ] },
+				{ "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4, 5, 6 ] }
+			],
+			
+			// Creates paging and notifies when there is no record
+			"oLanguage": {
+				"sEmptyTable":"<?php echo $this->__($noTransaction); ?>",
+				"oPaginate": {
+					"sNext": '<?php echo $this->__('Next');?>',
+					"sLast": '<?php echo $this->__('Last');?>',
+					"sFirst": '<?php echo $this->__('First');?>',
+					"sPrevious": '<?php echo $this->__('Previous');?>'
+				}
+			},
+			
+			// If the status of Magento and PagSeguro are different, added a color
+			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {				
+				if ( aData[3] != aData[4]){
+					jQuery(nRow).addClass('red')
+				}				
+			},
+			
+			// Every interaction with the table it is called
+			"fnDrawCallback": function(oSettings) {	
+				// Makes when clicked on a registry is redirected to the editing order of Magento	
+				trHoverClick();
+				oTable = this;
+				totalRows = oTable.fnGetData().length;
+				var table = jQuery('#htmlgrid').DataTable();
+				var info = table.page.info();
+				
+				// Only if greater than 10 records show paging
+				if (totalRows > 10) {					
+					jQuery('.dataTables_paginate').css('display','block');
+					flow = 1;					
+				} else {									
+					jQuery('.dataTables_paginate').css('display','none');
+					flow = 0;
+				}
+				
+				// If the home page does not display the previous page button
+				if (info.page == 0) {
+					jQuery('a#htmlgrid_previous').css('display','none');
+				}			
+				
+				// If the last page does not display the next page button
+				if ((info.page+1) == info.pages) {
+					jQuery('a#htmlgrid_next').css('display','none');
+				}	
+				
+				i++;
+				
+				// Stores which is the page that appears after update				
+				if (i == 1) { 
+					currentPage = page;	
+				}	
+				
+				// Stores the current page, calculated by number of records and number of records per page					
+				page  = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);					
+			},
+			
+			// When it completes assembly of the table is executed
+			"initComplete": function (oSettings) {				
+		        oTable = this;
+		        
+		        if (currentPage != 0) {
+		        	// When upgraded back on the page that was
+		        	oTable.fnPageChange(currentPage);	
+		        }	        
+		    }
+		});		
+		
+		// Executes when the search button clicked
+        jQuery(".pagseguro-button").on("click",function(){         	      	
+        	var getDays = jQuery('#pagseguro_dias_btn').find(":selected").text();
+        	var converted = '';
+        	// calls the modal of loading
+        	blockModal(1);
+        	
+            jQuery.ajax({
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                type: "POST",
+                data: { 
+                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
+                		days: getDays,
+                		origin: 'conciliation'
+                	  },
+                success: function(result) {   
+                	// handle the return of ajax and dates back to table    	
+                    if (result != "") {
+						converted = JSON.parse(result);
+                        jQuery('#htmlgrid').dataTable().fnClearTable(true);           
+                        jQuery('#htmlgrid').dataTable().fnAddData(converted);   
+                    }
+                    //After reassembling the table removes the modal of loading
+                    blockModal(0);
+                    
+                },
+                error: function() {
+                	// Remove the modal of loading
+                    blockModal(0);
+                }
+			});				
+		});					
+    });
+    
+    // Runs when clicked in any record to update
+    function updateOrder(config) {    	
+    	var converted = '';
+    	var config = jQuery(config).data('config').split('/');
+    	var id = config[0];
+    	var code = config[1];
+    	var status = config[2];
+    	// calls the modal of loading
+    	blockModal(1);
+    	
+        jQuery.ajax({
+            url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+            type: "POST",
+            data: { 
+            		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
+            		orderId: id,
+            		transactionCode: code, 
+            		orderStatus: status,
+            		origin: 'conciliation'
+            	  },
+            success: function(result) {
+            	i = 0;
+            	// handle the return of ajax and dates back to table    	
+                if (result != "") {
+					converted = JSON.parse(result);
+                    jQuery('#htmlgrid').dataTable().fnClearTable(true);           
+                    jQuery('#htmlgrid').dataTable().fnAddData(converted);
+                    jQuery('#htmlgrid').dataTable()._fnInitComplete();
+                }
+                //After reassembling the table removes the modal of loading
+                blockModal(0);
+            },
+            error: function() {
+            	// Remove the modal of loading
+                blockModal(0);
+            }
+		});
+    }
+    
+    // Create the modal of load and remove this
+    function blockModal(block) {     	   		
+		if (block == 1) {
+		    jQuery.blockUI({
+		        message: '<h1><?php echo $this->__('Carregando');?>' +
+		        		 	'<img src="<?php echo $this->getSkinUrl('pagseguro/images/loading.gif'); ?>" />' + 
+		        		 '</h1>',
+		        css: {
+		            border: 'none',
+		            padding: '15px',
+		            backgroundColor: '#4f7743',
+		            'border-radius': '10px',
+		            '-webkit-border-radius': '10px',
+		            '-moz-border-radius': '10px',
+		            opacity: 0.7,
+		            color: '#90e874'
+		        },
+		        overlayCSS: { backgroundColor: 'gray' }
+		    });
+		    		    
+		} else {
+		    setTimeout(jQuery.unblockUI, 1000);
+		}
+	}
+</script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('pagseguro/js/pagseguro.js');?>"></script>

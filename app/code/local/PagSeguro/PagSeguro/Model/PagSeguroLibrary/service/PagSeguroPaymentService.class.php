@@ -45,7 +45,7 @@ class PagSeguroPaymentService
      */
     private static function buildCheckoutUrl(PagSeguroConnectionData $connectionData, $code)
     {
-        return $connectionData->getResource('checkoutUrl') . "?code=$code";
+        return $connectionData->getPaymentUrl() . $connectionData->getResource('checkoutUrl') . "?code=$code";
     }
 
     // createCheckoutRequest is the actual implementation of the Register method
@@ -84,7 +84,7 @@ class PagSeguroPaymentService
                 case 'OK':
                     $PaymentParserData = PagSeguroPaymentParser::readSuccessXml($connection->getResponse());
 
-					if ($onlyCheckoutCode) {
+                    if ($onlyCheckoutCode) {
                         $paymentReturn = $PaymentParserData->getCode();
                     } else {
                         $paymentReturn = self::buildCheckoutUrl($connectionData, $PaymentParserData->getCode());

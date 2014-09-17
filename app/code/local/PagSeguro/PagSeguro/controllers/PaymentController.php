@@ -23,12 +23,11 @@ use Mage_Core_Controller_Front_Action as FrontAction;
 class PagSeguro_PagSeguro_PaymentController extends FrontAction
 {
     const CANCELADO = 7;
-
-    const MENSAGEM = 'Desculpe, infelizmente houve um erro durante o checkout.
+    
+    const MENSAGEM = 'Desculpe, infelizmente, houve um erro durante o checkout.
             Entre em contato com o administrador da loja, se o problema persistir.';
-
     /**
-     * Get Checkout Session
+     * Get Checkout Session  
      */
     private function getCheckout()
     {
@@ -70,61 +69,56 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
      */
     public function requestAction()
     {
-
-
+    
+    
         $Order = $this->getOrder(); //Order Data
-
+        
         $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel();
-
+        
         $enabledOSC = false;
-        $fileOSC = scandir(getcwd() . '/app/code/local/DeivisonArthur');
-
+        $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
+        
         if ($fileOSC) {
             $enabledOSC = Mage::helper('onepagecheckout')->isOnepageCheckoutEnabled();
         }
-
-
+                
+            
         $feedback = ($enabledOSC == false ? 'checkout/onepage' : 'onepagecheckout');
 
         if (($Order->getState() == Mage_Sales_Model_Order::STATE_NEW) and
             ($Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode()) and
-            ($Order->getId())
-        ) {
-
+            ($Order->getId())) {
+            
             try {
 
                 $PagSeguroPaymentModel->setOrder($Order);
-
-                $checkout = $this->getRedirectCheckout();
-
-                if ($checkout == 'LIGHTBOX') {
-                    $retorno = $PagSeguroPaymentModel->getRedirectPaymentHtml($Order);
-                    $this->_redirectUrl($retorno);
-                } else {
-                    $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($Order));
-                }
-
+                
+                $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($Order));
+                
                 //after verify if the order was created, instantiates the sendEmail() method
                 $this->sendEmail();
-
+                
             } catch (Exception $ex) {
                 Mage::log($ex->getMessage());
                 Mage::getSingleton('core/session')->addError(self::MENSAGEM);
+				$this->_redirectUrl(Mage::getUrl('checkout/cart'));
                 if ($checkout == 'PADRAO') {
                     $this->_redirectUrl(Mage::getUrl() . $feedback);
                 }
                 $this->_canceledStatus($Order);
             }
-
+            
         } else {
             Mage::getSingleton('core/session/canceled')->addError(self::MENSAGEM);
+			$this->_redirectUrl(Mage::getUrl('checkout/cart'));
             if ($checkout == 'PADRAO') {
                 $this->_redirectUrl(Mage::getUrl() . $feedback);
             }
             $this->_canceledStatus($Order);
         }
-
-
+        
+        
+        
     }
 
     /**
@@ -132,7 +126,7 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
      */
     private function sendEmail()
     {
-
+        
         $order = new Mage_Sales_Model_Order();
         $incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         $order->loadByIncrementId($incrementId);
@@ -141,9 +135,9 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
         } catch (Exception $ex) {
             die($ex);
         }
-
+        
     }
-
+    
     /**
      * returns PagSeguro checkout configuration
      * @return CheckoutStatus = 'LIGHTBOX' or 'PADRÃO'
@@ -151,7 +145,7 @@ class PagSeguro_PagSeguro_PaymentController extends FrontAction
     private function getRedirectCheckout()
     {
         $idStore = Mage::app()->getStore()->getCode();
-        Mage::log("ID_DA_LOJA:" . $idStore);
+        Mage::log("ID_DA_LOJA:".$idStore);
         return Mage::getStoreConfig('payment/pagseguro/checkout', $idStore);
 
     }

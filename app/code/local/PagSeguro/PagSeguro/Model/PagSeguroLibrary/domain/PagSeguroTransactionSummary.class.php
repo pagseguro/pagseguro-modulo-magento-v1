@@ -85,11 +85,22 @@ class PagSeguroTransactionSummary
     private $extraAmount;
 
     /**
+     * Cancellation Source
+     * @see PagSeguroTransactionCancellationSource
+     */
+    private $cancellationSource;
+
+    /**
      * Payment method
      * @see PagSeguroPaymentMethod
      */
     private $paymentMethod;
 
+    /**
+     * Recovery Code
+     */
+    private $recoveryCode;
+    
     /**
      * @return the transaction date
      */
@@ -285,6 +296,24 @@ class PagSeguroTransactionSummary
     }
 
     /**
+     * Sets the cancellation source
+     * @param PagSeguroTransactionCancellationSource $cancellationSource
+     */
+    public function setCancellationSource(PagSeguroTransactionCancellationSource $cancellationSource)
+    {
+        $this->cancellationSource = $cancellationSource;
+    }
+
+    /**
+     * @return the cancellation source
+     * @see PagSeguroTransactionCancellationSource
+     */
+    public function getCancellationSource()
+    {
+        return $this->cancellationSource;
+    }
+
+    /**
      * Sets the payment method
      * @param PagSeguroPaymentMethod $paymentMethod
      */
@@ -300,5 +329,22 @@ class PagSeguroTransactionSummary
     public function getPaymentMethod()
     {
         return $this->paymentMethod;
+    }
+
+    /**
+     * @return the recovery code
+     */
+    public function getRecoveryCode()
+    {
+        return $this->recoveryCode;
+    }
+    
+    /**
+     * Sets the recovery code
+     * @param string $recoveryCode
+     */
+    public function setRecoveryCode($recoverycode)
+    {
+        $this->recoveryCode = $recoverycode;
     }
 }

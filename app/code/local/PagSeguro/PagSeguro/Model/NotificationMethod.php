@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-include_once (Mage::getSingleton('PagSeguro_PagSeguro_Helper_Data')->getPageSeguroUrl() . '/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once (Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -65,6 +65,7 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
                 $this->_updateCms();
             }
         }
+		$this->objNotificationType->getValue();
     }
     
     /**
@@ -102,12 +103,11 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
     */
     private function _createTransaction()
     {
-        $this->objTransaction = PagSeguroNotificationService::checkTransaction(
-            $this->objCredential,
-            $this->notificationCode
-        );
-
-        $this->reference = $this->objTransaction->getReference();
+        $this->objTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential,$this->notificationCode);
+		
+		$reference = $this->objTransaction->getReference();
+		$orderId = Mage::helper('PagSeguro')->getReferenceDecryptOrderID($reference);
+        $this->reference = $orderId;
     }
    
     /**
