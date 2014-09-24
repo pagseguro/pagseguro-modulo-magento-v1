@@ -695,6 +695,8 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 	{
 		// set log when sending email
 		$this->setAbandonedSendEmailLog($orderId, $recoveryCode);
+		// update status
+		$this->setAbandonedUpdateOrder($orderId);
 		// get methods of payment
 		$obj = Mage::getSingleton('PagSeguro_PagSeguro_Model_PaymentMethod');
 		// get order		
@@ -725,8 +727,7 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 		$emailTemplateVariables['pagseguro_transaction_url'] = $this->getUrlAbandonedRecovery($recoveryCode);
 		$emailTemplateVariables['comment'] = '';
 		// Set variables values of template		
-		$emailTemplate->getProcessedTemplate($emailTemplateVariables);	
-		$this->setAbandonedUpdateOrder($orderId);
+		$emailTemplate->getProcessedTemplate($emailTemplateVariables);			
 		// Get customer of order		
 		$customer = Mage::getModel('customer/customer')->load($order->getCustomerId());
 		// Send template of email with variables for customer email and name
