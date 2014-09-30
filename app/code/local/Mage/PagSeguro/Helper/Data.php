@@ -814,12 +814,8 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 	{
 		// get order
 		$order = Mage::getModel('sales/order')->load($orderId);
-		// Verify stats of order and set	
-		if ($order->getStatus() == 'pending') {
-			$status = 'aguardando_pagamento_ps';
-		} else {
-			$status = $order->getStatus();
-		}
+		// get stats of order
+		$status = $order->getStatus();
 		// Comment of history order
 		$comment = ($this->admLocaleCode == 'pt_BR') ? 'Transação abandonada' : 'Abandoned transaction';
 		// if show icone notify in history order

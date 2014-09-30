@@ -231,7 +231,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     		//default installation
     		$storeId = 0;
 			$base = Mage::getStoreConfig('web/unsecure/base_url', $storeId);
-        	$notification_url = $base . 'pagseguro/notification/send/';
+        	$notification_url = $base . 'index.php/pagseguro/notification/send/';
     	}
         return $notification_url;
     }

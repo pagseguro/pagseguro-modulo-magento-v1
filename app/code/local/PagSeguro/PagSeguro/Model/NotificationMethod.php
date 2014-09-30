@@ -132,16 +132,19 @@ class PagSeguro_PagSeguro_Model_NotificationMethod extends MethodAbstract
     * @param type $status
     */
     private function _updateOrders($status)
-    {
-        $obj = Mage::getModel('sales/order')->load($this->reference);
-        $obj->setStatus($status);
-        
-        $history = $obj->addStatusHistoryComment('', false);
-        $history->setIsCustomerNotified(false);
+    {        
+		$comment = null;
+		$notify = true;						
+		$order = Mage::getModel('sales/order')->load($this->reference);
+		$order->addStatusToHistory($status, $comment, $notify);
+		$order->sendOrderUpdateEmail($notify, $comment);			
+		// Makes the notification of the order of historic displays the correct date and time
+		Mage::app()->getLocale()->date();
+		$order->save();	
        
         try {
             $this->_insertCode();
-            $obj->save();
+            $order->save();
             
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
