@@ -39,7 +39,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.2.4';
+    private $Module_Version = '2.3';
     private $Order;
     private $Shipping_Data;
     
