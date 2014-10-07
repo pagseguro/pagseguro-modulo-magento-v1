@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-include_once (Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 

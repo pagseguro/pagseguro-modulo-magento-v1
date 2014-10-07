@@ -109,10 +109,8 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 	 */
 	private function getUrlTransactionSearchService()
 	{
-		include (Mage::getBaseDir('code') . 
-				'/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/resources/PagSeguroResources.php');
-		include (Mage::getBaseDir('code') . 
-		'/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/config/PagSeguroConfig.php');		
+		include (Mage::getBaseDir('lib') . '/PagSeguroLibrary/resources/PagSeguroResources.php');
+		include (Mage::getBaseDir('lib') . '/PagSeguroLibrary/config/PagSeguroConfig.php');		
 		$environment = $PagSeguroConfig['environment'];		
 		// Capture the url query the webservice
 		$url = $PagSeguroResources['webserviceUrl'][$environment] . 
@@ -503,7 +501,7 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 			if ($obj->getConfigData('log_file') != '') {
 				$directoryLog = Mage::getBaseDir() . '/' . $obj->getConfigData('log_file');					
 			} else {
-				$directoryLog = Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguro.log';
+				$directoryLog = Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguro.log';
 			}	
 			$date = '{' . Mage::app()->getLocale()->date() . '}';
 			$return = $date . $module . $phrase . "\r\n";				
@@ -564,8 +562,7 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function getPagSeguroAbandonedList()
 	{
 		if ($this->access == 1) {
-			include_once (Mage::getBaseDir('code') . 
-						 '/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
+			include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
 			$obj = Mage::getSingleton('PagSeguro_PagSeguro_Model_PaymentMethod');	
 			$this->dateStart = $this->getDateSubtracted($obj->getConfigData('abandoned_link'));
 			try {
@@ -740,8 +737,7 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 	 */
 	private function getUrlAbandonedRecovery($recoveryCode)
 	{		
-		include (Mage::getBaseDir('code') . 
-				'/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/config/PagSeguroConfig.php');
+		include (Mage::getBaseDir('lib') . '/PagSeguroLibrary/config/PagSeguroConfig.php');
 		// Get environment
 		$sandbox = ($PagSeguroConfig['environment'] == 'sandbox') ? 'sandbox.' : '';
 		$url = 'https://' . $sandbox . 'pagseguro.uol.com.br/checkout/v2/resume.html?r=' . $recoveryCode;

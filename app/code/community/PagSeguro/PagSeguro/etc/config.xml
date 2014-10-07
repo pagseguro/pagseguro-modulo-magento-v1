@@ -2,7 +2,7 @@
 <config>
     <modules>
         <PagSeguro_PagSeguro>
-            <version>1.0.0</version>
+            <version>2.3</version>
         </PagSeguro_PagSeguro>
     </modules>
  

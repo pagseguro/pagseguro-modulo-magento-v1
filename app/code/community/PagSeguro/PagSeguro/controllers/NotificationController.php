@@ -17,7 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************
 */
-include_once (Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
 
 use Mage_Core_Controller_Front_Action as FrontAction;
 

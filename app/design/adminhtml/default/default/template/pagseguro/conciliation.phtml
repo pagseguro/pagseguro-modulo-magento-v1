@@ -52,31 +52,29 @@ limitations under the License.
         <option value='25'>25</option>
         <option value='30'>30</option>
     </select>
-    <input type="submit" class="pagseguro-button green-theme normal" value="<?php echo $this->__('Research');?>">
+    <input type="submit" class="pagseguro-button green-theme normal" value="<?php echo $this->__(' Search ');?>">
 </form>
 
 <table id="htmlgrid" class="grid" border="0" cellpadding="10" cellspacing="10" width="100%">
 	<thead>
 		<tr>
-			<th width="10%"><?php echo $this->__('Date');?></th>
+			<th width="12%"><?php echo $this->__('Date of Order');?></th>
 			<th width="15%">ID Magento</th>
 			<th width="25%" >ID PagSeguro</th>
 			<th width="15%">Status Magento</th>
 			<th width="15%">Status PagSeguro</th>
-			<th width="10%"><?php echo $this->__('Edit');?></th>
-			<th width="10%"><?php echo $this->__('Update');?></th>
+			<th width="9%"><?php echo $this->__('Edit');?></th>
+			<th width="9%"><?php echo $this->__('Update');?></th>
 		</tr>
 	</thead>
 </table>
 
 <?php
-	$tooltip .= 'In the module installation PagSeguro a reference is created with five (5) ';
-	$tooltip .= 'random characters eg - # asf9 - that will be sent at the time of purchase. ';
-	$tooltip .= 'If no reference exists the PagSeguro your store will not return purchases to be reconciled.';
-	
-	$noTransaction = 'No transaction to be reconciled. Perform a search.';
+	$tooltip .= 'Only will be displayed transactions created after installing the module in its version 2.3. ';
+	$tooltip .= 'Transactions created before this version will not be displayed.';
+	$noTransaction = 'No results.';
 ?>
-<p class="info"><?php echo $this->__('Do not see your old transactions to reconcile?'); ?> 
+<p class="info"><?php echo $this->__('Do not see your old transactions?'); ?> 
     <a data-tooltip="<?php echo $this->__($tooltip); ?>">
         <img alt="ajuda" src="<?php echo $this->getSkinUrl('pagseguro/images/help.png'); ?>">
     </a>
@@ -101,6 +99,7 @@ limitations under the License.
 			"searching": false,
 			"bStateSave": true,
 			"pageLength": 10,
+			"aaSorting": [[ 0, "desc" ]],
 			"aoColumnDefs": [
 				{ 'bSortable': false, 'aTargets': [ 5, 6 ] },
 				{ "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4, 5, 6 ] }

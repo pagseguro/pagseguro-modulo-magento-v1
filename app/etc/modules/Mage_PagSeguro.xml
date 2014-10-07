@@ -22,7 +22,7 @@ limitations under the License.
     <modules>
         <Mage_PagSeguro>
             <active>true</active>
-            <codePool>local</codePool>
+            <codePool>community</codePool>
         </Mage_PagSeguro>
     </modules>
 </config>

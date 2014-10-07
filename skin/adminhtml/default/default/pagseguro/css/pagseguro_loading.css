@@ -17,12 +17,12 @@ limitations under the License.
 */
 
 .blockUI.blockMsg.blockPage { opacity: 1.0 !important; min-width: 285px !important; }
-.ps_loading { width: 255px; height: 40px; margin: 0 auto;  padding: 20px; box-sizing: unset; }
+.ps_loading { width: 255px; height: 40px; margin: 0 auto;  padding: 20px; box-sizing: unset; -moz-box-sizing: unset; }
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-	.ps_loading { box-sizing: content-box; }
+	.ps_loading { box-sizing: content-box; -moz-box-sizing: content-box; }
 }
 .ps_loading #loading { width: 40px; height: 40px; display: block; margin-right: 10px; }
 .ps_msg { width: 202px; height: 40px; text-align: center; font-size: 18px; font-family: Arial; color: #000; line-height: 40px; }
 .ps_loading #loading, .ps_msg { float: left; }
-.blockUI { box-sizing: content-box; }
+.blockUI { box-sizing: content-box; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; }
 .ps_msg_hidden { display: none !important; }

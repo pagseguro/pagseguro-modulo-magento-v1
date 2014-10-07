@@ -18,8 +18,8 @@
  * ***********************************************************************
  */
 
-include_once (Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/PagSeguroLibrary/PagSeguroLibrary.php');
-include_once(Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/Defines.php');
+include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
+include_once(Mage::getBaseDir('code') . '/community/PagSeguro/PagSeguro/Model/Defines.php');
 
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
@@ -39,7 +39,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.3';
+    private $Module_Version = '2.2.4';
     private $Order;
     private $Shipping_Data;
     
@@ -153,7 +153,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
     
     private function _validator()
     {
-        require_once(Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/Updates.php');
+        require_once(Mage::getBaseDir('code') . '/community/PagSeguro/PagSeguro/Model/Updates.php');
         
         Updates::createTableModule();
     }
@@ -238,7 +238,7 @@ class PagSeguro_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
     private function _addressConfig($fullAddress)
     {
-		require_once(Mage::getBaseDir('code') . '/local/PagSeguro/PagSeguro/Model/AddressConfig.php');
+		require_once(Mage::getBaseDir('code') . '/community/PagSeguro/PagSeguro/Model/AddressConfig.php');
         return AddressConfig::trataEndereco($fullAddress);
     }
 

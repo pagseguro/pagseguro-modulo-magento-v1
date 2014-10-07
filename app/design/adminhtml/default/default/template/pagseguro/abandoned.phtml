@@ -42,8 +42,8 @@ limitations under the License.
 
 <form action="javascript:void(0)" method="post" >
 	<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
-    <input type="submit" class="pagseguro-button green-theme normal btnSearch" value="<?php echo $this->__('Research');?>">
-    <input type="submit" class="pagseguro-button green-theme normal btnSend" value="<?php echo $this->__('Mass mailing');?>">
+    <input type="submit" class="pagseguro-button green-theme normal btnSearch" value="<?php echo $this->__(' Search ');?>">
+    <input type="submit" class="pagseguro-button green-theme normal btnSend" value="<?php echo $this->__("Send selected's");?>">
 </form>
 
 <?php $days = Mage::getSingleton('PagSeguro_PagSeguro_Model_PaymentMethod')->getConfigData('abandoned_link'); ?>
@@ -51,28 +51,21 @@ limitations under the License.
 <table id="htmlgrid" class="grid" border="0" cellpadding="10" cellspacing="10" width="100%">
 	<thead>
 		<tr>
-			<th class="select_checkbox" onclick="checkedAll()" width="10%"><?php echo $this->__('Send');?></th>
+			<th class="select_checkbox" onclick="checkedAll()" width="10%"><?php echo $this->__('Select');?></th>
 			<th width="25%"><?php echo $this->__('Date of Order');?></th>
 			<th width="20%"><?php echo $this->__('ID Magento');?></th>
-			<th width="25%"><?php echo $this->__('Validity of Link');?></th>
+			<th width="25%"><?php echo $this->__('Date of Expiry');?></th>
 			<th width="10%"><?php echo $this->__('Send e-mail');?></th>
-			<th width="10%"><?php echo $this->__('Visualize');?></th>
+			<th width="10%"><?php echo $this->__('Details');?></th>
 		</tr>
 	</thead>
 	<tbody>
 		
 	</tbody>
-	<tfoot>
-		<tr>
-			<th colspan="6">
-				<?php echo $this->__("Validity's of link to send email: %s day(s)", $days); ?>
-			</th>
-		</tr>
-	</tfoot>
 </table>
 
 <?php 
-	$noTransaction = $this->__('Perform a search.');
+	$noTransaction = $this->__('No results.');
 	$noEmailSelected = $this->__("Select at least one field of 'Submit' column.");
 	$emailSendSuccess = $this->__("E-mail successfully sent!");
 	$emailsSendSuccess = $this->__("Emails sent successfully!");
