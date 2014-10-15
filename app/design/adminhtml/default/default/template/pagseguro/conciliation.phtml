@@ -28,22 +28,23 @@ limitations under the License.
 <div class="content-header">
     <table cellspacing="0" class="grid-header">
         <tr>
-            <th><h3><?php echo $this->__('Conciliation'); ?></h3></th>
+            <th><h3><?php echo $this->__('Conciliação'); ?></h3></th>
         </tr>
     </table>
 </div>
 <p>
 	<?php 
-		$string .= 'This allows you to query the transactions received by you in a range of dates. ';
-		$string .= 'It can be used periodically to check if your system has received all notifications sent by ';
-		$string .= 'PagSeguro transactions in order to reconcile the transactions stored in your system with PagSeguro.';
+		$string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas. ';
+		$string .= 'Ela pode ser usada periodicamente para verificar se o seu sistema recebeu todas as notificações ';
+		$string .= 'de transações enviadas pelo PagSeguro, de forma a conciliar as transações armazenadas ';
+		$string .= 'em seu sistema com o PagSeguro.';
 		echo $this->__($string);
 	 ?>
 </p>
 
 <form action="javascript:void(0)" method="post" >
 	<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
-	<label><?php echo $this->__('Days'); ?></label>
+	<label><?php echo $this->__('Dias'); ?></label>
 	<select id='pagseguro_dias_btn' name='pagseguro_dias' class="select">
         <option value='5'>5</option>
         <option value='10'>10</option>
@@ -52,29 +53,29 @@ limitations under the License.
         <option value='25'>25</option>
         <option value='30'>30</option>
     </select>
-    <input type="submit" class="pagseguro-button green-theme normal" value="<?php echo $this->__(' Search ');?>">
+    <input type="submit" class="pagseguro-button green-theme normal" value="<?php echo $this->__('Pesquisar');?>">
 </form>
 
 <table id="htmlgrid" class="grid" border="0" cellpadding="10" cellspacing="10" width="100%">
 	<thead>
 		<tr>
-			<th width="12%"><?php echo $this->__('Date of Order');?></th>
-			<th width="15%">ID Magento</th>
-			<th width="25%" >ID PagSeguro</th>
-			<th width="15%">Status Magento</th>
-			<th width="15%">Status PagSeguro</th>
-			<th width="9%"><?php echo $this->__('Edit');?></th>
-			<th width="9%"><?php echo $this->__('Update');?></th>
+			<th width="12%"><?php echo $this->__('Data do Pedido');?></th>
+			<th width="15%"><?php echo $this->__('ID Magento');?></th>
+			<th width="25%"><?php echo $this->__('ID PagSeguro');?></th>
+			<th width="15%"><?php echo $this->__('Status Magento');?></th>
+			<th width="15%"><?php echo $this->__('Status PagSeguro');?></th>
+			<th width="9%"><?php echo $this->__('Editar');?></th>
+			<th width="9%"><?php echo $this->__('Atualizar');?></th>
 		</tr>
 	</thead>
 </table>
 
 <?php
-	$tooltip .= 'Only will be displayed transactions created after installing the module in its version 2.3. ';
-	$tooltip .= 'Transactions created before this version will not be displayed.';
-	$noTransaction = 'No results.';
+	$tooltip .= 'Somente serão exibidas transações criadas após a instalação do módulo em sua versão 2.3. ';
+	$tooltip .= 'Transações criadas antes desta versão não serão exibidas.';
+	$noTransaction = 'Nenhum resultado.';
 ?>
-<p class="info"><?php echo $this->__('Do not see your old transactions?'); ?> 
+<p class="info"><?php echo $this->__('Não encontra suas transações antigas?'); ?> 
     <a data-tooltip="<?php echo $this->__($tooltip); ?>">
         <img alt="ajuda" src="<?php echo $this->getSkinUrl('pagseguro/images/help.png'); ?>">
     </a>
@@ -109,10 +110,10 @@ limitations under the License.
 			"oLanguage": {
 				"sEmptyTable":"<?php echo $this->__($noTransaction); ?>",
 				"oPaginate": {
-					"sNext": '<?php echo $this->__('Next');?>',
-					"sLast": '<?php echo $this->__('Last');?>',
-					"sFirst": '<?php echo $this->__('First');?>',
-					"sPrevious": '<?php echo $this->__('Previous');?>'
+					"sNext": '<?php echo $this->__('Próximo');?>',
+					"sLast": '<?php echo $this->__('Último');?>',
+					"sFirst": '<?php echo $this->__('Primeiro');?>',
+					"sPrevious": '<?php echo $this->__('Anterior');?>'
 				}
 			},
 			

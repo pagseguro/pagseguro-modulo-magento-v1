@@ -26,24 +26,24 @@ limitations under the License.
 <div class="content-header">
     <table cellspacing="0" class="grid-header">
         <tr>
-            <th><h3><?php echo $this->__('Abandoned'); ?></h3></th>
+            <th><h3><?php echo $this->__('Abandonadas'); ?></h3></th>
         </tr>
     </table>
 </div>
 
 <p>
 	<?php 
-		$string .= 'With this functionality, you can list the abandoned transactions and shoot, manually, ';
-		$string .= 'an email to its buyer. This email will contain a link that redirects to the payment flow, ';
-		$string .= 'exactly at the point where it stopped.';
+		$string .= 'Com esta funcionalidade, você poderá listar as transações abandonadas e disparar, manualmente, ';
+		$string .= 'um e-mail para seu comprador. Este e-mail conterá um link que o redirecionará para o fluxo de ';
+		$string .= 'pagamento, exatamente no ponto onde ele parou.';
 		echo $this->__($string);
 	 ?>
 </p>
 
 <form action="javascript:void(0)" method="post" >
 	<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
-    <input type="submit" class="pagseguro-button green-theme normal btnSearch" value="<?php echo $this->__(' Search ');?>">
-    <input type="submit" class="pagseguro-button green-theme normal btnSend" value="<?php echo $this->__("Send selected's");?>">
+    <input type="submit" class="pagseguro-button green-theme normal btnSearch" value="<?php echo $this->__('Pesquisar');?>">
+    <input type="submit" class="pagseguro-button green-theme normal btnSend" value="<?php echo $this->__("Enviar selecionados");?>">
 </form>
 
 <?php $days = Mage::getSingleton('PagSeguro_PagSeguro_Model_PaymentMethod')->getConfigData('abandoned_link'); ?>
@@ -51,12 +51,12 @@ limitations under the License.
 <table id="htmlgrid" class="grid" border="0" cellpadding="10" cellspacing="10" width="100%">
 	<thead>
 		<tr>
-			<th class="select_checkbox" onclick="checkedAll()" width="10%"><?php echo $this->__('Select');?></th>
-			<th width="25%"><?php echo $this->__('Date of Order');?></th>
+			<th class="select_checkbox" onclick="checkedAll()" width="10%"><?php echo $this->__('Selecionar');?></th>
+			<th width="25%"><?php echo $this->__('Data do Pedido');?></th>
 			<th width="20%"><?php echo $this->__('ID Magento');?></th>
-			<th width="25%"><?php echo $this->__('Date of Expiry');?></th>
-			<th width="10%"><?php echo $this->__('Send e-mail');?></th>
-			<th width="10%"><?php echo $this->__('Details');?></th>
+			<th width="25%"><?php echo $this->__('Data de Expiração');?></th>
+			<th width="10%"><?php echo $this->__('Enviar e-mail');?></th>
+			<th width="10%"><?php echo $this->__('Detalhes');?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -65,10 +65,10 @@ limitations under the License.
 </table>
 
 <?php 
-	$noTransaction = $this->__('No results.');
-	$noEmailSelected = $this->__("Select at least one field of 'Submit' column.");
-	$emailSendSuccess = $this->__("E-mail successfully sent!");
-	$emailsSendSuccess = $this->__("Emails sent successfully!");
+	$noTransaction = $this->__('Nenhum resultado.');
+	$noEmailSelected = $this->__("Selecione pelo menos um campo da coluna 'Enviar'.");
+	$emailSendSuccess = $this->__("E-mail enviado com sucesso!");
+	$emailsSendSuccess = $this->__("E-mails enviado com sucesso!");
 ?>
 
 <script type="text/javascript">	
@@ -98,10 +98,10 @@ limitations under the License.
 			"oLanguage": {
 				"sEmptyTable":"<?php echo $this->__($noTransaction); ?>",
 				"oPaginate": {
-					"sNext": '<?php echo $this->__('Next');?>',
-					"sLast": '<?php echo $this->__('Last');?>',
-					"sFirst": '<?php echo $this->__('First');?>',
-					"sPrevious": '<?php echo $this->__('Previous');?>'
+					"sNext": '<?php echo $this->__('Próximo');?>',
+					"sLast": '<?php echo $this->__('Último');?>',
+					"sFirst": '<?php echo $this->__('Primeiro');?>',
+					"sPrevious": '<?php echo $this->__('Anterior');?>'
 				}
 			},		
 			

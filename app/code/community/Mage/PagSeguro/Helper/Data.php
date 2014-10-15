@@ -71,21 +71,21 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 		$token = $obj->getConfigData('token');
 		if ($email) {		
 			if (!$token) {	
-				$message =  $module . $this->__('Fill out the token.');
+				$message =  $module . $this->__('Preencha o token.');
 				Mage::getSingleton('core/session')->addError($message);	
 				Mage::app()->getResponse()->setRedirect($configUrl);	
 			}
 		} else {
-			$message = $module . $this->__('Fill in the e-mail the seller.');
+			$message = $module . $this->__('Preencha o e-mail do vendedor.');
 			Mage::getSingleton('core/session')->addError($message);
 			if (!$token) {				
-				$message = $module . $this->__('Fill out the token.');
+				$message = $module . $this->__('Preencha o token.');
 				Mage::getSingleton('core/session')->addError($message);	
 			}
 			Mage::app()->getResponse()->setRedirect($configUrl);		
 		}		
 		if ($this->getPagSeguroPaymentList() == 'unauthorized' && $email && $token) {
-			$message = $module . $this->__('User not authorized, check if the email and token are correct.');
+			$message = $module . $this->__('Usuário não autorizado, verifique o e-mail e token se estão corretos.');
 			Mage::getSingleton('core/session')->addError($message);
 			Mage::app()->getResponse()->setRedirect($configUrl);
 		}		
@@ -353,8 +353,8 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 		$config = $order->getId() . '/' . $idPagSeguro . '/' . $this->getPaymentStatusPagSeguro($paymentStatus,true);		
 		// Receives the url edit order it from your id		
 		$editUrl = $this->getEditOrderUrl($orderId);		
-		$textEdit = $this->__('Edit');
-		$textUpdate = $this->__('Update');		
+		$textEdit = $this->__('Editar');
+		$textUpdate = $this->__('Atualizar');		
 		// Receives the full html link to edit an order
 		$editOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
 		$editImage = $skinUrl . "images/edit.gif";
@@ -527,30 +527,30 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 		$token = $obj->getConfigData('token');	
 		if ($obj->getConfigData('abandoned') == 0) {
 			$this->access = 0;	
-			$message =  $module . $this->__('Query abandoned transactions is disabled.');
+			$message =  $module . $this->__('Consulta de transações abandonadas está desativado.');
 			Mage::getSingleton('core/session')->addError($message);	
 			Mage::app()->getResponse()->setRedirect($configUrl);				
 		} else {
 			if ($email) {		
 				if (!$token) {
 					$this->access = 0;	
-					$message =  $module . $this->__('Fill out the token.');
+					$message =  $module . $this->__('Preencha o token.');
 					Mage::getSingleton('core/session')->addError($message);	
 					Mage::app()->getResponse()->setRedirect($configUrl);	
 				}
 			} else {
 				$this->access = 0;
-				$message = $module . $this->__('Fill in the e-mail the seller.');
+				$message = $module . $this->__('Preencha o e-mail do vendedor.');
 				Mage::getSingleton('core/session')->addError($message);
 				if (!$token) {				
-					$message = $module . $this->__('Fill out the token.');
+					$message = $module . $this->__('Preencha o token.');
 					Mage::getSingleton('core/session')->addError($message);	
 				}
 				Mage::app()->getResponse()->setRedirect($configUrl);		
 			}
 		}
 		if ($this->getPagSeguroAbandonedList() == 'unauthorized' && $email && $token) {
-			$message = $module . $this->__('User not authorized, check if the email and token are correct.');
+			$message = $module . $this->__('Usuário não autorizado, verifique o e-mail e token se estão corretos.');
 			Mage::getSingleton('core/session')->addError($message);
 			Mage::app()->getResponse()->setRedirect($configUrl);
 		}
@@ -635,8 +635,8 @@ class Mage_PagSeguro_Helper_Data extends Mage_Core_Helper_Abstract {
 		$skinUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/pagseguro/';
 		// Receives the url edit order it from your id		
 		$editUrl = $this->getEditOrderUrl($orderId);	
-		$emailText = $this->__('Send Email');	
-		$editText = $this->__('Visualize');
+		$emailText = $this->__('Enviar e-mail');	
+		$editText = $this->__('Detalhes');
 		// Receives the full html link to email an order
 		$onClick = "onclick='SendMail(this)'";
 		$class = "class='send_email' " . $onClick;
