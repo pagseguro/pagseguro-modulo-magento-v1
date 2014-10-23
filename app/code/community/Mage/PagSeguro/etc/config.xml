@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+
+<!--
+************************************************************************
+Copyright [2014] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+-->
+
+<config>
+    <modules>
+        <Mage_PagSeguro>
+            <version>2.3.0</version>
+        </Mage_PagSeguro>
+    </modules>
+    
+    <global>
+		<resources>
+			  <pagseguro_conciliation_setup>
+					<setup>
+						  <module>Mage_PagSeguro</module>
+					</setup>
+					<connection>
+						  <use>core_setup</use>
+					</connection>
+			  </pagseguro_conciliation_setup>
+		</resources>
+        <blocks>
+            <pagseguro>
+                <class>Mage_PagSeguro_Block</class>
+            </pagseguro>
+        </blocks>
+        <helpers>
+            <pagseguro>
+                <class>Mage_PagSeguro_Helper</class>
+            </pagseguro>  
+        </helpers>
+		<template>
+            <email>
+                <payment_pagseguro_template translate="label" module="pagseguro">
+                    <label>PagSeguro - Abandoned Transactions</label>
+                    <file>sales/pagseguro_abandoned.html</file>
+                    <type>html</type>
+                </payment_pagseguro_template>
+            </email>
+        </template>
+    </global>
+    
+    <admin>
+        <routers>
+            <pagseguro>
+                <use>admin</use>
+                <args>
+                    <module>Mage_PagSeguro</module>
+                    <frontName>pagseguro</frontName>
+                </args>
+            </pagseguro>
+        </routers>
+    </admin>
+    
+    <adminhtml>
+        <translate>
+            <modules>
+                <mage_adminhtml>
+                    <files>
+                        <pagseguro>PagSeguro_PagSeguro.csv</pagseguro>
+                    </files>
+                </mage_adminhtml>
+            </modules>
+        </translate>
+        
+        <menu>
+            <pagseguro_menu translate="title" module="pagseguro">
+			<title>PagSeguro</title>
+			<sort_order>1000</sort_order>
+                <children>
+                    <pagseguro_conciliation translate="title" module="pagseguro">
+                        <title>Conciliação</title>
+                        <action>pagseguro/adminhtml_conciliation</action>
+						<sort_order>2000</sort_order>
+                    </pagseguro_conciliation>
+					<pagseguro_abandoned translate="title" module="pagseguro">
+                        <title>Abandonadas</title>
+                        <action>pagseguro/adminhtml_abandoned</action>
+						<sort_order>2100</sort_order>
+                    </pagseguro_abandoned>
+					<pagseguro_config translate="title" module="pagseguro">
+                        <title>Configurações</title>
+                        <action>adminhtml/system_config/edit/section/payment/</action>
+						<sort_order>2200</sort_order>
+                    </pagseguro_config>
+                </children>
+            </pagseguro_menu>
+        </menu> 
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <catalog>
+                            <children>
+                                <pagseguro_adminform>
+                                    <title>PagSeguro</title>
+                                </pagseguro_adminform>
+                            </children>
+                        </catalog>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+        
+        <layout>
+            <updates>
+                <pagseguro>
+                    <file>pagseguro.xml</file>
+                </pagseguro>
+            </updates>
+        </layout>
+    </adminhtml>
+</config>

@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<!--
+************************************************************************
+Copyright [2014] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+-->
+
+<layout>
+    <pagseguro_adminhtml_conciliation_index>
+        <update handle="pagseguro_conciliation_index"/>
+		<reference name="head">
+			<action method="addCss"><stylesheet>pagseguro/css/jquery.dataTables.min.css</stylesheet></action>
+			<action method="addCss"><stylesheet>pagseguro/css/pagseguro.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>pagseguro/js/jquery.blockUI.js</name><params/><if/></action>
+		</reference>
+        <reference name="content">
+			<block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="conciliation" template="pagseguro/conciliation.phtml"/>
+        </reference>	
+    </pagseguro_adminhtml_conciliation_index>
+	<pagseguro_adminhtml_abandoned_index>
+        <update handle="pagseguro_abandoned_index"/>
+		<reference name="head">
+			<action method="addCss"><stylesheet>pagseguro/css/jquery.dataTables.min.css</stylesheet></action>
+			<action method="addCss"><stylesheet>pagseguro/css/pagseguro.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>pagseguro/js/jquery.blockUI.js</name><params/><if/></action>
+		</reference>
+        <reference name="content">
+			<block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="abandoned" template="pagseguro/abandoned.phtml"/>
+        </reference>	
+    </pagseguro_adminhtml_abandoned_index>
+</layout>
