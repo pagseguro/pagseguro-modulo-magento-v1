@@ -65,6 +65,7 @@ Changelog
 2.3
  - Possibilidade de consultar transações no PagSeguro para conciliar os status com a base local;
  - Adicionado opção para visualização de transações abandonadas, permitindo o envio de email com um link para que o comprador possa continuar o processo de compra de onde ele parou;
+ - Compatibilidade com Magento 1.9.0.1;
  - Ajustes em geral;
 
 2.2
@@ -96,7 +97,7 @@ Changelog
  - Não utilizar URLs de localhost para notificação/redirecionamento;
  - Compatibilidade com OSC-Magento-Brasil;
  - Atualização da lib PagSeguro PHP;
- - Compatibilidade com Magetento 1.5.x e 1.6.x;
+ - Compatibilidade com Magento 1.5.x e 1.6.x;
 
 
 1.3
