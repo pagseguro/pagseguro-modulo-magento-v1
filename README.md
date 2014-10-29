@@ -25,9 +25,9 @@ Instalação
 ---
  - Certifique-se de que não há instalação de outros módulos para o PagSeguro em seu sistema;
  - Baixe o repositório como arquivo zip ou faça um clone;
- - Copie as pastas *app*, *lib* e *skin* para dentro do diretório de instalação do Magento. Caso seja informado da sobrescrita de alguns arquivos, você pode confirmar o procedimento sem problemas. Esta instalação não afetará nenhum arquivo do seu sistema, somente adicionará os arquivos do módulo PagSeguro;
- - Certifique-se de que as permissões das pastas e arquivos recém copiados sejam, respectivamente, definidas como 755 e 644;
- - Na área administrativa do seu sistema, acesse o menu System -> Cache Management -> Flush Magento Cache.
+ - Caso tenha alguma outra versão do módulo instalada, copie o arquivo *remove-module-2.2.php* para a raíz de instalação do seu Magento e execute o arquivo no browser, ex.: www.meusite.com.br/magento/remove-module-2.2.php. Siga as instruções na tela para a remoção dos arquivos.
+ - Na área administrativa do seu sistema, acesse o menu System -> Magento Connect -> Magento Connect Manager
+ - Clique em "choose file", aponte para o arquivo PagSeguro_PagSeguro-x.x.x.tgz e faça upload.
 
 
 Configuração
@@ -66,6 +66,7 @@ Changelog
  - Possibilidade de consultar transações no PagSeguro para conciliar os status com a base local;
  - Adicionado opção para visualização de transações abandonadas, permitindo o envio de email com um link para que o comprador possa continuar o processo de compra de onde ele parou;
  - Compatibilidade com Magento 1.9.0.1;
+ - Criação de pacote instalável;
  - Ajustes em geral;
 
 2.2
@@ -91,7 +92,7 @@ Changelog
 
 1.5
  - Armazenar no Magento o ID da transação feita no PagSeguro;
-  
+
 1.4
  - Verificar se o ambiente atende os requisitos;
  - Não utilizar URLs de localhost para notificação/redirecionamento;
