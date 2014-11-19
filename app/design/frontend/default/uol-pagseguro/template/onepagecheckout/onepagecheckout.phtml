@@ -1,0 +1,113 @@
+<div class="page-title">
+    <h1 class='h1_opc'><?php echo Mage::getStoreConfig('onepagecheckout/general/title') ?></h1>
+    <?php echo $this->__('Fill in the fields below to complete your purchase!') ?>
+    <?php if (!Mage::getSingleton('customer/session')->isLoggedIn()){
+    $guest_checkout1 = Mage::getStoreConfig('onepagecheckout/general/guest_checkout1');
+    if ($guest_checkout1 === '1') : ?>
+    <p class="onepagecheckout_loginarea">
+        <a href="javascript:void(0)" class="onepagecheckout_loginlink" onclick='open_login();'>
+            <?php echo $this->__('Already registered? Click here to login') ?>
+        </a>
+    </p>
+    <?php endif; 
+    $guest_checkout2 = Mage::getStoreConfig('onepagecheckout/general/guest_checkout2');    
+    if ($guest_checkout2 === '1') : ?>
+    <p class="onepagecheckout_loginarea">
+        <a href="<?=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB)?>customer/account/login/" class="onepagecheckout_loginlink" >
+            <?php echo $this->__('Already registered? Click here to login') ?>
+        </a>
+    </p>
+    <?php endif; 	
+		echo $this->getChildHtml('customer.login');
+		echo $this->getChildHtml('customer.forgot');	
+    }    
+    ?>
+</div>
+<div class='ptdivline'></div>
+
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+
+<?php
+	$seq_http	= (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on');  
+?>
+<script type="text/javascript">
+	var http_type	= '<?php if($seq_http){echo 'https';}else{echo 'http';}?>';
+</script>
+<script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.lightbox.js"></script>
+<?php 
+	$checkout = Mage::getStoreConfig('payment/uol_pagseguro/checkout');
+	if($checkout == 'LIGHTBOX') {
+?>
+	<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/onepagecheckoutpagseguro.js') ?>"></script>
+<?php } else { ?>
+	<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/onepagecheckout.js') ?>"></script>
+<?php }?>
+
+<script type="text/javascript">countryRegions = <?php echo $this->helper('directory')->getRegionJson() ?></script>
+
+<form action="" id="onepagecheckout_orderform">
+<div class="col3-set onepagecheckout_datafields">
+    <div class="col-1">
+        <?php echo $this->getChildHtml('billing.address') ?>
+        <?php echo $this->getChildHtml('shipping.address') ?>
+    </div>
+
+    <div class="col-2">
+        <?php echo $this->getChildHtml('shipping.method') ?>
+        <?php echo $this->getChildHtml('payment.method') ?>
+         <div id="checkout-coupon-discount-load">
+            <?php echo $this->getChildHtml('coupon') ?>
+        </div>
+
+        <?php if (Mage::getStoreConfig('onepagecheckout/general/comment')) : ?>
+		<div class="op_block_title">
+	    	<?php echo $this->helper('sales')->__('Comment') ?>
+	    </div>        
+        <div class="form_fields">
+            <div class="full">
+                <div class="data_area" id='comment-block'>
+                    <textarea name="order-comment" id="order-comment"><?php echo trim(Mage::getSingleton('customer/session')->getOrderCustomerComment()) ?></textarea>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+		<?php if (Mage::helper('onepagecheckout')->isSubscribeNewAllowed()) : ?>
+            <p class="newsletter">
+                <input type="checkbox" id="newsletter-signup" name="newsletter" value="1" title="<?php echo Mage::helper('newsletter')->__('Sign up for our newsletter') ?>" class="checkbox" />
+                <label for="newsletter-signup">
+                    <?php echo Mage::helper('newsletter')->__('Sign up for our newsletter') ?>
+                </label>
+            </p>
+        <?php endif; ?>
+    </div>
+
+    <div class="col-3">
+        <?php echo $this->getChildHtml('review') ?>
+    </div>
+</div>
+</form>
+
+<script type="text/javascript">
+//<![CDATA[
+    var checkout = new OPC('onepagecheckout_orderform', {
+    	save    : '<?php echo $this->getUrl('onepagecheckout/index/saveOrder', array('_secure'=>$seq_http)) ?>',
+    	update  : '<?php echo $this->getUrl('onepagecheckout/index/updateCheckout', array('_secure'=>$seq_http)) ?>',
+        success : '<?php echo $this->getUrl('onepagecheckout/index/success', array('_secure'=>$seq_http)) ?>',
+        failure : '<?php echo $this->getUrl('checkout/cart') ?>'
+    }, "<?php echo $this->__('Please agree to all the terms and conditions.') ?>");
+
+    document.observe("dom:loaded", function() {
+        var win_triggers	= Array();
+   		$$('.checkout-agreements .agree a').each(function(item){
+   			var obj	= {
+   				el: $$('.' + item.className),
+   		   		event: 'click',
+				window: $(item.className + '-window')
+			};
+   			win_triggers.push(obj);
+        });
+		opc_window	= new OPC.Window({triggers: win_triggers});
+    });
+
+//]]>
+</script>

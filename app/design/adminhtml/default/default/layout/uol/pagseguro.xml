@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!--
+************************************************************************
+Copyright [2014] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+-->
+<layout>
+	<sales_order_grid_update_handle>
+        <reference name="sales_order.grid">
+            <action method="addColumnAfter" ifconfig="payment/pagseguro/active">
+                <columnId>payment_method</columnId>
+                <arguments>
+                    <header>Código da Transação</header>
+                    <index>payment_code</index>
+					<header_css_class>a-center</header_css_class>
+					<align>center</align>
+                    <filter_index>payment.transaction_code</filter_index>
+                    <type>text</type>
+                </arguments>
+                <after>real_order_id</after>
+            </action>
+        </reference>
+    </sales_order_grid_update_handle>
+    <adminhtml_sales_order_grid>
+        <update handle="sales_order_grid_update_handle" />
+    </adminhtml_sales_order_grid>
+    <adminhtml_sales_order_index>
+        <update handle="sales_order_grid_update_handle" />
+    </adminhtml_sales_order_index>
+    <pagseguro_adminhtml_conciliation_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>uol/pagseguro/css/jquery.dataTables.min.css</stylesheet></action>
+			<action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.blockUI.js</name><params/><if/></action>
+		</reference>
+        <reference name="content">
+			<block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="conciliation" template="uol/pagseguro/conciliation.phtml"/>
+        </reference>	
+    </pagseguro_adminhtml_conciliation_index>
+	<pagseguro_adminhtml_abandoned_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>uol/pagseguro/css/jquery.dataTables.min.css</stylesheet></action>
+			<action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.blockUI.js</name><params/><if/></action>
+		</reference>
+        <reference name="content">
+			<block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="abandoned" template="uol/pagseguro/abandoned.phtml"/>
+        </reference>	
+    </pagseguro_adminhtml_abandoned_index>
+</layout>

@@ -1,0 +1,125 @@
+<?php
+
+/**
+************************************************************************
+Copyright [2014] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+*/
+
+?>
+<?php
+	$storeId = 0; // default
+	$baseUrl = Mage::getStoreConfig('web/unsecure/base_url', $storeId);
+	$adminSkinUrl = $baseUrl . 'skin/adminhtml/default/default/';
+?>
+<link rel="stylesheet" type="text/css" href="<?php echo $adminSkinUrl . 'uol/pagseguro/css/pagseguro_loading.css'; ?>" media="all" />
+<script type="text/javascript" src="<?php echo $adminSkinUrl . 'uol/pagseguro/js/jquery-1.11.1.js'; ?>"></script>
+<script type="text/javascript" src="<?php echo $adminSkinUrl . 'uol/pagseguro/js/jquery.blockUI.js'; ?>"></script>
+<script type="text/javascript">
+	var jQuery = jQuery.noConflict();
+	jQuery(document).ready(function(){
+		jQuery(".button").click(function(e){
+			if (jQuery(this).attr('onclick') == 'payment.save()') {
+				if (jQuery.type(jQuery('.btn-checkout')[0]) == 'object') {	
+					jQuery('.btn-checkout').remove();
+				}
+				if (jQuery('input:radio[name="payment[method]"]:checked').val() == 'pagseguro') {					
+					var interval = setInterval(function() {
+						if (jQuery.type(jQuery('.btn-checkout')[0]) == 'object') {							
+							jQuery('.btn-checkout').attr('onclick','activeLoading(), review.save();');
+							clearInterval(interval);
+						}
+					}, 0);
+				}
+			}		    
+		});
+	});
+	
+	function activeLoading() {
+		jQuery('#review-please-wait.please-wait').addClass('ps_msg_hidden');
+		jQuery('.btn-checkout').remove();
+		blockModal();
+	}
+	
+	function blockModal() {
+		var gif = '<?php echo $adminSkinUrl . 'uol/pagseguro/images/wait_big.gif'; ?>';
+		var logo = '<?php echo $adminSkinUrl . 'uol/pagseguro/images/logo_loading.png'; ?>';
+	    jQuery.blockUI({
+	        message: '<div class="ps_loading">' +
+	        		 '<span id="loading"></span>' +
+    				 '<span class="ps_msg"><?php echo 'Processando o pedido...'; ?></span>' +
+    				 '</div>',
+	        css: {
+	            border: 'none',
+	            backgroundColor: '#FFF',
+	            'border-radius': '10px',
+	            '-webkit-border-radius': '10px',
+	            '-moz-border-radius': '10px',
+	            'box-shadow': '0 5px 30px rgba(0, 0, 0, 0.7)',
+	            opacity: 0.7,
+	            color: '#90e874'
+	        },
+	        overlayCSS:{backgroundImage: '-moz-linear-gradient(center bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7))'}
+	    });
+	    document.getElementById('loading').appendChild(loading.canvas);
+	    
+	}	
+</script>
+<script src="<?php echo $adminSkinUrl . 'uol/pagseguro/js/loading.js'; ?>"></script>
+<script type="text/javascript">
+
+	var loading = new Loading({
+    
+	 width: 40,
+     height: 40,
+	
+	 stepsPerFrame: 1,
+	 trailLength: 1,
+	 pointDistance: 0.005,
+	
+	 backgroundColor: '#FFF',
+	 strokeColor: '#747474',
+	
+	 fps: 60,
+	
+	 setup: function() {
+	  this._.lineWidth = 1;
+	 },
+	 step: function(point, index) {
+	
+	  var cx = this.padding + 20,
+	   cy = this.padding + 20,
+	   _ = this._,
+	   angle = (Math.PI/180) * (point.progress * 360);
+	
+	  _.beginPath();
+	  _.moveTo(point.x, point.y);
+	  _.lineTo(
+	   (Math.cos(angle) * 20) + cx,
+	   (Math.sin(angle) * 20) + cy
+	  );
+	  _.closePath();
+	  _.stroke();
+	
+	 },
+	 path: [
+	  ['arc', 20, 20, 15, 0, 360]
+	 ]
+	
+	});
+
+	loading.play();	
+
+</script>

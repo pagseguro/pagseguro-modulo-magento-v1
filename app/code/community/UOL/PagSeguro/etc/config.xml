@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<!--
+************************************************************************
+Copyright [2014] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+-->
+<config>
+    <modules>
+        <UOL_PagSeguro>
+            <version>2.3.0</version>
+        </UOL_PagSeguro>
+    </modules> 
+    <global>
+        <blocks>
+            <uol_pagseguro>
+                <class>UOL_PagSeguro_Block</class>
+            </uol_pagseguro>
+		</blocks>
+        <models>
+            <uol_pagseguro>
+                <class>UOL_PagSeguro_Model</class>
+            </uol_pagseguro>
+        </models>        
+        <helpers>
+            <pagseguro>
+                <class>UOL_PagSeguro_Helper</class>
+            </pagseguro>
+        </helpers>		
+		<template>
+            <email>
+                <payment_pagseguro_template translate="label" module="pagseguro">
+                    <label>PagSeguro - Abandoned Transactions</label>
+                    <file>sales/pagseguro_abandoned.html</file>
+                    <type>html</type>
+                </payment_pagseguro_template>
+            </email>
+        </template> 
+        <resources>
+            <uol_pagseguro_setup>
+                <setup>
+                    <module>UOL_PagSeguro</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </uol_pagseguro_setup>
+            <pagseguro_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </pagseguro_write>
+            <pagseguro_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </pagseguro_read>
+        </resources>
+    </global>
+	<admin>
+        <routers>
+            <pagseguro>
+                <use>admin</use>
+                <args>
+                    <module>UOL_PagSeguro</module>
+                    <frontName>pagseguro</frontName>
+                </args>
+            </pagseguro>
+        </routers>
+    </admin>
+	<adminhtml>
+		<translate>
+            <modules>
+                <mage_adminhtml>
+                    <files>
+                        <pagseguro>UOL_PagSeguro.csv</pagseguro>
+                    </files>
+                </mage_adminhtml>
+            </modules>
+        </translate>
+		<menu>
+            <pagseguro_menu translate="title" module="pagseguro">
+			<title>PagSeguro</title>
+			<sort_order>1000</sort_order>
+                <children>
+                    <pagseguro_conciliation translate="title" module="pagseguro">
+                        <title>Conciliação</title>
+                        <action>pagseguro/adminhtml_conciliation</action>
+						<sort_order>2000</sort_order>
+                    </pagseguro_conciliation>
+					<pagseguro_abandoned translate="title" module="pagseguro">
+                        <title>Abandonadas</title>
+                        <action>pagseguro/adminhtml_abandoned</action>
+						<sort_order>2100</sort_order>
+                    </pagseguro_abandoned>
+					<pagseguro_config translate="title" module="pagseguro">
+                        <title>Configurações</title>
+                        <action>adminhtml/system_config/edit/section/payment/</action>
+						<sort_order>2200</sort_order>
+                    </pagseguro_config>
+                </children>
+            </pagseguro_menu>
+        </menu>
+		<acl>
+            <resources>
+                <admin>
+                    <children>
+                        <catalog>
+                            <children>
+                                <pagseguro_adminform>
+                                    <title>PagSeguro</title>
+                                </pagseguro_adminform>
+                            </children>
+                        </catalog>
+                    </children>
+                </admin>
+            </resources>
+        </acl>        
+        <layout>
+            <updates>
+                <pagseguro>
+                    <file>uol/pagseguro.xml</file>
+                </pagseguro>
+            </updates>
+        </layout>
+		<events>
+			<sales_order_grid_collection_load_before>
+				<observers>
+					<uol_pagseguro>
+						<model>uol_pagseguro/observer</model>
+						<method>salesOrderGridCollectionLoadBefore</method>
+					</uol_pagseguro>
+				</observers>
+			</sales_order_grid_collection_load_before>
+		</events>
+	</adminhtml>
+    <frontend>
+        <routers>
+            <pagseguro>
+                <use>standard</use>
+                <args>
+                    <module>UOL_PagSeguro</module>
+                    <frontName>pagseguro</frontName>
+                </args>
+            </pagseguro>
+        </routers>
+        <layout>
+            <updates>
+                <pagseguro>
+                    <file>uol/pagseguro.xml</file>
+                </pagseguro>
+            </updates>
+        </layout>
+    </frontend>
+    <default>
+        <payment>
+            <pagseguro>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_PaymentMethod</model>
+                <title>PagSeguro</title>
+                <allowspecific>0</allowspecific>
+            </pagseguro>
+        </payment>
+    </default>
+</config>
