@@ -20,8 +20,7 @@ limitations under the License.
 
 ?>
 <?php
-	$storeId = 0; // default
-	$baseUrl = Mage::getStoreConfig('web/unsecure/base_url', $storeId);
+	$baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
 	$adminSkinUrl = $baseUrl . 'skin/adminhtml/default/default/';
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $adminSkinUrl . 'uol/pagseguro/css/pagseguro_loading.css'; ?>" media="all" />
