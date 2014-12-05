@@ -24,10 +24,12 @@ Instalação
 ----------
 ---
  - Certifique-se de que não há instalação de outros módulos para o PagSeguro em seu sistema;
- - Baixe o repositório como arquivo zip ou faça um clone;
- - Caso tenha alguma outra versão do módulo instalada, copie o arquivo *remove-module-2.2.php* para a raíz de instalação do seu Magento e execute o arquivo no browser, ex.: www.meusite.com.br/magento/remove-module-2.2.php. Siga as instruções na tela para a remoção dos arquivos.
- - Na área administrativa do seu sistema, acesse o menu System -> Magento Connect -> Magento Connect Manager
- - Clique em "choose file", aponte para o arquivo PagSeguro_PagSeguro-x.x.x.tgz e faça upload.
+ - Baixe o repositório como arquivo zip ou faça um fork do projeto;
+ - Antes de seguir com a instalação você deve desativar e limpar a compilação do Magento;
+ - Na área administrativa do seu Magento, acesse o menu System -> Magento Connect -> Magento Connect Manager. Caso tenha uma versão anterior instalada faça a remoção agora;
+ - Clique em "choose file", aponte para o arquivo UOL_PagSeguro-x.x.x.tgz e faça upload;
+ - Caso utilize a compilação, ative-a e execute-a novamente;
+ - Caso tenha uma versão anterior a 2.3 instalada, copie o arquivo *remove-module-2.2.php* para a raíz de instalação do seu Magento e execute o arquivo no browser, ex.: www.meusite.com.br/magento/remove-module-2.2.php. Siga as instruções na tela para a remoção dos arquivos.
 
 
 Configuração
@@ -62,6 +64,10 @@ Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum].
 Changelog
 ---------
 ---
+2.4
+ - Correção dos js e css que carregavam por HTTP quando o site era acessado em HTTPS;
+ - Alterando estrutura do módulo de PagSeguro_PagSeguro para Uol_PagSeguro
+
 2.3
  - Possibilidade de consultar transações no PagSeguro para conciliar os status com a base local;
  - Adicionado opção para visualização de transações abandonadas, permitindo o envio de email com um link para que o comprador possa continuar o processo de compra de onde ele parou;
