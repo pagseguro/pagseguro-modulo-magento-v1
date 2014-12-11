@@ -38,10 +38,10 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.3';
+    private $Module_Version = '2.4';
     private $Order;
     private $Shipping_Data;
-    
+
     const REAL = 'REAL';
 
     /**
@@ -53,7 +53,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
     {
         $isOrderVirtual = $this->Order->getIsVirtual();
         $OrderParams = null;
-		
+
         if ($isOrderVirtual) {
                 $OrderParams = $this->Order->getBillingAddress();
         } else {
@@ -86,31 +86,31 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
      * @return PaymentRequestURL
      */
     public function getRedirectPaymentHtml($Order)
-    {    	
+    {
         $this->setPagSeguroConfig();
         $payment_url =  $this->createPaymentRequest();
 
         // empty the cart
         $cart = Mage::getSingleton('checkout/cart');
-		
+
         foreach (Mage::getSingleton('checkout/session')->getQuote()->getItemsCollection() as $item) {
             $cart->removeItem($item->getId());
         }
-		
+
         $cart->save();
-        $Order->save();        
+        $Order->save();
         $checkout = $this->getRedirectCheckout();
-		
+
         if ($checkout == 'LIGHTBOX') {
-        	
+
             $code = $this->base64url_encode($payment_url);
 			$array = array('_secure' => true, 'type' => 'geral', 'code' => $code);
             $payment = Mage::getUrl('pagseguro/payment/payment', $array);
-            
+
             return $payment;
         } else {
-        	return $payment_url;			
-        }        
+        	return $payment_url;
+        }
     }
 
     private function base64url_encode($text)
@@ -143,7 +143,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         //Setup Log
         if ($_activeLog == 1) {
             $_log_file = $this->getConfigData('log_file');
-			
+
             if (self::checkFile(Mage::getBaseDir() . '/' . $_log_file)) {
                 PagSeguroConfig::activeLog(Mage::getBaseDir() . '/' . $_log_file);
             } else {
@@ -151,11 +151,11 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
             }
         }
     }
-    
+
     private function _validator()
     {
         require_once(Mage::getBaseDir('code') . '/community/UOL/PagSeguro/Model/Updates.php');
-        
+
         Updates::createTableModule();
     }
 
@@ -167,10 +167,10 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
     private function createPaymentRequest()
     {
         $this->_validator();
-        
+
 		// Get references that stored in the database
 		$reference = Mage::helper('pagseguro')->getReadReferenceBank();
-				
+
         $PaymentRequest = new PagSeguroPaymentRequest();
         $PaymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));
         $PaymentRequest->setReference($reference . $this->Order->getId()); //Order ID
@@ -183,7 +183,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
         //Define Redirect Url
         $redirect_url = $this->getRedirectUrl();
-		
+
         if (!empty($redirect_url) and $redirect_url != null) {
                 $PaymentRequest->setRedirectURL($redirect_url);
         } else {
@@ -193,8 +193,8 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         //Define Extra Amount Information
         $PaymentRequest->setExtraAmount($this->_extraAmount());
 
-        try {			
-            $payment_url = $PaymentRequest->register($this->getCredentialsInformation());			            
+        try {
+            $payment_url = $PaymentRequest->register($this->getCredentialsInformation());
         } catch (PagSeguroServiceException $ex) {
             Mage::log($ex->getMessage());
             $this->_redirectUrl(Mage::getUrl() . 'checkout/onepage');
@@ -251,13 +251,13 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $complement = "";
 
         if (!$fileOSC) {
-            $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);    
+            $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
             $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street']);
             $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
             $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
-            $complement = is_null($fullAddress[3]) ? '' : $fullAddress[3];        
+            $complement = is_null($fullAddress[3]) ? '' : $fullAddress[3];
         }
-        
+
         $PagSeguroShipping = new PagSeguroShipping();
         $PagSeguroAddress = new PagSeguroAddress();
         $PagSeguroAddress->setCity($this->Shipping_Data['city']);
@@ -265,8 +265,8 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $PagSeguroAddress->setState($this->Shipping_Data['region']);
         $PagSeguroAddress->setStreet($street);
         $PagSeguroAddress->setNumber($number);
-        $PagSeguroAddress->setComplement($complement);	
-        $PagSeguroAddress->setDistrict($district);		
+        $PagSeguroAddress->setComplement($complement);
+        $PagSeguroAddress->setDistrict($district);
         $PagSeguroShipping->setAddress($PagSeguroAddress);
 
         return $PagSeguroShipping;
@@ -278,8 +278,8 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private function getItensInformation()
     {
-        $Itens = $this->Order->getAllVisibleItems();	
-		
+        $Itens = $this->Order->getAllVisibleItems();
+
         $PagSeguroItens = array();
 
         //CarShop Items
@@ -341,7 +341,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
     {
         return $this->getConfigData('url');
     }
-    
+
     private function getRedirectCheckout()
     {
         return $this->getConfigData('checkout');
@@ -395,23 +395,23 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
             $_file_exist = false;
             Mage::logException($ex);
         }
-		
+
         return $_file_exist;
     }
-	
+
 	/**
 	 *
 	 * remove all non-numeric characters from Postal Code.
 	 * @return fixedPostalCode
-	 * 
+	 *
 	 */
 	public static function fixPostalCode($postalCode)
-	{		
-		return preg_replace("/[^0-9]/", "", $postalCode);		
+	{
+		return preg_replace("/[^0-9]/", "", $postalCode);
 	}
-	
+
 	public function canUseForMultishipping()
     {
         return $this->_canUseForMultishipping;
-    }	
+    }
 }
