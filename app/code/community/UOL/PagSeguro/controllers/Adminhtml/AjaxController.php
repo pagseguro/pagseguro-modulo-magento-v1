@@ -2,7 +2,7 @@
 
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -48,9 +48,6 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 	{
 		$helper = Mage::helper('pagseguro/conciliation');				
 		$days = $this->getRequest()->getPost('days');
-		$orderId = $this->getRequest()->getPost('orderId');
-		$transactionCode = $this->getRequest()->getPost('transactionCode');
-		$orderStatus = $this->getRequest()->getPost('orderStatus');	
 			
 		// Saves the day searching for the global variable that receives the array
 		if ($days) {			
@@ -59,8 +56,10 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 		}		
 		
 		// Upgrade from Magento order status
-		if ($orderId && $transactionCode && $orderStatus) {			
-			$helper->updateOrderStatusMagento($orderId,$transactionCode,$orderStatus);
+		if ($json = $this->getRequest()->getPost('json')) {
+			foreach ($json as $value) {	
+				$helper->updateOrderStatusMagento($value['id'], $value['code'], $value['status']);
+			}
 			Mage::helper('pagseguro/conciliation')->setDateStart($_SESSION['days']);
 		} else {
 			if ($_SESSION['days'] != 0) {
@@ -86,6 +85,8 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 			$dataSet .= ']';	
 				
 			return $dataSet;
+		} else {
+			return 'run';
 		}		
 	}
 

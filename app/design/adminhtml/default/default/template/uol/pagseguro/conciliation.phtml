@@ -2,7 +2,7 @@
 
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ limitations under the License.
 */
 
 ?>
+
 <?php
 	Mage::helper('pagseguro/conciliation')->checkConciliationAccess();
 	$_SESSION['days'] = 0;	
@@ -55,19 +56,20 @@ limitations under the License.
         <option value='25'>25</option>
         <option value='30'>30</option>
     </select>
-    <input type="submit" class="pagseguro-button green-theme normal" value="<?php echo $this->__('Pesquisar');?>">
+    <input type="submit" class="pagseguro-button green-theme normal btnSearch" value="<?php echo $this->__('Pesquisar');?>">
+    <input type="submit" class="pagseguro-button green-theme normal btnConciliation" value="<?php echo $this->__("Conciliar");?>">
 </form>
 
 <table id="htmlgrid" class="grid" border="0" cellpadding="10" cellspacing="10" width="100%">
 	<thead>
 		<tr>
+			<th class="select_checkbox" onclick="checkedAll()" width="10%"><?php echo $this->__('Selecionar');?></th>
 			<th width="12%"><?php echo $this->__('Data do Pedido');?></th>
-			<th width="15%"><?php echo $this->__('ID Magento');?></th>
-			<th width="25%"><?php echo $this->__('ID PagSeguro');?></th>
-			<th width="15%"><?php echo $this->__('Status Magento');?></th>
-			<th width="15%"><?php echo $this->__('Status PagSeguro');?></th>
-			<th width="9%"><?php echo $this->__('Editar');?></th>
-			<th width="9%"><?php echo $this->__('Atualizar');?></th>
+			<th width="10%"><?php echo $this->__('ID Magento');?></th>
+			<th width="22%"><?php echo $this->__('ID PagSeguro');?></th>
+			<th width="14%"><?php echo $this->__('Status Magento');?></th>
+			<th width="14%"><?php echo $this->__('Status PagSeguro');?></th>
+			<th width="9%"><?php echo $this->__('Pedido');?></th>
 		</tr>
 	</thead>
 </table>
@@ -75,7 +77,10 @@ limitations under the License.
 <?php
 	$tooltip .= 'Somente serão exibidas transações criadas após a instalação do módulo em sua versão 2.3. ';
 	$tooltip .= 'Transações criadas antes desta versão não serão exibidas.';
-	$noTransaction = 'Nenhum resultado.';
+	$noTransaction = 'Nenhum resultado.';	
+	$noTransactionSelected = $this->__("Selecione pelo menos um campo da coluna 'Selecionar'.");
+	$transactionSuccess = $this->__("Transação conciliada com sucesso!");
+	$transactionsSuccess = $this->__("Transações conciliadas com sucesso!");
 ?>
 
 <p class="info"><?php echo $this->__('Não encontra suas transações antigas?'); ?> 
@@ -101,9 +106,9 @@ limitations under the License.
 			"searching": false,
 			"bStateSave": true,
 			"pageLength": 10,
-			"aaSorting": [[ 0, "desc" ]],
+			"aaSorting": [[ 1, "desc" ]],
 			"aoColumnDefs": [
-				{ 'bSortable': false, 'aTargets': [ 5, 6 ] },
+				{ 'bSortable': false, 'aTargets': [ 0, 6] },
 				{ "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4, 5, 6 ] }
 			],
 			
@@ -176,7 +181,7 @@ limitations under the License.
 		});		
 		
 		// Executes when the search button clicked
-        jQuery(".pagseguro-button").on("click",function(){         	      	
+        jQuery(".btnSearch").on("click",function(){         	      	
         	var getDays = jQuery('#pagseguro_dias_btn').find(":selected").text();
         	var converted = '';
         	// calls the modal of loading
@@ -192,11 +197,14 @@ limitations under the License.
                 	  },
                 success: function(result) {   
                 	// handle the return of ajax and dates back to table    	
-                    if (result != "") {
-						converted = JSON.parse(result);
-                        jQuery('#htmlgrid').dataTable().fnClearTable(true);           
-                        jQuery('#htmlgrid').dataTable().fnAddData(converted);   
-                    }
+	                if (result == "run") {
+						jQuery('#htmlgrid').dataTable().fnClearTable(true);
+	                } else {
+	                	converted = JSON.parse(result);
+	                    jQuery('#htmlgrid').dataTable().fnClearTable(true);           
+	                    jQuery('#htmlgrid').dataTable().fnAddData(converted);
+	                    jQuery('#htmlgrid').dataTable()._fnInitComplete();
+	                }	       
                     //After reassembling the table removes the modal of loading
                     blockModal(0);
                     
@@ -206,47 +214,85 @@ limitations under the License.
                     blockModal(0);
                 }
 			});				
-		});					
-    });
-    
-    // Runs when clicked in any record to update
-    function updateOrder(config) {    	
-    	var converted = '';
-    	var config = jQuery(config).data('config').split('/');
-    	var id = config[0];
-    	var code = config[1];
-    	var status = config[2];
-    	// calls the modal of loading
-    	blockModal(1);
-    	
-        jQuery.ajax({
-            url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
-            type: "POST",
-            data: { 
-            		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
-            		orderId: id,
-            		transactionCode: code, 
-            		orderStatus: status,
-            		origin: 'conciliation'
-            	  },
-            success: function(result) {
-            	i = 0;
-            	// handle the return of ajax and dates back to table    	
-                if (result != "") {
-					converted = JSON.parse(result);
-                    jQuery('#htmlgrid').dataTable().fnClearTable(true);           
-                    jQuery('#htmlgrid').dataTable().fnAddData(converted);
-                    jQuery('#htmlgrid').dataTable()._fnInitComplete();
-                }
-                //After reassembling the table removes the modal of loading
-                blockModal(0);
-            },
-            error: function() {
-            	// Remove the modal of loading
-                blockModal(0);
-            }
 		});
-    }
+		
+		jQuery(".btnConciliation").on("click",function() {			
+			var ckbFalse = 0;
+			var j = 0;
+			jQuery('input[name="conciliation_orders[]"]').each(function() {
+				if (jQuery(this).is(':checked') == false) {
+					ckbFalse++;					
+				}
+				j++;
+			});	
+			if (j == ckbFalse) {
+				jQuery('#messages').empty();					
+				setMsgError("<?php echo $this->__($noTransactionSelected); ?>");
+			} else {
+				jQuery('#messages').empty();
+				var config = '';
+		    	var id = '';
+		    	var code = '';
+		    	var status = '';
+		    	var jsonArr = [];
+		    	var count = 0;
+		    	
+		    	jQuery('input[name="conciliation_orders[]"]').each(function() {
+					if (jQuery(this).is(':checked') == true) {
+							count++;
+							config = jQuery(this).data('config').split('/');
+							jsonArr.push({
+						        id: config[0],
+						        code: config[1],
+						        status: config[2]
+						    });        			
+					}
+					    
+			    });	
+			    var msg	= '';
+			    if (count == 1) {
+			    	msg = '<?php echo " " . $this->__($transactionSuccess); ?>';
+			    }  else {
+			    	msg = count + '<?php echo " " . $this->__($transactionsSuccess); ?>';
+			    } 
+		    	var converted = '';
+				blockModal(1);
+				jQuery.ajax({
+	                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+	                type: "POST",
+	                data: { 
+	                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
+	                		json: jsonArr,
+	                		origin: 'conciliation'	                		
+	                	  },
+	                success: function(result) { 
+	                    i = 0;
+		            	// handle the return of ajax and dates back to table    	
+		                if (result == "run") {
+							jQuery('#htmlgrid').dataTable().fnClearTable(true);
+		                	jQuery('#messages').empty();					
+							setMsgSuccess(msg);
+		                } else {
+		                	converted = JSON.parse(result);
+		                    jQuery('#htmlgrid').dataTable().fnClearTable(true);           
+		                    jQuery('#htmlgrid').dataTable().fnAddData(converted);
+		                    jQuery('#htmlgrid').dataTable()._fnInitComplete();
+		                    jQuery('#messages').empty();					
+							setMsgSuccess(msg);
+		                }	                
+		                //After reassembling the table removes the modal of loading
+		                blockModal(0);
+	                    
+	                },
+	                error: function() {
+	                	// Remove the modal of loading
+	                    blockModal(0);
+	                }
+	             });
+			}
+		});
+							
+    });
     
     // Create the modal of load and remove this
     function blockModal(block) {     	   		

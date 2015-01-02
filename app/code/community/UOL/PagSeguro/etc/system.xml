@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ limitations under the License.
                     <fields>                        
                         <active translate="label">
                             <label>ATIVAR MÓDULO</label>
-							<comment>Deseja habilitar o m&#243;dulo?</comment>
+							<tooltip>Deseja habilitar o m&#243;dulo?</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>10</sort_order>
@@ -39,73 +39,83 @@ limitations under the License.
                         </active>                        
                         <title translate="label">
                             <label>NOME DE EXIBIÇÃO</label>
-							<comment>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</comment>
+							<tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
                             <frontend_type>text</frontend_type>
                             <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
-                        </title>                        
+                        </title>
+						<environment translate="label">
+                            <label>AMBIENTE</label>
+							<tooltip>Define o ambiente de uso.</tooltip>
+                            <frontend_type>select</frontend_type>
+                            <source_model>uol_pagseguro/environment</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>                            
+                        </environment>
                         <email translate="label">
                             <label>E-MAIL</label>
-							<comment>N&#227;o tem conta no PagSeguro? Clique &lt;a href=&quot;https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&amp;tipo=cadastro#!vendedor&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; e cadastre-se gr&#225;tis.</comment>
+							<comment>Clique &lt;a href=&quot;https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&amp;tipo=cadastro#!vendedor&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; e cadastre-se gr&#225;tis.</comment>
                             <frontend_type>text</frontend_type>
-                            <sort_order>30</sort_order>
+                            <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
                         </email>
                         <token translate="label">
                             <label>TOKEN</label>
-							<comment>N&#227;o tem ou n&#227;o sabe seu token? Clique &lt;a href=&quot;https://pagseguro.uol.com.br/integracao/token-de-seguranca.jhtml&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; para gerar um novo.</comment>
+							<tooltip>Acesse sua conta PagSeguro ou Sandbox para obter um token.</tooltip>
                             <frontend_type>text</frontend_type>
-                            <sort_order>40</sort_order>
+                            <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
                         </token>												                        
                         <url translate="label">
                             <label>URL DE REDIRECIONAMENTO</label>
-							<comment>Ao final do fluxo de pagamento, seu cliente ser&#225; redirecionado de volta para sua loja ou para a URL que voc&#234; informar neste campo. Clique &lt;a href=&quot;https://pagseguro.uol.com.br/integracao/pagamentos-via-api.jhtml&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; para ativar este servi&#231;o.</comment>
+							<tooltip>Ao final do fluxo de pagamento no PagSeguro, seu cliente será redirecionado de volta para sua loja ou para a URL que você informar neste campo. Para utilizar essa funcionalidade você deve acessar sua conta PagSeguro ou Sandbox e habilitar requisições de pagamentos gerados somente via API.</tooltip>
                             <frontend_type>text</frontend_type>
-                            <sort_order>50</sort_order>
+                            <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                           
                         </url>                        
                         <notification translate="label">
                             <label>URL DE NOTIFICAÇÃO</label>
-							<comment>Sempre que uma transa&#231;&#227;o mudar de status, o PagSeguro envia uma notifica&#231;&#227;o para sua loja ou para a URL que voc&#234; informar neste campo.</comment>
-                            <sort_order>60</sort_order>
+							<tooltip>Sempre que uma transa&#231;&#227;o mudar de status, o PagSeguro envia uma notifica&#231;&#227;o para sua loja ou para a URL que voc&#234; informar neste campo.</tooltip>
+                            <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                           
                         </notification>                        
                         <charset translate="label">
                             <label>CHARSET</label>
-							<comment>Defina o charset de acordo com a codificação do seu sistema.</comment>
+							<tooltip>Defina o charset de acordo com a codificação do seu sistema.</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>uol_pagseguro/values</source_model>
-                            <sort_order>70</sort_order>
+                            <sort_order>80</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
                         </charset>                                    
                         <log translate="label">
-                            <label>LOG</label>
-							<comment>Criar arquivo de log?</comment>
+                            <label>ATIVAR LOG</label>
+							<tooltip>Criar arquivo de log?</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>80</sort_order>
+                            <sort_order>90</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
                         </log>                        
                         <log_file translate="label">
                             <label>DIRETÓRIO</label>
-							<comment>Caminho para o arquivo de log.</comment>
+							<tooltip>Caminho para o arquivo de log.</tooltip>
                             <frontend_type>text</frontend_type>
-                            <sort_order>90</sort_order>
+                            <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                           
@@ -115,26 +125,17 @@ limitations under the License.
                         </log_file>                        
                         <checkout translate="label">
                             <label>CHECKOUT</label>
-							<comment>Selecione o tipo de checkout desejado.</comment>
+							<tooltip>Selecione o tipo de checkout desejado.</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>uol_pagseguro/checkout</source_model>
-                            <sort_order>100</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </checkout>                        
-						<conciliation_button translate="label">
-                            <label>CONCILIAÇÃO</label>
-							<comment>Ativa e desativa consulta de transações abandonadas</comment>
-                            <frontend_type>button</frontend_type>
-							<frontend_model>uol_pagseguro/conciliation_button</frontend_model>
                             <sort_order>110</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </conciliation_button>						
+                            <show_in_store>1</show_in_store>                            
+                        </checkout>			
 						<abandoned translate="label">
-                            <label>Listar transações abandonadas?</label>							
+                            <label>LISTAR TRANSAÇÔES ABANDONADAS?</label>
+							<tooltip>Ativa e desativa consulta de transações abandonadas</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>120</sort_order>
@@ -144,7 +145,7 @@ limitations under the License.
                         </abandoned>						
 						<abandoned_link translate="label">
                             <label>Transações iniciadas há no máximo (dias)</label>
-							<comment>Validade do link de acesso da transação abandonada</comment>
+							<tooltip>Validade do link de acesso da transação abandonada</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>uol_pagseguro/abandoned_options_values</source_model>
                             <sort_order>130</sort_order>
@@ -157,7 +158,7 @@ limitations under the License.
                         </abandoned_link>                        
                         <template translate="label">
                             <label>TEMPLATE DE E-MAIL</label>
-							<comment>Template usado para notificar o cliente sobre sua transação abandonada</comment>
+							<tooltip>Template usado para notificar o cliente sobre sua transação abandonada</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_email_template</source_model>
                             <sort_order>140</sort_order>
@@ -167,19 +168,7 @@ limitations under the License.
 							<depends>
                                 <abandoned>1</abandoned>
                             </depends>
-                        </template>						
-						<abandoned_button translate="label">
-                            <label>CONSULTAR ABANDONADAS</label>
-                            <frontend_type>button</frontend_type>
-							<frontend_model>uol_pagseguro/abandoned_button</frontend_model>
-                            <sort_order>150</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-							<depends>
-                                <abandoned>1</abandoned>
-                            </depends>
-                        </abandoned_button>						
+                        </template>		
                     </fields>
                 </pagseguro>
             </groups>

@@ -2,7 +2,7 @@
 
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ limitations under the License.
 				totalRows = oTable.fnGetData().length;
 				var table = jQuery('#htmlgrid').DataTable();
 				var info = table.page.info();
-				//oTable.fnSort( [ [1,'asc'] ] );
+
 				if (totalRows > 1) {
 					jQuery('.btnSend').fadeIn('slow');
 				} else {
@@ -201,7 +201,7 @@ limitations under the License.
 			});	
 			if (j == ckbFalse) {
 				jQuery('#messages').empty();					
-				setMsgError("<?php echo $this->__($noEmailSelected); ?>");
+				setMsgError("<?php echo $this->__($noTransaSelected); ?>");
 			} else {
 				jQuery('#messages').empty();
 				var config = '';

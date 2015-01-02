@@ -2,7 +2,7 @@
 
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     public function __construct()
     {
         $this->_createArraySt();
+		$this->changeEnvironment();
 
     }
         
@@ -264,5 +265,47 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 			$return = $date . $module . $phrase . "\r\n";				
 			file_put_contents($directoryLog, $return, FILE_APPEND);
 		}
-	}	
+	}
+	
+	/**
+	 * Change the environment if necessary.
+	 */
+	private function changeEnvironment()
+	{
+		// Get the check of environment of backend.
+		$environment = '"' . Mage::getStoreConfig('payment/pagseguro/environment') . '"';
+		
+		// File to be changed
+		$archive = Mage::getBaseDir('lib') . '/PagSeguroLibrary/config/PagSeguroConfig.php';
+		
+		// Search the current environment of library.
+		$search = "PagSeguroConfig['environment']";
+		
+		// Save the file in an array in variable $arrayArchive.
+		$arrayArchive = file($archive);
+		$position = 0;
+		
+		for ($i = 0; $i < sizeof($arrayArchive); $i++) {
+			
+			// Checks the position of environmental on array, and stores the environment on variable $libEnvironment.
+			if (strpos($arrayArchive[$i],$search) && 
+			   (strpos($arrayArchive[$i],'production') || strpos($arrayArchive[$i],'sandbox'))) {
+					
+				$fullLine = $arrayArchive[$i];	
+				$position = $i;		
+				
+				if (strpos($fullLine, '"production"') == true) {
+					$libEnvironment = '"production"';
+				} else if (strpos($fullLine, '"sandbox"') == true) {
+					$libEnvironment = '"sandbox"';
+				}
+			}
+		}
+		
+		// Make changes the environment, if  the environments are different.
+		if ($environment != '""' && $environment != $libEnvironment) {				
+			$arrayArchive[$position] = str_replace($libEnvironment, $environment, $fullLine);
+	    	file_put_contents($archive, implode("", $arrayArchive));
+		}
+	}
 }

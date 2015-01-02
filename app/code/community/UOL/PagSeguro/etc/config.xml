@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ limitations under the License.
 <config>
     <modules>
         <UOL_PagSeguro>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
         </UOL_PagSeguro>
     </modules> 
     <global>

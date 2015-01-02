@@ -1,6 +1,6 @@
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@ function trHoverClick() {
 		var link = jQuery(this).parent('tr').find('a.edit').attr('href');
 		
 		if (jQuery(this).attr('class') != 'dataTables_empty'){
-			if (!jQuery(this).find('a').length && !jQuery(this).find('input[name="send_emails[]"]').length) {
+			if (!jQuery(this).find('a').length && !jQuery(this).find('input[name="send_emails[]"]').length 
+			&& !jQuery(this).find('input[name="conciliation_orders[]"]').length) {
 				if(!jQuery(this).find('.dataTables_empty').length) {
 					window.open(link, 'edit');
 				}	
@@ -40,10 +41,24 @@ function checkedAll() {
 		}
 		j++;
 	});	
+	
 	if (j == ckbTrue) {
 		jQuery('input[name="send_emails[]"]').prop('checked','');
 	} else {
 		jQuery('input[name="send_emails[]"]').prop('checked','checked');
+	}
+	
+	jQuery('input[name="conciliation_orders[]"]').each(function() {
+		if (jQuery(this).is(':checked') == true) {
+			ckbTrue++;
+		}
+		j++;
+	});	
+	
+	if (j == ckbTrue) {
+		jQuery('input[name="conciliation_orders[]"]').prop('checked','');
+	} else {
+		jQuery('input[name="conciliation_orders[]"]').prop('checked','checked');
 	}
 } 
 

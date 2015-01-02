@@ -18,19 +18,15 @@ limitations under the License.
 ************************************************************************
 */
 
-?>
-
-<div class="page-head">
-    <h2 class="sub-title">Erro ao realizar o Retorno Autom&aacute;tico</h2>
-</div>
-
-<table style="width:100%;">
-    <tr>
-        <td style="width:100%">
-            Ocorreu um erro ao realizar o retorno autom&aacute;tico.<br /><br />
-            Dados do Erro:<br />
-            C&oacute;digo: <?php echo utf8_decode($this->getRequest()->getParam("codigo"));  ?><br />
-            Descri&ccedil;&atilde;o: <?php echo utf8_decode($this->getRequest()->getParam("descricao"));  ?><br />
-        </td>
-    </tr>
-</table>
+class UOL_PagSeguro_Model_Environment
+{
+    public function toOptionArray()
+    {
+    	$helper = Mage::helper('pagseguro');
+    	
+        return array(
+                array('value' => 'production', 'label' => $helper->__('Produção')),
+                array('value' => 'sandbox', 'label' => $helper->__('Sandbox'))
+        );
+    }
+}
