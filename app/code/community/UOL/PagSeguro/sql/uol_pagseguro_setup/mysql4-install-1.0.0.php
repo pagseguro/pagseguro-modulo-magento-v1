@@ -22,31 +22,8 @@ $installer = $this;
 $installer->startSetup();
 
 // table prefix
-$tp = (string)Mage::getConfig()->getTablePrefix();
-
-// Creates a reference to 5 characters that will be used as the only reference that store, the transaction PagSeguro
-$ref = Mage::helper('pagseguro')->createReference(5,'true','true');
-
-// Checks for the pagseguro_sales_code table if it does not exist is created
-$sql .= "CREATE TABLE IF NOT EXISTS `".$tp."pagseguro_sales_code` (
-                 `entity_id` int(11) NOT NULL auto_increment,
-                 `order_id` int(11),
-                 `transaction_code` varchar(80) NOT NULL,
-                 PRIMARY KEY (`entity_id`)
-                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+$tp = (string)Mage::getConfig()->getTablePrefix(); 
 				 
-// Checks for the pagseguro_conciliation table if it does not exist is created				 
-$sql .= "CREATE TABLE IF NOT EXISTS `".$tp."pagseguro_conciliation` (
-	     `entity_id` int(11) NOT NULL auto_increment,
-	     `reference` varchar(5) NOT NULL,
-	     PRIMARY KEY (`entity_id`)
-	     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";				 
-// Checks if there is any record, if not insert the reference
-				 
-$sql .= "INSERT INTO ".$tp."pagseguro_conciliation (reference)
-		 SELECT p.reference FROM(SELECT '".$ref."' AS reference) p
-		 WHERE (SELECT COUNT(*) FROM ".$tp."pagseguro_conciliation) = 0;";
-		 			 
 // Verifies that no record of the status PagSeguro created, if you have not created	 
 $sql .= "INSERT INTO ".$tp."sales_order_status (STATUS, label)
 		 SELECT p.status, p.label FROM(SELECT 'aguardando_pagamento_ps' AS STATUS, 'Aguardando Pagamento' AS label) p

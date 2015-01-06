@@ -28,7 +28,7 @@ class UOL_PagSeguro_Model_Observer
 	{
 	    $collection = $observer->getOrderGridCollection();
 	    $select = $collection->getSelect();
-		$tableCollection = Mage::getSingleton('core/resource')->getTableName('pagseguro_sales_code');
+		$tableCollection = Mage::getSingleton('core/resource')->getTableName('pagseguro_orders');
 	    $select->joinLeft(array('payment' => $tableCollection),
 	    						'payment.order_id = main_table.entity_id',
 								array('payment_code'=>'transaction_code')

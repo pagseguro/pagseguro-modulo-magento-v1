@@ -134,7 +134,7 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 	 */
 	private function getMagentoPayments()
 	{		
-		$reference = $this->getReadReferenceBank();
+		$reference = $this->getStoreReference();
 		$paymentList = $this->getPagSeguroPaymentList();
 		$this->arrayPayments = '';
 				
@@ -146,70 +146,17 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 					
 					if ($_SESSION['store_id'] != '') {
 						if ( $order->getStoreId() == $_SESSION['store_id']) {
-							$this->createArrayPayments($orderId, $info->getCode(), $info->getStatus());
+							$this->createArrayPayments($orderId, $info->getCode(), $info->getStatus()->getValue());
 						}
 					} else {
 						if ($order) {
-							$this->createArrayPayments($orderId, $info->getCode(), $info->getStatus());
+							$this->createArrayPayments($orderId, $info->getCode(), $info->getStatus()->getValue());
 						}	
 					}
 					$_SESSION['store_id'] == '';	
 				} 	
 			}			
 		}
-	}
-
-	/**
-	 * Get status of PagSeguro or string required to change the order status Magento
-	 * @param int $status - Number that contains the status of PagSeguro
-	 * @param boolean $orderMagento - If the return will be to change order status Magento
-	 * @return string $status - String that will be displayed in the table or used to change the order status Magento
-	 */
-	private function getPaymentStatusPagSeguro($status,$orderMagento)
-	{
-		if ($orderMagento == true) {			
-			switch ($status) {				
-				case 1: $status = 'aguardando_pagamento_ps'; break;
-				case 2: $status = 'em_analise_ps'; break; 
-				case 3: $status = 'paga_ps'; break;
-				case 4: $status = 'disponivel_ps'; break;
-				case 5: $status = 'em_disputa_ps'; break;
-				case 6: $status = 'devolvida_ps'; break;
-				case 7:	$status = 'cancelada_ps'; break;			
-			}			
-		} else {		
-			switch ($status) {				
-				case 1: $status = 'Aguardando pagamento'; break;
-				case 2: $status = 'Em an&aacute;lise'; break; 
-				case 3: $status = 'Paga'; break;
-				case 4: $status = 'Dispon&iacute;vel'; break;
-				case 5: $status = 'Em disputa'; break;
-				case 6: $status = 'Devolvida'; break;
-				case 7:	$status = 'Cancelada'; break;			
-			}
-		}
-			
-		return $status;
-	}
-		
-	/**
-	 * Get status of order of magento
-	 * @param string $status - Strin that contains the status of PagSeguro in order Magento
-	 * @return string $status - Returns the correct status queried the current status
-	 */
-	private function getPaymentStatusMagento($status)
-	{
-		switch ($status) {			
-			case 'Aguardando_pagamento_ps': $status = 'Aguardando pagamento'; break;
-			case 'Em_analise_ps': $status = 'Em an&aacute;lise'; break;
-			case 'Paga_ps': $status = 'Paga'; break; 
-			case 'Disponivel_ps': $status = 'Dispon&iacute;vel'; break;
-			case 'Em_disputa_ps': $status = 'Em disputa'; break;
-			case 'Devolvida_ps': $status = 'Devolvida'; break;
-			case 'Cancelada_ps': $status = 'Cancelada';	break;
-		}
-				
-		return $status;
 	}
 
 	/**
@@ -240,7 +187,8 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 		$statusMagento = $this->getPaymentStatusMagento($this->__(ucfirst($order->getStatus())));
 				
 		// Receives the status of the transaction PagSeguro already converted		
-		$statusPagSeguro = $this->getPaymentStatusPagSeguro($paymentStatus);		
+		$statusPagSeguro = $this->getPaymentStatusPagSeguro($paymentStatus);
+		
 		if ($statusMagento != $statusPagSeguro) {	
 			// Receives the creation date of the application which is converted to the format d/m/Y
 			$dateOrder = $this->getOrderMagetoDateConvert($order->getCreatedAt());		
@@ -252,7 +200,7 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 			$idPagSeguro = $paymentCode;
 			
 			// Receives the parameter used to update an order
-			$config = $order->getId() . '/' . $idPagSeguro . '/' . $this->getPaymentStatusPagSeguro($paymentStatus,true);
+			$config = $order->getId() .'/'. $idPagSeguro .'/'. $this->getPaymentStatusPagSeguro($paymentStatus,true);
 			
 			$checkbox =  "<label class='chk_email'>";
 			$checkbox .= "<input type='checkbox' name='conciliation_orders[]' data-config='" . $config . "' />";
@@ -329,15 +277,16 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 			$order->save();				
 		}		
 					
-		$table_prefix = (string)Mage::getConfig()->getTablePrefix();
+		$tp = (string)Mage::getConfig()->getTablePrefix();
+		$table = $tp . 'pagseguro_orders';
 		$read= Mage::getSingleton('core/resource')->getConnection('core_read');
-		$value = $read->query("SELECT `order_id` FROM `" . $table_prefix . "pagseguro_sales_code` 
+		$value = $read->query("SELECT `order_id` FROM `" . $table . "` 
 							   WHERE `order_id` = " . $orderId);
 		$row = $value->fetch();	
 				
 		if ($row == false) {
 		    $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-		    $sql = "INSERT INTO `" . $table_prefix . "pagseguro_sales_code` (`order_id`,`transaction_code`) 
+		    $sql = "INSERT INTO `" . $table . "` (`order_id`,`transaction_code`) 
 		    		VALUES ('$orderId','$transactionCode')";
 		    $connection->query($sql);
 		}

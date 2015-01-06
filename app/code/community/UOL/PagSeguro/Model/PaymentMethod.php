@@ -127,7 +127,6 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $_activeLog = $this->getConfigData('log');
         $_charset = $this->getConfigData('charset');
 
-        Mage::helper('pagseguro')->saveAllStatusPagSeguro();
 
         //Module version
         PagSeguroLibrary::setModuleVersion('magento' . ':' . $this->Module_Version);
@@ -152,13 +151,6 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         }
     }
 
-    private function _validator()
-    {
-        require_once(Mage::getBaseDir('code') . '/community/UOL/PagSeguro/Model/Updates.php');
-
-        Updates::createTableModule();
-    }
-
     /**
      * Create PagSeguro payment request html with payment url
      *
@@ -166,10 +158,8 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private function createPaymentRequest()
     {
-        $this->_validator();
-
 		// Get references that stored in the database
-		$reference = Mage::helper('pagseguro')->getReadReferenceBank();
+		$reference = Mage::helper('pagseguro')->getStoreReference();
 
         $PaymentRequest = new PagSeguroPaymentRequest();
         $PaymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));

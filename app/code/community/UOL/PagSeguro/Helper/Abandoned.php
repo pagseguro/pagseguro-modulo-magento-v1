@@ -127,7 +127,7 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	 */
 	private function getMagentoAbandoned()
 	{
-		$reference = $this->getReadReferenceBank();
+		$reference = $this->getStoreReference();
 		$abandonedtList = $this->getPagSeguroAbandonedList();
 		$this->arrayAbandoned = '';	
 		

@@ -28,8 +28,7 @@ class UOL_PagSeguro_Model_Values
     public function toOptionArray()
     {
         self::alertMessage();
-        self::_validator();
-        
+		        
         return array(
                         array("value" => "UTF-8" , "label" => "UTF-8" ),
                         array("value" => "ISO-8859-1" , "label" => "ISO-8859-1" )
@@ -57,12 +56,5 @@ class UOL_PagSeguro_Model_Values
             }
             Mage::getSingleton('core/session')->addError($message);
         }
-    }
-    
-    private function _validator()
-    {
-        require_once(Mage::getBaseDir('code') . '/community/UOL/PagSeguro/Model/Updates.php');
-        
-        Updates::createTableModule();
     }
 }

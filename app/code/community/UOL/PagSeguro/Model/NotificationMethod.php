@@ -58,7 +58,7 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
             $this->_createTransaction();
             
             if ($this->objTransaction) {
-                $this->_updateCms();
+                $this->_updateOrders($this->_helper->getPaymentStatusPagSeguro($this->objTransaction->getStatus()->getValue(), true));
             }
         }
 		$this->objNotificationType->getValue();
@@ -105,24 +105,7 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
 		$orderId = $this->_helper->getReferenceDecryptOrderID($reference);
         $this->reference = $orderId;
     }
-   
-    /**
-    * Update Cms
-    */
-    private function _updateCms()
-    {
-        $arrayValue =  $this->_helper->returnOrderStByStPagSeguro($this->objTransaction->getStatus()->getValue());
-
-        if ($this->_lastStatus() != $arrayValue['status']) {
-            if ($this->_helper->_existsStatus($arrayValue['status'])) {
-                $this->_updateOrders($arrayValue['status']);
-            } else {
-                $this->_helper->saveStatusPagSeguro($arrayValue);
-                $this->_updateOrders($arrayValue['status']);
-            }
-        }
-    }
-   
+	
     /**
     * Update
     * @param type $status
@@ -150,16 +133,16 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
     private function _insertCode()
     {
         $tp = (string)Mage::getConfig()->getTablePrefix();
+		$table = $tp . 'pagseguro_orders';
 		$ref = $this->reference;
         $read= Mage::getSingleton('core/resource')->getConnection('core_read');
-        $value = $read->query("SELECT order_id FROM " . $tp . "pagseguro_sales_code WHERE order_id = '$ref'");
+        $value = $read->query("SELECT order_id FROM " . $table . " WHERE order_id = '$ref'");
         $row = $value->fetch();
 
         if ($row == false) {
             $transactionId = $this->objTransaction->getCode();
             $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-            $sql = "INSERT INTO " . $tp . "pagseguro_sales_code (order_id,transaction_code)
-                VALUES ('$ref','$transactionId')";
+            $sql = "INSERT INTO " . $table . " (order_id, transaction_code) VALUES ('$ref','$transactionId')";
             $connection->query($sql);
         }
     }
