@@ -89,7 +89,7 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 	 */
 	public function setDateStart($days)
 	{		
-		$_SESSION['dateStart'] = Mage::helper('pagseguro')->getDateSubtracted($days);		
+		$_SESSION['dateStart'] = $this->getDateSubtracted($days);		
 	}	
 					
 	/**
@@ -280,14 +280,17 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 		$tp = (string)Mage::getConfig()->getTablePrefix();
 		$table = $tp . 'pagseguro_orders';
 		$read= Mage::getSingleton('core/resource')->getConnection('core_read');
-		$value = $read->query("SELECT `order_id` FROM `" . $table . "` 
-							   WHERE `order_id` = " . $orderId);
+		$value = $read->query("SELECT `order_id` FROM `" . $table . "` WHERE `order_id` = " . $orderId);
 		$row = $value->fetch();	
 				
 		if ($row == false) {
 		    $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
 		    $sql = "INSERT INTO `" . $table . "` (`order_id`,`transaction_code`) 
 		    		VALUES ('$orderId','$transactionCode')";
+		    $connection->query($sql);
+		} else {
+			$connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+		    $sql = "UPDATE `" . $table . "` SET `transaction_code` = '$transactionCode' WHERE order_id = " . $orderId;
 		    $connection->query($sql);
 		}
 	}
@@ -316,6 +319,7 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 	private function setConciliationUpdateOrderLog($orderId, $transactionCode, $orderStatus)	
 	{
 		$module = ' [Info] PagSeguroConciliation.';
+		
 		// Sentence of log
 		$phrase = 'Update(';
 		$phrase .= "OrderStatusMagento: array (\n  'orderId' => " . $orderId . ",\n  ";

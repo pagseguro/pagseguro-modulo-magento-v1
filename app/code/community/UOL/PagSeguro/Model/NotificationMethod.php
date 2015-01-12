@@ -135,6 +135,7 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $tp = (string)Mage::getConfig()->getTablePrefix();
 		$table = $tp . 'pagseguro_orders';
 		$ref = $this->reference;
+		
         $read= Mage::getSingleton('core/resource')->getConnection('core_read');
         $value = $read->query("SELECT order_id FROM " . $table . " WHERE order_id = '$ref'");
         $row = $value->fetch();
@@ -143,6 +144,10 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
             $transactionId = $this->objTransaction->getCode();
             $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
             $sql = "INSERT INTO " . $table . " (order_id, transaction_code) VALUES ('$ref','$transactionId')";
+            $connection->query($sql);
+        } else {
+            $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+            $sql = "UPDATE `" . $table . "` SET `transaction_code` = '" .$transactionId. "' WHERE order_id = " . $ref;
             $connection->query($sql);
         }
     }

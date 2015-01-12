@@ -96,9 +96,11 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 	 */
 	private function getAbandonedGrid()
 	{		
+		$days = $this->getRequest()->getPost('days');
+
 		$helper = Mage::helper('pagseguro/abandoned');
-		$helper->setAbandonedListLog();	
-		$helper->checkAbandonedAccess();
+		$helper->setAbandonedListLog($days);	
+		$helper->checkAbandonedAccess($days);
 		
 		if ($abandonedArray = $helper->getArrayAbandoned()) {
 			$dataSet = '[';

@@ -42,11 +42,22 @@ limitations under the License.
 
 <form action="javascript:void(0)" method="post" >
 	<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
+	<label><?php echo $this->__('Dias'); ?></label>
+	<select id='pagseguro_dias_btn' name='pagseguro_dias' class="select">
+        <option value='1'>1</option>
+        <option value='2'>2</option>
+        <option value='3'>3</option>
+        <option value='4'>4</option>
+        <option value='5'>5</option>
+        <option value='6'>6</option>
+        <option value='7'>7</option>
+        <option value='8'>8</option>
+        <option value='9'>9</option>
+        <option value='10'>10</option>
+    </select>
     <input type="submit" class="pagseguro-button green-theme normal btnSearch" value="<?php echo $this->__('Pesquisar');?>">
     <input type="submit" class="pagseguro-button green-theme normal btnSend" value="<?php echo $this->__("Enviar selecionados");?>">
 </form>
-
-<?php $days = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod')->getConfigData('abandoned_link'); ?>
 
 <table id="htmlgrid" class="grid" border="0" cellpadding="10" cellspacing="10" width="100%">
 	<thead>
@@ -54,9 +65,9 @@ limitations under the License.
 			<th class="select_checkbox" onclick="checkedAll()" width="10%"><?php echo $this->__('Selecionar');?></th>
 			<th width="25%"><?php echo $this->__('Data do Pedido');?></th>
 			<th width="20%"><?php echo $this->__('ID Magento');?></th>
-			<th width="25%"><?php echo $this->__('Data de Expiração');?></th>
-			<th width="10%"><?php echo $this->__('Enviar e-mail');?></th>
-			<th width="10%"><?php echo $this->__('Detalhes');?></th>
+			<th width="25%"><?php echo $this->__('Validade do Link');?></th>
+			<th width="10%"><?php echo $this->__('E-mails Enviados');?></th>
+			<th width="10%"><?php echo $this->__('Pedido');?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -114,11 +125,6 @@ limitations under the License.
 				var table = jQuery('#htmlgrid').DataTable();
 				var info = table.page.info();
 
-				if (totalRows > 1) {
-					jQuery('.btnSend').fadeIn('slow');
-				} else {
-					jQuery('.chk_email input').attr('disabled','disabled');
-				}
 				// Only if greater than 10 records show paging
 				if (totalRows > 10) {					
 					jQuery('.dataTables_paginate').css('display','block');
@@ -160,36 +166,9 @@ limitations under the License.
 		});
 		
 		jQuery(".btnSearch").on("click",function() {
-			var converted = '';
-			blockModal(1);
-			jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
-                type: "POST",
-                data: { 
-                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
-                		origin: 'abandoned'
-                	  },
-                success: function(result) { 
-                	i = 0;  
-                	// handle the return of ajax and dates back to table    	
-                    if (result != "") {
-						converted = JSON.parse(result);
-                        jQuery('#htmlgrid').dataTable().fnClearTable(true);           
-                        jQuery('#htmlgrid').dataTable().fnAddData(converted);
-                        jQuery('#htmlgrid').dataTable()._fnInitComplete();  
-                    } else {
-                    	jQuery('.btnSend').fadeOut('slow');
-                    }
-                    //After reassembling the table removes the modal of loading
-                    blockModal(0);
-                    
-                },
-                error: function() {
-                	// Remove the modal of loading
-                    blockModal(0);
-                }
-             });
+			loadAbandoned();
 		});
+
 		jQuery(".btnSend").on("click",function() {
 			var ckbFalse = 0;
 			var j = 0;
@@ -238,15 +217,15 @@ limitations under the License.
 	                		json: jsonArr,
 	                		origin: 'abandoned'	                		
 	                	  },
-	                success: function(result) {    	
+	                success: function(result) {  
+	                		
 	                    if (result == 'run') {
 	                    	jQuery('input[name="send_emails[]"]').prop('checked','');
 	                    	jQuery('#messages').empty();					
 							setMsgSuccess(msg);
-		                }
-	                    //After reassembling the table removes the modal of loading
-	                    blockModal(0);
-	                    
+
+							loadAbandoned();
+		                }                    
 	                },
 	                error: function() {
 	                	// Remove the modal of loading
@@ -256,6 +235,43 @@ limitations under the License.
 			}
 		}); 		
     });    
+
+	function loadAbandoned()
+	{
+		var getDays = jQuery('#pagseguro_dias_btn').find(":selected").text();
+		var converted = '';
+		blockModal(1);
+		jQuery.ajax({
+            url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+            type: "POST",
+            data: { 
+            		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
+            		origin: 'abandoned',
+            		days: getDays
+            	  },
+            success: function(result) { 
+            	
+            	i = 0;  
+            	// handle the return of ajax and dates back to table    	
+                if (result != "") {
+					converted = JSON.parse(result);
+                    jQuery('#htmlgrid').dataTable().fnClearTable(true);           
+                    jQuery('#htmlgrid').dataTable().fnAddData(converted);
+                    jQuery('#htmlgrid').dataTable()._fnInitComplete();  
+                } else {
+                	jQuery('#htmlgrid').dataTable().fnClearTable(true);  
+                }
+
+                //After reassembling the table removes the modal of loading
+                blockModal(0);
+                
+            },
+            error: function(xhr) {
+            	// Remove the modal of loading
+                blockModal(0);
+            }
+         });
+	}
     
     function SendMail(data) {    	
 		var config = jQuery(data).data('config').split('/');

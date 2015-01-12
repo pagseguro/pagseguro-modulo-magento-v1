@@ -33,6 +33,9 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	
 	// It the code of admin
 	private $admLocaleCode = '';
+
+	// Total days amount
+	private $days = '';
 	
 	/*
 	 * Checks that is active query abandoned
@@ -40,11 +43,15 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	 * Checks if email and token are valid
 	 * If not completed one or both, is directed and notified so it can be filled
 	 */	
-	public function checkAbandonedAccess()
+	public function checkAbandonedAccess($days)
 	{
 		// Abandoned access
 		$this->access = 1;
 		$obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
+
+		if(!is_null($days)){
+			$this->days = $days;
+		}
 			
 		// Displays this error in title	
 		$module = 'PagSeguro - ';	
@@ -92,7 +99,7 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	 */
 	public function setDateStart($days)
 	{		
-		$_SESSION['dateStart'] = Mage::helper('pagseguro')->getDateSubtracted($days);		
+		$_SESSION['dateStart'] = $this->getDateSubtracted($days);		
 	}
 
 	/**
@@ -104,19 +111,37 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		if ($this->access == 1) {
 			include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
 			$obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');	
-			$this->dateStart = $this->getDateSubtracted($obj->getConfigData('abandoned_link'));
-			
+			$this->dateStart = Mage::helper('pagseguro')->getDateSubtracted($this->days);
+
 			try {
 				$credential = $obj->getCredentialsInformation();
 				$dateStart = $this->getDateStart();
 				$listAbandoned = PagSeguroTransactionSearchService::searchAbandoned($credential, 1, 1000, $dateStart);
+				
 				return $listAbandoned->getTransactions();
+				
 			} catch (PagSeguroServiceException $e) {
 	            if(trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED'){
 	            	return 'unauthorized';
 	            }
 	        }			
 		}
+	}
+
+	/**
+	 * Get date start
+	 * @return date $dateStart - Example Y-m-dT00:00
+	 */
+	public function getDateStart()
+	{
+					
+		if ($this->dateStart != '') {
+			$dateStart = $this->dateStart . 'T00:00';	
+		} else {	
+			$dateStart = date('Y-m-d') . 'T00:00';
+		}
+		
+		return $dateStart;
 	}
 	
 	/**
@@ -162,7 +187,7 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	{
 		// force default time zone
 		date_default_timezone_set(Mage_Core_Model_Locale::DEFAULT_TIMEZONE);
-		
+
 		// Receives the parameter used to send e-mail
 		$config = $orderId . '/' . $recoveryCode;
 		
@@ -188,31 +213,49 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		$skinUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/uol/pagseguro/';
 		
 		// Receives the url edit order it from your id		
-		$editUrl = $this->getEditOrderUrl($orderId);	
-		$emailText = $this->__('Enviar e-mail');	
-		$editText = $this->__('Detalhes');
+		$editUrl = $this->getEditOrderUrl($orderId);		
+		$editText = $this->__('Ver detalhes');	
+			
+		// Receives the full html link to edit an order
+		$editOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
+		$editOrder .= $this->__('Ver detalhes') . "</a>";		
+
+		$sent = $this->getSentEmailsById($orderId);
+		$sent = current($sent);
+		if (empty($sent)){
+			$sent = 0;
+		}
 		
-		// Receives the full html link to email an order
-		$onClick = "onclick='SendMail(this)'";
-		$class = "class='send_email' " . $onClick;
-		$emailOrder .= "<a " . $class . " data-config='" . $config . "' href='javascript:void(0)'>";
-		$emailImage = $skinUrl . "images/email.gif";
-		$emailOrder .= "<img title='" . $emailText . "' alt='" . $emailText . "' src='" . $emailImage ."' />";
-		$emailOrder .= "</a>";
-		
-		// Receives the full html link to visualize an order
-		$visualizeOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
-		$visualizeImage = $skinUrl . "images/details.gif";
-		$visualizeOrder .= "<img title='" . $editText . "' alt='" . $editText . "' src='" . $visualizeImage ."' />";
-		$visualizeOrder .= "</a>";
 		$array = array( 'checkbox' => $checkbox,
 						'date' => $dateOrder,
 						'id_magento' => $idMagento,
 						'validity_link' => $validity_link,
-						'email' => $emailOrder,
-						'visualize' => $visualizeOrder);		
+						'email' => $sent,
+						'visualize' => $editOrder);		
 		$this->arrayAbandoned[] = $array;
 	}	
+
+	/**
+	 * Get quantity of times this e-mail was been sent
+	 * @param int $order_id - Id of order of Magento
+	 * @return array $sent qty.
+	 */
+	private function getSentEmailsById($orderId)
+	{
+		//Get the resource model
+    	$resource = Mage::getSingleton('core/resource');
+		
+    	//Retrieve the read connection
+		$readConnection = $resource->getConnection('core_read');
+		
+		//Get table name
+		$table = $resource->getTableName('pagseguro_orders');
+
+		//Select sent column from pagseguro_orders to verify if exists a register
+		$query = 'SELECT sent FROM ' . $resource->getTableName($table) . ' WHERE order_id = ' . $orderId;
+		
+		return $readConnection->fetchCol($query);
+	}
 
 	/**
 	 * Get the full array with only the requests made ​​in Magento with PagSeguro
@@ -243,6 +286,55 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		
         return $correctDate;
     }
+
+    /**
+	 * Update the sent column in pagseguro_orders When an email is sent
+	 * @param int $orderId - Id of order of Magento
+	 */
+    private function updateSentEmails($orderId)
+    {
+
+    	//Get the resource model
+    	$resource = Mage::getSingleton('core/resource');
+		
+    	//Retrieve the read connection
+		$readConnection = $resource->getConnection('core_read');
+		
+		//Retrieve the write connection
+		$writeConnection = $resource->getConnection('core_write');
+
+		//Get table name
+		$table = $resource->getTableName('pagseguro_orders');
+
+		//Select sent column from pagseguro_orders to verify if exists a register
+		$query = 'SELECT sent FROM ' . $resource->getTableName($table) . ' WHERE order_id = '.$orderId;
+		$result = $readConnection->fetchCol($query);
+
+		//If exists the order identificator just update, otherwise insert a register
+		$result = array_filter($result);
+		
+		if (empty($result)) {
+			$query = 'INSERT INTO ' . $resource->getTableName($table) . ' (order_id, sent) VALUES ('.$orderId.', 1)';
+
+			$this->setAbandonedSentEmailInsertLog($order_id);
+		} else {
+			
+			//Remove safe option from mySQL.
+			$query = "SET SQL_SAFE_UPDATES = 0";
+			$writeConnection->query($query);
+
+			//Increases sent value
+			$sent = current($result) + 1;
+			$rTable = $resource->getTableName($table);
+			$query = 'UPDATE ' . $rTable . ' SET sent = ' . $sent . ' WHERE order_id = ' . $orderId;
+
+			$this->setAbandonedSentEmailUpdateLog($order_id, $sent);
+		} 
+		
+		//Execute SQL Queries.
+		$writeConnection->query($query);
+
+    }
 	
 	/**
 	 * Send email of abandoned transactions for customers
@@ -256,6 +348,9 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		
 		// update status
 		$this->setAbandonedUpdateOrder($orderId);
+
+		// update or insert sent information into pagseguro_orders
+		$this->updateSentEmails($orderId);
 		
 		// get methods of payment
 		$obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
@@ -356,16 +451,16 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	 * Set the log when searched records
 	 * @method setLog - Set log in file
 	 */
-	public function setAbandonedListLog()
+	public function setAbandonedListLog($days)
 	{
 		$config = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-		$this->setDateStart($config->getConfigData('abandoned_link'));
+		$this->setDateStart($days);
 		
 		// Set title
 		$module = ' [Info] PagSeguroAbandoned.';	
 		
 		// Sentence of log
-		$phrase = "Searched( '" . $config->getConfigData('abandoned_link') . " days - Range of dates ";
+		$phrase = "Searched( '" . $days . " days - Range of dates ";
 		$phrase .= $this->getDateStart() . " until " . 
 				   $this->getDateFinally() . "' )";
 				   
@@ -388,6 +483,41 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		$phrase = 'Mail(';
 		$phrase .= "SendEmailAbandoned: array (\n  'orderId' => " . $orderId . ",\n  ";
 		$phrase .= "'recoveryCode' => '" . $recoveryCode . "'\n))";
+			
+		// Creating the update log order
+		$this->setLog($phrase, $module);			
+	}
+
+	/**
+	 * Set the log records when update a sent e-mail
+	 * @param int $orderId - Id of order Magento
+	 * @method setLog - Set log in file
+	 */
+	private function setAbandonedSentEmailInsertLog($order_id)
+	{
+		// Title of Log
+		$module = ' [Info] PagSeguroAbandoned.';
+		
+		// Sentence of log
+		$phrase = 'SentEmailInsert( Was added pagseguro_orders a new send e-mail for order ' . $order_id . ' )';
+			
+		// Creating the update log order
+		$this->setLog($phrase, $module);			
+	}
+
+	/**
+	 * Set the log records when update a sent e-mail
+	 * @param int $orderId - Id of order Magento
+	 * @param int $sent - Quantity of e-mails sent
+	 * @method setLog - Set log in file
+	 */
+	private function setAbandonedSentEmailUpdateLog($orderId, $sent)
+	{
+		// Title of Log
+		$module = ' [Info] PagSeguroAbandoned.';
+		
+		// Sentence of log
+		$phrase = "SentEmailUpdate( Has been updated to ".$sent." the number of emails sent , belonging to order ".$order_id." )";
 			
 		// Creating the update log order
 		$this->setLog($phrase, $module);			

@@ -31,7 +31,6 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     public function __construct()
     {
 		$this->changeEnvironment();
-
     }
         
 	/**
