@@ -184,10 +184,10 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 		$order = Mage::getModel('sales/order')->load($orderId);
 		
 		// Receives the status already converted and translated of order of Magento
-		$statusMagento = $this->getPaymentStatusMagento($this->__(ucfirst($order->getStatus())));
+		$statusMagento = strtolower($this->getPaymentStatusMagento($this->__(ucfirst($order->getStatus()))));
 				
 		// Receives the status of the transaction PagSeguro already converted		
-		$statusPagSeguro = $this->getPaymentStatusPagSeguro($paymentStatus);
+		$statusPagSeguro = strtolower($this->getPaymentStatusPagSeguro($paymentStatus));
 		
 		if ($statusMagento != $statusPagSeguro) {	
 			// Receives the creation date of the application which is converted to the format d/m/Y
