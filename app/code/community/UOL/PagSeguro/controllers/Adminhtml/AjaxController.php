@@ -37,6 +37,8 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 			} else {
 				echo $this->getAbandonedGrid();	
 			}						
+		} elseif ($origin == 'requirements') {
+			echo $this->getRequirements();
 		}
 	}
 	
@@ -136,5 +138,19 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 		}
 		
 		return 'run';
+	}
+
+	/**
+	 * Generates the data abandoned to populate the table
+	 * @return array $dataSet - Array of data for table
+	 */
+	private function getRequirements()
+	{		
+
+		$helper = Mage::helper('pagseguro/requirements');
+		$helper->setRequirementsLog();	
+		$helper->checkRequirementsAccess();
+
+		return json_encode($helper->validateRequirements());
 	}
 }

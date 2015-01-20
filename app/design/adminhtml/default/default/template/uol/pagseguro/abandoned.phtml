@@ -21,59 +21,113 @@ limitations under the License.
 ?>
 <?php Mage::helper('pagseguro/abandoned')->checkAbandonedAccess(); ?>
 
-<img class="pagseguro_logo" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/logo.png'); ?>" />
+<div id="pagseguro-module">
+	
+    <div id="pagseguro-module-header">
+		<div class="wrapper">
+			
+			<div id="pagseguro-logo">
+				<img class="pagseguro_logo" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/logo.png'); ?>" />
+				<div id="pagseguro-module-version">Versão <?php echo Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version; ?></div>
+			</div>
+		    
+		    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=5&tipo=cadastro#!vendedor" target="_blank"><?php echo $this->__('Faça seu cadastro'); ?></a>
 
-<div class="content-header">
-    <table cellspacing="0" class="grid-header">
-        <tr>
-            <th><h3><?php echo $this->__('Abandonadas'); ?></h3></th>
-        </tr>
-    </table>
+		</div>
+	</div>
+
+	<div id="pagseguro-module-content">
+
+		<div class="wrapper">
+		    
+		    <div id="pagseguro-module-menu">
+			    
+			    <ul>
+			    	<li 
+						id="menu-item-config"
+						data-has-form="true">
+						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/key'); ?>">Configuração</a>
+					</li>
+					<li 
+						id="menu-item-conciliation"
+						data-has-form="true"
+						>
+						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_conciliation'); ?>">Conciliação</a>
+					</li>
+					<li 
+						id="menu-item-abandoned"
+						class="selected" 
+						data-has-form="true">
+						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_abandoned'); ?>">Abandonadas</a>
+					</li>
+					<li 
+						id="menu-item-required" 
+						data-has-form="true">
+						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_requirements'); ?>">Requisitos</a>
+					</li>
+			    </ul>
+			</div>
+
+		    <div id="pagseguro-module-contents">
+
+				<h2 class="title" title="Transações Abandonadas"><?php echo $this->__('Transações Abandonadas'); ?></h2>
+
+				<p>
+					<?php 
+						$string .= 'Com esta funcionalidade, você poderá listar as transações abandonadas e disparar, manualmente, ';
+						$string .= 'um e-mail para seu comprador. Este e-mail conterá um link que o redirecionará para o fluxo de ';
+						$string .= 'pagamento, exatamente no ponto onde ele parou.';
+						echo $this->__($string);
+					 ?>
+				</p>
+
+				<div class="pagseguro-search-tools">
+
+					<form action="javascript:void(0)" method="post" >
+						<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
+						<input type="submit" class="pagseguro-button" id="search-abandoned-button" value="<?php echo $this->__('Pesquisar');?>">
+						<select name='pagseguro_dias' class="pagseguro-field" id="pagseguro-daystorecovery-input">
+					        <option value='1'>1</option>
+					        <option value='2'>2</option>
+					        <option value='3'>3</option>
+					        <option value='4'>4</option>
+					        <option value='5'>5</option>
+					        <option value='6'>6</option>
+					        <option value='7'>7</option>
+					        <option value='8'>8</option>
+					        <option value='9'>9</option>
+					        <option value='10'>10</option>
+					    </select>
+						<label><?php echo $this->__('Últimos Dias'); ?></label>
+					    <div class="right-tools">
+					    	Recuperação de carrinho:&nbsp;
+					    	<input type="submit"  class="pagseguro-button" id="send-email-button" value="<?php echo $this->__("Enviar e-mail");?>" disabled/>
+					    </div>
+					</form>
+			</div>
+
+			<table id="abandoned-transactions-table" class="pagseguro-table">
+				<thead>
+					<tr>
+						<th class="select_checkbox" width="3%" onclick="checkboxes();">
+							<input type="checkbox" id="pagseguro-check-all" />
+						</th>
+						<th width="20%"><?php echo $this->__('Data do Pedido');?></th>
+						<th width="20%"><?php echo $this->__('ID Magento');?></th>
+						<th width="20%"><?php echo $this->__('Validade do Link');?></th>
+						<th width="20%"><?php echo $this->__('E-mails Enviados');?></th>
+						<th width="30%"><?php echo $this->__('Pedido');?></th>
+					</tr>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+
+			</div>
+		</div>
+	</div>
 </div>
-
-<p>
-	<?php 
-		$string .= 'Com esta funcionalidade, você poderá listar as transações abandonadas e disparar, manualmente, ';
-		$string .= 'um e-mail para seu comprador. Este e-mail conterá um link que o redirecionará para o fluxo de ';
-		$string .= 'pagamento, exatamente no ponto onde ele parou.';
-		echo $this->__($string);
-	 ?>
-</p>
-
-<form action="javascript:void(0)" method="post" >
-	<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
-	<label><?php echo $this->__('Dias'); ?></label>
-	<select id='pagseguro_dias_btn' name='pagseguro_dias' class="select">
-        <option value='1'>1</option>
-        <option value='2'>2</option>
-        <option value='3'>3</option>
-        <option value='4'>4</option>
-        <option value='5'>5</option>
-        <option value='6'>6</option>
-        <option value='7'>7</option>
-        <option value='8'>8</option>
-        <option value='9'>9</option>
-        <option value='10'>10</option>
-    </select>
-    <input type="submit" class="pagseguro-button green-theme normal btnSearch" value="<?php echo $this->__('Pesquisar');?>">
-    <input type="submit" class="pagseguro-button green-theme normal btnSend" value="<?php echo $this->__("Enviar selecionados");?>">
-</form>
-
-<table id="htmlgrid" class="grid" border="0" cellpadding="10" cellspacing="10" width="100%">
-	<thead>
-		<tr>
-			<th class="select_checkbox" onclick="checkedAll()" width="10%"><?php echo $this->__('Selecionar');?></th>
-			<th width="25%"><?php echo $this->__('Data do Pedido');?></th>
-			<th width="20%"><?php echo $this->__('ID Magento');?></th>
-			<th width="25%"><?php echo $this->__('Validade do Link');?></th>
-			<th width="10%"><?php echo $this->__('E-mails Enviados');?></th>
-			<th width="10%"><?php echo $this->__('Pedido');?></th>
-		</tr>
-	</thead>
-	<tbody>
-		
-	</tbody>
-</table>
 
 <?php 
 	$noTransaction = $this->__('Nenhum resultado.');
@@ -86,91 +140,120 @@ limitations under the License.
 	var i = 0;
 		
 	jQuery(document).ready(function(){					     
-		var flow = 0;
-		var totalRows = 0;	
-		var page = 0;
-		var currentPage = 0;
-		var oTable;		
 		
-		// Initiates the creation of the table dataTable
-		jQuery('#htmlgrid').dataTable({	
-			"info": false,
-			"lengthChange": false,
-			"searching": false,
-			"bStateSave": true,
-			"pageLength": 10,
-   			"aaSorting": [[ 1, "desc" ]],
-			"aoColumnDefs": [
-				{ 'bSortable': false, 'aTargets': [ 0, 4, 5 ] },
-				{ "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4, 5 ] }
-			],
-			
-			// Creates paging and notifies when there is no record
-			"oLanguage": {
-				"sEmptyTable":"<?php echo $this->__($noTransaction); ?>",
-				"oPaginate": {
-					"sNext": '<?php echo $this->__('Próximo');?>',
-					"sLast": '<?php echo $this->__('Último');?>',
-					"sFirst": '<?php echo $this->__('Primeiro');?>',
-					"sPrevious": '<?php echo $this->__('Anterior');?>'
-				}
-			},		
-			
-			// Every interaction with the table it is called
-			"fnDrawCallback": function(oSettings) {	
-				// Makes when clicked on a registry is redirected to the editing order of Magento	
-				trHoverClick();	
-				oTable = this;
-				totalRows = oTable.fnGetData().length;
-				var table = jQuery('#htmlgrid').DataTable();
-				var info = table.page.info();
 
-				// Only if greater than 10 records show paging
-				if (totalRows > 10) {					
-					jQuery('.dataTables_paginate').css('display','block');
-					flow = 1;					
-				} else {									
-					jQuery('.dataTables_paginate').css('display','none');
-					flow = 0;
-				}
-				
-				// If the home page does not display the previous page button
-				if (info.page == 0) {
-					jQuery('a#htmlgrid_previous').css('display','none');
-				}			
-				
-				// If the last page does not display the next page button
-				if ((info.page+1) == info.pages) {
-					jQuery('a#htmlgrid_next').css('display','none');
-				}	
-				
-				i++;
-				
-				// Stores which is the page that appears after update				
-				if (i == 1) { 
-					currentPage = page;	
-				}	
-				
-				// Stores the current page, calculated by number of records and number of records per page					
-				page  = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);					
-			},
+		Menu.init();	
+		PageAbandoned.init();
 			
-			// When it completes assembly of the table is executed
-			"initComplete": function (oSettings) {				
-		        oTable = this;		        
-		        if (currentPage != 0) {
-		        	// When upgraded back on the page that was
-		        	oTable.fnPageChange(currentPage);	
-		        }	        
-		    }
-		});
-		
-		jQuery(".btnSearch").on("click",function() {
-			loadAbandoned();
-		});
+    }); 
+    var PageAbandoned = new function() {
 
-		jQuery(".btnSend").on("click",function() {
-			var ckbFalse = 0;
+        var transactionsTable; // DataTable
+        var sendMultipleButton = jQuery("#send-email-button");
+        var defaultPage = 0;
+        
+        var onRequestTransactions = function(transactions, callback) {
+
+        	if (transactions != "") {
+
+            	converted = JSON.parse(transactions);
+                jQuery('#abandoned-transactions-table').dataTable().fnClearTable(true);           
+                jQuery('#abandoned-transactions-table').dataTable().fnAddData(converted);
+                jQuery('#abandoned-transactions-table').dataTable()._fnInitComplete();
+
+                if (typeof callback == 'function') {
+                    callback();
+                } else {
+                    Modal.hideLoading();
+                }
+
+            } else {
+            	jQuery('#abandoned-transactions-table').dataTable().fnClearTable(true); 
+                Modal.message('alert', "Não há transações abandonadas no período.");
+            }
+
+        };
+
+        var requestTransactions = function(callback) {
+            
+	        var getDays = jQuery('#pagseguro-daystorecovery-input').find(":selected").text();
+			var converted = '';
+			Modal.showLoading();
+
+			jQuery.ajax({
+	            url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+	            type: "POST",
+	            data: { 
+	            		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
+	            		origin: 'abandoned',
+	            		days: getDays
+	            	  },
+	            success: function(result) { 
+
+	            	onRequestTransactions(result, callback);           
+	            },
+	            error: function() {
+	            	Modal.message('error', "Não foi possível obter os dados de transações abandonadas.");
+	            }
+	         });
+
+        };
+
+        var sendMailRequest = function(params) {
+            
+            var onError = function(){
+                Modal.message('error', 'Não foi possível enviar o(s) e-mail(s).');
+            };
+
+            Modal.showLoading();
+
+			jQuery.ajax({
+
+	            url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+	            type: "POST",
+	            data: { 
+	            		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
+	            		json: params,
+	            		origin: 'abandoned'	                		
+	            	  },
+
+	            success: function(result) {  
+	            		
+	                if (result == 'run') {
+	                	jQuery(':checkbox').prop('checked','');
+	                	jQuery('#messages').empty();
+	                	jQuery('#send-email-button').prop("disabled", true);
+	                	requestTransactions(function(table) {
+                            Modal.message('success', 'E-mail(s) enviado(s) com sucesso.');
+                        });
+
+	                } else {
+	                	onError();
+	                }                   
+	            },
+
+	            error: function() {
+	            	// Remove the modal of loading
+	                Modal.hideLoading();
+	            }
+	         });
+
+        };
+
+        var sendMultipleEmails = function() {
+            
+            var dataSelector = jQuery('input[name="send_emails[]"]');
+
+            if (dataSelector.filter(":checked").length > 0) {
+                sendMail();
+            } else {
+                Messages.addError('Selecione ao menos um item.');
+            }
+
+        }; 
+
+        var sendMail = function() {
+        	var ckbFalse = 0;
 			var j = 0;
 			jQuery('input[name="send_emails[]"]').each(function() {
 				if (jQuery(this).is(':checked') == false) {
@@ -178,6 +261,7 @@ limitations under the License.
 				}
 				j++;
 			});	
+
 			if (j == ckbFalse) {
 				jQuery('#messages').empty();					
 				setMsgError("<?php echo $this->__($noTransaSelected); ?>");
@@ -201,137 +285,112 @@ limitations under the License.
 					}
 					    
 			    });	
-			    var msg	= '';
-			    if (count == 1) {
-			    	msg = '<?php echo " " . $this->__($emailSendSuccess); ?>';
-			    }  else {
-			    	msg = count + '<?php echo " " . $this->__($emailsSendSuccess); ?>';
-			    } 
-		    	var converted = '';
-				blockModal(1);
-				jQuery.ajax({
-	                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
-	                type: "POST",
-	                data: { 
-	                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
-	                		json: jsonArr,
-	                		origin: 'abandoned'	                		
-	                	  },
-	                success: function(result) {  
-	                		
-	                    if (result == 'run') {
-	                    	jQuery('input[name="send_emails[]"]').prop('checked','');
-	                    	jQuery('#messages').empty();					
-							setMsgSuccess(msg);
-
-							loadAbandoned();
-		                }                    
-	                },
-	                error: function() {
-	                	// Remove the modal of loading
-	                    blockModal(0);
-	                }
-	             });
+		    	sendMailRequest(jsonArr);
 			}
-		}); 		
-    });    
+        } 
 
-	function loadAbandoned()
-	{
-		var getDays = jQuery('#pagseguro_dias_btn').find(":selected").text();
-		var converted = '';
-		blockModal(1);
-		jQuery.ajax({
-            url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
-            type: "POST",
-            data: { 
-            		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
-            		origin: 'abandoned',
-            		days: getDays
-            	  },
-            success: function(result) { 
-            	
-            	i = 0;  
-            	// handle the return of ajax and dates back to table    	
-                if (result != "") {
-					converted = JSON.parse(result);
-                    jQuery('#htmlgrid').dataTable().fnClearTable(true);           
-                    jQuery('#htmlgrid').dataTable().fnAddData(converted);
-                    jQuery('#htmlgrid').dataTable()._fnInitComplete();  
-                } else {
-                	jQuery('#htmlgrid').dataTable().fnClearTable(true);  
-                }
+        var prepareTable = function() {
+        	var flow = 0;
+			var totalRows = 0;	
+			var page = 0;
+			var currentPage = 0;
+			var oTable;	
+			
+			// Initiates the creation of the table dataTable
+			jQuery('#abandoned-transactions-table').dataTable({	
+				"info": false,
+				"lengthChange": false,
+				"searching": false,
+				"bStateSave": true,
+				"pageLength": 10,
+	   			"aaSorting": [[ 1, "desc" ]],
+				"aoColumnDefs": [
+					{ 'bSortable': false, 'aTargets': [ 0, 4, 5 ] },
+					{ "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4, 5 ] }
+				],
+				
+				// Creates paging and notifies when there is no record
+				"oLanguage": {
+					"sEmptyTable":"<?php echo $this->__($noTransaction); ?>",
+					"oPaginate": {
+						"sNext": '<?php echo $this->__('Próximo');?>',
+						"sLast": '<?php echo $this->__('Último');?>',
+						"sFirst": '<?php echo $this->__('Primeiro');?>',
+						"sPrevious": '<?php echo $this->__('Anterior');?>'
+					}
+				},		
+				
+				// Every interaction with the table it is called
+				"fnDrawCallback": function(oSettings) {	
+					// Makes when clicked on a registry is redirected to the editing order of Magento	
+					oTable = this;
+					totalRows = oTable.fnGetData().length;
+					var table = jQuery('#abandoned-transactions-table').DataTable();
+					var info = table.page.info();
 
-                //After reassembling the table removes the modal of loading
-                blockModal(0);
-                
-            },
-            error: function(xhr) {
-            	// Remove the modal of loading
-                blockModal(0);
-            }
-         });
-	}
-    
-    function SendMail(data) {    	
-		var config = jQuery(data).data('config').split('/');
-    	var id = config[0];
-    	var recovery = config[1];
-    	var jsonArr = [];
-    	jsonArr.push({
-	        id: id,
-	        recovery: recovery
-	    });		    
-    	var converted = '';
-		blockModal(1);
-		jQuery.ajax({
-            url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
-            type: "POST",
-            data: { 
-            		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
-            		origin: 'abandoned',
-            		json: jsonArr
-            	  },
-            success: function(result) {     	
-                if (result == 'run') {
-                	jQuery('input[name="send_emails[]"]').prop('checked','');
-                	jQuery('#messages').empty();					
-					setMsgSuccess("<?php echo $this->__($emailSendSuccess); ?>");
-                }
-                //After reassembling the table removes the modal of loading
-                blockModal(0);
-                
-            },
-            error: function() {
-            	// Remove the modal of loading
-                blockModal(0);
-            }
-         });
-    }   
-    
-    // Create the modal of load and remove this
-    function blockModal(block) {     	   		
-		if (block == 1) {
-		    jQuery.blockUI({
-		        message: '<h1><?php echo $this->__('Carregando');?>' +
-		        		 	'<img src="<?php echo $this->getSkinUrl('uol/pagseguro/images/loading.gif'); ?>" />' + 
-		        		 '</h1>',
-		        css: {
-		            border: 'none',
-		            padding: '15px',
-		            backgroundColor: '#4f7743',
-		            'border-radius': '10px',
-		            '-webkit-border-radius': '10px',
-		            '-moz-border-radius': '10px',
-		            opacity: 0.7,
-		            color: '#90e874'
-		        },
-		        overlayCSS: { backgroundColor: 'gray' }
-		    });
-		    		    
-		} else {
-		    setTimeout(jQuery.unblockUI, 1000);
-		}
-	}
+		            jQuery('#abandoned-transactions-table tbody input:checkbox').change(function(){
+
+		            	var isChecked = jQuery("#abandoned-transactions-table tbody :checked").length;
+		          
+						if (isChecked > 0) {
+							jQuery('#send-email-button').prop("disabled", false);
+						} else {
+							jQuery('#send-email-button').prop("disabled", true);
+						}
+
+		            });
+
+					// Only if greater than 10 records show paging
+					if (totalRows > 10) {					
+						jQuery('.dataTables_paginate').css('display','block');
+						flow = 1;					
+					} else {									
+						jQuery('.dataTables_paginate').css('display','none');
+						flow = 0;
+					}
+					
+					// If the home page does not display the previous page button
+					if (info.page == 0) {
+						jQuery('a#abandoned-transactions-table_previous').css('display','none');
+					}			
+					
+					// If the last page does not display the next page button
+					if ((info.page+1) == info.pages) {
+						jQuery('a#abandoned-transactions-table_next').css('display','none');
+					}	
+					
+					i++;
+					
+					// Stores which is the page that appears after update				
+					if (i == 1) { 
+						currentPage = page;	
+					}	
+					
+					// Stores the current page, calculated by number of records and number of records per page					
+					page  = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);					
+				},
+				
+				// When it completes assembly of the table is executed
+				"initComplete": function (oSettings) {				
+			        oTable = this;		        
+			        if (currentPage != 0) {
+			        	// When upgraded back on the page that was
+			        	oTable.fnPageChange(currentPage);	
+			        }	        
+			    }
+			});
+        }
+
+        this.init = function() {
+        	prepareTable();
+            jQuery('#search-abandoned-button').click(function () {
+                requestTransactions();
+            });
+            sendMultipleButton.click(function () {
+                sendMultipleEmails();
+            });
+        };
+    }
 </script>
 <script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js');?>"></script>

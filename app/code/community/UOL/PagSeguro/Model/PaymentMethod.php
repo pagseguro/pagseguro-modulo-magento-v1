@@ -38,7 +38,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.5';
+    private $Module_Version = '2.5';//Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version;
     private $Order;
     private $Shipping_Data;
 

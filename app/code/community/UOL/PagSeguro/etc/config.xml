@@ -104,10 +104,15 @@ limitations under the License.
                         <action>pagseguro/adminhtml_abandoned</action>
 						<sort_order>2100</sort_order>
                     </pagseguro_abandoned>
+                    <pagseguro_requirements translate="title" module="pagseguro">
+                        <title>Requisitos</title>
+                        <action>pagseguro/adminhtml_requirements</action>
+                        <sort_order>2200</sort_order>
+                    </pagseguro_requirements>
 					<pagseguro_config translate="title" module="pagseguro">
                         <title>Configurações</title>
                         <action>adminhtml/system_config/edit/section/payment/</action>
-						<sort_order>2200</sort_order>
+						<sort_order>2300</sort_order>
                     </pagseguro_config>
                 </children>
             </pagseguro_menu>

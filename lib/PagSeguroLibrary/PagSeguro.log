@@ -1,0 +1,60 @@
+{16/01/2015 14:50:03} [Info] PagSeguroConciliation.Searched( '30 days - Range of dates 2014-12-17T00:00 until 2015-01-16T14:50' )
+{16/01/2015 14:50:13} [Info] PagSeguroConciliation.Update(OrderStatusMagento: array (
+  'orderId' => 37,
+  'transactionCode' => 'A46DBFEA-D3C7-4F23-B02F-E50F3E8DFDCF',
+  'orderStatus' => 'aguardando_pagamento_ps'
+))
+{16/01/2015 14:50:14} [Info] PagSeguroConciliation.Update(OrderStatusMagento: array (
+  'orderId' => 36,
+  'transactionCode' => '4B1DF997-3A86-4748-9AA9-158FB228F856',
+  'orderStatus' => 'paga_ps'
+))
+{16/01/2015 14:50:57} [Info] PagSeguroAbandoned.Searched( '10 days - Range of dates 2015-01-16T00:00 until 2015-01-16T14:50' )
+{16/01/2015 14:51:52} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 40,
+  'recoveryCode' => '7df5a68dd88c50bb96ebc258f5aeaa58c3e4f02ad7a88946'
+))
+{16/01/2015 14:51:52} [Info] PagSeguroAbandoned.SentEmailUpdate( Has been updated to 3 the number of emails sent , belonging to order  )
+{16/01/2015 14:51:53} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 39,
+  'recoveryCode' => '7df5a68dd88c50bb96ebc258f5aeaa5880ffa430dc5af34f'
+))
+{16/01/2015 14:51:53} [Info] PagSeguroAbandoned.SentEmailUpdate( Has been updated to 2 the number of emails sent , belonging to order  )
+{16/01/2015 14:51:54} [Info] PagSeguroAbandoned.Mail(SendEmailAbandoned: array (
+  'orderId' => 38,
+  'recoveryCode' => '7df5a68dd88c50bba3f095e9f04e033c6ae95fa327f8bd06'
+))
+{16/01/2015 14:51:54} [Info] PagSeguroAbandoned.SentEmailInsert( Was added pagseguro_orders a new send e-mail for order  )
+{16/01/2015 14:51:55} [Info] PagSeguroAbandoned.Searched( '10 days - Range of dates 2015-01-16T00:00 until 2015-01-16T14:51' )
+{16/01/2015 16:22:34} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:22:57} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:23:20} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:23:42} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:24:03} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:24:37} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:25:01} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:25:28} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:26:01} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:30:21} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:30:36} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:31:58} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:32:21} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:32:39} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:35:52} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:36:12} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:36:52} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:37:45} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:38:14} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:38:32} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:38:50} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:39:34} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:40:01} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:42:26} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:43:01} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:45:37} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:47:45} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:48:15} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:49:01} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:56:28} [Info] PagSeguroRequirements.get()
+{16/01/2015 16:57:47} [Info] PagSeguroRequirements.get()
+{16/01/2015 17:03:40} [Info] PagSeguroRequirements.get()

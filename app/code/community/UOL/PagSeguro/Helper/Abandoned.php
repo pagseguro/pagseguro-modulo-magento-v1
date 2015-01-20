@@ -193,7 +193,7 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		
 		// Checkbox of selection for send e-mail
 		$checkbox =  "<label class='chk_email'>";
-		$checkbox .= "<input type='checkbox' name='send_emails[]' data-config='" . $config . "' />";
+		$checkbox .= "<input type='checkbox' name='send_emails[]' class='abandoned-transaction' data-config='" . $config . "' />";
 		$checkbox .= "</label>";
 		
 		// Receives the object of order that was entered the id		
