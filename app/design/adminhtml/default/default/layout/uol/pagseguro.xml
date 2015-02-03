@@ -32,6 +32,20 @@ limitations under the License.
                 <after>real_order_id</after>
             </action>
         </reference>
+        <reference name="sales_order.grid">
+            <action method="addColumnAfter" ifconfig="payment/pagseguro/active">
+                <columnId>payment_environment</columnId>
+                <arguments>
+                    <header>Ambiente</header>
+                    <index>payment_environment</index>
+					<header_css_class>a-center</header_css_class>
+					<align>center</align>
+                    <filter_index>payment.environment</filter_index>
+                    <type>text</type>
+                </arguments>
+                <after>payment_method</after>
+            </action>
+        </reference>
     </sales_order_grid_update_handle>
     <adminhtml_sales_order_grid>
         <update handle="sales_order_grid_update_handle" />
@@ -86,7 +100,6 @@ limitations under the License.
             <!--<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.blockUI.js</name><params/><if/></action>-->
         </reference>
         <reference name="content">
-            <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
             <block type="adminhtml/template" name="requirements" template="uol/pagseguro/requirements.phtml"/>
         </reference>    
     </pagseguro_adminhtml_requirements_index>

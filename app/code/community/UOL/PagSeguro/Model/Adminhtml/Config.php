@@ -4,6 +4,8 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 
 	private $skin;
 	private $jquery;
+	private $js;
+	private $jsColorbox;
 	private $css;
 	private $logo;
 	private $version;
@@ -19,6 +21,8 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 		
 		//Set headers
 		$this->jquery = $baseurl . 'js/jquery-1.11.1.js';
+		$this->js = $baseurl . 'js/pagseguro-module.js';
+		$this->jsColorbox = $baseurl . 'js/jquery.colorbox-min.js';
 		$this->buildCSS();
 
 		//Set images
@@ -135,6 +139,215 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 						.pagseguro-button.gray-theme:hover {
 						    background-color : #f9f9f9;
 						}
+						/*
+						    ColorBox Core Style:
+						    The following CSS is consistent between example themes and should not be altered.
+						*/
+						#colorbox, #cboxOverlay, #cboxWrapper{position:absolute; top:0; left:0; z-index:9999;}
+						#cboxOverlay{position:fixed; width:100%; height:100%;}
+						#cboxMiddleLeft, #cboxBottomLeft{clear:left;}
+						#cboxContent{position:relative;}
+						#cboxLoadedContent{overflow:auto;}
+						#cboxTitle{margin:0;}
+						#cboxLoadingOverlay, #cboxLoadingGraphic{position:absolute; top:0; left:0; width:100%; height:100%;}
+						#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{cursor:pointer;}
+						.cboxPhoto{float:left; margin:auto; border:0; display:block; max-width:none;}
+						.cboxIframe{width:100%; height:100%; display:block; border:0;}
+						#colorbox, #cboxContent, #cboxLoadedContent{box-sizing:content-box;}
+						/* 
+						    User Style:
+						    Change the following styles to modify the appearance of ColorBox.  They are
+						    ordered & tabbed in a way that represents the nesting of the generated HTML.
+						*/
+						.cboxIframe{
+							background:#fff;
+						}
+						#cboxOverlay{
+							background:#000;
+						}
+						#cboxContent{
+							background:#fff;
+							overflow:visible;
+							border-radius:5px;
+						}
+						#cboxLoadedContent{
+							margin:15px 10px 0;
+							background:#fff;
+						}
+						#cboxLoadingOverlay{
+							background:#fff;
+						}
+						#cboxClose {
+							display:block;
+							position:absolute;
+							right : -10px;
+							top : -10px;
+							padding : 12px;
+							cursor : pointer;
+							border:0;
+							border-radius : 50%;
+							z-index : 10;
+							background: center no-repeat #FFF url(data:image/gif;base64,R0lGODlhCgAKALMAANXV1dTU1O/v7/Dw8Ovr6+zs7Lu7u8DAwPX19QAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAKAAoAAAQqEKEhJZXgFFkOQMJhaN0oIIR4qESVGmNblePGqeo2sO9BBQdZKlC5WCQRADs=);
+							box-shadow : -1px 1px 13px rgba(0, 0, 0, 0.4);
+							overflow:hidden;
+							width:1.5em;
+							height:1.5em;
+							text-indent:-9999px;
+						}
+						#cboxTitle{
+							display:none!important;
+						}
+						#cboxLoadedContent .title{
+							font-size:1.8em;
+							margin:0 0 20px 0;
+							padding:0.1em 0;
+						}
+						/* Messages */
+						.pagseguro-msg h3 > a { color:#035EC7!important }
+						.pagseguro-msg.pagseguro-msg-micro h3,
+						.pagseguro-msg.pagseguro-msg-micro dt,
+						.pagseguro-msg.pagseguro-msg-micro dd,
+						.pagseguro-msg.pagseguro-msg-micro li,
+						.pagseguro-msg.pagseguro-msg-micro p {
+						    font-size:1em !important;
+						}
+						.pagseguro-msg.pagseguro-msg-small h3,
+						.pagseguro-msg.pagseguro-msg-small dt,
+						.pagseguro-msg.pagseguro-msg-small dd,
+						.pagseguro-msg.pagseguro-msg-small li,
+						.pagseguro-msg.pagseguro-msg-small p {
+						    font-size:1.2em !important;
+						}
+						.pagseguro-msg.pagseguro-msg-medium h3,
+						.pagseguro-msg.pagseguro-msg-medium dt {
+						    font-size:1.4em !important;
+						}
+						.pagseguro-msg.pagseguro-msg-medium dd,
+						.pagseguro-msg.pagseguro-msg-medium li,
+						.pagseguro-msg.pagseguro-msg-medium p {
+						    font-size:1.2em !important;
+						}
+						.pagseguro-msg {
+						    display : table;
+						    overflow : hidden;
+						    zoom : 1;
+						    font-size : 1em;
+						    width : 100%;
+						    font-family : Arial;
+						    padding : 0.7em;
+						    margin-bottom : 1em; /* IEs */
+						    margin-bottom : 0.4rem;
+						    -webkit-box-sizing : border-box;
+						    -moz-box-sizing : border-box;
+						    -ms-box-sizing : border-box;
+						    -o-box-sizing : border-box;
+						    box-sizing : border-box;
+						    text-align: left;
+						}
+						.pagseguro-msg h3,
+						.pagseguro-msg p {
+						    display:table-cell;
+						    vertical-align:middle;
+						    width:100%;
+						}
+						.pagseguro-msg dl,
+						.pagseguro-msg ul {
+						    display:table-cell;
+						    vertical-align:top;
+						    width:100%;
+						}
+						.pagseguro-msg h3,
+						.pagseguro-msg p,
+						.pagseguro-msg li,
+						.pagseguro-msg dt,
+						.pagseguro-msg dd{
+						    color: #4f4f4f !important;
+						}
+						.pagseguro-msg h3,
+						.pagseguro-msg dt {font-weight: bold;}
+						.pagseguro-msg dd {margin: 0; padding: 0;}
+						.pagseguro-msg li {
+						    padding:0;
+						    list-style-type: none;
+						}
+						.pagseguro-msg dd,
+						.pagseguro-msg li + li {margin-top: 0.4em;}
+
+						i.icon-pagseguro-msg,
+						.pagseguro-msg:before {
+						    display : inline-block;
+						    vertical-align : middle;
+						    overflow : hidden;
+						    background-image : url("../images/messages.png");
+						    background-repeat : no-repeat;
+						    background-size : cover;
+						}
+
+						i.icon-pagseguro-msg.icon-loading,
+						.pagseguro-msg.pagseguro-msg-loading:before {
+						    background-image : url("../images/loading.gif");
+						    background-position: 0 0;
+						}
+
+						.pagseguro-msg:before {
+						    content : "";
+						}
+						.pagseguro-msg.no-icon:before{
+						    display:none !important;
+						}
+
+						i.icon-pagseguro-msg {}
+						i.icon-pagseguro-msg.icon-alert,
+						.pagseguro-msg.pagseguro-msg-alert:before   { background-position : 0 0em; }
+						i.icon-pagseguro-msg.icon-wait,
+						.pagseguro-msg.pagseguro-msg-wait:before    { background-position : 0 -1.28em; }
+						i.icon-pagseguro-msg.icon-error,
+						.pagseguro-msg.pagseguro-msg-error:before   { background-position : 0 -2.56em; }
+						i.icon-pagseguro-msg.icon-block,
+						.pagseguro-msg.pagseguro-msg-block:before   { background-position : 0 -3.84em; }
+						i.icon-pagseguro-msg.icon-info,
+						.pagseguro-msg.pagseguro-msg-info:before    { background-position : 0 -5.12em; }
+						i.icon-pagseguro-msg.icon-success,
+						.pagseguro-msg.pagseguro-msg-success:before { background-position : 0 -6.35em; }
+						i.icon-pagseguro-msg.icon-loading,
+						.pagseguro-msg.pagseguro-msg-loading:before {
+						    -webkit-animation : pagseguro-fx-loading 1.5s linear infinite;
+						    -moz-animation : pagseguro-fx-loading 1.5s linear infinite;
+						    -ms-animation : pagseguro-fx-loading 1.5s linear infinite;
+						    -o-animation : pagseguro-fx-loading 1.5s linear infinite;
+						    animation : pagseguro-fx-loading 1.5s linear infinite;
+						}
+
+						i.icon-pagseguro-msg,
+						.pagseguro-msg:before{
+						    width : 1em;
+						    height : 1em;
+						}
+						i.icon-pagseguro-msg.micro,
+						.pagseguro-msg.pagseguro-msg-micro:before {
+						    font-size: 2em;
+						    margin : 0 0.3em 0 0;
+						}
+						i.icon-pagseguro-msg.small,
+						.pagseguro-msg.pagseguro-msg-small:before {
+						    font-size: 3em;
+						    margin : 0 0.33em 0 0.053em;
+						}
+						i.icon-pagseguro-msg.medium,
+						.pagseguro-msg.pagseguro-msg-medium:before {
+						    font-size: 5em;
+						    margin : 0 0.24em 0 0.072em;
+						}
+						i.icon-pagseguro-msg.large,
+						.pagseguro-msg.pagseguro-msg-large:before {
+						    font-size: 7em;
+						    margin : 0 0.171em 0 0.0514em;
+						}
+						#pagseguro-module-contents .pagseguro-msg{
+						    background:#F3F3F3;
+						    border:solid 1px #E3E3E3;
+						    border-radius:2px 2px 2px;
+						}
 					  </style>';
 	}
 
@@ -159,6 +372,8 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 						</div>
 					 ';
     	$comment .= '<script src="' . $this->jquery . '"></script>';
+    	$comment .= '<script src="' . $this->js . '"></script>';
+    	$comment .= '<script src="' . $this->jsColorbox . '"></script>';
 		$comment .= '<script type="text/javascript">
 						var jQuery = jQuery.noConflict();
 						jQuery(document).ready(function(){
@@ -170,6 +385,10 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 							jQuery("#row_payment_pagseguro_comment").remove();
 
 							jQuery("#payment_pagseguro").css("background", " #fff url('.$this->background.') no-repeat scroll center 45%");
+
+							jQuery("#payment_pagseguro_environment").change(function(){
+								 Modal.message("success", "Você está trocando o ambiente.");
+							});
 						});
 					 </script>';
 		$comment .= $interface;

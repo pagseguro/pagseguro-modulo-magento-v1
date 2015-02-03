@@ -54,6 +54,7 @@ $new_table =  $tp . 'pagseguro_orders';
 if (Mage::getSingleton('core/resource')->getConnection('core_write')->isTableExists($table)) {
 	// change the table adding sent column
 	$sql .= "ALTER TABLE `" . $table . "` ADD sent int DEFAULT 0;";
+	$sql .= "ALTER TABLE `" . $table . "` ADD environment varchar(40);";
 	
 	//rename the table
 	$sql .= "RENAME TABLE `" . $table . "` TO `" . $new_table . "`;";
@@ -65,6 +66,7 @@ if (Mage::getSingleton('core/resource')->getConnection('core_write')->isTableExi
              `order_id` int(11),
              `transaction_code` varchar(80) NOT NULL,
              `sent` int DEFAULT 0,
+             `environment` varchar(40),
              PRIMARY KEY (`entity_id`)
              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";	
 }

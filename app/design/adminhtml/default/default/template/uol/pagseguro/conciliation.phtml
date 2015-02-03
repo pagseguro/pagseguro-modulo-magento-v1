@@ -112,12 +112,12 @@ limitations under the License.
 							<th class="select_checkbox" width="3%" onclick="checkboxes();">
 								<input type="checkbox" id="pagseguro-check-all" />
 							</th>
-							<th width="12%"><?php echo $this->__('Data do Pedido');?></th>
-							<th width="10%"><?php echo $this->__('ID Magento');?></th>
-							<th width="32%"><?php echo $this->__('ID PagSeguro');?></th>
-							<th width="16%"><?php echo $this->__('Status Magento');?></th>
-							<th width="16%"><?php echo $this->__('Status PagSeguro');?></th>
-							<th width="14%"><?php echo $this->__('Pedido');?></th>
+							<th width="9%"><?php echo $this->__('Data');?></th>
+							<th width="11%"><?php echo $this->__('ID Magento');?></th>
+							<th width="30%"><?php echo $this->__('ID PagSeguro');?></th>
+							<th width="15%"><?php echo $this->__('Status Magento');?></th>
+							<th width="20%"><?php echo $this->__('Status PagSeguro');?></th>
+							<th width="11%"><?php echo $this->__('Pedido');?></th>
 						</tr>
 					</thead>
 				</table>
@@ -130,7 +130,7 @@ limitations under the License.
 				?>
 
 				<div id="conciliation-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
-			        <p><?php echo $this->__('Somente transações geradas a partir da versão 1.8 do módulo serão listadas.'); ?></p>
+			        <p><?php echo $this->__('Somente transações geradas a partir da versão 2.3 do módulo serão listadas.'); ?></p>
 			    </div>
 
 
@@ -254,7 +254,14 @@ limitations under the License.
 		                }	 
 		                jQuery(':checkbox').prop('checked','');
 		                jQuery('#conciliation-button').prop("disabled", true);
-		                Modal.message('success', 'Conciliação realizada com sucesso.');               
+
+		                var successMsg;
+		                if (jsonArr.length > 1) {
+		                	successMsg = 'Conciliações realizadas com sucesso.'; 
+		                } else {
+		                	successMsg = 'Conciliação realizada com sucesso.'; 
+		                }  
+		                Modal.message('success', successMsg);        
 	                    
 	                },
 	                error: function() {
@@ -311,6 +318,20 @@ limitations under the License.
 					var table = jQuery('#conciliation-table').DataTable();
 					var info = table.page.info();
 
+					//trClick
+					if (totalRows >= 1) {
+						var href;
+						jQuery('#conciliation-table tbody').on('click', 'tr', function () {
+							href = jQuery(table.row( this ).data()[6])[0].href;
+						} );
+						jQuery('#conciliation-table tbody').on('click', 'td', function () {
+							if (jQuery(this).index() > 0){
+								window.open(href, '_blank');
+							}
+						} );
+					}
+
+					//Checkbox enable | disable
 					jQuery('#conciliation-table tbody input:checkbox').change(function(){
 
 		            	var isChecked = jQuery("#conciliation-table tbody :checked").length;
@@ -345,8 +366,12 @@ limitations under the License.
 					i++;
 					
 					// Stores which is the page that appears after update				
-					if (i == 1) { 
-						currentPage = page;	
+					if (i == 1) {
+						if (page >= 1 && totalRows < 1) {
+							currentPage = page - 1;	
+						} else {
+							currentPage = page;	
+						}
 					}	
 					
 					// Stores the current page, calculated by number of records and number of records per page					

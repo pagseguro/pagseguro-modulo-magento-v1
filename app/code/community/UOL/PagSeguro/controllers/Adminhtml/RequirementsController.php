@@ -26,7 +26,6 @@ class UOL_PagSeguro_Adminhtml_RequirementsController extends Mage_Adminhtml_Cont
 	 */
     public function indexAction()
     {
-    	$_SESSION['store_id'] = Mage::app()->getRequest()->getParam('store');
         $this->loadLayout();		
 		$this->_setActiveMenu('pagseguro_menu')->renderLayout();				
     }			

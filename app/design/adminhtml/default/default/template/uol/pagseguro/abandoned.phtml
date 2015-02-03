@@ -157,9 +157,10 @@ limitations under the License.
         	if (transactions != "") {
 
             	converted = JSON.parse(transactions);
-                jQuery('#abandoned-transactions-table').dataTable().fnClearTable(true);           
-                jQuery('#abandoned-transactions-table').dataTable().fnAddData(converted);
-                jQuery('#abandoned-transactions-table').dataTable()._fnInitComplete();
+            	var oTable = jQuery('#abandoned-transactions-table').dataTable();
+                oTable.fnClearTable(false);           
+                oTable.fnAddData(converted, false);
+                oTable.fnStandingRedraw();
 
                 if (typeof callback == 'function') {
                     callback();
@@ -295,6 +296,26 @@ limitations under the License.
 			var page = 0;
 			var currentPage = 0;
 			var oTable;	
+			var pagination;
+
+			jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function(oSettings) {
+			    //redraw to account for filtering and sorting
+			    // concept here is that (for client side) there is a row got inserted at the end (for an add)
+			    // or when a record was modified it could be in the middle of the table
+			    // that is probably not supposed to be there - due to filtering / sorting
+			    // so we need to re process filtering and sorting
+			    // BUT - if it is server side - then this should be handled by the server - so skip this step
+			    if(oSettings.oFeatures.bServerSide === false){
+			        var before = oSettings._iDisplayStart;
+			        oSettings.oApi._fnReDraw(oSettings);
+			        //iDisplayStart has been reset to zero - so lets change it back
+			        oSettings._iDisplayStart = before;
+			        oSettings.oApi._fnCalculateEnd(oSettings);
+			    }
+			      
+			    //draw the 'current' page
+			    oSettings.oApi._fnDraw(oSettings);
+			};
 			
 			// Initiates the creation of the table dataTable
 			jQuery('#abandoned-transactions-table').dataTable({	
@@ -328,6 +349,20 @@ limitations under the License.
 					var table = jQuery('#abandoned-transactions-table').DataTable();
 					var info = table.page.info();
 
+					//trClick
+					if (totalRows >= 1) {
+						var href;
+						jQuery('#abandoned-transactions-table tbody').on('click', 'tr', function () {
+							href = jQuery(table.row( this ).data()[5])[0].href;
+						} );
+						jQuery('#abandoned-transactions-table tbody').on('click', 'td', function () {
+							if (jQuery(this).index() != 0 && jQuery(this).index() != 5){
+								window.open(href, '_blank');
+							}
+						} );
+					}
+
+					//Checkbox enable | disable
 		            jQuery('#abandoned-transactions-table tbody input:checkbox').change(function(){
 
 		            	var isChecked = jQuery("#abandoned-transactions-table tbody :checked").length;
@@ -358,16 +393,12 @@ limitations under the License.
 					if ((info.page+1) == info.pages) {
 						jQuery('a#abandoned-transactions-table_next').css('display','none');
 					}	
-					
+
+					// Stores which is the page that appears after update						
 					i++;
-					
-					// Stores which is the page that appears after update				
-					if (i == 1) { 
-						currentPage = page;	
-					}	
-					
+			
 					// Stores the current page, calculated by number of records and number of records per page					
-					page  = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);					
+					page  = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);				
 				},
 				
 				// When it completes assembly of the table is executed

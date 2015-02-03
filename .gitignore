@@ -177,3 +177,5 @@ pip-log.txt
 #################
 .idea/
 *.iml
+lib/PagSeguroLibrary/PagSeguro.log
+lib/PagSeguroLibrary/PagSeguro.log

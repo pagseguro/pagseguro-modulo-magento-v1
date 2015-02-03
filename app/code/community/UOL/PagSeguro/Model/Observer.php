@@ -31,7 +31,7 @@ class UOL_PagSeguro_Model_Observer
 		$tableCollection = Mage::getSingleton('core/resource')->getTableName('pagseguro_orders');
 	    $select->joinLeft(array('payment' => $tableCollection),
 	    						'payment.order_id = main_table.entity_id',
-								array('payment_code'=>'transaction_code')
+								array('payment_code'=>'transaction_code', 'payment_environment' => 'environment')
 								);
 	}
 }

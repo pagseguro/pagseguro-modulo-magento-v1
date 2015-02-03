@@ -455,7 +455,7 @@
     font-size : 1em;
     width : 100%;
     font-family : Arial;
-    padding : 0.7em;
+    padding : 0.5em;
     margin-bottom : 1em; /* IEs */
     margin-bottom : 0.4rem;
     -webkit-box-sizing : border-box;
@@ -508,6 +508,8 @@ i.icon-pagseguro-msg.icon-loading,
 .pagseguro-msg.pagseguro-msg-loading:before {
     background-image : url('../images/loading.gif');
     background-position: 0 0;
+    width: 63px!important;
+    height: 62px!important;
 }
 
 .pagseguro-msg:before {
@@ -573,4 +575,8 @@ i.icon-pagseguro-msg.large,
 #pagseguro-module-contents #conciliation-info
 {
     margin-top: 40px;
+}
+
+#pagseguro-loading-message{
+    width: 65px;
 }
