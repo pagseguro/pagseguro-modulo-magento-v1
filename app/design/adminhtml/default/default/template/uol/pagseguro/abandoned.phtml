@@ -342,7 +342,8 @@ limitations under the License.
 				},		
 				
 				// Every interaction with the table it is called
-				"fnDrawCallback": function(oSettings) {	
+				"fnDrawCallback": function(oSettings) {
+
 					// Makes when clicked on a registry is redirected to the editing order of Magento	
 					oTable = this;
 					totalRows = oTable.fnGetData().length;
@@ -352,14 +353,17 @@ limitations under the License.
 					//trClick
 					if (totalRows >= 1) {
 						var href;
-						jQuery('#abandoned-transactions-table tbody').on('click', 'tr', function () {
+						jQuery('#abandoned-transactions-table tbody tr').unbind('click');
+						jQuery('#abandoned-transactions-table tbody tr').bind('click', function () {
 							href = jQuery(table.row( this ).data()[5])[0].href;
+								jQuery('#abandoned-transactions-table tbody').on('click', 'td', function () {
+								if (jQuery(this).index() != 0 && jQuery(this).index() != 5){
+									window.open(href, '_blank');
+								}
+							} );
 						} );
-						jQuery('#abandoned-transactions-table tbody').on('click', 'td', function () {
-							if (jQuery(this).index() != 0 && jQuery(this).index() != 5){
-								window.open(href, '_blank');
-							}
-						} );
+
+						
 					}
 
 					//Checkbox enable | disable

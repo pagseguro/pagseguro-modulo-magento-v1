@@ -31,6 +31,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     public function __construct()
     {
 		$this->changeEnvironment();
+		$this->environmentNotification();
     }
         
 	/**
@@ -282,4 +283,97 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 	    	file_put_contents($archive, implode("", $arrayArchive));
 		}
 	}
+
+	/**
+	 * Create or destroy a notice based on a active envinroment
+	 */
+	private function environmentNotification()
+	{
+		$environment = Mage::getStoreConfig('payment/pagseguro/environment');
+
+		//Define table name with their prefix
+		$tp    = (string)Mage::getConfig()->getTablePrefix();
+		$table = $tp . 'adminnotification_inbox';
+
+		$sql = "SELECT notification_id  FROM `".$table."` WHERE title LIKE '%[UOL_PagSeguro]%'";
+
+		$readConnection = Mage::getSingleton('core/resource')->getConnection('core_read');
+		$results = $readConnection->fetchOne($sql);
+
+		//Verify the environment
+		if ($environment == "sandbox") {
+
+			if (empty($results)) {
+
+				$this->insertEnvironmentNotice($table);
+			    Mage::app()->getResponse()->setRedirect(Mage::helper('core/url')->getCurrentUrl());
+
+			} else if ($results != $this->getEnvironmentIncrement($table)) {
+
+				$this->removeEnvironmentNotice($table, $results);
+				$this->insertEnvironmentNotice($table);
+				Mage::app()->getResponse()->setRedirect(Mage::helper('core/url')->getCurrentUrl());
+			}
+
+		} else if ($environment == 'production') {
+			
+			if ($results) {
+
+				$this->removeEnvironmentNotice($table, $results);
+			    Mage::app()->getResponse()->setRedirect(Mage::helper('core/url')->getCurrentUrl());
+			}	   
+		}
+	}
+
+	/**
+	 * Remove environment notice from adminnotification_inbox
+	 * @param string $table - Database table name.
+	 * @return int $id - Returns the nofitication_id value.
+	 */
+	private function getEnvironmentIncrement($table)
+	{
+		$sql = "SELECT MAX(notification_id) as 'max_id' FROM `".$table."`";
+
+		$readConnection = Mage::getSingleton('core/resource')->getConnection('core_read');
+		$results = $readConnection->fetchAll($sql);
+
+		return $results[0]['max_id'];
+	}
+
+	/**
+	 * Insert environment notice into adminnotification_inbox
+	 * @param string $table - Database table name.
+	 */
+	private function insertEnvironmentNotice($table)
+	{
+		// force default time zone
+		Mage::app()->getLocale()->date();
+		$date = date("Y-m-d H:i:s");
+
+		$sql = "INSERT INTO `".$table."` (severity, date_added, title, description, is_read, is_remove) 
+	    	VALUES (4, '$date', '[UOL_PagSeguro] Suas transações serão feitas em um ambiente de testes. 
+	    		Nenhuma das transações realizadas nesse ambiente tem valor monetário.', 
+	    	'Suas transações serão feitas em um ambiente de testes. 
+	    		Nenhuma das transações realizadas nesse ambiente tem valor monetário.', 0, 0)";
+
+		$connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+	    $connection->query($sql);
+	    unset($connection);
+	}
+
+	/**
+	 * Remove environment notice from adminnotification_inbox
+	 * @param string $table - Database table name.
+	 * @param string $id - nofitication_id record.
+	 */
+	private function removeEnvironmentNotice($table, $id)
+	{
+
+		$sql = "DELETE FROM `".$table."` WHERE notification_id = " . $id;
+
+		$connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+	    $connection->query($sql);
+	    unset($connection);
+	}
+
 }

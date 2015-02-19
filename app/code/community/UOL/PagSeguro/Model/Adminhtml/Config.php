@@ -289,9 +289,7 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 						    background-position: 0 0;
 						}
 
-						.pagseguro-msg:before {
-						    content : "";
-						}
+						
 						.pagseguro-msg.no-icon:before{
 						    display:none !important;
 						}
@@ -326,22 +324,22 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 						i.icon-pagseguro-msg.micro,
 						.pagseguro-msg.pagseguro-msg-micro:before {
 						    font-size: 2em;
-						    margin : 0 0.3em 0 0;
+						    
 						}
 						i.icon-pagseguro-msg.small,
 						.pagseguro-msg.pagseguro-msg-small:before {
 						    font-size: 3em;
-						    margin : 0 0.33em 0 0.053em;
+						    
 						}
 						i.icon-pagseguro-msg.medium,
 						.pagseguro-msg.pagseguro-msg-medium:before {
 						    font-size: 5em;
-						    margin : 0 0.24em 0 0.072em;
+						    
 						}
 						i.icon-pagseguro-msg.large,
 						.pagseguro-msg.pagseguro-msg-large:before {
 						    font-size: 7em;
-						    margin : 0 0.171em 0 0.0514em;
+						    
 						}
 						#pagseguro-module-contents .pagseguro-msg{
 						    background:#F3F3F3;
@@ -365,7 +363,8 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 										<div id="pagseguro-module-version">Versão '.$this->version.'</div>
 									</div>
 								    
-								    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=5&tipo=cadastro#!vendedor" target="_blank">Faça seu cadastro</a>
+								    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" 
+								    	href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor" target="_blank">Faça seu cadastro</a>
 
 								</div>
 							</div>
@@ -387,8 +386,12 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 							jQuery("#payment_pagseguro").css("background", " #fff url('.$this->background.') no-repeat scroll center 45%");
 
 							jQuery("#payment_pagseguro_environment").change(function(){
-								 Modal.message("success", "Você está trocando o ambiente.");
+								
+								if (jQuery("#payment_pagseguro_environment").val() == "sandbox") {
+								 Modal.message("success", "Suas transações serão feitas em um ambiente de testes. Nenhuma das transações realizadas nesse ambiente tem valor monetário.");
+								}
 							});
+
 						});
 					 </script>';
 		$comment .= $interface;

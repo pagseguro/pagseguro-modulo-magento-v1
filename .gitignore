@@ -176,6 +176,3 @@ pip-log.txt
 ## IntelliJ
 #################
 .idea/
-*.iml
-lib/PagSeguroLibrary/PagSeguro.log
-lib/PagSeguroLibrary/PagSeguro.log
