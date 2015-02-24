@@ -65,12 +65,6 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 				Mage::getSingleton('core/session')->addError($message);	
 			}
 			Mage::app()->getResponse()->setRedirect($configUrl);		
-		}
-			
-		if ($this->getPagSeguroPaymentList() == 'unauthorized' && $email && $token) {
-			$message = $module . $this->__('Usuário não autorizado, verifique o e-mail e token se estão corretos.');
-			Mage::getSingleton('core/session')->addError($message);
-			Mage::app()->getResponse()->setRedirect($configUrl);
 		}		
 	} 	
 		
@@ -125,7 +119,7 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 			
 		} catch (PagSeguroServiceException $e) {
 	        if(trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED'){
-	        	return 'unauthorized';
+	        	throw new Exception( $e->getMessage() );
 	        }
 	    }
 	}	

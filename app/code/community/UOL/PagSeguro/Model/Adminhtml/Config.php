@@ -346,6 +346,14 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 						    border:solid 1px #E3E3E3;
 						    border-radius:2px 2px 2px;
 						}
+						.system-tooltip-box {
+							width: 37%!important;
+							height: 150px!important;
+							text-align: justify;
+							border: none;
+							padding-left: 3%;
+							padding-top: 12%;
+						}
 					  </style>';
 	}
 

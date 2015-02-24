@@ -20,6 +20,7 @@ limitations under the License.
 
 class UOL_PagSeguro_Model_Observer
 {
+
 	/**
 	 * Query the existing transaction codes with the id of the request and assembles an array with these codes.
 	 * @param object $observer - It is an object of Event of observe.

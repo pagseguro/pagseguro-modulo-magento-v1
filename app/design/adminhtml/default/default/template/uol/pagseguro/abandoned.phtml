@@ -31,7 +31,7 @@ limitations under the License.
 				<div id="pagseguro-module-version">Versão <?php echo Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version; ?></div>
 			</div>
 		    
-		    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=5&tipo=cadastro#!vendedor" target="_blank"><?php echo $this->__('Faça seu cadastro'); ?></a>
+		    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor" target="_blank"><?php echo $this->__('Faça seu cadastro'); ?></a>
 
 		</div>
 	</div>
@@ -190,8 +190,12 @@ limitations under the License.
 	            		days: getDays
 	            	  },
 	            success: function(result) { 
-
-	            	onRequestTransactions(result, callback);           
+	
+	            	if (result == "[HTTP 401] - UNAUTHORIZED") {
+        				Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
+        			} else {
+	            		onRequestTransactions(result, callback);    
+	            	}       
 	            },
 	            error: function() {
 	            	Modal.message('error', "Não foi possível obter os dados de transações abandonadas.");

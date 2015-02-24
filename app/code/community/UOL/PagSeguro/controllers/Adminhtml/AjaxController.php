@@ -68,28 +68,34 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 				$helper->setConciliationListLog($days);	
 			}
 		}
+
+		try {
 		
-		// Rides array that returns the query transactions
-		if ($conciliationArray = $helper->getArrayPayments()) {				
-			$dataSet = '[';
-			$j = 1;				
-			
-			foreach ($conciliationArray as $info) {
-				$i = 1;
-				$dataSet .= ($j > 1) ? ',[' : '[';								
-				foreach ($info as $item) {	
-					$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
-					$i++;				
-				}
-				$dataSet .= ']';
-				$j++;
-			}
-			$dataSet .= ']';	
+			// Rides array that returns the query transactions
+			if ($conciliationArray = $helper->getArrayPayments()) {				
+				$dataSet = '[';
+				$j = 1;				
 				
-			return $dataSet;
-		} else {
-			return 'run';
-		}		
+				foreach ($conciliationArray as $info) {
+					$i = 1;
+					$dataSet .= ($j > 1) ? ',[' : '[';								
+					foreach ($info as $item) {	
+						$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
+						$i++;				
+					}
+					$dataSet .= ']';
+					$j++;
+				}
+				$dataSet .= ']';	
+					
+				return $dataSet;
+			} else {
+				return 'run';
+			}		
+			
+		} catch (Exception $e) {
+			return trim($e->getMessage());
+		}
 	}
 
 	/**
@@ -103,23 +109,27 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 		$helper = Mage::helper('pagseguro/abandoned');
 		$helper->setAbandonedListLog($days);	
 		$helper->checkAbandonedAccess($days);
-		
-		if ($abandonedArray = $helper->getArrayAbandoned()) {
-			$dataSet = '[';
-			$j = 1;				
-			foreach ($abandonedArray as $info) {
-				$i = 1;
-				$dataSet .= ($j > 1) ? ',[' : '[';								
-				foreach ($info as $item) {	
-					$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
-					$i++;				
+
+		try {
+			if ($abandonedArray = $helper->getArrayAbandoned()) {
+				$dataSet = '[';
+				$j = 1;				
+				foreach ($abandonedArray as $info) {
+					$i = 1;
+					$dataSet .= ($j > 1) ? ',[' : '[';								
+					foreach ($info as $item) {	
+						$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
+						$i++;				
+					}
+					$dataSet .= ']';
+					$j++;
 				}
-				$dataSet .= ']';
-				$j++;
+				$dataSet .= ']';	
+				
+				return $dataSet;	
 			}
-			$dataSet .= ']';	
-			
-			return $dataSet;	
+		} catch (Exception $e) {
+			return trim($e->getMessage());
 		}
 	}
 	
