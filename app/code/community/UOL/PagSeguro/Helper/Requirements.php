@@ -39,6 +39,7 @@ class UOL_PagSeguro_Helper_Requirements extends HelperData
 	 */	
 	public function checkRequirementsAccess()
 	{
+
 		// Abandoned access
 		$this->access = 1;
 		$obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');

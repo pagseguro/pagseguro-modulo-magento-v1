@@ -35,7 +35,7 @@ limitations under the License.
 				<div id="pagseguro-module-version">Versão <?php echo Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version; ?></div>
 			</div>
 		    
-		    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=5&tipo=cadastro#!vendedor" target="_blank"><?php echo $this->__('Faça seu cadastro'); ?></a>
+		    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor" target="_blank"><?php echo $this->__('Faça seu cadastro'); ?></a>
 
 		</div>
 	</div>
@@ -166,24 +166,28 @@ limitations under the License.
                 		origin: 'conciliation'
                 	  },
                 success: function(result) {   
-                	
-                	// handle the return of ajax and dates back to table    	
-	                if (result == "run") {
-						jQuery('#conciliation-table').dataTable().fnClearTable(true);
-						Modal.message('alert', "Não há transações para conciliação no período.");
-	                } else {
-	                	converted = JSON.parse(result);
-	                    jQuery('#conciliation-table').dataTable().fnClearTable(true);           
-	                    jQuery('#conciliation-table').dataTable().fnAddData(converted);
-	                    jQuery('#conciliation-table').dataTable()._fnInitComplete();
 
-	                    Modal.hideLoading();
-	                }	       
-                    //After reassembling the table removes the modal of loading
-                    
-                    
+                	if (result == "[HTTP 401] - UNAUTHORIZED") {
+                		
+        				Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
+        			} else {
+                	
+	                	// handle the return of ajax and dates back to table    	
+		                if (result == "run") {
+							jQuery('#conciliation-table').dataTable().fnClearTable(true);
+							Modal.message('alert', "Não há transações para conciliação no período.");
+		                } else {
+		                	converted = JSON.parse(result);
+		                    jQuery('#conciliation-table').dataTable().fnClearTable(true);           
+		                    jQuery('#conciliation-table').dataTable().fnAddData(converted);
+		                    jQuery('#conciliation-table').dataTable()._fnInitComplete();
+		                    //After reassembling the table removes the modal of loading
+		                    Modal.hideLoading();
+		                }	
+	                }                   
                 },
-                error: function() {
+                error: function(err) {
+                	console.log(err);
                 	// Remove the modal of loading
                     Modal.hideLoading();
                 }
@@ -241,6 +245,7 @@ limitations under the License.
 	                	  },
 	                success: function(result) { 
 	                    i = 0;
+
 		            	// handle the return of ajax and dates back to table    	
 		                if (result == "run") {
 							jQuery('#conciliation-table').dataTable().fnClearTable(true);
