@@ -20,10 +20,10 @@ $PagSeguroResources['paymentService']['serviceTimeout'] = 20;
 
 // Notification service
 $PagSeguroResources['notificationService'] = array();
-$PagSeguroResources['notificationService']['servicePath'] = "/v2/transactions/notifications";
+$PagSeguroResources['notificationService']['servicePath'] = "/v3/transactions/notifications";
 $PagSeguroResources['notificationService']['serviceTimeout'] = 20;
 
 // Transaction search service
 $PagSeguroResources['transactionSearchService'] = array();
-$PagSeguroResources['transactionSearchService']['servicePath'] = "/v2/transactions";
+$PagSeguroResources['transactionSearchService']['servicePath'] = "/v3/transactions";
 $PagSeguroResources['transactionSearchService']['serviceTimeout'] = 20;
