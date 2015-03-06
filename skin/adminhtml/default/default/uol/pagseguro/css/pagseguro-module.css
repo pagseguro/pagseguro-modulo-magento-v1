@@ -101,6 +101,34 @@
     float: right;
     width: 76%;
 }
+
+@media screen and (max-width: 1000px) {
+    #pagseguro-module-contents{
+        float: right;
+        width: 75%;
+        padding-right: 6%;
+    }
+    /* Menu */
+    #pagseguro-module-menu{
+        width: 15%;
+        max-width: 200px;
+        position: absolute;
+        top:0;
+        left: 2%;
+        transition-property: top, width;
+        transition-duration: 0.5s;
+    }
+    #pagseguro-registration-button{
+        float: right;
+        margin-top: 0.4em;
+        margin-right: 7%;
+    }
+    #pagseguro-logo{
+        float: left;
+        margin-left: 3%;
+    }
+}
+
 .pagseguro-module-content{
     display: none;
 }
@@ -579,4 +607,14 @@ i.icon-pagseguro-msg.large,
 
 #pagseguro-loading-message{
     width: 65px;
+}
+
+.requirements-alert {
+    background-image: url("../images/error.png")!important;
+    background-position: 1px 3px!important;
+    background-repeat: no-repeat!important;
+    border-bottom: 0 none!important;
+    font-size: 1.2em!important;
+    margin: 0!important;
+    padding: 0 0 1em 2em!important;
 }

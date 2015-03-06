@@ -1,44 +1,47 @@
 <?php
-
-/*
- * ***********************************************************************
- Copyright [2011] [PagSeguro Internet Ltda.]
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- * ***********************************************************************
+/**
+ * 2007-2014 [PagSeguro Internet Ltda.]
+ *
+ * NOTICE OF LICENSE
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *  @author    PagSeguro Internet Ltda.
+ *  @copyright 2007-2014 PagSeguro Internet Ltda.
+ *  @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/**
+/***
  * Represent a parameter item
  */
 class PagSeguroParameterItem
 {
 
-    /**
+    /***
      * Allow add extra information to order
      *
      * @var string
      */
     private $key;
 
-    /**
+    /***
      * Value of corresponding key
      *
      * @var mixed
      */
     private $value;
 
-    /**
+    /***
      * Used for grouping values of parameter items
      * @var mixed
      */
@@ -57,7 +60,7 @@ class PagSeguroParameterItem
         }
     }
 
-    /**
+    /***
      * Gets the parameter item key
      * @return string
      */
@@ -66,7 +69,7 @@ class PagSeguroParameterItem
         return $this->key;
     }
 
-    /**
+    /***
      * Sets the parameter item key
      *
      * @param string $key
@@ -76,7 +79,7 @@ class PagSeguroParameterItem
         $this->key = $key;
     }
 
-    /**
+    /***
      * Gets parameter item value
      * @return string
      */
@@ -85,7 +88,7 @@ class PagSeguroParameterItem
         return $this->value;
     }
 
-    /**
+    /***
      * Sets parameter item value
      *
      * @param string $value
@@ -95,7 +98,7 @@ class PagSeguroParameterItem
         $this->value = $value;
     }
 
-    /**
+    /***
      * Gets parameter item group
      *
      * @return int
@@ -105,7 +108,7 @@ class PagSeguroParameterItem
         return $this->group;
     }
 
-    /**
+    /***
      * Sets parameter item group
      *
      * @param int $group

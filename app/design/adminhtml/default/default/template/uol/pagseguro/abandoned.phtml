@@ -360,14 +360,13 @@ limitations under the License.
 						jQuery('#abandoned-transactions-table tbody tr').unbind('click');
 						jQuery('#abandoned-transactions-table tbody tr').bind('click', function () {
 							href = jQuery(table.row( this ).data()[5])[0].href;
-								jQuery('#abandoned-transactions-table tbody').on('click', 'td', function () {
+							jQuery('#abandoned-transactions-table tbody').off();
+							jQuery('#abandoned-transactions-table tbody').on('click', 'td', function () {
 								if (jQuery(this).index() != 0 && jQuery(this).index() != 5){
 									window.open(href, '_blank');
 								}
 							} );
 						} );
-
-						
 					}
 
 					//Checkbox enable | disable

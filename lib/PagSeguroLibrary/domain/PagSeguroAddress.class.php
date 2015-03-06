@@ -1,24 +1,27 @@
 <?php
-
-/*
- * ***********************************************************************
- Copyright [2011] [PagSeguro Internet Ltda.]
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- * ***********************************************************************
+/**
+ * 2007-2014 [PagSeguro Internet Ltda.]
+ *
+ * NOTICE OF LICENSE
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *  @author    PagSeguro Internet Ltda.
+ *  @copyright 2007-2014 PagSeguro Internet Ltda.
+ *  @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/**
+/***
  * Represents an address location, typically for shipping or charging purposes.
  * @see PagSeguroShipping
  */
@@ -27,43 +30,43 @@ class PagSeguroAddress
 
     private $postalCode;
 
-    /**
+    /***
      * Street name
      */
     private $street;
 
-    /**
+    /***
      * Number
      */
     private $number;
 
-    /**
+    /***
      * Apartment, suite number or any other qualifier after the street/number pair.
      * Example: Apt 274, building A.
      */
     private $complement;
 
-    /**
+    /***
      * District, county or neighborhood, if applicable
      */
     private $district;
 
-    /**
+    /***
      * City
      */
     private $city;
 
-    /**
+    /***
      * State or province
      */
     private $state;
 
-    /**
+    /***
      * Country
      */
     private $country;
 
-    /**
+    /***
      * acronyms and states brazilian
      * @var type
      */
@@ -99,7 +102,7 @@ class PagSeguroAddress
         'tocantins' => 'TO',
         'distritofederal' => 'DF');
 
-    /**
+    /***
      * Initializes a new instance of the Address class
      * @param array $data
      */
@@ -131,7 +134,7 @@ class PagSeguroAddress
         }
     }
 
-    /**
+    /***
      * @return string the street
      */
     public function getStreet()
@@ -139,7 +142,7 @@ class PagSeguroAddress
         return $this->street;
     }
 
-    /**
+    /***
      * @return string the number
      */
     public function getNumber()
@@ -147,7 +150,7 @@ class PagSeguroAddress
         return $this->number;
     }
 
-    /**
+    /***
      * @return string the complement
      */
     public function getComplement()
@@ -155,7 +158,7 @@ class PagSeguroAddress
         return $this->complement;
     }
 
-    /**
+    /***
      * @return string the distrcit
      */
     public function getDistrict()
@@ -163,7 +166,7 @@ class PagSeguroAddress
         return $this->district;
     }
 
-    /**
+    /***
      * @return string the city
      */
     public function getCity()
@@ -171,7 +174,7 @@ class PagSeguroAddress
         return $this->city;
     }
 
-    /**
+    /***
      * @return string the state
      */
     public function getState()
@@ -179,7 +182,7 @@ class PagSeguroAddress
         return $this->state;
     }
 
-    /**
+    /***
      * @return string the postal code
      */
     public function getPostalCode()
@@ -187,7 +190,7 @@ class PagSeguroAddress
         return $this->postalCode;
     }
 
-    /**
+    /***
      * @return string the country
      */
     public function getCountry()
@@ -195,7 +198,7 @@ class PagSeguroAddress
         return $this->country;
     }
 
-    /**
+    /***
      * Sets the country
      * @param String $country
      */
@@ -204,7 +207,7 @@ class PagSeguroAddress
         $this->country = $country;
     }
 
-    /**
+    /***
      * Sets the street
      * @param String $street
      */
@@ -213,7 +216,7 @@ class PagSeguroAddress
         $this->street = $street;
     }
 
-    /**
+    /***
      * sets the numbetr
      * @param String $number
      */
@@ -222,7 +225,7 @@ class PagSeguroAddress
         $this->number = $number;
     }
 
-    /**
+    /***
      * Sets the complement
      * @param String $complement
      */
@@ -231,7 +234,7 @@ class PagSeguroAddress
         $this->complement = $complement;
     }
 
-    /**
+    /***
      * sets the district
      * @param String $district
      */
@@ -240,7 +243,7 @@ class PagSeguroAddress
         $this->district = $district;
     }
 
-    /**
+    /***
      * Sets the city
      * @param String $city
      */
@@ -249,7 +252,7 @@ class PagSeguroAddress
         $this->city = $city;
     }
 
-    /**
+    /***
      * Sets the state
      * @param String $state
      */
@@ -258,7 +261,7 @@ class PagSeguroAddress
         $this->state = $this->treatState($state);
     }
 
-    /**
+    /***
      * Sets the postal code
      * @param String $postalCode
      */
@@ -267,7 +270,7 @@ class PagSeguroAddress
         $this->postalCode = $postalCode;
     }
 
-    /**
+    /***
      * Handle the state to pass in format expected in PagSeguro
      * @param type $defaultState
      * @return string

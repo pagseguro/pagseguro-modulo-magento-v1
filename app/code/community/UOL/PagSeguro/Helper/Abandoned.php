@@ -292,7 +292,7 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	 * Update the sent column in pagseguro_orders When an email is sent
 	 * @param int $orderId - Id of order of Magento
 	 */
-    private function updateSentEmails($orderId)
+    public function updateSentEmails($orderId)
     {
 
     	//Get the resource model
@@ -308,29 +308,36 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		$table = $resource->getTableName('pagseguro_orders');
 
 		//Select sent column from pagseguro_orders to verify if exists a register
-		$query = 'SELECT sent FROM ' . $resource->getTableName($table) . ' WHERE order_id = '.$orderId;
-		$result = $readConnection->fetchCol($query);
+		$query = 'SELECT order_id, sent FROM ' . $resource->getTableName($table) . ' WHERE order_id = '.$orderId;
+		$result = $readConnection->fetchAll($query);
+
+		//print_r($result);
 
 		//If exists the order identificator just update, otherwise insert a register
 		$result = array_filter($result);
 		
-		if (empty($result)) {
-			$query = 'INSERT INTO ' . $resource->getTableName($table) . ' (order_id, sent) VALUES ('.$orderId.', 1)';
-
-			$this->setAbandonedSentEmailInsertLog($order_id);
-		} else {
+		if (!empty($result)) {
 			
 			//Remove safe option from mySQL.
 			$query = "SET SQL_SAFE_UPDATES = 0";
 			$writeConnection->query($query);
 
 			//Increases sent value
-			$sent = current($result) + 1;
+			$sent = $result[0]['sent'] + 1;
+
 			$rTable = $resource->getTableName($table);
 			$query = 'UPDATE ' . $rTable . ' SET sent = ' . $sent . ' WHERE order_id = ' . $orderId;
 
 			$this->setAbandonedSentEmailUpdateLog($order_id, $sent);
-		} 
+		} else {
+
+			$environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
+
+			$rTable = $resource->getTableName($table);
+			$query = "INSERT INTO " . $rTable . " (order_id, sent, environment) VALUES ('$orderId',1, '$environment')";
+
+			$this->setAbandonedSentEmailUpdateLog($order_id, $sent);
+		}
 		
 		//Execute SQL Queries.
 		$writeConnection->query($query);
