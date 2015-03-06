@@ -89,34 +89,44 @@ class UOL_PagSeguro_Helper_Requirements extends HelperData
         $version = str_replace('.', '', phpversion());
 
         if ($version < 533) {
-            $requirements['version'] = $this->__('PagSeguroLibrary: É necessária a versão 5.3.3 do PHP ou maior.');
+            $requirements['version']['text'] = $this->__('PagSeguroLibrary: É necessária a versão 5.3.3 do PHP ou maior.');
+            $requirements['version']['status'] = false;
         } else {
-        	$requirements['version'] = $this->__('Versão do PHP superior à 5.3.3.');
+        	$requirements['version']['text'] = $this->__('Versão do PHP superior à 5.3.3.');
+        	$requirements['version']['status'] = true;
         }
 
         if (!function_exists('spl_autoload_register')) {
-            $requirements['spl'] = $this->__('PagSeguroLibrary: Biblioteca padrão do PHP (SPL) é necessária.');
+            $requirements['spl']['text'] = $this->__('PagSeguroLibrary: Biblioteca padrão do PHP (SPL) é necessária.');
+            $requirements['spl']['status'] = false;
         } else {
-        	$requirements['spl'] = $this->__('Biblioteca padrão do PHP (SPL) instalada.');
+        	$requirements['spl']['text'] = $this->__('Biblioteca padrão do PHP (SPL) instalada.');
+        	$requirements['spl']['status'] = true;
         }
 
         if (!function_exists('curl_init')) {
-            $requirements['curl'] = $this->__('PagSeguroLibrary: A biblioteca cURL é necessária.');
+            $requirements['curl']['text'] = $this->__('PagSeguroLibrary: A biblioteca cURL é necessária.');
+            $requirements['curl']['status'] = false;
         } else {
-        	$requirements['curl'] = $this->__('Biblioteca cURL instalada.');
+        	$requirements['curl']['text'] = $this->__('Biblioteca cURL instalada.');
+        	$requirements['curl']['status'] = true;
         }
 
         if (!class_exists('DOMDocument')) {
-            $requirements['dom'] = $this->__('PagSeguroLibrary: A extensão DOM XML é necessária.');
+            $requirements['dom']['text'] = $this->__('PagSeguroLibrary: A extensão DOM XML é necessária.');
+            $requirements['dom']['status'] = false;
         } else {
-        	$requirements['dom'] = $this->__('DOM XML instalado.');
+        	$requirements['dom']['text'] = $this->__('DOM XML instalado.');
+        	$requirements['dom']['status'] = true;
         }
 
         $CurrencyCode = Mage::getStoreConfig('currency/options/allow');
         if ($CurrencyCode != "BRL"){
-        	$requirements['currency'] = $this->__('Moeda REAL não instalada.');
+        	$requirements['currency']['text'] = $this->__('Moeda REAL não instalada ou desativada.');
+        	$requirements['currency']['status'] = false;
         } else {
-        	$requirements['currency'] = $this->__('Moeda REAL instalada.');
+        	$requirements['currency']['text'] = $this->__('Moeda REAL instalada e ativa');
+        	$requirements['currency']['status'] = true;
         }
 
         return $requirements;

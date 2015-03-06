@@ -103,12 +103,12 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 		try {
 			$credential = $obj->getCredentialsInformation();
 			$dateStart = $this->getDateStart();		
-			$transactions = PagSeguroTransactionSearchService::searchByDate($credential, 1, 1000, $dateStart);
+			$transactions = PagSeguroTransactionSearchService::searchByDate($credential, 1, 1000, $dateStart, $this->getDateFinally());
 			$pages = $transactions->getTotalPages();
 			
 			if ($pages > 1) {
 				for ($i = 1; $i < ($pages + 1); $i++){
-					$transactions = PagSeguroTransactionSearchService::searchByDate($credential, $i, 1, $dateStart);
+					$transactions = PagSeguroTransactionSearchService::searchByDate($credential, $i, 1, $dateStart, $this->getDateFinally());
 					$transactionArray .= array_push($transactions->getTransactions());
 				}						
 			} else {
@@ -274,14 +274,36 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 			// Makes the notification of the order of historic displays the correct date and time
 			Mage::app()->getLocale()->date();
 			$order->save();				
-		}		
-					
+		}	
+
+		//Get the resource model
+    	$resource = Mage::getSingleton('core/resource');
+		
+    	//Retrieve the read connection
+		$readConnection = $resource->getConnection('core_read');
+		
+		//Retrieve the write connection
+		$writeConnection = $resource->getConnection('core_write');
+
 		$tp    = (string)Mage::getConfig()->getTablePrefix();
 		$table = $tp . 'pagseguro_orders';
-		$read  = Mage::getSingleton('core/resource')->getConnection('core_read');
-		$connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-	    $sql = "UPDATE `" . $table . "` SET `transaction_code` = '$transactionCode' WHERE order_id = " . $orderId;
-	    $connection->query($sql);
+
+		//Select sent column from pagseguro_orders to verify if exists a register
+		$query = 'SELECT order_id FROM ' . $resource->getTableName($table) . ' WHERE order_id = '.$orderId;
+		$result = $readConnection->fetchAll($query);
+
+		if (!empty($result)) {	
+
+	    	$sql = "UPDATE `" . $table . "` SET `transaction_code` = '$transactionCode' WHERE order_id = " . $orderId;
+	    
+		} else {
+
+			$environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
+
+			$sql = $query = "INSERT INTO " . $table . " (order_id, transaction_code, environment) VALUES ('$orderId', '$transactionCode', '$environment')";
+		}
+
+		$writeConnection->query($sql);
 	}
 
 	/**

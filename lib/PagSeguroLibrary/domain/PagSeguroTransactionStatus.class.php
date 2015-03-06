@@ -1,24 +1,27 @@
 <?php
-
-/*
- ************************************************************************
- Copyright [2011] [PagSeguro Internet Ltda.]
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- ************************************************************************
+/**
+ * 2007-2014 [PagSeguro Internet Ltda.]
+ *
+ * NOTICE OF LICENSE
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *  @author    PagSeguro Internet Ltda.
+ *  @copyright 2007-2014 PagSeguro Internet Ltda.
+ *  @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/**
+/***
  * Defines a list of known transaction statuses.
  * This class is not an enum to enable the introduction of new transaction status.
  * without breaking this version of the library.
@@ -26,7 +29,7 @@
 class PagSeguroTransactionStatus
 {
 
-    /**
+    /***
      * @var array
      */
     private static $statusList = array(
@@ -37,16 +40,18 @@ class PagSeguroTransactionStatus
         'AVAILABLE' => 4,
         'IN_DISPUTE' => 5,
         'REFUNDED' => 6,
-        'CANCELLED' => 7
+        'CANCELLED' => 7,
+        'SELLER_CHARGEBACK' => 8,
+        'CONTESTATION' => 9
     );
 
-    /**
+    /***
      * the value of the transaction status
      * Example: 3
      */
     private $value;
 
-    /**
+    /***
      * @param null $value
      */
     public function __construct($value = null)
@@ -56,7 +61,7 @@ class PagSeguroTransactionStatus
         }
     }
 
-    /**
+    /***
      * @param $value
      */
     public function setValue($value)
@@ -64,7 +69,7 @@ class PagSeguroTransactionStatus
         $this->value = $value;
     }
 
-    /**
+    /***
      * @param $type
      * @throws Exception
      */
@@ -77,7 +82,7 @@ class PagSeguroTransactionStatus
         }
     }
 
-    /**
+    /***
      * @return integer the status value.
      */
     public function getValue()
@@ -85,7 +90,7 @@ class PagSeguroTransactionStatus
         return $this->value;
     }
 
-    /**
+    /***
      * @param value
      * @return String the transaction status corresponding to the informed status value
      */
@@ -95,7 +100,7 @@ class PagSeguroTransactionStatus
         return array_search($this->value, self::$statusList);
     }
 
-    /**
+    /***
      * Get status list
      * @return array
      */

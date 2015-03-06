@@ -1,24 +1,27 @@
 <?php
-
-/*
- ************************************************************************
- Copyright [2011] [PagSeguro Internet Ltda.]
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- ************************************************************************
+/**
+ * 2007-2014 [PagSeguro Internet Ltda.]
+ *
+ * NOTICE OF LICENSE
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *  @author    PagSeguro Internet Ltda.
+ *  @copyright 2007-2014 PagSeguro Internet Ltda.
+ *  @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/**
+/***
  * Logging class
  */
 class LogPagSeguro
@@ -46,37 +49,39 @@ class LogPagSeguro
 
         self::$active = PagSeguroConfig::logIsActive();
         if (self::$active) {
-            $fileLocation = PagSeguroConfig::getLogFileLocation();
+            $logFile = PagSeguroConfig::getLogFileLocation();
 
-            if (file_exists($fileLocation) && is_file($fileLocation)) {
-                self::$fileLocation = $fileLocation;
+            if (!empty($logFile)) {
+                self::createFile($logFile);
             } else {
                 self::createFile();
             }
         }
     }
 
-    /**
+    /***
      * Creates the log file
      * @throws Exception
      * @return boolean
      */
-    public static function createFile()
+    public static function createFile($logFile = false)
     {
         if (!self::$active) {
             return false;
         }
         $defaultPath = PagSeguroLibrary::getPath();
         $defaultName = 'PagSeguro.log';
-        self::$fileLocation = $defaultPath . DIRECTORY_SEPARATOR . $defaultName;
+        self::$fileLocation = $logFile
+            ? $logFile
+            : $defaultPath . DIRECTORY_SEPARATOR . $defaultName;
 
         try {
             $f = fopen(self::$fileLocation, "a");
-            
+
             if (!$f) {
                 throw new Exception('Unable to open the input file');
             }
-            
+
             fclose($f);
             return true;
         } catch (Exception $e) {
@@ -87,7 +92,7 @@ class LogPagSeguro
 
     }
 
-    /**
+    /***
      * Prints a info message in the log file
      * @param String $message
      */
@@ -96,7 +101,7 @@ class LogPagSeguro
         self::logMessage($message, 'info');
     }
 
-    /**
+    /***
      * Prints a warning message in the log file
      * @param String $message
      */
@@ -105,7 +110,7 @@ class LogPagSeguro
         self::logMessage($message, 'warning');
     }
 
-    /**
+    /***
      * Prints an error message in the log file
      * @param String $message
      */
@@ -114,7 +119,7 @@ class LogPagSeguro
         self::logMessage($message, 'error');
     }
 
-    /**
+    /***
      * Prints a debug message in the log file
      * @param String $message
      */
@@ -123,7 +128,7 @@ class LogPagSeguro
         self::logMessage($message, 'debug');
     }
 
-    /**
+    /***
      * Logs a message
      * @param String $message
      * @param String $type
@@ -139,11 +144,11 @@ class LogPagSeguro
         try {
 
             $file = fopen(self::$fileLocation, "a");
-            
+
             if (!$file) {
                 throw new Exception('Unable to open the input file');
             }
-            
+
             $date_message = "{" . @date("Y/m/d H:i:s", time()) . "}";
 
             switch ($type) {
@@ -172,7 +177,7 @@ class LogPagSeguro
 
     }
 
-    /**
+    /***
      * Retrieves the log messages
      * @param integer $negativeOffset
      * @param boolean|string $reverse
