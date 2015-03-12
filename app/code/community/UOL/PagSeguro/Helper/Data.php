@@ -2,7 +2,7 @@
 
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,11 +21,7 @@ limitations under the License.
 use Mage_Payment_Helper_Data as HelperData;
 
 class UOL_PagSeguro_Helper_Data extends HelperData
-{
-        
-    private $arraySt;
-    private $objStatus;
-	
+{	
 	// It is used to store the initial consultation date of transactions
 	private $dateStart = '';
 
@@ -34,85 +30,69 @@ class UOL_PagSeguro_Helper_Data extends HelperData
      */
     public function __construct()
     {
-        $this->_createArraySt();
-
+		$this->changeEnvironment();
+		$this->environmentNotification();
     }
         
-    /**
-     * Create Array Status PagSeguro
-     */
-    private function _createArraySt()
-    {
-        $this->arraySt = array(
-            0 => array("status" => "iniciado_ps", "label" => "Iniciado"),
-            1 => array("status" => "aguardando_pagamento_ps", "label" => "Aguardando Pagamento"),
-            2 => array("status" => "em_analise_ps", "label" => "Em análise"),
-            3 => array("status" => "paga_ps", "label" => "Paga"),
-            4 => array("status" => "disponivel_ps", "label" => "Disponível"),
-            5 => array("status" => "em_disputa_ps", "label" => "Em Disputa"),
-            6 => array("status" => "devolvida_ps", "label" => "Devolvida"),
-            7 => array("status" => "cancelada_ps", "label" => "Cancelada")
-        );
-    }
-
-    /**
-     * Return payment status by key PagSeguro 
-     * @param type $value
-     * @return type
-     */
-    public function returnOrderStByStPagSeguro($value)
-    {
-        return (array_key_exists($value, $this->arraySt) ? $this->arraySt[$value] : false);
-    }
-
-    /**
-    * get array status
-    * @return type
-    */
-    public function getArraySt()
-    {
-        return $this->arraySt;
-    }
-
-    /**
-     * Save Status PagSeguro 
-     */
-    public function saveAllStatusPagSeguro()
-    {
-        foreach ($this->arraySt as $key => $value) {
-            if (!$this->_existsStatus($value['status'])) {
-                $this->objStatus->setStatus($value['status'])
-                       ->setLabel($value['label']);
-                $this->objStatus->save();
-            }
-        }
-    }
-    
-    /**
-     * Save Status PagSeguro
-     * @param array $value
-     */
-    public function saveStatusPagSeguro(array $value)
-    {
-        if (!$this->_existsStatus($value['status'])) {
-            $this->objStatus->setStatus($value['status'])
-                 ->setLabel($value['label']);
-            $this->objStatus->save();
-        }
-    }
-    
-    /**
-     * Exists Status
-     * @param type $status
-     * @return type
-     */
-    public function _existsStatus($status)
-    {
-        $this->objStatus = Mage::getModel('sales/order_status')->load($status);
-
-        return ($this->objStatus->getStatus()) ? true : false;
-    }
+	/**
+	 * Get status of PagSeguro or string required to change the order status Magento
+	 * @param int $status - Number that contains the status of PagSeguro
+	 * @param boolean $orderMagento - If the return will be to change order status Magento
+	 * @return string $status - String that will be displayed in the table or used to change the order status Magento
+	 */
+	public function getPaymentStatusPagSeguro($status,$orderMagento)
+	{
+		if ($orderMagento == true) {			
+			switch ($status) {				
+				case 1: $status = 'aguardando_pagamento_ps'; break;
+				case 2: $status = 'em_analise_ps'; break; 
+				case 3: $status = 'paga_ps'; break;
+				case 4: $status = 'disponivel_ps'; break;
+				case 5: $status = 'em_disputa_ps'; break;
+				case 6: $status = 'devolvida_ps'; break;
+				case 7:	$status = 'cancelada_ps'; break;
+				case 8:	$status = 'chargeback_debitado_ps'; break;
+				case 9:	$status = 'em_contestacao_ps'; break;			
+			}			
+		} else {		
+			switch ($status) {				
+				case 1: $status = 'Aguardando pagamento'; break;
+				case 2: $status = 'Em an&aacute;lise'; break; 
+				case 3: $status = 'Paga'; break;
+				case 4: $status = 'Dispon&iacute;vel'; break;
+				case 5: $status = 'Em disputa'; break;
+				case 6: $status = 'Devolvida'; break;
+				case 7:	$status = 'Cancelada'; break;
+				case 8:	$status = 'Chargeback Debitado'; break;
+				case 9:	$status = 'Em Contestação'; break;		
+			}
+		}
+			
+		return $status;
+	}
 	
+	/**
+	 * Get status of order of magento
+	 * @param string $status - Strin that contains the status of PagSeguro in order Magento
+	 * @return string $status - Returns the correct status queried the current status
+	 */
+	public function getPaymentStatusMagento($status)
+	{
+		switch ($status) {			
+			case 'Aguardando_pagamento_ps': $status = 'Aguardando pagamento'; break;
+			case 'Em_analise_ps': $status = 'Em an&aacute;lise'; break;
+			case 'Paga_ps': $status = 'Paga'; break; 
+			case 'Disponivel_ps': $status = 'Dispon&iacute;vel'; break;
+			case 'Em_disputa_ps': $status = 'Em disputa'; break;
+			case 'Devolvida_ps': $status = 'Devolvida'; break;
+			case 'Cancelada_ps': $status = 'Cancelada';	break;
+			case 'Chargeback_debitado_ps': $status = 'Chargeback debitado';	break;
+			case 'Em_contestacao_ps': $status = 'Em contestação';	break;
+		}
+				
+		return $status;
+	}
+
 	/**
 	 * Return reference of 5 digits
 	 * @param number $size - String length
@@ -147,13 +127,9 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 	 * Returns the registered references in the database
 	 * @return string $reference - String encrypted of 5 characters of database
 	 */ 
-	public function getReadReferenceBank()
+	public function getStoreReference()
 	{
-		$resource = Mage::getSingleton('core/resource');
-		$readConnection = $resource->getConnection('core_read');
-		$query = 'SELECT reference FROM ' . $resource->getTableName('pagseguro_conciliation');
-		$results = $readConnection->fetchAll($query);
-		$reference = current(current($results));
+		$reference = Mage::getStoreConfig('uol_pagseguro/store/reference');
 				
 		return $reference;
 	}
@@ -165,7 +141,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 	 */
 	public function getReferenceDecrypt($reference)
 	{
-		$refDecrypted = substr($reference, 0,5);
+		$refDecrypted = substr($reference, 0, 5);
 				
 		return $refDecrypted;
 	}
@@ -177,7 +153,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 	 */
 	public function getReferenceDecryptOrderID($reference)
 	{
-		$orderIdDecrypted = str_replace(substr($reference, 0,5),'',$reference);
+		$orderIdDecrypted = str_replace(substr($reference, 0, 5), '', $reference);
 			
 		return $orderIdDecrypted;
 	}
@@ -264,5 +240,140 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 			$return = $date . $module . $phrase . "\r\n";				
 			file_put_contents($directoryLog, $return, FILE_APPEND);
 		}
-	}	
+	}
+	
+	/**
+	 * Change the environment if necessary.
+	 */
+	private function changeEnvironment()
+	{
+		// Get the check of environment of backend.
+		$environment = '"' . Mage::getStoreConfig('payment/pagseguro/environment') . '"';
+		
+		// File to be changed
+		$archive = Mage::getBaseDir('lib') . '/PagSeguroLibrary/config/PagSeguroConfig.php';
+		
+		// Search the current environment of library.
+		$search = "PagSeguroConfig['environment']";
+		
+		// Save the file in an array in variable $arrayArchive.
+		$arrayArchive = file($archive);
+		$position = 0;
+		
+		for ($i = 0; $i < sizeof($arrayArchive); $i++) {
+			
+			// Checks the position of environmental on array, and stores the environment on variable $libEnvironment.
+			if (strpos($arrayArchive[$i],$search) && 
+			   (strpos($arrayArchive[$i],'production') || strpos($arrayArchive[$i],'sandbox'))) {
+					
+				$fullLine = $arrayArchive[$i];	
+				$position = $i;		
+				
+				if (strpos($fullLine, '"production"') == true) {
+					$libEnvironment = '"production"';
+				} else if (strpos($fullLine, '"sandbox"') == true) {
+					$libEnvironment = '"sandbox"';
+				}
+			}
+		}
+		
+		// Make changes the environment, if  the environments are different.
+		if ($environment != '""' && $environment != $libEnvironment) {				
+			$arrayArchive[$position] = str_replace($libEnvironment, $environment, $fullLine);
+	    	file_put_contents($archive, implode("", $arrayArchive));
+		}
+	}
+
+	/**
+	 * Create or destroy a notice based on a active envinroment
+	 */
+	private function environmentNotification()
+	{
+		$environment = Mage::getStoreConfig('payment/pagseguro/environment');
+
+		//Define table name with their prefix
+		$tp    = (string)Mage::getConfig()->getTablePrefix();
+		$table = $tp . 'adminnotification_inbox';
+
+		$sql = "SELECT notification_id  FROM `".$table."` WHERE title LIKE '%[UOL_PagSeguro]%'";
+
+		$readConnection = Mage::getSingleton('core/resource')->getConnection('core_read');
+		$results = $readConnection->fetchOne($sql);
+
+		//Verify the environment
+		if ($environment == "sandbox") {
+
+			if (empty($results)) {
+
+				$this->insertEnvironmentNotice($table);
+			    Mage::app()->getResponse()->setRedirect(Mage::helper('core/url')->getCurrentUrl());
+
+			} else if ($results != $this->getEnvironmentIncrement($table)) {
+
+				$this->removeEnvironmentNotice($table, $results);
+				$this->insertEnvironmentNotice($table);
+				Mage::app()->getResponse()->setRedirect(Mage::helper('core/url')->getCurrentUrl());
+			}
+
+		} else if ($environment == 'production') {
+			
+			if ($results) {
+
+				$this->removeEnvironmentNotice($table, $results);
+			    Mage::app()->getResponse()->setRedirect(Mage::helper('core/url')->getCurrentUrl());
+			}	   
+		}
+	}
+
+	/**
+	 * Remove environment notice from adminnotification_inbox
+	 * @param string $table - Database table name.
+	 * @return int $id - Returns the nofitication_id value.
+	 */
+	private function getEnvironmentIncrement($table)
+	{
+		$sql = "SELECT MAX(notification_id) as 'max_id' FROM `".$table."`";
+
+		$readConnection = Mage::getSingleton('core/resource')->getConnection('core_read');
+		$results = $readConnection->fetchAll($sql);
+
+		return $results[0]['max_id'];
+	}
+
+	/**
+	 * Insert environment notice into adminnotification_inbox
+	 * @param string $table - Database table name.
+	 */
+	private function insertEnvironmentNotice($table)
+	{
+		// force default time zone
+		Mage::app()->getLocale()->date();
+		$date = date("Y-m-d H:i:s");
+
+		$sql = "INSERT INTO `".$table."` (severity, date_added, title, description, is_read, is_remove) 
+	    	VALUES (4, '$date', '[UOL_PagSeguro] Suas transações serão feitas em um ambiente de testes. 
+	    		Nenhuma das transações realizadas nesse ambiente tem valor monetário.', 
+	    	'Suas transações serão feitas em um ambiente de testes. 
+	    		Nenhuma das transações realizadas nesse ambiente tem valor monetário.', 0, 0)";
+
+		$connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+	    $connection->query($sql);
+	    unset($connection);
+	}
+
+	/**
+	 * Remove environment notice from adminnotification_inbox
+	 * @param string $table - Database table name.
+	 * @param string $id - nofitication_id record.
+	 */
+	private function removeEnvironmentNotice($table, $id)
+	{
+
+		$sql = "DELETE FROM `".$table."` WHERE notification_id = " . $id;
+
+		$connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+	    $connection->query($sql);
+	    unset($connection);
+	}
+
 }

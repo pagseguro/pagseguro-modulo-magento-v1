@@ -2,7 +2,7 @@
 
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -78,14 +78,36 @@ class UOL_PagSeguro_PaymentController extends FrontAction
         
         if ($fileOSC) {
             $enabledOSC = Mage::helper('onepagecheckout')->isOnepageCheckoutEnabled();
-        }                
+        }           
             
         $feedback = ($enabledOSC == false ? 'checkout/onepage' : 'onepagecheckout');
 
         if (($Order->getState() == Mage_Sales_Model_Order::STATE_NEW) and
             ($Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode()) and
             ($Order->getId())) {
-            
+
+            $orderId = $Order->getEntityId();
+            include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');  
+            $environment = PagSeguroConfig::getEnvironment();
+            if ($environment == 'production') {
+                $environment = "Produção";
+            } else {
+                $environment = "Sandbox";
+            }
+
+            $tp = (string)Mage::getConfig()->getTablePrefix();
+            $table = $tp . 'pagseguro_orders';
+            $read= Mage::getSingleton('core/resource')->getConnection('core_read');
+            $value = $read->query("SELECT `order_id` FROM `" . $table . "` WHERE `order_id` = " . $orderId);
+            $row = $value->fetch();     
+                
+            if ($row == false) {
+                $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+                $sql = "INSERT INTO `" . $table . "` (`order_id`, `environment`) 
+                        VALUES ('$orderId','$environment')";  
+                $connection->query($sql);    
+            }
+
             try {
 
                 $PagSeguroPaymentModel->setOrder($Order);                

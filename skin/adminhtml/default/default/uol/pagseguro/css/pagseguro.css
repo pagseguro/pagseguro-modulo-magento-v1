@@ -1,6 +1,6 @@
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -141,7 +141,7 @@ label{text-transform: uppercase; color: #57ad29; padding-right: 5px; font-size: 
 }
 
 .paginate_button {
-    ox-sizing: border-box;
+    box-sizing: border-box;
     display: inline-block;
     min-width: 1em;
     text-align: center;
@@ -206,8 +206,7 @@ label{text-transform: uppercase; color: #57ad29; padding-right: 5px; font-size: 
 .pagseguro_logo { width: 228px; height: 56px; margin-bottom: 5px;}
 .blockUI.blockMsg.blockPage { opacity: 1.0 !important;}
 .pagseguro-adminhtml-abandoned-index .grid td { color: #000; }
-.pagseguro-adminhtml-abandoned-index .btnSend { display: none; }
-.pagseguro-adminhtml-abandoned-index .chk_email { display: block; }
+.pagseguro-adminhtml-abandoned-index .chk_email, .pagseguro-adminhtml-conciliation-index .chk_email { display: block; }
 .pagseguro-adminhtml-abandoned-index .grid tr th:first-child { cursor: pointer; }
 .pagseguro-adminhtml-abandoned-index .switcher label,
 .pagseguro-adminhtml-conciliation-index  .switcher label { text-transform: none; color: #333; font-weight: normal; }

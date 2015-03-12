@@ -1,30 +1,33 @@
 <?php
-
-/*
- * ***********************************************************************
- Copyright [2011] [PagSeguro Internet Ltda.]
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- * ***********************************************************************
+/**
+ * 2007-2014 [PagSeguro Internet Ltda.]
+ *
+ * NOTICE OF LICENSE
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *  @author    PagSeguro Internet Ltda.
+ *  @copyright 2007-2014 PagSeguro Internet Ltda.
+ *  @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/**
+/***
  * Class PagSeguroPaymentParser
  */
 class PagSeguroPaymentParser extends PagSeguroServiceParser
 {
 
-    /**
+    /***
      * @param $payment PagSeguroPaymentRequest
      * @return mixed
      */
@@ -59,7 +62,7 @@ class PagSeguroPaymentParser extends PagSeguroServiceParser
             }
 
             // documents
-            /** @var $document PagSeguroDocument */
+            /*** @var $document PagSeguroDocument */
             if ($payment->getSender()->getDocuments() != null) {
                 $documents = $payment->getSender()->getDocuments();
                 if (is_array($documents) && count($documents) == 1) {
@@ -69,6 +72,10 @@ class PagSeguroPaymentParser extends PagSeguroServiceParser
                         }
                     }
                 }
+            }
+
+             if ($payment->getSender()->getIP() != null) {
+                $data['ip'] = $payment->getSender()->getIP();
             }
         }
 
@@ -151,7 +158,6 @@ class PagSeguroPaymentParser extends PagSeguroServiceParser
                 }
             }
         }
-
         // maxAge
         if ($payment->getMaxAge() != null) {
             $data['maxAge'] = $payment->getMaxAge();
@@ -207,14 +213,41 @@ class PagSeguroPaymentParser extends PagSeguroServiceParser
         return $data;
     }
 
-    /**
+    /***
      * @param $str_xml
-     * @return PagSeguroPaymentParserData
+     * @return PagSeguroPaymentParserData Success
      */
     public static function readSuccessXml($str_xml)
     {
         $parser = new PagSeguroXmlParser($str_xml);
         $data = $parser->getResult('checkout');
+        $PaymentParserData = new PagSeguroPaymentParserData();
+        $PaymentParserData->setCode($data['code']);
+        $PaymentParserData->setRegistrationDate($data['date']);
+        return $PaymentParserData;
+    }
+
+    /***
+     * @param $str_xml
+     * @return parsed credit card brand
+     */
+     public static function readCCBRandXml($str_xml)
+    {
+        $parser = new PagSeguroXmlParser($str_xml);
+        $PaymentParserData = new PagSeguroPaymentParserData();
+        $PaymentParserData->setCode($data['code']);
+        $PaymentParserData->setRegistrationDate($data['date']);
+        return $PaymentParserData;
+    }
+
+    /***
+     * @param $str_xml
+     * @return parsed transaction
+     */
+    public static function readTransactionXml($str_xml)
+    {
+        $parser = new PagSeguroXmlParser($str_xml);
+        $data = $parser->getResult('transaction');
         $PaymentParserData = new PagSeguroPaymentParserData();
         $PaymentParserData->setCode($data['code']);
         $PaymentParserData->setRegistrationDate($data['date']);
