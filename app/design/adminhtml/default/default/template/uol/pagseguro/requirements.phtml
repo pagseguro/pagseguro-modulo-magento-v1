@@ -1,0 +1,156 @@
+<?php
+
+/**
+************************************************************************
+Copyright [2015] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+*/
+
+?>
+<div id="pagseguro-module">
+	
+    <div id="pagseguro-module-header">
+		<div class="wrapper">
+			
+			<div id="pagseguro-logo">
+				<img class="pagseguro_logo" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/logo.png'); ?>" />
+				<div id="pagseguro-module-version">Versão <?php echo Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version; ?></div>
+			</div>
+		    
+		    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor" target="_blank"><?php echo $this->__('Faça seu cadastro'); ?></a>
+
+		</div>
+	</div>
+
+	<div id="pagseguro-module-content">
+
+		<div class="wrapper">
+		    
+		    <div id="pagseguro-module-menu">
+			    
+			    <ul>
+			    	<li 
+						id="menu-item-config"
+						data-has-form="true">
+						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/key'); ?>">Configuração</a>
+					</li>
+					<li 
+						id="menu-item-conciliation"
+						data-has-form="true">
+						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_conciliation'); ?>">Conciliação</a>
+					</li>
+					<li 
+						id="menu-item-abandoned"
+						data-has-form="true">
+						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_abandoned'); ?>">Abandonadas</a>
+					</li>
+					<li 
+						id="menu-item-required" 
+						class="selected" 
+						data-has-form="true">
+						<a href="">Requisitos</a>
+					</li>
+			    </ul>
+			</div>
+
+		    <div id="pagseguro-module-contents">
+
+
+				<h2 class="title" title="Requisitos do Sistema"><?php echo $this->__('Requisitos do Sistema'); ?></h2>
+
+				<ul class="pagseguro-list">
+        	
+					
+
+				</ul>
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">	
+	var i = 0;	
+		
+	jQuery(document).ready(function(){   				     
+		
+		Menu.init();
+		PageRequirements.init();		
+							
+    });
+
+    var PageRequirements = new function(){
+
+		var requestRequirements = function() {
+
+            jQuery.ajax({
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                type: "POST",
+                data: { 
+                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
+                		origin: 'requirements'
+                	  },
+                success: function(result) {   
+                	
+                	result = JSON.parse(result);
+     
+                	
+                	if (result.version.status) {
+                		jQuery('.pagseguro-list').append('<li>'+result.version.text+'</li>');
+                	} else {
+                		jQuery('.pagseguro-list').append('<li class="requirements-alert">'+result.version.text+'</li>');
+                	}
+
+                	if (result.spl.status) {
+                		jQuery('.pagseguro-list').append('<li>'+result.spl.text+'</li>');
+                	} else {
+                		jQuery('.pagseguro-list').append('<li class="requirements-alert">'+result.spl.text+'</li>');
+                	}
+
+                	if (result.curl.status) {
+                		jQuery('.pagseguro-list').append('<li>'+result.curl.text+'</li>');
+                	} else {
+                		jQuery('.pagseguro-list').append('<li class="requirements-alert">'+result.curl.text+'</li>');
+                	}
+
+                	if (result.dom.status) {
+                		jQuery('.pagseguro-list').append('<li>'+result.dom.text+'</li>');
+                	} else {
+                		jQuery('.pagseguro-list').append('<li class="requirements-alert">'+result.dom.text+'</li>');
+                	}
+                	
+                	if (result.currency.status) {
+                		jQuery('.pagseguro-list').append('<li>'+result.currency.text+'</li>');
+                	} else {
+                		jQuery('.pagseguro-list').append('<li class="requirements-alert">'+result.currency.text+'</li>');
+                	}
+
+                    
+                },
+                error: function() {
+                	// Remove the modal of loading
+                }
+			});	
+		}
+
+		this.init = function() {
+        	requestRequirements();
+        };
+	}
+
+</script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js');?>"></script>

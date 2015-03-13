@@ -2,7 +2,7 @@
 
 /**
  * ***********************************************************************
- Copyright [2014] [PagSeguro Internet Ltda.]
+ Copyright [2015] [PagSeguro Internet Ltda.]
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.4';
+    private $Module_Version = '2.5';//Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version;
     private $Order;
     private $Shipping_Data;
 
@@ -127,7 +127,6 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $_activeLog = $this->getConfigData('log');
         $_charset = $this->getConfigData('charset');
 
-        Mage::helper('pagseguro')->saveAllStatusPagSeguro();
 
         //Module version
         PagSeguroLibrary::setModuleVersion('magento' . ':' . $this->Module_Version);
@@ -152,13 +151,6 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         }
     }
 
-    private function _validator()
-    {
-        require_once(Mage::getBaseDir('code') . '/community/UOL/PagSeguro/Model/Updates.php');
-
-        Updates::createTableModule();
-    }
-
     /**
      * Create PagSeguro payment request html with payment url
      *
@@ -166,10 +158,8 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private function createPaymentRequest()
     {
-        $this->_validator();
-
 		// Get references that stored in the database
-		$reference = Mage::helper('pagseguro')->getReadReferenceBank();
+		$reference = Mage::helper('pagseguro')->getStoreReference();
 
         $PaymentRequest = new PagSeguroPaymentRequest();
         $PaymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));

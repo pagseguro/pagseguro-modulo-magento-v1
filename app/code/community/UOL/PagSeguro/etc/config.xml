@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ limitations under the License.
 <config>
     <modules>
         <UOL_PagSeguro>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
         </UOL_PagSeguro>
     </modules> 
     <global>
@@ -94,21 +94,26 @@ limitations under the License.
 			<title>PagSeguro</title>
 			<sort_order>1000</sort_order>
                 <children>
+                     <pagseguro_config translate="title" module="pagseguro">
+                        <title>Configuração</title>
+                        <action>adminhtml/system_config/edit/section/payment/</action>
+                        <sort_order>2000</sort_order>
+                    </pagseguro_config>
                     <pagseguro_conciliation translate="title" module="pagseguro">
                         <title>Conciliação</title>
                         <action>pagseguro/adminhtml_conciliation</action>
-						<sort_order>2000</sort_order>
+						<sort_order>2100</sort_order>
                     </pagseguro_conciliation>
 					<pagseguro_abandoned translate="title" module="pagseguro">
                         <title>Abandonadas</title>
                         <action>pagseguro/adminhtml_abandoned</action>
-						<sort_order>2100</sort_order>
-                    </pagseguro_abandoned>
-					<pagseguro_config translate="title" module="pagseguro">
-                        <title>Configurações</title>
-                        <action>adminhtml/system_config/edit/section/payment/</action>
 						<sort_order>2200</sort_order>
-                    </pagseguro_config>
+                    </pagseguro_abandoned>
+                    <pagseguro_requirements translate="title" module="pagseguro">
+                        <title>Requisitos</title>
+                        <action>pagseguro/adminhtml_requirements</action>
+                        <sort_order>2300</sort_order>
+                    </pagseguro_requirements>
                 </children>
             </pagseguro_menu>
         </menu>

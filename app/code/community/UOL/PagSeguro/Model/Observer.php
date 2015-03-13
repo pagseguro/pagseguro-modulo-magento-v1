@@ -2,7 +2,7 @@
 
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ limitations under the License.
 
 class UOL_PagSeguro_Model_Observer
 {
+
 	/**
 	 * Query the existing transaction codes with the id of the request and assembles an array with these codes.
 	 * @param object $observer - It is an object of Event of observe.
@@ -28,10 +29,10 @@ class UOL_PagSeguro_Model_Observer
 	{
 	    $collection = $observer->getOrderGridCollection();
 	    $select = $collection->getSelect();
-		$tableCollection = Mage::getSingleton('core/resource')->getTableName('pagseguro_sales_code');
+		$tableCollection = Mage::getSingleton('core/resource')->getTableName('pagseguro_orders');
 	    $select->joinLeft(array('payment' => $tableCollection),
 	    						'payment.order_id = main_table.entity_id',
-								array('payment_code'=>'transaction_code')
+								array('payment_code'=>'transaction_code', 'payment_environment' => 'environment')
 								);
 	}
 }

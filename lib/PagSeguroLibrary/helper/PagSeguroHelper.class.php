@@ -1,30 +1,33 @@
 <?php
-
-/*
- * ***********************************************************************
- Copyright [2011] [PagSeguro Internet Ltda.]
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- * ***********************************************************************
+/**
+ * 2007-2014 [PagSeguro Internet Ltda.]
+ *
+ * NOTICE OF LICENSE
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *  @author    PagSeguro Internet Ltda.
+ *  @copyright 2007-2014 PagSeguro Internet Ltda.
+ *  @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/**
+/***
  * Helper functions
  */
 class PagSeguroHelper
 {
 
-    /**
+    /***
      * @param $date
      * @return bool|string
      */
@@ -41,7 +44,7 @@ class PagSeguroHelper
         return $d;
     }
 
-    /**
+    /***
      * @param $numeric
      * @return string
      */
@@ -54,7 +57,7 @@ class PagSeguroHelper
         return $numeric;
     }
 
-    /**
+    /***
      * @param $date
      * @param $days
      * @return bool|string
@@ -67,7 +70,7 @@ class PagSeguroHelper
         return self::formatDate($d);
     }
 
-    /**
+    /***
      * @param $var
      * @param null $dump
      */
@@ -84,7 +87,7 @@ class PagSeguroHelper
         }
     }
 
-    /**
+    /***
      * Remove left, right and inside extra spaces in string
      * @param string $string
      * @return string
@@ -94,7 +97,7 @@ class PagSeguroHelper
         return trim(preg_replace("/( +)/", " ", $string));
     }
 
-    /**
+    /***
      * Perform truncate of string value
      * @param string $string
      * @param int $limit
@@ -117,7 +120,7 @@ class PagSeguroHelper
         return $string;
     }
 
-    /**
+    /***
      * Return formatted string to send in PagSeguro request
      * @param string $string
      * @param int $limit
@@ -130,7 +133,7 @@ class PagSeguroHelper
         return PagSeguroHelper::truncateValue($string, $limit, $endchars);
     }
 
-    /**
+    /***
      * Check if var is empty
      * @param string $value
      * @return boolean
@@ -140,7 +143,7 @@ class PagSeguroHelper
         return (!isset($value) || trim($value) == "");
     }
 
-    /**
+    /***
      * Check if notification post is empty
      * @param array $notification_data
      * @return boolean
@@ -158,7 +161,7 @@ class PagSeguroHelper
         return $isEmpty;
     }
 
-    /**
+    /***
      * Remove all non digit character from string
      * @param string $value
      * @return string

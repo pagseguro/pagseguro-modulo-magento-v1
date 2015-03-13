@@ -2,7 +2,7 @@
 
 /**
 ************************************************************************
-Copyright [2014] [PagSeguro Internet Ltda.]
+Copyright [2015] [PagSeguro Internet Ltda.]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 			} else {
 				echo $this->getAbandonedGrid();	
 			}						
+		} elseif ($origin == 'requirements') {
+			echo $this->getRequirements();
 		}
 	}
 	
@@ -48,9 +50,6 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 	{
 		$helper = Mage::helper('pagseguro/conciliation');				
 		$days = $this->getRequest()->getPost('days');
-		$orderId = $this->getRequest()->getPost('orderId');
-		$transactionCode = $this->getRequest()->getPost('transactionCode');
-		$orderStatus = $this->getRequest()->getPost('orderStatus');	
 			
 		// Saves the day searching for the global variable that receives the array
 		if ($days) {			
@@ -59,34 +58,44 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 		}		
 		
 		// Upgrade from Magento order status
-		if ($orderId && $transactionCode && $orderStatus) {			
-			$helper->updateOrderStatusMagento($orderId,$transactionCode,$orderStatus);
+		if ($json = $this->getRequest()->getPost('json')) {
+			foreach ($json as $value) {	
+				$helper->updateOrderStatusMagento($value['id'], $value['code'], $value['status']);
+			}
 			Mage::helper('pagseguro/conciliation')->setDateStart($_SESSION['days']);
 		} else {
 			if ($_SESSION['days'] != 0) {
 				$helper->setConciliationListLog($days);	
 			}
 		}
+
+		try {
 		
-		// Rides array that returns the query transactions
-		if ($conciliationArray = $helper->getArrayPayments()) {				
-			$dataSet = '[';
-			$j = 1;				
-			
-			foreach ($conciliationArray as $info) {
-				$i = 1;
-				$dataSet .= ($j > 1) ? ',[' : '[';								
-				foreach ($info as $item) {	
-					$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
-					$i++;				
-				}
-				$dataSet .= ']';
-				$j++;
-			}
-			$dataSet .= ']';	
+			// Rides array that returns the query transactions
+			if ($conciliationArray = $helper->getArrayPayments()) {				
+				$dataSet = '[';
+				$j = 1;				
 				
-			return $dataSet;
-		}		
+				foreach ($conciliationArray as $info) {
+					$i = 1;
+					$dataSet .= ($j > 1) ? ',[' : '[';								
+					foreach ($info as $item) {	
+						$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
+						$i++;				
+					}
+					$dataSet .= ']';
+					$j++;
+				}
+				$dataSet .= ']';	
+					
+				return $dataSet;
+			} else {
+				return 'run';
+			}		
+			
+		} catch (Exception $e) {
+			return trim($e->getMessage());
+		}
 	}
 
 	/**
@@ -95,26 +104,32 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 	 */
 	private function getAbandonedGrid()
 	{		
+		$days = $this->getRequest()->getPost('days');
+
 		$helper = Mage::helper('pagseguro/abandoned');
-		$helper->setAbandonedListLog();	
-		$helper->checkAbandonedAccess();
-		
-		if ($abandonedArray = $helper->getArrayAbandoned()) {
-			$dataSet = '[';
-			$j = 1;				
-			foreach ($abandonedArray as $info) {
-				$i = 1;
-				$dataSet .= ($j > 1) ? ',[' : '[';								
-				foreach ($info as $item) {	
-					$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
-					$i++;				
+		$helper->setAbandonedListLog($days);	
+		$helper->checkAbandonedAccess($days);
+
+		try {
+			if ($abandonedArray = $helper->getArrayAbandoned()) {
+				$dataSet = '[';
+				$j = 1;				
+				foreach ($abandonedArray as $info) {
+					$i = 1;
+					$dataSet .= ($j > 1) ? ',[' : '[';								
+					foreach ($info as $item) {	
+						$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
+						$i++;				
+					}
+					$dataSet .= ']';
+					$j++;
 				}
-				$dataSet .= ']';
-				$j++;
+				$dataSet .= ']';	
+				
+				return $dataSet;	
 			}
-			$dataSet .= ']';	
-			
-			return $dataSet;	
+		} catch (Exception $e) {
+			return trim($e->getMessage());
 		}
 	}
 	
@@ -133,5 +148,19 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 		}
 		
 		return 'run';
+	}
+
+	/**
+	 * Generates the data abandoned to populate the table
+	 * @return array $dataSet - Array of data for table
+	 */
+	private function getRequirements()
+	{		
+
+		$helper = Mage::helper('pagseguro/requirements');
+		$helper->setRequirementsLog();	
+		$helper->checkRequirementsAccess();
+
+		return json_encode($helper->validateRequirements());
 	}
 }
