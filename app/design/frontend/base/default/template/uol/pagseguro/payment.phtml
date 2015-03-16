@@ -42,7 +42,7 @@ limitations under the License.
             	window.location.href = "<?php echo Mage::getUrl('checkout/onepage/success', array('_secure' => true));?>";
             },
             abort: function(){
-            	window.location.href = '<?php echo $paymentData['urlCompleta'] ?>';
+            	window.location.href = '<?php echo $this->getBaseUrl(); ?>';
             }
         });
     }

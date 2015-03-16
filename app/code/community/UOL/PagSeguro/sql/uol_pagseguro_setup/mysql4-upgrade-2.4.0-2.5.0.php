@@ -29,7 +29,7 @@ $tp = (string)Mage::getConfig()->getTablePrefix();
 
 $table = $tp . 'pagseguro_conciliation';
 // checks if exists registry of reference
-if (Mage::getSingleton('core/resource')->getConnection('core_write')->isTableExists($table)) {	
+if ($resource->getConnection('core_write')->isTableExists($table)) {	
 	$query = 'SELECT reference FROM ' . $resource->getTableName($table);
 	$results = $readConnection->fetchAll($query);
 	if (!Mage::getStoreConfig('uol_pagseguro/store/reference'))
@@ -44,21 +44,22 @@ if (!Mage::getStoreConfig('uol_pagseguro/store/reference'))
 	Mage::getConfig()->saveConfig('uol_pagseguro/store/reference', $ref);
 
 
-// removes the table that contains the reference store
-$sql = "DROP TABLE IF EXISTS `" . $table . "`;";
-
+// removes the table that contains the reference store in version 2.4
+//$sql = "DROP TABLE IF EXISTS `" . $table . "`;";
 
 $table =  $tp . 'pagseguro_sales_code';
 $new_table =  $tp . 'pagseguro_orders';
 // checks if exists the table
-if (Mage::getSingleton('core/resource')->getConnection('core_write')->isTableExists($table)) {
-	// change the table adding sent column
-	$sql .= "ALTER TABLE `" . $table . "` ADD sent int DEFAULT 0;";
-	$sql .= "ALTER TABLE `" . $table . "` ADD environment varchar(40);";
-	
-	//rename the table
-	$sql .= "RENAME TABLE `" . $table . "` TO `" . $new_table . "`;";
-	
+if ($resource->getConnection('core_write')->isTableExists($table)) {
+	if (!$resource->getConnection('core_write')->isTableExists($new_table)) {
+		//copies the transaction table used in version 2.4
+		$sql .= "CREATE TABLE `" . $new_table . "` LIKE `" . $table . "`;";
+		$sql .= "INSERT `" . $new_table . "` SELECT * FROM `" . $table . "`;";
+		
+		// change the table adding sent column
+		$sql .= "ALTER TABLE `" . $new_table . "` ADD sent int DEFAULT 0;";
+		$sql .= "ALTER TABLE `" . $new_table . "` ADD environment varchar(40);";
+	}	
 } else {
 	// Checks for the pagseguro_orders table if it does not exist is created
 	$sql .= "CREATE TABLE IF NOT EXISTS `" . $new_table . "` (
@@ -70,6 +71,9 @@ if (Mage::getSingleton('core/resource')->getConnection('core_write')->isTableExi
              PRIMARY KEY (`entity_id`)
              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";	
 }
+
+// removes the table that contains the transactions store in version 2.4
+//$sql = "DROP TABLE IF EXISTS `" . $table . "`;";
 
 // Verifies that no record of the status PagSeguro created, if you have not created	 
 $sql .= "INSERT INTO ".$tp."sales_order_status (STATUS, label)
