@@ -51,10 +51,10 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **listar transações abandonadas?**: ativa/desativa a pesquisa de transações que foram abandonadas no checkout do PagSeguro.
  - **template de e-mail**: define qual o template de email sua loja usuará para o envio do email de recuperação de venda.
  - **conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
-- **dias**: número de dias que devem ser considerados para a pesquisa de conciliação.
-- **abandonadas** permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar email-s de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
-- **dias**: defina a quantidade máxima de dias em que a transação foi abandonada. Ex.: se você definir 8, então somente as transações abandonadas nos últimos 8 dias serão exibidas.
-- **requisitos**: exibe se os pré-requisitos básicos para o correto funcionamento do módulo estão sendo atendidos
+ - **dias**: número de dias que devem ser considerados para a pesquisa de conciliação.
+ - **abandonadas**: permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar email-s de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
+ - **dias**: defina a quantidade máxima de dias em que a transação foi abandonada. Ex.: se você definir 8, então somente as transações abandonadas nos últimos 8 dias serão exibidas.
+ - **requisitos**: exibe se os pré-requisitos básicos para o correto funcionamento do módulo estão sendo atendidos
 
 
 Dúvidas?
