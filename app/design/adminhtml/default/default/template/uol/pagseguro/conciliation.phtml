@@ -355,7 +355,7 @@ limitations under the License.
 							href = jQuery(table.row( this ).data()[6])[0].href;
 							jQuery('#conciliation-table tbody').off();
 							jQuery('#conciliation-table tbody').on('click', 'td', function () {
-								if (jQuery(this).index() != 0 && jQuery(this).index() != 4){
+								if (jQuery(this).index() != 0 && jQuery(this).index() != 6){
 									window.open(href, '_blank');
 								}
 							} );
