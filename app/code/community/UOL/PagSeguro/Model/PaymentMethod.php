@@ -38,7 +38,6 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $Module_Version = '2.5.0';
     private $Order;
     private $Shipping_Data;
 
@@ -129,7 +128,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
 
 
         //Module version
-        PagSeguroLibrary::setModuleVersion('magento' . ':' . $this->Module_Version);
+        PagSeguroLibrary::setModuleVersion('magento' . ':' . Mage::helper('pagseguro')->getVersion());
 
         //CMS version
         PagSeguroLibrary::setCMSVersion('magento' . ':' . Mage::getVersion());

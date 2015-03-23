@@ -19,7 +19,10 @@ limitations under the License.
 */
 
 ?>
-<?php Mage::helper('pagseguro/abandoned')->checkAbandonedAccess(); ?>
+<?php 
+	$helper = Mage::helper('pagseguro/abandoned');
+	$helper->checkAbandonedAccess(); 
+?>
 
 <div id="pagseguro-module">
 	
@@ -28,7 +31,7 @@ limitations under the License.
 			
 			<div id="pagseguro-logo">
 				<img class="pagseguro_logo" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/logo.png'); ?>" />
-				<div id="pagseguro-module-version">Versão <?php echo Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version; ?></div>
+				<div id="pagseguro-module-version">Versão <?php echo $helper->getVersion(); ?></div>
 			</div>
 		    
 		    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor" target="_blank"><?php echo $this->__('Faça seu cadastro'); ?></a>

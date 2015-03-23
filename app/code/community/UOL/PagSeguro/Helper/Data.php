@@ -33,7 +33,16 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 		$this->changeEnvironment();
 		$this->environmentNotification();
     }
-        
+    
+	/**
+	 * Get the current version of module
+	 * @return string - Returns the current version of the module
+	 */
+	public function getVersion()
+	{
+		return Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version;
+	}
+	
 	/**
 	 * Get status of PagSeguro or string required to change the order status Magento
 	 * @param int $status - Number that contains the status of PagSeguro
