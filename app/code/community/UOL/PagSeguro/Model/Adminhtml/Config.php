@@ -20,7 +20,7 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 		$skinUrl = $this->skin . 'adminhtml/default/default/uol/pagseguro/';
 		
 		//Set headers
-		$this->css = '<link rel="stylesheet" type="text/css" href="' . $skinUrl . 'css/pagseguro-config.css" />';
+		$this->css = '<link rel="stylesheet" type="text/css" href="' . $skinUrl . 'css/pagseguro-module-config.css" />';
 		$this->jquery = $skinUrl . 'js/jquery-1.11.1.js';
 		$this->js = $skinUrl . 'js/pagseguro-module.js';
 		$this->jsColorbox = $skinUrl . 'js/jquery.colorbox-min.js';

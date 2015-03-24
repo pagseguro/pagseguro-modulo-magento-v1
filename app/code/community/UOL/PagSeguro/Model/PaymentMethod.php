@@ -231,21 +231,17 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
      * @return PagSeguroShipping
      */
     private function getShippingInformation()
-    {
-        $fileOSC = scandir(getcwd().'/app/code/local/DeivisonArthur');
-
+    {        
         $street = "";
         $number = "";
         $complement = "";
         $complement = "";
 
-        if (!$fileOSC) {
-            $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
-            $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street']);
-            $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
-            $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
-            $complement = is_null($fullAddress[3]) ? '' : $fullAddress[3];
-        }
+        $fullAddress = $this->_addressConfig($this->Shipping_Data['street']);
+        $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->_addressConfig($this->Shipping_Data['street']);
+        $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
+        $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
+        $complement = is_null($fullAddress[3]) ? '' : $fullAddress[3];        
 
         $PagSeguroShipping = new PagSeguroShipping();
         $PagSeguroAddress = new PagSeguroAddress();

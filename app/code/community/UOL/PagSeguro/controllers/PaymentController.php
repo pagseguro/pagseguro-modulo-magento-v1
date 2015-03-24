@@ -72,15 +72,8 @@ class UOL_PagSeguro_PaymentController extends FrontAction
     
     
         $Order = $this->getOrder(); //Order Data        
-        $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel();        
-        $enabledOSC = false;
-        $fileOSC = scandir(getcwd().'/app/code/community/DeivisonArthur');
-        
-        if ($fileOSC) {
-            $enabledOSC = Mage::helper('onepagecheckout')->isOnepageCheckoutEnabled();
-        }           
-            
-        $feedback = ($enabledOSC == false ? 'checkout/onepage' : 'onepagecheckout');
+        $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel(); 
+        $feedback = 'checkout/onepage';
 
         if (($Order->getState() == Mage_Sales_Model_Order::STATE_NEW) and
             ($Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode()) and
@@ -90,9 +83,9 @@ class UOL_PagSeguro_PaymentController extends FrontAction
             include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');  
             $environment = PagSeguroConfig::getEnvironment();
             if ($environment == 'production') {
-                $environment = "Produção";
+                $environment = Mage::helper('pagseguro')->__("Produção");
             } else {
-                $environment = "Sandbox";
+                $environment = Mage::helper('pagseguro')->__("Sandbox ");
             }
 
             $tp = (string)Mage::getConfig()->getTablePrefix();
