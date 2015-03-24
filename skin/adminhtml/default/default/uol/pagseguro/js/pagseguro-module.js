@@ -104,7 +104,31 @@ var Modal = new function(){
         Messages.remove();
         open({
             html: html,
-            width:  600,
+            width:  330,
+            height: 600,
+            overlayClose: false,
+            escKey: false,
+            close: false
+        });
+        jQuery('#cboxClose').hide();
+        resize();
+    };
+    
+    var showLoadingCheckout = function() {
+        if (jQuery('#pagseguro-loading-message:visible').length > 0) {
+            return false;
+        }
+        var html = Messages.getHtml({
+            id: 'pagseguro-loading-message',
+            type: 'loading',
+            size: 'medium',
+            message: 'Processando o pedido...',
+            tag: 'h3'
+        });
+        Messages.remove();
+        open({
+            html: html,
+            width:  330,
             height: 600,
             overlayClose: false,
             escKey: false,
@@ -151,6 +175,7 @@ var Modal = new function(){
         open : open,
         resize : resize,
         showLoading: showLoading,
+        showLoadingCheckout: showLoadingCheckout,
         hideLoading: hideLoading,
         message: message
     }

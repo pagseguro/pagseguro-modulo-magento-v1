@@ -45,7 +45,7 @@ limitations under the License.
 #cboxContent{
 	background:#fff;
 	overflow:visible;
-	border-radius:5px;
+	border-radius:5px;	
 }
 #cboxLoadedContent{
 	margin:15px 10px 0;
