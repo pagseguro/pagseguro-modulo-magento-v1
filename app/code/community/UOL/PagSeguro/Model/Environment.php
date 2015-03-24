@@ -26,7 +26,7 @@ class UOL_PagSeguro_Model_Environment
     	
         return array(
                 array('value' => 'production', 'label' => $helper->__('Produção')),
-                array('value' => 'sandbox', 'label' => $helper->__('Sandbox'))
+                array('value' => 'sandbox', 'label' => $helper->__('Sandbox '))
         );
     }
 }
