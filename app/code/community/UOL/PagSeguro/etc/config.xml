@@ -99,20 +99,25 @@ limitations under the License.
                         <action>adminhtml/system_config/edit/section/payment/</action>
                         <sort_order>2000</sort_order>
                     </pagseguro_config>
+					<pagseguro_transaction translate="title" module="pagseguro">
+                        <title>Transações</title>
+                        <action>pagseguro/adminhtml_transaction</action>
+						<sort_order>2100</sort_order>
+                    </pagseguro_transaction>
                     <pagseguro_conciliation translate="title" module="pagseguro">
                         <title>Conciliação</title>
                         <action>pagseguro/adminhtml_conciliation</action>
-						<sort_order>2100</sort_order>
+						<sort_order>2200</sort_order>
                     </pagseguro_conciliation>
 					<pagseguro_abandoned translate="title" module="pagseguro">
                         <title>Abandonadas</title>
                         <action>pagseguro/adminhtml_abandoned</action>
-						<sort_order>2200</sort_order>
+						<sort_order>2300</sort_order>
                     </pagseguro_abandoned>
                     <pagseguro_requirements translate="title" module="pagseguro">
                         <title>Requisitos</title>
                         <action>pagseguro/adminhtml_requirements</action>
-                        <sort_order>2300</sort_order>
+                        <sort_order>2400</sort_order>
                     </pagseguro_requirements>
                 </children>
             </pagseguro_menu>

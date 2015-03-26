@@ -24,71 +24,26 @@ limitations under the License.
 	$helper->checkAbandonedAccess(); 
 ?>
 
-<div id="pagseguro-module">
-	
-    <div id="pagseguro-module-header">
-		<div class="wrapper">
-			
-			<div id="pagseguro-logo">
-				<img class="pagseguro_logo" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/logo.png'); ?>" />
-				<div id="pagseguro-module-version">Versão <?php echo $helper->getVersion(); ?></div>
-			</div>
-		    
-		    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor" target="_blank"><?php echo $this->__('Faça seu cadastro'); ?></a>
-
-		</div>
-	</div>
-
+<div id="pagseguro-module">	
+    <?php echo $helper->getHeader(); ?>
 	<div id="pagseguro-module-content">
-
 		<div class="wrapper">
-		    
-		    <div id="pagseguro-module-menu">
-			    
-			    <ul>
-			    	<li 
-						id="menu-item-config"
-						data-has-form="true">
-						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/key'); ?>">Configuração</a>
-					</li>
-					<li 
-						id="menu-item-conciliation"
-						data-has-form="true"
-						>
-						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_conciliation'); ?>">Conciliação</a>
-					</li>
-					<li 
-						id="menu-item-abandoned"
-						class="selected" 
-						data-has-form="true">
-						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_abandoned'); ?>">Abandonadas</a>
-					</li>
-					<li 
-						id="menu-item-required" 
-						data-has-form="true">
-						<a href="<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_requirements'); ?>">Requisitos</a>
-					</li>
-			    </ul>
-			</div>
-
+			<?php echo $helper->getSideMenu();?>
 		    <div id="pagseguro-module-contents">
-
-				<h2 class="title" title="Transações Abandonadas"><?php echo $this->__('Transações Abandonadas'); ?></h2>
-
+				<h2 class="title" title="Transações Abandonadas"><?php echo $helper->__('Transações Abandonadas'); ?></h2>
 				<p>
 					<?php 
 						$string .= 'Com esta funcionalidade, você poderá listar as transações abandonadas e disparar, manualmente, ';
 						$string .= 'um e-mail para seu comprador. Este e-mail conterá um link que o redirecionará para o fluxo de ';
 						$string .= 'pagamento, exatamente no ponto onde ele parou.';
-						echo $this->__($string);
+						echo $helper->__($string);
 					 ?>
 				</p>
 
 				<div class="pagseguro-search-tools">
-
 					<form action="javascript:void(0)" method="post" >
 						<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
-						<input type="submit" class="pagseguro-button" id="search-abandoned-button" value="<?php echo $this->__('Pesquisar');?>">
+						<input type="submit" class="pagseguro-button" id="search-abandoned-button" value="<?php echo $helper->__('Pesquisar');?>">
 						<select name='pagseguro_dias' class="pagseguro-field" id="pagseguro-daystorecovery-input">
 					        <option value='1'>1</option>
 					        <option value='2'>2</option>
@@ -101,10 +56,10 @@ limitations under the License.
 					        <option value='9'>9</option>
 					        <option value='10'>10</option>
 					    </select>
-						<label><?php echo $this->__('Últimos Dias'); ?></label>
+						<label><?php echo $helper->__('Últimos Dias'); ?></label>
 					    <div class="right-tools">
 					    	Recuperação de carrinho:&nbsp;
-					    	<input type="submit"  class="pagseguro-button" id="send-email-button" value="<?php echo $this->__("Enviar e-mail");?>" disabled/>
+					    	<input type="submit"  class="pagseguro-button" id="send-email-button" value="<?php echo $helper->__("Enviar e-mail");?>" disabled/>
 					    </div>
 					</form>
 			</div>
@@ -115,40 +70,33 @@ limitations under the License.
 						<th class="select_checkbox" width="3%" onclick="checkboxes();">
 							<input type="checkbox" id="pagseguro-check-all" />
 						</th>
-						<th width="20%"><?php echo $this->__('Data do Pedido');?></th>
-						<th width="20%"><?php echo $this->__('ID Magento');?></th>
-						<th width="20%"><?php echo $this->__('Validade do Link');?></th>
-						<th width="20%"><?php echo $this->__('E-mails Enviados');?></th>
-						<th width="30%"><?php echo $this->__('Pedido');?></th>
+						<th width="20%"><?php echo $helper->__('Data do Pedido');?></th>
+						<th width="20%"><?php echo $helper->__('ID Magento');?></th>
+						<th width="20%"><?php echo $helper->__('Validade do Link');?></th>
+						<th width="20%"><?php echo $helper->__('E-mails Enviados');?></th>
+						<th width="30%"><?php echo $helper->__('Pedido');?></th>
 					</tr>
 				</thead>
-				<tbody>
-					
-				</tbody>
 			</table>
-
-			</div>
 		</div>
 	</div>
 </div>
 
 <?php 
-	$noTransaction = $this->__('Nenhum resultado.');
-	$noEmailSelected = $this->__("Selecione pelo menos um campo da coluna 'Enviar'.");
-	$emailSendSuccess = $this->__("E-mail enviado com sucesso!");
-	$emailsSendSuccess = $this->__("E-mails enviado com sucesso!");
+	$noTransaction = $helper->__('Nenhum resultado.');
+	$noEmailSelected = $helper->__("Selecione pelo menos um campo da coluna 'Enviar'.");
+	$emailSendSuccess = $helper->__("E-mail enviado com sucesso!");
+	$emailsSendSuccess = $helper->__("E-mails enviado com sucesso!");
 ?>
 
 <script type="text/javascript">	
 	var i = 0;
 		
-	jQuery(document).ready(function(){					     
-		
-
+	jQuery(document).ready(function(){
 		Menu.init();	
-		PageAbandoned.init();
-			
+		PageAbandoned.init();			
     }); 
+    
     var PageAbandoned = new function() {
 
         var transactionsTable; // DataTable
@@ -156,9 +104,7 @@ limitations under the License.
         var defaultPage = 0;
         
         var onRequestTransactions = function(transactions, callback) {
-
         	if (transactions != "") {
-
             	converted = JSON.parse(transactions);
             	var oTable = jQuery('#abandoned-transactions-table').dataTable();
                 oTable.fnClearTable(false);           
@@ -170,16 +116,13 @@ limitations under the License.
                 } else {
                     Modal.hideLoading();
                 }
-
             } else {
             	jQuery('#abandoned-transactions-table').dataTable().fnClearTable(true); 
                 Modal.message('alert', "Não há transações abandonadas no período.");
             }
-
         };
 
-        var requestTransactions = function(callback) {
-            
+        var requestTransactions = function(callback) {            
 	        var getDays = jQuery('#pagseguro-daystorecovery-input').find(":selected").text();
 			var converted = '';
 			Modal.showLoading();
@@ -192,8 +135,7 @@ limitations under the License.
 	            		origin: 'abandoned',
 	            		days: getDays
 	            	  },
-	            success: function(result) { 
-	
+	            success: function(result) { 	
 	            	if (result == "[HTTP 401] - UNAUTHORIZED") {
         				Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
         			} else {
@@ -204,11 +146,9 @@ limitations under the License.
 	            	Modal.message('error', "Não foi possível obter os dados de transações abandonadas.");
 	            }
 	         });
-
         };
 
-        var sendMailRequest = function(params) {
-            
+        var sendMailRequest = function(params) {            
             var onError = function(){
                 Modal.message('error', 'Não foi possível enviar o(s) e-mail(s).');
             };
@@ -216,7 +156,6 @@ limitations under the License.
             Modal.showLoading();
 
 			jQuery.ajax({
-
 	            url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
 	            type: "POST",
 	            data: { 
@@ -224,9 +163,7 @@ limitations under the License.
 	            		json: params,
 	            		origin: 'abandoned'	                		
 	            	  },
-
-	            success: function(result) {  
-	            		
+	            success: function(result) {	            		
 	                if (result == 'run') {
 	                	jQuery(':checkbox').prop('checked','');
 	                	jQuery('#messages').empty();
@@ -234,30 +171,24 @@ limitations under the License.
 	                	requestTransactions(function(table) {
                             Modal.message('success', 'E-mail(s) enviado(s) com sucesso.');
                         });
-
 	                } else {
 	                	onError();
 	                }                   
 	            },
-
 	            error: function() {
 	            	// Remove the modal of loading
 	                Modal.hideLoading();
 	            }
 	         });
-
         };
 
-        var sendMultipleEmails = function() {
-            
+        var sendMultipleEmails = function() {            
             var dataSelector = jQuery('input[name="send_emails[]"]');
-
             if (dataSelector.filter(":checked").length > 0) {
                 sendMail();
             } else {
                 Messages.addError('Selecione ao menos um item.');
             }
-
         }; 
 
         var sendMail = function() {
@@ -272,7 +203,7 @@ limitations under the License.
 
 			if (j == ckbFalse) {
 				jQuery('#messages').empty();					
-				setMsgError("<?php echo $this->__($noTransaSelected); ?>");
+				setMsgError("<?php echo $helper->__($noTransaSelected); ?>");
 			} else {
 				jQuery('#messages').empty();
 				var config = '';
@@ -288,10 +219,8 @@ limitations under the License.
 							jsonArr.push({
 						        id: config[0],
 						        recovery: config[1]
-						    });
-		        			
-					}
-					    
+						    });		        			
+					}					    
 			    });	
 		    	sendMailRequest(jsonArr);
 			}
@@ -318,8 +247,7 @@ limitations under the License.
 			        //iDisplayStart has been reset to zero - so lets change it back
 			        oSettings._iDisplayStart = before;
 			        oSettings.oApi._fnCalculateEnd(oSettings);
-			    }
-			      
+			    }			      
 			    //draw the 'current' page
 			    oSettings.oApi._fnDraw(oSettings);
 			};
@@ -339,12 +267,12 @@ limitations under the License.
 				
 				// Creates paging and notifies when there is no record
 				"oLanguage": {
-					"sEmptyTable":"<?php echo $this->__($noTransaction); ?>",
+					"sEmptyTable":"<?php echo $helper->__($noTransaction); ?>",
 					"oPaginate": {
-						"sNext": '<?php echo $this->__('Próximo');?>',
-						"sLast": '<?php echo $this->__('Último');?>',
-						"sFirst": '<?php echo $this->__('Primeiro');?>',
-						"sPrevious": '<?php echo $this->__('Anterior');?>'
+						"sNext": '<?php echo $helper->__('Próximo');?>',
+						"sLast": '<?php echo $helper->__('Último');?>',
+						"sFirst": '<?php echo $helper->__('Primeiro');?>',
+						"sPrevious": '<?php echo $helper->__('Anterior');?>'
 					}
 				},		
 				
@@ -374,7 +302,6 @@ limitations under the License.
 
 					//Checkbox enable | disable
 		            jQuery('#abandoned-transactions-table tbody input:checkbox').change(function(){
-
 		            	var isChecked = jQuery("#abandoned-transactions-table tbody :checked").length;
 		          
 						if (isChecked > 0) {
@@ -382,7 +309,6 @@ limitations under the License.
 						} else {
 							jQuery('#send-email-button').prop("disabled", true);
 						}
-
 		            });
 
 					// Only if greater than 10 records show paging

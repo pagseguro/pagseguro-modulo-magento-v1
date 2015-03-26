@@ -20,8 +20,8 @@ limitations under the License.
 
 ?>
 <?php
-	$helper = Mage::helper('pagseguro/conciliation');
-	$helper->checkConciliationAccess();
+	$helper = Mage::helper('pagseguro/transaction');
+	$helper->checkTransactionAccess();
 	$_SESSION['days'] = 0;	
 ?>
 
@@ -29,15 +29,12 @@ limitations under the License.
     <?php echo $helper->getHeader(); ?>
 	<div id="pagseguro-module-content">
 		<div class="wrapper">		    
-		    <?php echo $helper->getSideMenu();?>
+		    <?php echo $helper->getSideMenu();?>			
 		    <div id="pagseguro-module-contents">
-				<h2 class="title" title="Conciliação"><?php echo $helper->__('Conciliação'); ?></h2>
+				<h2 class="title" title="<?php echo $helper->__('Transações'); ?>"><?php echo $helper->__('Transações'); ?></h2>
 				<p>
 					<?php 
-						$string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas. ';
-						$string .= 'Ela pode ser usada periodicamente para verificar se o seu sistema recebeu todas as notificações ';
-						$string .= 'de transações enviadas pelo PagSeguro, de forma a conciliar as transações armazenadas ';
-						$string .= 'em seu sistema com o PagSeguro.';
+						$string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas.';
 						echo $helper->__($string);
 					 ?>
 				</p>
@@ -53,10 +50,15 @@ limitations under the License.
 					        <option value='20'>20</option>
 					        <option value='25'>25</option>
 					        <option value='30'>30</option>
+					        <option value='40'>40</option>
+					        <option value='60'>60</option>
+					        <option value='80'>80</option>
+					        <option value='100'>100</option>
+					        <option value='120'>120</option>
 					    </select>
 						<label><?php echo $helper->__('últimos dias'); ?></label>
 					    <div class="right-tools">
-						    	<input type="submit" class="pagseguro-button" id="conciliation-button" value="<?php echo $helper->__("Conciliar");?>" disabled>
+							<input type="submit" class="pagseguro-button" id="conciliation-button" value="<?php echo $helper->__("Conciliar");?>" disabled>
 						</div>					    
 					</form>
 				</div>
@@ -72,7 +74,7 @@ limitations under the License.
 							<th width="30%"><?php echo $helper->__('ID PagSeguro');?></th>
 							<th width="15%"><?php echo $helper->__('Status Magento');?></th>
 							<th width="20%"><?php echo $helper->__('Status PagSeguro');?></th>
-							<th width="11%"><?php echo $helper->__('Pedido');?></th>
+							<th width="11%"><?php echo $helper->__('Ação');?></th>
 						</tr>
 					</thead>
 				</table>
@@ -104,6 +106,7 @@ limitations under the License.
 		var requestTransactions = function() {
 			var getDays = jQuery('#pagseguro-conciliation-days-input').find(":selected").text();
         	var converted = '';
+        	
         	// calls the modal of loading
         	Modal.showLoading();
         	
@@ -115,7 +118,7 @@ limitations under the License.
                 		days: getDays,
                 		origin: 'conciliation'
                 	  },
-                success: function(result) {   
+                success: function(result) {
                 	if (result == "[HTTP 401] - UNAUTHORIZED") {                		
         				Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
         			} else {                	
@@ -173,12 +176,14 @@ limitations under the License.
 					}
 					    
 			    });	
+			    
 			    var msg	= '';
 			    if (count == 1) {
 			    	msg = '<?php echo " " . $helper->__($transactionSuccess); ?>';
 			    }  else {
 			    	msg = count + '<?php echo " " . $helper->__($transactionsSuccess); ?>';
-			    } 
+			    }
+			    
 		    	var converted = '';
 				Modal.showLoading();
 				jQuery.ajax({
@@ -203,7 +208,8 @@ limitations under the License.
 			                oTable.fnAddData(converted, false);
 			                oTable.fnStandingRedraw();
 		                    jQuery('#messages').empty();					
-		                }	 
+		                }
+		                 
 		                jQuery(':checkbox').prop('checked','');
 		                jQuery('#conciliation-button').prop("disabled", true);
 
@@ -212,9 +218,9 @@ limitations under the License.
 		                	successMsg = 'Conciliações realizadas com sucesso.'; 
 		                } else {
 		                	successMsg = 'Conciliação realizada com sucesso.'; 
-		                }  
-		                Modal.message('success', successMsg);        
-	                    
+		                }
+		                
+		                Modal.message('success', successMsg);
 	                },
 	                error: function() {
 	                     Modal.message('error', 'Não foi possível realizar a conciliação.');
@@ -224,7 +230,6 @@ limitations under the License.
 		}
 
 		var prepareTable = function(){
-
 			var flow = 0;
 			var totalRows = 0;	
 			var page = 0;
@@ -303,20 +308,17 @@ limitations under the License.
 								}
 							} );
 						} );
-
 					}
 
 					//Checkbox enable | disable
 					jQuery('#conciliation-table tbody input:checkbox').change(function(){
-
 		            	var isChecked = jQuery("#conciliation-table tbody :checked").length;
-		          
+		            			          
 						if (isChecked > 0) {
 							jQuery('#conciliation-button').prop("disabled", false);
 						} else {
 							jQuery('#conciliation-button').prop("disabled", true);
 						}
-
 		            });
 					
 					// Only if greater than 10 records show paging
@@ -356,7 +358,7 @@ limitations under the License.
 				// When it completes assembly of the table is executed
 				"initComplete": function (oSettings) {				
 			        oTable = this;
-			        			        
+			        
 			        if (currentPage != 0) {
 			        	// When upgraded back on the page that was
 			        	oTable.fnPageChange(currentPage);	

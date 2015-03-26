@@ -63,21 +63,19 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 						jQuery(document).ready(function(){
 							var content = jQuery(".pagseguro-comment").html();
 							jQuery("#payment_pagseguro").prepend(content);
+							
 							if (!jQuery("#payment_pagseguro_redirect").val()) {
 								jQuery("#payment_pagseguro_redirect").attr("value","' . $redirect . '");
 							}
-							jQuery("#row_payment_pagseguro_comment").remove();
 
+							jQuery("#row_payment_pagseguro_comment").remove();
 							jQuery("#payment_pagseguro").css("background", " #fff url('.$this->background.') no-repeat scroll center 45%");
 
-							jQuery("#payment_pagseguro_environment").change(function(){
-								
+							jQuery("#payment_pagseguro_environment").change(function(){								
 								if (jQuery("#payment_pagseguro_environment").val() == "sandbox") {
 								 Modal.message("success", "Suas transações serão feitas em um ambiente de testes. Nenhuma das transações realizadas nesse ambiente tem valor monetário.");
 								}
-							});
-
-						});
+							});						});
 					 </script>';
 		$comment .= $interface;
         return $comment;

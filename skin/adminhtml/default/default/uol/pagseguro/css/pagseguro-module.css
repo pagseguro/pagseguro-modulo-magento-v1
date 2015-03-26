@@ -283,6 +283,9 @@ limitations under the License.
     text-transform: uppercase;
     text-align:center;
 }
+.pagseguro-table th:first-child + th {
+	cursor: pointer;
+}
 .pagseguro-table tfoot td {
     text-align:center;
     padding: 5px;

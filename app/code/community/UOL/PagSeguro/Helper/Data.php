@@ -384,5 +384,75 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 	    $connection->query($sql);
 	    unset($connection);
 	}
-
+	
+	public function getHeader($logo)
+	{
+		$logo = Mage::getBaseUrl('skin') . 'adminhtml/default/default/uol/pagseguro/images/logo.png';
+		$url = 'https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor';
+		$version = $this->__('Versão') . ' ' . $this->getVersion();
+		$id = 'pagseguro-registration-button';
+		
+		$html = '<div id="pagseguro-module-header">
+					<div class="wrapper">			
+						<div id="pagseguro-logo">
+							<img class="pagseguro_logo" src="' . $logo . '" />
+							<div id="pagseguro-module-version">' . $version . '</div>
+						</div>		    
+					    <a id="' . $id . '" class="pagseguro-button gray-theme" href="' . $url . '" target="_blank">
+					    	' . $this->__('Faça seu cadastro') . '
+					    </a>
+					</div>
+				</div>';
+		
+		return $html;
+	}
+	
+	/**
+	 * Get url of access the page correct
+	 * @param string $path - Path of the page to be returned
+	 * @return string $url - Returns the url of page.
+	 */	
+	private function getSideMenuUrl($path)
+	{
+		if ($path == 'configuration')
+			$url = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/key');
+		else
+			$url = Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_' . $path);
+		
+		return $url;
+	}
+	
+	/**
+	 * Get html of side menu
+	 * @return string $html - Html of side menu
+	 */
+	public function getSideMenu()
+	{
+		// Set controller name of page in variable $page
+		$page = str_replace('adminhtml_', '', Mage::app()->getRequest()->getControllerName());
+		
+		// Set options and titles of menu
+		$options = array('configuration' => $this->__('Configuração'),
+						 'transaction' 	 => $this->__('Transações'),
+						 'conciliation'  => $this->__('Conciliação'),
+						 'abandoned' 	 => $this->__('Abandonadas'),
+						 'requirements'  => $this->__('Requisitos'));						 
+		
+		$html = '<div id="pagseguro-module-menu">' .			    
+			    '	<ul>';
+				
+		foreach ($options as $key => $value) {
+			$selected = ($page == $key) ? ' class="selected"' : '';
+			$html .= '<li id="menu-item-' . $key . '"' . $selected . ' data-has-form="true">
+					  	<a href="' . $this->getSideMenuUrl($key) . '">
+							' . $value . '
+						</a>
+					  </li>';
+		}
+			    	
+		$html .= '	</ul>' .
+				'</div>';
+		
+		return $html;
+	}
 }
