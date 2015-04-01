@@ -20,7 +20,7 @@ limitations under the License.
 
 ?>
 <?php
-	$helper = Mage::helper('pagseguro/conciliation');
+	$helper = Mage::helper('pagseguro/refund');
 	$helper->checkTransactionAccess();
 	$_SESSION['days'] = 0;	
 ?>
@@ -29,15 +29,12 @@ limitations under the License.
     <?php echo $helper->getHeader(); ?>
 	<div id="pagseguro-module-content">
 		<div class="wrapper">		    
-		    <?php echo $helper->getSideMenu();?>
+		    <?php echo $helper->getSideMenu();?>			
 		    <div id="pagseguro-module-contents">
-				<h2 class="title" title="Conciliação"><?php echo $helper->__('Conciliação'); ?></h2>
+				<h2 class="title" title="<?php echo $helper->__('Estorno'); ?>"><?php echo $helper->__('Estorno'); ?></h2>
 				<p>
 					<?php 
-						$string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas. ';
-						$string .= 'Ela pode ser usada periodicamente para verificar se o seu sistema recebeu todas as notificações ';
-						$string .= 'de transações enviadas pelo PagSeguro, de forma a conciliar as transações armazenadas ';
-						$string .= 'em seu sistema com o PagSeguro.';
+						$string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas.';
 						echo $helper->__($string);
 					 ?>
 				</p>
@@ -46,33 +43,31 @@ limitations under the License.
 					<form action="javascript:void(0)" method="post" >
 						<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
 						<input type="submit" class="pagseguro-button" id="conciliation-search-button" value="<?php echo $helper->__('Pesquisar');?>">
-						<select class="pagseguro-field" id="pagseguro-conciliation-days-input" name="pagseguro_dias">
+						<select class="pagseguro-field" id="pagseguro-refund-days-input" name="pagseguro_dias">
 					        <option value='5'>5</option>
 					        <option value='10'>10</option>
 					        <option value='15'>15</option>
 					        <option value='20'>20</option>
 					        <option value='25'>25</option>
 					        <option value='30'>30</option>
-					    </select>
-						<label><?php echo $helper->__('últimos dias'); ?></label>
-					    <div class="right-tools">
-						    	<input type="submit" class="pagseguro-button" id="conciliation-button" value="<?php echo $helper->__("Conciliar");?>" disabled>
-						</div>					    
-					</form>
+					        <option value='40'>40</option>
+					        <option value='60'>60</option>
+					        <option value='80'>80</option>
+					        <option value='100'>100</option>
+					        <option value='120'>120</option>
+					    </select>	
+					    <label><?php echo $helper->__('últimos dias'); ?></label>			    
+					</form>					
 				</div>
 
-				<table id="conciliation-table" class="pagseguro-table">
+				<table id="refund-table" class="pagseguro-table">
 					<thead>
 						<tr>
-							<th class="select_checkbox" width="3%" onclick="checkboxes();">
-								<input type="checkbox" id="pagseguro-check-all" />
-							</th>
-							<th width="9%"><?php echo $helper->__('Data');?></th>
-							<th width="11%"><?php echo $helper->__('ID Magento');?></th>
-							<th width="30%"><?php echo $helper->__('ID PagSeguro');?></th>
-							<th width="15%"><?php echo $helper->__('Status Magento');?></th>
-							<th width="20%"><?php echo $helper->__('Status PagSeguro');?></th>
-							<th width="11%"><?php echo $helper->__('Pedido');?></th>
+							<th width="14%"><?php echo $helper->__('Data');?></th>
+							<th width="20%"><?php echo $helper->__('ID Magento');?></th>
+							<th width="35%"><?php echo $helper->__('ID PagSeguro');?></th>
+							<th width="20%"><?php echo $helper->__('Status Magento');?></th>
+							<th width="11%"><?php echo $helper->__('Ação');?></th>
 						</tr>
 					</thead>
 				</table>
@@ -102,8 +97,9 @@ limitations under the License.
 
     var PageConciliation = new function(){
 		var requestTransactions = function() {
-			var getDays = jQuery('#pagseguro-conciliation-days-input').find(":selected").text();
+			var getDays = jQuery('#pagseguro-refund-days-input').find(":selected").text();
         	var converted = '';
+        	
         	// calls the modal of loading
         	Modal.showLoading();
         	
@@ -113,21 +109,21 @@ limitations under the License.
                 data: { 
                 		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
                 		days: getDays,
-                		origin: 'conciliation'
+                		origin: 'canceled'
                 	  },
-                success: function(result) {   
+                success: function(result) {
                 	if (result == "[HTTP 401] - UNAUTHORIZED") {                		
         				Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
         			} else {                	
 	                	// handle the return of ajax and dates back to table    	
 		                if (result == "run") {
-							jQuery('#conciliation-table').dataTable().fnClearTable(true);
+							jQuery('#refund-table').dataTable().fnClearTable(true);
 							Modal.message('alert', "Não há transações para conciliação no período.");
 		                } else {
 		                	converted = JSON.parse(result);
-		                    jQuery('#conciliation-table').dataTable().fnClearTable(true);           
-		                    jQuery('#conciliation-table').dataTable().fnAddData(converted);
-		                    jQuery('#conciliation-table').dataTable()._fnInitComplete();
+		                    jQuery('#refund-table').dataTable().fnClearTable(true);           
+		                    jQuery('#refund-table').dataTable().fnAddData(converted);
+		                    jQuery('#refund-table').dataTable()._fnInitComplete();
 		                    //After reassembling the table removes the modal of loading
 		                    Modal.hideLoading();
 		                }	
@@ -143,7 +139,7 @@ limitations under the License.
 		var doConciliation = function(){
 			var ckbFalse = 0;
 			var j = 0;
-			jQuery('input[name="conciliation_orders[]"]').each(function() {
+			jQuery('input[name="conciliation_refund[]"]').each(function() {
 				if (jQuery(this).is(':checked') == false) {
 					ckbFalse++;					
 				}
@@ -161,7 +157,7 @@ limitations under the License.
 		    	var jsonArr = [];
 		    	var count = 0;
 		    	
-		    	jQuery('input[name="conciliation_orders[]"]').each(function() {
+		    	jQuery('input[name="conciliation_refund[]"]').each(function() {
 					if (jQuery(this).is(':checked') == true) {
 							count++;
 							config = jQuery(this).data('config').split('/');
@@ -173,12 +169,14 @@ limitations under the License.
 					}
 					    
 			    });	
+			    
 			    var msg	= '';
 			    if (count == 1) {
 			    	msg = '<?php echo " " . $helper->__($transactionSuccess); ?>';
 			    }  else {
 			    	msg = count + '<?php echo " " . $helper->__($transactionsSuccess); ?>';
-			    } 
+			    }
+			    
 		    	var converted = '';
 				Modal.showLoading();
 				jQuery.ajax({
@@ -187,23 +185,24 @@ limitations under the License.
 	                data: { 
 	                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
 	                		json: jsonArr,
-	                		origin: 'conciliation'	                		
+	                		origin: 'refund'	                		
 	                	  },
 	                success: function(result) { 
 	                    i = 0;
 
 		            	// handle the return of ajax and dates back to table    	
 		                if (result == "run") {
-							jQuery('#conciliation-table').dataTable().fnClearTable(true);
+							jQuery('#refund-table').dataTable().fnClearTable(true);
 		                	jQuery('#messages').empty();					
 		                } else {
 		                	converted = JSON.parse(result);
-		                    var oTable = jQuery('#conciliation-table').dataTable();
+		                    var oTable = jQuery('#refund-table').dataTable();
 			                oTable.fnClearTable(false);           
 			                oTable.fnAddData(converted, false);
 			                oTable.fnStandingRedraw();
 		                    jQuery('#messages').empty();					
-		                }	 
+		                }
+		                 
 		                jQuery(':checkbox').prop('checked','');
 		                jQuery('#conciliation-button').prop("disabled", true);
 
@@ -212,9 +211,9 @@ limitations under the License.
 		                	successMsg = 'Conciliações realizadas com sucesso.'; 
 		                } else {
 		                	successMsg = 'Conciliação realizada com sucesso.'; 
-		                }  
-		                Modal.message('success', successMsg);        
-	                    
+		                }
+		                
+		                Modal.message('success', successMsg);
 	                },
 	                error: function() {
 	                     Modal.message('error', 'Não foi possível realizar a conciliação.');
@@ -224,7 +223,6 @@ limitations under the License.
 		}
 
 		var prepareTable = function(){
-
 			var flow = 0;
 			var totalRows = 0;	
 			var page = 0;
@@ -251,16 +249,16 @@ limitations under the License.
 			};
 			
 			// Initiates the creation of the table dataTable
-			jQuery('#conciliation-table').dataTable({			
+			jQuery('#refund-table').dataTable({			
 				"info": false,
 				"lengthChange": false,
 				"searching": false,
 				"bStateSave": true,
 				"pageLength": 10,
-				"aaSorting": [[ 1, "desc" ]],
+				"aaSorting": [[ 0, "desc" ]],
 				"aoColumnDefs": [
-					{ 'bSortable': false, 'aTargets': [ 0, 6] },
-					{ "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4, 5, 6 ] }
+					{ 'bSortable': false, 'aTargets': [ 4 ] },
+					{ "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4 ] }
 				],
 				
 				// Creates paging and notifies when there is no record
@@ -273,43 +271,40 @@ limitations under the License.
 						"sPrevious": '<?php echo $helper->__('Anterior');?>'
 					}
 				},
-				
+								
 				// Every interaction with the table it is called
 				"fnDrawCallback": function(oSettings) {	
 					// Makes when clicked on a registry is redirected to the editing order of Magento	
 					oTable = this;
 					totalRows = oTable.fnGetData().length;
-					var table = jQuery('#conciliation-table').DataTable();
+					var table = jQuery('#refund-table').DataTable();
 					var info = table.page.info();
 
 					//trClick
 					if (totalRows >= 1) {
 						var href;
-						jQuery('#conciliation-table tbody tr').unbind('click');
+						jQuery('#refund-table tbody tr').unbind('click');
 
-						jQuery('#conciliation-table tbody tr').bind('click', function () {
-							href = jQuery(table.row( this ).data()[6])[0].href;
-							jQuery('#conciliation-table tbody').off();
-							jQuery('#conciliation-table tbody').on('click', 'td', function () {
-								if (jQuery(this).index() != 0 && jQuery(this).index() != 6){
+						jQuery('#refund-table tbody tr').bind('click', function () {
+							href = jQuery(table.row( this ).data()[4])[0].href;
+							jQuery('#refund-table tbody').off();
+							jQuery('#refund-table tbody').on('click', 'td', function () {
+								if (jQuery(this).index() != 4){
 									window.open(href, '_blank');
 								}
 							} );
 						} );
-
 					}
 
 					//Checkbox enable | disable
-					jQuery('#conciliation-table tbody input:checkbox').change(function(){
-
-		            	var isChecked = jQuery("#conciliation-table tbody :checked").length;
-		          
+					jQuery('#refund-table tbody input:checkbox').change(function(){
+		            	var isChecked = jQuery("#refund-table tbody :checked").length;
+		            			          
 						if (isChecked > 0) {
 							jQuery('#conciliation-button').prop("disabled", false);
 						} else {
 							jQuery('#conciliation-button').prop("disabled", true);
 						}
-
 		            });
 					
 					// Only if greater than 10 records show paging
@@ -323,12 +318,12 @@ limitations under the License.
 					
 					// If the home page does not display the previous page button
 					if (info.page == 0) {
-						jQuery('a#conciliation-table_previous').css('display','none');
+						jQuery('a#refund-table_previous').css('display','none');
 					}			
 					
 					// If the last page does not display the next page button
 					if ((info.page+1) == info.pages) {
-						jQuery('a#conciliation-table_next').css('display','none');
+						jQuery('a#refund-table_next').css('display','none');
 					}	
 					
 					i++;
@@ -349,7 +344,7 @@ limitations under the License.
 				// When it completes assembly of the table is executed
 				"initComplete": function (oSettings) {				
 			        oTable = this;
-			        			        
+			        
 			        if (currentPage != 0) {
 			        	// When upgraded back on the page that was
 			        	oTable.fnPageChange(currentPage);	

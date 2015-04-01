@@ -20,75 +20,31 @@ limitations under the License.
 
 use UOL_PagSeguro_Helper_Data as HelperData;
 
-class UOL_PagSeguro_Helper_Transaction extends HelperData
+class UOL_PagSeguro_Helper_Canceled extends HelperData
 {
 	// It is used to store the array of transactions
 	private $arrayPayments = array();
-
+		
+	// It is used to store the environment of transactions
 	private $environment;
 
 	public function __construct()
 	{
 		include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');	
 		$this->environment = PagSeguroConfig::getEnvironment();
-	}
-					
-	/*
-	 * Checks if email was filled and token
-	 * Checks if email and token are valid
-	 * If not completed one or both, is directed and notified so it can be filled
-	 */
-	public function checkTransactionAccess()
-	{
-		$obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-				
-		// Displays this error in title	
-		$module = 'PagSeguro - ';
-					
-		// Receive url editing methods ja payment with key	
-		$configUrl = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/');	
-		$email = $obj->getConfigData('email');
-		$token = $obj->getConfigData('token');
-		
-		if ($email) {		
-			if (!$token) {	
-				$message =  $module . $this->__('Preencha o token.');
-				Mage::getSingleton('core/session')->addError($message);	
-				Mage::app()->getResponse()->setRedirect($configUrl);	
-			}
-		} else {
-			$message = $module . $this->__('Preencha o e-mail do vendedor.');
-			Mage::getSingleton('core/session')->addError($message);
-			
-			if (!$token) {				
-				$message = $module . $this->__('Preencha o token.');
-				Mage::getSingleton('core/session')->addError($message);	
-			}
-			Mage::app()->getResponse()->setRedirect($configUrl);		
-		}		
-	} 	
+	}	
 		
 	/**
 	 * Get url of transaction search service
 	 * @return string $url - Returns full url to query
 	 */
 	private function getUrlTransactionSearchService()
-	{
-		
+	{		
 		// Capture the url query the webservice
 		$url = $PagSeguroResources['webserviceUrl'][$this->environment] . 
 			   $PagSeguroResources['transactionSearchService']['servicePath'];
 			   			   
 		return $url;
-	}
-
-	/**
-	 * Set the start date to be found on webservice, starting from the days entered
-	 * @param int $days - Days preceding the date should be initiated
-	 */
-	public function setDateStart($days)
-	{		
-		$_SESSION['dateStart'] = $this->getDateSubtracted($days);		
 	}	
 					
 	/**
@@ -157,18 +113,6 @@ class UOL_PagSeguro_Helper_Transaction extends HelperData
 			}			
 		}
 	}
-
-	/**
-	 * Get the date of the request from Magento and convert to the format (d/m/Y)
-	 * @param date $date - Initial date of order, in default format of Magento
-	 * @return date $dateConverted - Returns the date converted
-	 */
-	private function getOrderMagetoDateConvert($date)
-	{
-		$dateConverted = date('d/m/Y', strtotime($date));
-			
-		return $dateConverted;
-	}		
 		
 	/**
 	 * Creates the complete array with the necessary information for the table
@@ -188,46 +132,34 @@ class UOL_PagSeguro_Helper_Transaction extends HelperData
 		// Receives the status of the transaction PagSeguro already converted		
 		$statusPagSeguro = strtolower($this->getPaymentStatusPagSeguro($paymentStatus));
 		
-		if ($statusMagento != $statusPagSeguro) {	
-			// Receives the creation date of the application which is converted to the format d/m/Y
-			$dateOrder = $this->getOrderMagetoDateConvert($order->getCreatedAt());		
-			
-			// Receives the number of order
-			$idMagento = '#' . $order->getIncrementId();	
-				
-			// Receives the transaction code of PagSeguro
-			$idPagSeguro = $paymentCode;
-			
-			// Receives the parameter used to update an order
-			$config = $order->getId() .'/'. $idPagSeguro .'/'. $this->getPaymentStatusPagSeguro($paymentStatus,true);
-			
-			$checkbox =  "<label class='chk_email'>";
-			$checkbox .= "<input type='checkbox' name='conciliation_orders[]' data-config='" . $config . "' />";
-			$checkbox .= "</label>";	
-					
-			// Receives the full url to access the module skin
-			$skinUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/uol/pagseguro/';				
-					
-			// Receives the url edit order it from your id		
-			$editUrl = $this->getEditOrderUrl($orderId);		
-			$textEdit = $this->__('Ver detalhes');	
-				
-			// Receives the full html link to edit an order
-			$editOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
-			$editOrder .= $this->__('Ver detalhes') . "</a>";		
+		// Receives the creation date of the application which is converted to the format d/m/Y
+		$dateOrder = $this->getOrderMagetoDateConvert($order->getCreatedAt());		
 		
-			$array = array( 'checkbox' => $checkbox,
-							'date' => $dateOrder,
-							'id_magento' => $idMagento,
-							'id_pagseguro' => $idPagSeguro,
-							'status_magento' => $statusMagento,
-							'status_pagseguro' => $statusPagSeguro,
-							'edit' => $editOrder);	
-			$this->arrayPayments[] = $array;		
-		}	
-		
-	}
+		// Receives the number of order
+		$idMagento = '#' . $order->getIncrementId();	
+			
+		// Receives the transaction code of PagSeguro
+		$idPagSeguro = $paymentCode;	
+				
+		// Receives the full url to access the module skin
+		$skinUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/uol/pagseguro/';				
+				
+		// Receives the url edit order it from your id		
+		$editUrl = $this->getEditOrderUrl($orderId);		
+		$textEdit = $this->__('Ver detalhes');	
+			
+		// Receives the full html link to edit an order
+		$editOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
+		$editOrder .= $this->__('Ver detalhes') . "</a>";		
 	
+		$array = array( 'date' => $dateOrder,
+						'id_magento' => $idMagento,
+						'id_pagseguro' => $idPagSeguro,
+						'status_magento' => $statusMagento,
+						'edit' => $editOrder);	
+		$this->arrayPayments[] = $array;		
+	}
+
 	/**
 	 * Get the full array with only the requests made ​​in Magento with PagSeguro
 	 * @return array $this->arrayPayments - Returns an array with the necessary information to fill the table
@@ -237,18 +169,6 @@ class UOL_PagSeguro_Helper_Transaction extends HelperData
 		$this->getMagentoPayments();
 					
 		return $this->arrayPayments;
-	}			
-		
-	/**
-	 * Get the latest status of your order before your upgrade request
-	 * @param int $orderId - Id of order of Magento
-	 * @return string $obj->getStatus() - Returns the status of order of Magento
-	 */
-	private function getLastStatusOrder($orderId)
-	{
-		$obj = Mage::getModel('sales/order')->load($orderId);
-				
-        return $obj->getStatus();
 	}
 		
 	/**
@@ -292,15 +212,12 @@ class UOL_PagSeguro_Helper_Transaction extends HelperData
 		$query = 'SELECT order_id FROM ' . $resource->getTableName($table) . ' WHERE order_id = '.$orderId;
 		$result = $readConnection->fetchAll($query);
 
-		if (!empty($result)) {	
-
-	    	$sql = "UPDATE `" . $table . "` SET `transaction_code` = '$transactionCode' WHERE order_id = " . $orderId;
-	    
+		if (!empty($result)) {
+	    	$sql = "UPDATE `" . $table . "` SET `transaction_code` = '$transactionCode' WHERE order_id = " . $orderId;	    
 		} else {
-
 			$environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
-
-			$sql = $query = "INSERT INTO " . $table . " (order_id, transaction_code, environment) VALUES ('$orderId', '$transactionCode', '$environment')";
+			$sql = $query = "INSERT INTO " . $table . " (order_id, transaction_code, environment) 
+							 VALUES ('$orderId', '$transactionCode', '$environment')";
 		}
 
 		$writeConnection->query($sql);

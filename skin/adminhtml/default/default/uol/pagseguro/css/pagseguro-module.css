@@ -85,6 +85,10 @@ limitations under the License.
     padding: 0;
     width: 100%;
 }
+#pagseguro-module-menu ul ul{
+	font-size: 1em;
+    margin: 0 0 0 25px;
+}
 #pagseguro-module-menu li{
     list-style: none outside none;
 }
@@ -95,6 +99,14 @@ limitations under the License.
     line-height: 2.1em;
     margin: 0.3em 0;
     padding: 0 0.4em 0 0.8em;
+}
+#pagseguro-module-menu li span{
+	line-height: 2.1em;
+    margin: 0.3em 0;
+    padding: 0 1.2em 0 0.8em;
+    background-image: url("../images/dataTable/sort_desc.png");
+    background-repeat: no-repeat;
+    background-position: bottom right;
 }
 #pagseguro-module-menu li a:hover {
     text-decoration: none;
@@ -304,6 +316,10 @@ limitations under the License.
 }
 .pagseguro-table tbody tr td:first-child{
 	cursor: default;	
+}
+.pagseguro-adminhtml-canceled-index .pagseguro-table tbody tr td:first-child,
+.pagseguro-adminhtml-refund-index .pagseguro-table tbody tr td:first-child{
+	cursor: pointer;
 }
 .pagseguro-table tbody tr td:first-child label{
 	padding: 0 !important;

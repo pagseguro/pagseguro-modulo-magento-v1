@@ -28,8 +28,12 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
     {    	
 		$origin = $this->getRequest()->getPost('origin');
 		$sendmail = $this->getRequest()->getPost('sendmail');
-		if ($origin == 'conciliation')
+		if ($origin == 'canceled')
+			echo $this->getCanceledGrid();
+		elseif ($origin == 'conciliation')
 			echo $this->getConciliationGrid();
+		elseif ($origin == 'refund')
+			echo $this->getRefundGrid();		
 		elseif ($origin == 'abandoned') {
 			$json = $this->getRequest()->getPost('json');
 			if ($json) {
@@ -39,6 +43,50 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 			}						
 		} elseif ($origin == 'requirements') {
 			echo $this->getRequirements();
+		}
+	}
+	
+	/**
+	 * Generates the data transactions to populate the table
+	 * @return array $dataSet - Array of data for table
+	 */
+	private function getCanceledGrid()
+	{
+		$helper = Mage::helper('pagseguro/canceled');				
+		$days = $this->getRequest()->getPost('days');
+			
+		// Saves the day searching for the global variable that receives the array
+		if ($days) {			
+			$_SESSION['days'] = $days;
+			Mage::helper('pagseguro')->setDateStart($days);			
+		}	
+
+		try {
+		
+			// Rides array that returns the query transactions
+			if ($conciliationArray = $helper->getArrayPayments()) {				
+				$dataSet = '[';
+				$j = 1;				
+				
+				foreach ($conciliationArray as $info) {
+					$i = 1;
+					$dataSet .= ($j > 1) ? ',[' : '[';								
+					foreach ($info as $item) {	
+						$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
+						$i++;				
+					}
+					$dataSet .= ']';
+					$j++;
+				}
+				$dataSet .= ']';	
+					
+				return $dataSet;
+			} else {
+				return 'run';
+			}		
+			
+		} catch (Exception $e) {
+			return trim($e->getMessage());
 		}
 	}
 	
@@ -68,6 +116,50 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 				$helper->setConciliationListLog($days);	
 			}
 		}
+
+		try {
+		
+			// Rides array that returns the query transactions
+			if ($conciliationArray = $helper->getArrayPayments()) {				
+				$dataSet = '[';
+				$j = 1;				
+				
+				foreach ($conciliationArray as $info) {
+					$i = 1;
+					$dataSet .= ($j > 1) ? ',[' : '[';								
+					foreach ($info as $item) {	
+						$dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';			
+						$i++;				
+					}
+					$dataSet .= ']';
+					$j++;
+				}
+				$dataSet .= ']';	
+					
+				return $dataSet;
+			} else {
+				return 'run';
+			}		
+			
+		} catch (Exception $e) {
+			return trim($e->getMessage());
+		}
+	}
+
+	/**
+	 * Generates the data transactions to populate the table
+	 * @return array $dataSet - Array of data for table
+	 */
+	private function getRefundGrid()
+	{
+		$helper = Mage::helper('pagseguro/canceled');				
+		$days = $this->getRequest()->getPost('days');
+			
+		// Saves the day searching for the global variable that receives the array
+		if ($days) {			
+			$_SESSION['days'] = $days;
+			Mage::helper('pagseguro')->setDateStart($days);			
+		}	
 
 		try {
 		

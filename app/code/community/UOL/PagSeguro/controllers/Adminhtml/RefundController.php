@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-class UOL_PagSeguro_Adminhtml_ConciliationController extends Mage_Adminhtml_Controller_Action
+class UOL_PagSeguro_Adminhtml_RefundController extends Mage_Adminhtml_Controller_Action
 {
 	/**
 	 * Creates the layout of the administration
@@ -28,6 +28,6 @@ class UOL_PagSeguro_Adminhtml_ConciliationController extends Mage_Adminhtml_Cont
     {
     	$_SESSION['store_id'] = Mage::app()->getRequest()->getParam('store');	    	
         $this->loadLayout();		
-		$this->_setActiveMenu('pagseguro_menu')->renderLayout();
-	}
+		$this->_setActiveMenu('pagseguro_menu')->renderLayout();				
+    }		
 }

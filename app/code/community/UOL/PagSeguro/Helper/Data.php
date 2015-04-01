@@ -23,7 +23,7 @@ use Mage_Payment_Helper_Data as HelperData;
 class UOL_PagSeguro_Helper_Data extends HelperData
 {	
 	// It is used to store the initial consultation date of transactions
-	private $dateStart = '';
+	private $dateStart = '';	
 
     /**
      * Construct
@@ -385,6 +385,10 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 	    unset($connection);
 	}
 	
+	/**
+	 * Get html of header of backend
+	 * @return string $html - Html of header
+	 */
 	public function getHeader($logo)
 	{
 		$logo = Mage::getBaseUrl('skin') . 'adminhtml/default/default/uol/pagseguro/images/logo.png';
@@ -414,45 +418,132 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 	 */	
 	private function getSideMenuUrl($path)
 	{
-		if ($path == 'configuration')
-			$url = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/key');
-		else
-			$url = Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_' . $path);
+		$obj = Mage::getSingleton('adminhtml/url');
+		
+		if ($path == 'pagseguro_configuration')
+			$url = $obj->getUrl('adminhtml/system_config/edit/section/payment/key');
+		else {
+			$correctPath = str_replace('pagseguro_', 'adminhtml_', $path);
+			$url = $obj->getUrl('pagseguro/' . $correctPath);
+		}
 		
 		return $url;
 	}
 	
 	/**
-	 * Get html of side menu
+	 * Get html of side menu of backend
 	 * @return string $html - Html of side menu
 	 */
 	public function getSideMenu()
 	{
 		// Set controller name of page in variable $page
-		$page = str_replace('adminhtml_', '', Mage::app()->getRequest()->getControllerName());
-		
-		// Set options and titles of menu
-		$options = array('configuration' => $this->__('Configuração'),
-						 'transaction' 	 => $this->__('Transações'),
-						 'conciliation'  => $this->__('Conciliação'),
-						 'abandoned' 	 => $this->__('Abandonadas'),
-						 'requirements'  => $this->__('Requisitos'));						 
+		$page = str_replace('adminhtml_', 'pagseguro_', Mage::app()->getRequest()->getControllerName());
+		$menu = new Mage_Adminhtml_Block_Page_Menu();
+		$menuArray = $menu->getMenuArray();		 
 		
 		$html = '<div id="pagseguro-module-menu">' .			    
 			    '	<ul>';
-				
-		foreach ($options as $key => $value) {
+		
+		foreach($menuArray['pagseguro_menu']['children'] as $key => $item){
 			$selected = ($page == $key) ? ' class="selected"' : '';
-			$html .= '<li id="menu-item-' . $key . '"' . $selected . ' data-has-form="true">
-					  	<a href="' . $this->getSideMenuUrl($key) . '">
-							' . $value . '
-						</a>
-					  </li>';
+			
+			$html .= '<li id="menu-item-' . $key . '"' . $selected . ' data-has-form="true">';
+			
+			if ($item['children']) {
+				$html .= '<span>' . $item['label'] . '</span>
+						  <ul>';
+						  
+				foreach($item['children'] as $key => $subItem){
+					$selected = ($page == $key) ? ' class="selected"' : '';
+										
+					$html .= '<li id="menu-subitem-' . $key . '"' . $selected . ' data-has-form="true">
+						  		<a href="' . $this->getSideMenuUrl($key) . '">
+								' . $subItem['label'] . '
+								</a>
+						      </li>';
+				}
+				
+				$html .= '</ul>';
+			} else {
+				$html .= '<a href="' . $this->getSideMenuUrl($key) . '">
+							' . $item['label'] . '
+						</a>';
+			}
+				
+			$html .= '</li>';
 		}
 			    	
 		$html .= '	</ul>' .
 				'</div>';
 		
 		return $html;
+	}
+	
+	/*
+	 * Checks if email was filled and token
+	 * Checks if email and token are valid
+	 * If not completed one or both, is directed and notified so it can be filled
+	 */
+	public function checkTransactionAccess()
+	{
+		$obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
+				
+		// Displays this error in title	
+		$module = 'PagSeguro - ';
+					
+		// Receive url editing methods ja payment with key	
+		$configUrl = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/');	
+		$email = $obj->getConfigData('email');
+		$token = $obj->getConfigData('token');
+		
+		if ($email) {		
+			if (!$token) {	
+				$message =  $module . $this->__('Preencha o token.');
+				Mage::getSingleton('core/session')->addError($message);	
+				Mage::app()->getResponse()->setRedirect($configUrl);	
+			}
+		} else {
+			$message = $module . $this->__('Preencha o e-mail do vendedor.');
+			Mage::getSingleton('core/session')->addError($message);
+			
+			if (!$token) {				
+				$message = $module . $this->__('Preencha o token.');
+				Mage::getSingleton('core/session')->addError($message);	
+			}
+			Mage::app()->getResponse()->setRedirect($configUrl);		
+		}		
+	}
+	
+	/**
+	 * Set the start date to be found on webservice, starting from the days entered
+	 * @param int $days - Days preceding the date should be initiated
+	 */
+	public function setDateStart($days)
+	{		
+		$_SESSION['dateStart'] = $this->getDateSubtracted($days);		
+	}
+
+ 	/**
+	 * Get the date of the request from Magento and convert to the format (d/m/Y)
+	 * @param date $date - Initial date of order, in default format of Magento
+	 * @return date $dateConverted - Returns the date converted
+	 */
+	protected function getOrderMagetoDateConvert($date)
+	{
+		$dateConverted = date('d/m/Y', strtotime($date));
+			
+		return $dateConverted;
+	}	
+	
+	/**
+	 * Get the latest status of your order before your upgrade request
+	 * @param int $orderId - Id of order of Magento
+	 * @return string $obj->getStatus() - Returns the status of order of Magento
+	 */
+	protected function getLastStatusOrder($orderId)
+	{
+		$obj = Mage::getModel('sales/order')->load($orderId);
+				
+        return $obj->getStatus();
 	}
 }

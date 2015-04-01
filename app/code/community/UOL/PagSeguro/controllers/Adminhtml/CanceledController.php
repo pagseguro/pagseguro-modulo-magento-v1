@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-class UOL_PagSeguro_Adminhtml_TransactionController extends Mage_Adminhtml_Controller_Action
+class UOL_PagSeguro_Adminhtml_CanceledController extends Mage_Adminhtml_Controller_Action
 {
 	/**
 	 * Creates the layout of the administration

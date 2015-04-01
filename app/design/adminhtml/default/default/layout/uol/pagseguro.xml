@@ -53,34 +53,6 @@ limitations under the License.
     <adminhtml_sales_order_index>
         <update handle="sales_order_grid_update_handle" />
     </adminhtml_sales_order_index>
-	<pagseguro_adminhtml_transaction_index>
-		<reference name="head">
-            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
-            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
-			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
-            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/pagseguro-module.js</name><params/><if/></action>
-            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.colorbox-min.js</name><params/><if/></action>
-			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
-		</reference>
-        <reference name="content">
-			<block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
-            <block type="adminhtml/template" name="conciliation" template="uol/pagseguro/transaction.phtml"/>
-        </reference>	
-    </pagseguro_adminhtml_transaction_index>
-    <pagseguro_adminhtml_conciliation_index>
-		<reference name="head">
-            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
-            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
-			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
-            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/pagseguro-module.js</name><params/><if/></action>
-            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.colorbox-min.js</name><params/><if/></action>
-			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
-		</reference>
-        <reference name="content">
-			<block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
-            <block type="adminhtml/template" name="conciliation" template="uol/pagseguro/conciliation.phtml"/>
-        </reference>	
-    </pagseguro_adminhtml_conciliation_index>
 	<pagseguro_adminhtml_abandoned_index>
 		<reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
@@ -95,6 +67,48 @@ limitations under the License.
             <block type="adminhtml/template" name="abandoned" template="uol/pagseguro/abandoned.phtml"/>
         </reference>	
     </pagseguro_adminhtml_abandoned_index>
+	<pagseguro_adminhtml_canceled_index>
+		<reference name="head">
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/pagseguro-module.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.colorbox-min.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
+		</reference>
+        <reference name="content">
+			<block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="canceled" template="uol/pagseguro/canceled.phtml"/>
+        </reference>	
+    </pagseguro_adminhtml_canceled_index>
+    <pagseguro_adminhtml_conciliation_index>
+		<reference name="head">
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/pagseguro-module.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.colorbox-min.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
+		</reference>
+        <reference name="content">
+			<block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="conciliation" template="uol/pagseguro/conciliation.phtml"/>
+        </reference>	
+    </pagseguro_adminhtml_conciliation_index>	
+	<pagseguro_adminhtml_refund_index>
+		<reference name="head">
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/pagseguro-module.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.colorbox-min.js</name><params/><if/></action>
+			<action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
+		</reference>
+        <reference name="content">
+			<block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="refund" template="uol/pagseguro/refund.phtml"/>
+        </reference>	
+    </pagseguro_adminhtml_refund_index>
     <pagseguro_adminhtml_requirements_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>

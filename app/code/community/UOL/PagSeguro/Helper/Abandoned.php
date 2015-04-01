@@ -58,48 +58,16 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 				
 		// Receive url editing methods ja payment with key	
 		$configUrl = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/');	
-		$email = $obj->getConfigData('email');
-		$token = $obj->getConfigData('token');	
 		
 		if ($obj->getConfigData('abandoned') == 0) {
 			$this->access = 0;	
 			$message =  $module . $this->__('Consulta de transações abandonadas está desativado.');
 			Mage::getSingleton('core/session')->addError($message);	
 			Mage::app()->getResponse()->setRedirect($configUrl);				
-		} else {
-			if ($email) {		
-				if (!$token) {
-					$this->access = 0;	
-					$message =  $module . $this->__('Preencha o token.');
-					Mage::getSingleton('core/session')->addError($message);	
-					Mage::app()->getResponse()->setRedirect($configUrl);	
-				}
-			} else {
-				$this->access = 0;
-				$message = $module . $this->__('Preencha o e-mail do vendedor.');
-				Mage::getSingleton('core/session')->addError($message);
-				if (!$token) {				
-					$message = $module . $this->__('Preencha o token.');
-					Mage::getSingleton('core/session')->addError($message);	
-				}
-				Mage::app()->getResponse()->setRedirect($configUrl);		
-			}
+		} else {			
+			// Check if email and token was filled
+			$this->checkTransactionAccess();
 		}
-		
-		// if ($this->getPagSeguroAbandonedList() == 'unauthorized' && $email && $token) {
-		// 	$message = $module . $this->__('Usuário não autorizado, verifique o e-mail e token se estão corretos.');
-		// 	Mage::getSingleton('core/session')->addError($message);
-		// 	Mage::app()->getResponse()->setRedirect($configUrl);
-		// }
-	}
-	
-	/**
-	 * Set the start date to be found on webservice, starting from the days entered
-	 * @param int $days - Days preceding the date should be initiated
-	 */
-	public function setDateStart($days)
-	{		
-		$_SESSION['dateStart'] = $this->getDateSubtracted($days);		
 	}
 
 	/**
@@ -127,22 +95,6 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	            }
 	        }			
 		}
-	}
-
-	/**
-	 * Get date start
-	 * @return date $dateStart - Example Y-m-dT00:00
-	 */
-	public function getDateStart()
-	{
-					
-		if ($this->dateStart != '') {
-			$dateStart = $this->dateStart . 'T00:00';	
-		} else {	
-			$dateStart = date('Y-m-d') . 'T00:00';
-		}
-		
-		return $dateStart;
 	}
 	
 	/**
@@ -278,7 +230,7 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	private function getAbandonedDateAddDays($days, $dateStart)
 	{
 		$date = date('m/d/Y', strtotime($dateStart));
-		$days = ($days > 30) ? 30 : $days;
+		$days = ($days > 10) ? 10 : $days;
         $thisyear = date('Y', strtotime($date));
 	    $thismonth = date('m', strtotime($date));
 	    $thisday = date('d', strtotime($date));
@@ -294,7 +246,6 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	 */
     public function updateSentEmails($orderId)
     {
-
     	//Get the resource model
     	$resource = Mage::getSingleton('core/resource');
 		
@@ -310,8 +261,6 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		//Select sent column from pagseguro_orders to verify if exists a register
 		$query = 'SELECT order_id, sent FROM ' . $resource->getTableName($table) . ' WHERE order_id = '.$orderId;
 		$result = $readConnection->fetchAll($query);
-
-		//print_r($result);
 
 		//If exists the order identificator just update, otherwise insert a register
 		$result = array_filter($result);
@@ -329,8 +278,8 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 			$query = 'UPDATE ' . $rTable . ' SET sent = ' . $sent . ' WHERE order_id = ' . $orderId;
 
 			$this->setAbandonedSentEmailUpdateLog($order_id, $sent);
+			
 		} else {
-
 			$environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
 
 			$rTable = $resource->getTableName($table);
