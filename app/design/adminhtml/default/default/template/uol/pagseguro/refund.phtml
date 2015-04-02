@@ -109,7 +109,7 @@ limitations under the License.
                 data: { 
                 		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
                 		days: getDays,
-                		origin: 'canceled'
+                		origin: 'refund'
                 	  },
                 success: function(result) {
                 	if (result == "[HTTP 401] - UNAUTHORIZED") {                		

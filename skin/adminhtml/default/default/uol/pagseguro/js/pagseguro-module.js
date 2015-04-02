@@ -304,11 +304,21 @@ var Menu = new function() {
             jQuery("#pagseguro-email-input").focus();
         });
     };
+    
+    var retractableMenu = function() {
+    	jQuery("#pagseguro-module-menu .children").click(function(){
+    		if (jQuery(this).closest("li").hasClass("open")) 
+    			jQuery(this).closest("li").removeClass("open");
+    		else
+    			jQuery(this).closest("li").addClass("open");
+    	});
+    };
 
     this.init = function(){
         applyFixedPostion();
         applyMenu();
         applyGotoConfig();
+        retractableMenu();
     };
 
 };

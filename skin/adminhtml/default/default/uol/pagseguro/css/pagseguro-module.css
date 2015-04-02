@@ -92,6 +92,7 @@ limitations under the License.
 #pagseguro-module-menu li{
     list-style: none outside none;
 }
+#pagseguro-module-menu li span,
 #pagseguro-module-menu li a{
     text-decoration: none!important;
     border-radius: 3px;
@@ -101,13 +102,12 @@ limitations under the License.
     padding: 0 0.4em 0 0.8em;
 }
 #pagseguro-module-menu li span{
-	line-height: 2.1em;
-    margin: 0.3em 0;
-    padding: 0 1.2em 0 0.8em;
-    background-image: url("../images/dataTable/sort_desc.png");
+    cursor: pointer;
+    color: #025ec7;
+    background-image: url("../images/menu-icon.png");
     background-repeat: no-repeat;
-    background-position: bottom right;
 }
+#pagseguro-module-menu li span:hover,
 #pagseguro-module-menu li a:hover {
     text-decoration: none;
     background: none repeat scroll 0 0 #f3f3f3;
@@ -661,4 +661,11 @@ i.icon-pagseguro-msg.large,
     font-size: 1.2em!important;
     margin: 0!important;
     padding: 0 0 1em 2em!important;
+}
+#pagseguro-module-menu ul ul li{
+	display: none;
+}
+#pagseguro-module-menu ul li.open ul li,
+#pagseguro-module-menu ul ul li.selected{
+	display: block;
 }

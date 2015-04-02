@@ -450,7 +450,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 			$html .= '<li id="menu-item-' . $key . '"' . $selected . ' data-has-form="true">';
 			
 			if ($item['children']) {
-				$html .= '<span>' . $item['label'] . '</span>
+				$html .= '<span class="children">' . $item['label'] . '</span>
 						  <ul>';
 						  
 				foreach($item['children'] as $key => $subItem){

@@ -131,33 +131,36 @@ class UOL_PagSeguro_Helper_Refund extends HelperData
 				
 		// Receives the status of the transaction PagSeguro already converted		
 		$statusPagSeguro = strtolower($this->getPaymentStatusPagSeguro($paymentStatus));
-		
-		// Receives the creation date of the application which is converted to the format d/m/Y
-		$dateOrder = $this->getOrderMagetoDateConvert($order->getCreatedAt());		
-		
-		// Receives the number of order
-		$idMagento = '#' . $order->getIncrementId();	
 			
-		// Receives the transaction code of PagSeguro
-		$idPagSeguro = $paymentCode;	
-				
-		// Receives the full url to access the module skin
-		$skinUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/uol/pagseguro/';				
-				
-		// Receives the url edit order it from your id		
-		$editUrl = $this->getEditOrderUrl($orderId);		
-		$textEdit = $this->__('Ver detalhes');	
+		if ($paymentStatus >= 3 && $paymentStatus <= 5) {
+		
+			// Receives the creation date of the application which is converted to the format d/m/Y
+			$dateOrder = $this->getOrderMagetoDateConvert($order->getCreatedAt());		
 			
-		// Receives the full html link to edit an order
-		$editOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
-		$editOrder .= $this->__('Ver detalhes') . "</a>";		
-	
-		$array = array( 'date' => $dateOrder,
-						'id_magento' => $idMagento,
-						'id_pagseguro' => $idPagSeguro,
-						'status_magento' => $statusMagento,
-						'edit' => $editOrder);	
-		$this->arrayPayments[] = $array;		
+			// Receives the number of order
+			$idMagento = '#' . $order->getIncrementId();	
+				
+			// Receives the transaction code of PagSeguro
+			$idPagSeguro = $paymentCode;	
+					
+			// Receives the full url to access the module skin
+			$skinUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/uol/pagseguro/';				
+					
+			// Receives the url edit order it from your id		
+			$editUrl = $this->getEditOrderUrl($orderId);		
+			$textEdit = $this->__('Ver detalhes');	
+				
+			// Receives the full html link to edit an order
+			$editOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
+			$editOrder .= $this->__('Ver detalhes') . "</a>";		
+		
+			$array = array( 'date' => $dateOrder,
+							'id_magento' => $idMagento,
+							'id_pagseguro' => $idPagSeguro,
+							'status_magento' => $statusMagento,
+							'edit' => $editOrder);	
+			$this->arrayPayments[] = $array;	
+		}	
 	}
 
 	/**

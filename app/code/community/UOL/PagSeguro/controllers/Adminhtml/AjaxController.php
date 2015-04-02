@@ -152,7 +152,7 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 	 */
 	private function getRefundGrid()
 	{
-		$helper = Mage::helper('pagseguro/canceled');				
+		$helper = Mage::helper('pagseguro/refund');				
 		$days = $this->getRequest()->getPost('days');
 			
 		// Saves the day searching for the global variable that receives the array
