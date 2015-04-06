@@ -104,8 +104,20 @@ limitations under the License.
 #pagseguro-module-menu li span{
     cursor: pointer;
     color: #025ec7;
-    background-image: url("../images/menu-icon.png");
+}
+#pagseguro-module-menu li span i.icon{
+    background-image: url("../images/messages.png");
     background-repeat: no-repeat;
+    background-size: 16px;
+    background-position: 0 -122px;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: -2px 5px 0 0;
+}
+#pagseguro-module-menu li.open span i.icon{
+	background-position: 0 -142px;
 }
 #pagseguro-module-menu li span:hover,
 #pagseguro-module-menu li a:hover {
@@ -410,18 +422,18 @@ limitations under the License.
     list-style:none;
 }
 .pagseguro-list li {
-    background-image: url("../images/success.png");
-    background-position: 1px 3px;
+    background-image: url("../images/messages.png");
+    background-position: 0 -127px;
     background-repeat: no-repeat;
     border-bottom: 0 none;
     font-size: 1.2em;
-    margin: 0;
-    padding: 0 0 1em 2em;
+    margin-bottom: 1em;
+    padding-left: 2em;
+    background-size: 20px;
 }
-.pagseguro-list .pagseguro-list-item-error{
-    color:red;
-    background-image: url("../images/error.png");
-    background-position: 1px 3px;
+.pagseguro-list .pagseguro-list-item-error, .pagseguro-list .requirements-alert{
+    background-image: url("../images/messages.png");
+    background-position: 0 -77px ;
 }
 
 
@@ -653,15 +665,6 @@ i.icon-pagseguro-msg.large,
     width: 65px;
 }
 
-.requirements-alert {
-    background-image: url("../images/error.png")!important;
-    background-position: 1px 3px!important;
-    background-repeat: no-repeat!important;
-    border-bottom: 0 none!important;
-    font-size: 1.2em!important;
-    margin: 0!important;
-    padding: 0 0 1em 2em!important;
-}
 #pagseguro-module-menu ul ul li{
 	display: none;
 }
