@@ -86,10 +86,8 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 				$dateStart = $this->getDateStart();
 				$listAbandoned = PagSeguroTransactionSearchService::searchAbandoned($credential, 1, 1000, $dateStart);
 				
-				return $listAbandoned->getTransactions();
-				
+				return $listAbandoned->getTransactions();				
 			} catch (PagSeguroServiceException $e) {
-
 	            if(trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED'){
 	            	throw new Exception( $e->getMessage() );
 	            }
@@ -132,8 +130,8 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 	
 	/**
 	 * Creates the complete array with the necessary information for the table
-	 * @var int $orderId - Id of order of Magento
-	 * @var string $recoveryCode - Code of recovery transaction in PagSeguro
+	 * @param int $orderId - Id of order of Magento
+	 * @param string $recoveryCode - Code of recovery transaction in PagSeguro
 	 * @method array $this->arrayAbandoned - Set the complete array with the necessary information for the table
 	 */
 	private function createArrayAbandoned($orderId, $recoveryCode)
@@ -146,7 +144,7 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		
 		// Checkbox of selection for send e-mail
 		$checkbox =  "<label class='chk_email'>";
-		$checkbox .= "<input type='checkbox' name='send_emails[]' class='abandoned-transaction' data-config='" . $config . "' />";
+		$checkbox .= "<input type='checkbox' name='send_emails[]' data-config='" . $config . "' />";
 		$checkbox .= "</label>";
 		
 		// Receives the object of order that was entered the id		
@@ -162,9 +160,6 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		$obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');	
 		$validity_link = $this->getAbandonedDateAddDays(10, $order->getCreatedAt());
 		
-		// Receives the full url to access the module skin
-		$skinUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/uol/pagseguro/';
-		
 		// Receives the url edit order it from your id		
 		$editUrl = $this->getEditOrderUrl($orderId);		
 		$editText = $this->__('Ver detalhes');	
@@ -175,16 +170,17 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 
 		$sent = $this->getSentEmailsById($orderId);
 		$sent = current($sent);
-		if (empty($sent)){
-			$sent = 0;
-		}
+		
+		if (empty($sent))
+			$sent = 0;		
 		
 		$array = array( 'checkbox' => $checkbox,
 						'date' => $dateOrder,
 						'id_magento' => $idMagento,
 						'validity_link' => $validity_link,
 						'email' => $sent,
-						'visualize' => $editOrder);		
+						'visualize' => $editOrder);
+								
 		$this->arrayAbandoned[] = $array;
 	}	
 
@@ -265,8 +261,7 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		//If exists the order identificator just update, otherwise insert a register
 		$result = array_filter($result);
 		
-		if (!empty($result)) {
-			
+		if (!empty($result)) {			
 			//Remove safe option from mySQL.
 			$query = "SET SQL_SAFE_UPDATES = 0";
 			$writeConnection->query($query);
@@ -277,8 +272,7 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 			$rTable = $resource->getTableName($table);
 			$query = 'UPDATE ' . $rTable . ' SET sent = ' . $sent . ' WHERE order_id = ' . $orderId;
 
-			$this->setAbandonedSentEmailUpdateLog($order_id, $sent);
-			
+			$this->setAbandonedSentEmailUpdateLog($order_id, $sent);			
 		} else {
 			$environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
 
@@ -290,7 +284,6 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		
 		//Execute SQL Queries.
 		$writeConnection->query($query);
-
     }
 	
 	/**
@@ -322,11 +315,10 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
 		$emailTemplate = Mage::getModel('core/email_template');
 		
 		// Verify the theme selected of configuration of module
-		if ($obj->getConfigData('template') == 'payment_pagseguro_template') {
+		if ($obj->getConfigData('template') == 'payment_pagseguro_template')
 			$emailTemplate->loadDefault($obj->getConfigData('template'));
-		} else {
+		else
 			$emailTemplate->load($obj->getConfigData('template'));
-		}
 		
 		// Get email of Sales
 		$email = Mage::getStoreConfig('trans_email/ident_sales/email');

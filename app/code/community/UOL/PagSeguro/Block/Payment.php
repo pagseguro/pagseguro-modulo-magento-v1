@@ -20,7 +20,6 @@ limitations under the License.
 
 class UOL_PagSeguro_Block_Payment extends Mage_Core_Block_Template
 {
-
     protected function getConvertCode()
     {
         $code = $this->getRequest()->getParam("code");
@@ -28,7 +27,7 @@ class UOL_PagSeguro_Block_Payment extends Mage_Core_Block_Template
         $resultado = parse_url($payment_url);
         parse_str($resultado['query']);
 
-        return array('code' => $code, 'urlCompleta' => $payment_url);
+        return array('code' => $code, 'fullUrl' => $payment_url);
     }
 
     private function base64url_decode($b64Text)

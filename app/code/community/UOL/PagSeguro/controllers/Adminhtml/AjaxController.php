@@ -58,17 +58,16 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 		// Saves the day searching for the global variable that receives the array
 		if ($days) {			
 			$_SESSION['days'] = $days;
-			Mage::helper('pagseguro')->setDateStart($days);			
+			$helper->setDateStart($days);			
 		}	
 
-		try {
-		
+		try {		
 			// Rides array that returns the query transactions
-			if ($conciliationArray = $helper->getArrayPayments()) {				
+			if ($canceledArray = $helper->getArrayPayments()) {				
 				$dataSet = '[';
 				$j = 1;				
 				
-				foreach ($conciliationArray as $info) {
+				foreach ($canceledArray as $info) {
 					$i = 1;
 					$dataSet .= ($j > 1) ? ',[' : '[';								
 					foreach ($info as $item) {	
@@ -110,15 +109,14 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 			foreach ($json as $value) {	
 				$helper->updateOrderStatusMagento($value['id'], $value['code'], $value['status']);
 			}
-			Mage::helper('pagseguro/conciliation')->setDateStart($_SESSION['days']);
+			
+			$helper->setDateStart($_SESSION['days']);
 		} else {
-			if ($_SESSION['days'] != 0) {
-				$helper->setConciliationListLog($days);	
-			}
+			if ($_SESSION['days'] != 0)
+				$helper->setConciliationListLog($days);
 		}
 
-		try {
-		
+		try {		
 			// Rides array that returns the query transactions
 			if ($conciliationArray = $helper->getArrayPayments()) {				
 				$dataSet = '[';
@@ -158,17 +156,16 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 		// Saves the day searching for the global variable that receives the array
 		if ($days) {			
 			$_SESSION['days'] = $days;
-			Mage::helper('pagseguro')->setDateStart($days);			
+			$helper->setDateStart($days);			
 		}	
 
-		try {
-		
+		try {		
 			// Rides array that returns the query transactions
-			if ($conciliationArray = $helper->getArrayPayments()) {				
+			if ($refundArray = $helper->getArrayPayments()) {				
 				$dataSet = '[';
 				$j = 1;				
 				
-				foreach ($conciliationArray as $info) {
+				foreach ($refundArray as $info) {
 					$i = 1;
 					$dataSet .= ($j > 1) ? ',[' : '[';								
 					foreach ($info as $item) {	
@@ -247,11 +244,9 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 	 * @return array $dataSet - Array of data for table
 	 */
 	private function getRequirements()
-	{		
-
+	{
 		$helper = Mage::helper('pagseguro/requirements');
-		$helper->setRequirementsLog();	
-		$helper->checkRequirementsAccess();
+		$helper->setRequirementsLog();
 
 		return json_encode($helper->validateRequirements());
 	}

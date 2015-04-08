@@ -24,20 +24,26 @@ limitations under the License.
 include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/config/PagSeguroConfig.class.php');
 
 class UOL_PagSeguro_Model_Values
-{    
+{
+	/**
+	 * Displays the settings to choose charset
+	 * @return array - Returns the available charsets
+	 */   
     public function toOptionArray()
     {
-        self::alertMessage();
+        self::alertRequeriments();
+		$helper = Mage::helper('pagseguro');
 		        
         return array(
-                        array("value" => "UTF-8" , "label" => "UTF-8" ),
-                        array("value" => "ISO-8859-1" , "label" => "ISO-8859-1" )
-                    );
+        			 array("value" => "UTF-8" , "label" => $helper->__("UTF-8")),
+                     array("value" => "ISO-8859-1" , "label" => $helper->__("ISO-8859-1"))
+    	);
     }
     
-    //Mensagens de alerta caso haja erro no cURL, versão do PHP, SPL e/ou DOM.
-    // mas só serão lançadas caso seja efetuado o save.
-    public function alertMessage()
+	/**
+	 * Alert the requiriement invalid, of cURL, version of PHP, SPL or DOM.
+	 */
+    public function alertRequeriments()
     {
         $requirements = PagSeguroConfig::validateRequirements();
         $required = array();
@@ -49,11 +55,12 @@ class UOL_PagSeguro_Model_Values
         }
 		
         if (!empty($required)) {
-            $message = "Requerimentos para o sistema funcionar:";
+            $message = $helper = Mage::helper('pagseguro')->__("Requerimentos para o sistema funcionar:");
 			
             foreach ($required as $value) {
-                $message .= "<br>".$value;
+                $message .= "<br>" . $value;
             }
+			
             Mage::getSingleton('core/session')->addError($message);
         }
     }

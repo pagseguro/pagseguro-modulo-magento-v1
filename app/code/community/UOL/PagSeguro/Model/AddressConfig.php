@@ -20,65 +20,80 @@ limitations under the License.
 
 class AddressConfig
 {
-    private static function endtrim($e)
+	/**
+	 * Remove the space at the end of the phrase, cut a piece of the phrase
+	 * @param string $e - Data to be ordained
+	 * @return Returns the phrase removed last  space, or a piece of phrase
+	 */
+    private static function endTrim($e)
     {
         return preg_replace('/^\W+|\W+$/', '', $e);
     }
-
-    private static function ordenaDados($texto)
+	
+	/**
+	 * Sort the data reported
+	 * @param string $text - Text to be ordained
+	 * @return array - Returns an array with the sorted data 
+	 */
+    private static function sortData($text)
     {
-        $quebrado=preg_split('/[-,\\n]/', $texto);
+        $broken = preg_split('/[-,\\n]/', $text);
 
-        for ($i=0; $i<strlen($quebrado[0]); $i++) {
-            if (is_numeric(substr($quebrado[0], $i, 1))) {
+        for ($i = 0; $i < strlen($broken[0]); $i++) {
+            if (is_numeric(substr($broken[0], $i, 1))) {
                 return array(
-                    substr($quebrado[0], 0, $i),
-                    substr($quebrado[0], $i),
-                    $quebrado[1]
+                    substr($broken[0], 0, $i),
+                    substr($broken[0], $i),
+                    $broken[1]
                     );
             }
         }
 
-        $texto = preg_replace('/\s/', ' ', $texto);
-        $encontrar=substr($texto, -strlen($texto));
+        $text = preg_replace('/\s/', ' ', $text);
+        $find = substr($text, -strlen($text));
 		
-        for ($i=0; $i<strlen($texto); $i++) {
-            if (is_numeric(substr($encontrar, $i, 1))) {
+        for ($i  =0; $i < strlen($text); $i++) {
+            if (is_numeric(substr($find, $i, 1))) {
                 return array(
-                    substr($texto, 0, -strlen($texto)+$i),
-                    substr($texto, -strlen($texto)+$i),
+                    substr($text, 0, -strlen($text)+$i),
+                    substr($text, -strlen($text)+$i),
                     ''
                     );
             }
         }
 
-        return array($texto, '', '');
+        return array($text, '', '');
     }
 
-    public static function trataEndereco($end)
+	/**
+	 * Treatment this address before being sent
+	 * @param string $fullAddress - Full address to treatment
+	 * @return array - Returns address of treatment in an array
+	 */
+    public static function treatmentAddress($fullAddress)
     {
-        $endereco=$end;
-        $numero='s/nº';
-        $complemento='';
-        $bairro='';
+        $address = $fullAddress;
+        $number  = 's/nº';
+        $complement = '';
+        $district = '';
 
-        $quebrado=preg_split('/[-,\\n]/', $end);
+        $broken = preg_split('/[-,\\n]/', $fullAddress);
 
-        if (sizeof($quebrado) == 4) {
-            list($endereco, $numero, $complemento, $bairro)=$quebrado;
-        } elseif (sizeof($quebrado) == 3) {
-            list($endereco, $numero, $complemento) = $quebrado;
-        } elseif (sizeof($quebrado) == 2 || sizeof($quebrado)== 1) {
-            list($endereco,  $numero,  $complemento) = self::ordenaDados($end);
+        if (sizeof($broken) == 4) {
+            list($address, $number, $complement, $district) = $broken;
+        } elseif (sizeof($broken) == 3) {
+            list($address, $number, $complement) = $broken;
+        } elseif (sizeof($broken) == 2 || sizeof($broken) == 1) {
+            list($address, $number, $complement) = self::sortData($fullAddress);
         } else {
-            $endereco = $end;
+            $address = $fullAddress;
         }
 
         return array(
-            self::endtrim(substr($endereco, 0, 69)),
-            self::endtrim($numero),
-            self::endtrim($complemento),
-            self::endtrim($bairro)
+            self::endTrim(substr($address, 0, 69)),
+            self::endTrim($number),
+            self::endTrim($complement),
+            self::endTrim($district)
         );
     }
 }

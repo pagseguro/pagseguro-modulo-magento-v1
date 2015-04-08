@@ -51,23 +51,25 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
     {
         $this->objCredential = $objCredential;
         $this->post = $post;        
-        $this->_createNotification();
-        $this->_initializeObjects();
+        $this->createNotification();
+        $this->initializeObjects();
                 
         if ($this->objNotificationType->getValue() == $this->notificationType) {
-            $this->_createTransaction();
+            $this->createTransaction();
             
             if ($this->objTransaction) {
-                $this->_updateOrders($this->_helper->getPaymentStatusPagSeguro($this->objTransaction->getStatus()->getValue(), true));
+            	$transactionStatus = $this->objTransaction->getStatus()->getValue();
+			    $this->updateOrderStatus($this->_helper->getPaymentStatusPagSeguro($transactionStatus, true));
             }
         }
+		
 		$this->objNotificationType->getValue();
     }
     
     /**
      * Create Notification
      */
-    private function _createNotification()
+    private function createNotification()
     {
        $this->notificationType = (
            isset($this->post['notificationType']) &&
@@ -80,15 +82,15 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
     /**
      * Initialize Objects
      */
-    private function _initializeObjects()
+    private function initializeObjects()
     {
-        $this->_createNotificationType();
+        $this->createNotificationType();
     }
     
     /**
      * Create Notification Type
      */
-    private function _createNotificationType()
+    private function createNotificationType()
     {
         $this->objNotificationType = new PagSeguroNotificationType();
         $this->objNotificationType->setByType('TRANSACTION');
@@ -97,12 +99,14 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
     /**
     * Create Transaction
     */
-    private function _createTransaction()
+    private function createTransaction()
     {
-        $this->objTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential,$this->notificationCode);
+    	$ckTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential, $this->notificationCode);
+        $this->objTransaction = $ckTransaction;
 		
 		$reference = $this->objTransaction->getReference();
 		$orderId = $this->_helper->getReferenceDecryptOrderID($reference);
+		
         $this->reference = $orderId;
     }
 	
@@ -110,7 +114,7 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
     * Update
     * @param type $status
     */
-    private function _updateOrders($status)
+    private function updateOrderStatus($status)
     {        
 		$comment = null;
 		$notify = true;						
@@ -123,14 +127,17 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
 		$order->save();	
        
         try {
-            $this->_insertCode();
+            $this->insertTransactionCode();
             $order->save();            
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
         }
     }
-   
-    private function _insertCode()
+	
+	/**
+	 * Insert transaction code in order
+	 */
+    private function insertTransactionCode()
     {
         $tp = (string)Mage::getConfig()->getTablePrefix();
         $table = $tp . 'pagseguro_orders';
@@ -142,18 +149,5 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
         $sql = "UPDATE `" . $table . "` SET `transaction_code` = '" .$transactionId. "' WHERE order_id = " . $ref;
         $connection->query($sql);
-    }
-   
-   
-    /**
-    * 
-    * @param type $value
-    * @return type
-    */
-    private function _lastStatus()
-    {
-        $obj = Mage::getModel('sales/order')->load($this->reference);
-		
-        return $obj['status'];
     }
 }

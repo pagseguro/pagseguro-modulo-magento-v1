@@ -1,7 +1,6 @@
 <?php
 class UOL_PagSeguro_Model_Adminhtml_Config
 {
-
 	private $skin;
 	private $jquery;
 	private $js;
@@ -30,31 +29,32 @@ class UOL_PagSeguro_Model_Adminhtml_Config
     	$this->background = $skinUrl . 'images/background.png';
 
     	//Set version
-    	$this->version = Mage::helper('pagseguro')->getVersion();
-    	
+    	$this->version = Mage::helper('pagseguro')->getVersion();    	
 	}
-
+	
+	/**
+	 * Generates the layout of content of settings screen
+	 * @return string $comment - Contains the comment field in layout format
+	 */
     public function getCommentText()
     {
     	$redirect = Mage::getBaseUrl() . 'checkout/onepage/success/';
-
+		$registrationUrl = 'https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor';
+		
 		$interface = '<div class="pagseguro-comment">
-						   '.$this->css.'
-						   <div id="pagseguro-module-header">
-								<div class="wrapper">
-									
-									<div id="pagseguro-logo">
-										<img class="pagseguro_logo" src="'.$this->logo.'" />
-										<div id="pagseguro-module-version">Versão '.$this->version.'</div>
-									</div>
-								    
-								    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" 
-								    	href="https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor" target="_blank">Faça seu cadastro</a>
-
-								</div>
+				     	' . $this->css . '
+					    <div id="pagseguro-module-header">
+							<div class="wrapper">								
+								<div id="pagseguro-logo">
+									<img class="pagseguro_logo" src="' . $this->logo . '" />
+									<div id="pagseguro-module-version">Versão '. $this->version . '</div>
+								</div>							    
+							    <a id="pagseguro-registration-button" class="pagseguro-button gray-theme" href="' . $registrationUrl . '" target="_blank">
+							    	Faça seu cadastro
+							    </a>
 							</div>
 						</div>
-					 ';					 
+				     </div>';					 
     	$comment .= '<script src="' . $this->jquery . '"></script>';
     	$comment .= '<script src="' . $this->js . '"></script>';
     	$comment .= '<script src="' . $this->jsColorbox . '"></script>';
@@ -69,15 +69,17 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 							}
 
 							jQuery("#row_payment_pagseguro_comment").remove();
-							jQuery("#payment_pagseguro").css("background", " #fff url('.$this->background.') no-repeat scroll center 45%");
+							jQuery("#payment_pagseguro").css("background", " #fff url(' . $this->background . ') no-repeat scroll center 45%");
 
 							jQuery("#payment_pagseguro_environment").change(function(){								
 								if (jQuery("#payment_pagseguro_environment").val() == "sandbox") {
 								 Modal.message("success", "Suas transações serão feitas em um ambiente de testes. Nenhuma das transações realizadas nesse ambiente tem valor monetário.");
 								}
-							});						});
+							});
+						});
 					 </script>';
 		$comment .= $interface;
+		
         return $comment;
     }
 }

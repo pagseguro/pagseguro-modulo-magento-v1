@@ -21,75 +21,20 @@ limitations under the License.
 use UOL_PagSeguro_Helper_Data as HelperData;
 
 class UOL_PagSeguro_Helper_Requirements extends HelperData
-{
-	// It is used to store the array of abandoned
-	private $arrayRequirements = array();
-	
-	// It active/disable abandoned for notification
-	private $access = '';
-	
-	// It the code of admin
-	private $admLocaleCode = '';
-	
-	/*
-	 * Checks that is active query requirements
-	 * Checks if email was filled and token
-	 * Checks if email and token are valid
-	 * If not completed one or both, is directed and notified so it can be filled
-	 */	
-	public function checkRequirementsAccess()
-	{
-
-		// Abandoned access
-		$this->access = 1;
-		$obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-			
-		// Displays this error in title	
-		$module = 'PagSeguro - ';	
-				
-		// Receive url editing methods ja payment with key	
-		$configUrl = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/');	
-		$email = $obj->getConfigData('email');
-		$token = $obj->getConfigData('token');	
-		
-		if ($email) {		
-			if (!$token) {
-				$this->access = 0;	
-				$message =  $module . $this->__('Preencha o token.');
-				Mage::getSingleton('core/session')->addError($message);	
-				Mage::app()->getResponse()->setRedirect($configUrl);	
-			}
-		} else {
-			$this->access = 0;
-			$message = $module . $this->__('Preencha o e-mail do vendedor.');
-			Mage::getSingleton('core/session')->addError($message);
-			if (!$token) {				
-				$message = $module . $this->__('Preencha o token.');
-				Mage::getSingleton('core/session')->addError($message);	
-			}
-			Mage::app()->getResponse()->setRedirect($configUrl);		
-		}
-	}
-	
+{	
 	/***
      * Validate if the requirements are enable for use correct of the PagSeguro
      * @return array
      */
     public function validateRequirements()
     {
-
-        $requirements = array(
-            'version' => '',
-            'spl' => '',
-            'curl' => '',
-            'dom' => '',
-            'currency' => ''
-        );
+        $requirements = array('version' => '', 'spl' => '', 'curl' => '', 'dom' => '', 'currency' => '');
 
         $version = str_replace('.', '', phpversion());
 
         if ($version < 533) {
-            $requirements['version']['text'] = $this->__('PagSeguroLibrary: É necessária a versão 5.3.3 do PHP ou maior.');
+        	$msg = $this->__('PagSeguroLibrary: É necessária a versão 5.3.3 do PHP ou maior.');
+            $requirements['version']['text'] = $msg;
             $requirements['version']['status'] = false;
         } else {
         	$requirements['version']['text'] = $this->__('Versão do PHP superior à 5.3.3.');
@@ -121,6 +66,7 @@ class UOL_PagSeguro_Helper_Requirements extends HelperData
         }
 
         $CurrencyCode = Mage::getStoreConfig('currency/options/allow');
+		
         if ($CurrencyCode != "BRL"){
         	$requirements['currency']['text'] = $this->__('Moeda REAL não instalada ou desativada.');
         	$requirements['currency']['status'] = false;

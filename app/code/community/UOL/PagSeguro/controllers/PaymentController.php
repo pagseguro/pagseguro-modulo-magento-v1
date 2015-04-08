@@ -27,7 +27,8 @@ class UOL_PagSeguro_PaymentController extends FrontAction
     				  Entre em contato com o administrador da loja, se o problema persistir.';
 					  
     /**
-     * Get Checkout Session  
+     * Get Checkout Session
+	 * @return object - Returns current session 
      */
     private function getCheckout()
     {
@@ -36,6 +37,7 @@ class UOL_PagSeguro_PaymentController extends FrontAction
 
     /**
      * Get the Order of Checkout
+	 * @return int - Return the id of order
      */
     private function getOrder()
     {
@@ -44,20 +46,16 @@ class UOL_PagSeguro_PaymentController extends FrontAction
 
     /**
      * Get PagSeguro Model instance
+	 * @return object - Class PaymentMethod
      */
     private function getPagSeguroPaymentModel()
     {
         return Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod'); //Model
     }
 
-    /**
-     * Get PagSeguro Model instance
-     */
-    private function getPagSeguroHelloWorldModel()
-    {
-        return Mage::getSingleton('UOL_PagSeguro_Model_Geral'); //Model
-    }
-
+	/**
+	 * Construct layout of payment
+	 */
     public function paymentAction()
     {
         $this->loadLayout();
@@ -68,26 +66,24 @@ class UOL_PagSeguro_PaymentController extends FrontAction
      * Process the payment request and redirect to PagSeguro Gateway
      */
     public function requestAction()
-    {
-    
-    
-        $Order = $this->getOrder(); //Order Data        
+    {    
+        $order = $this->getOrder(); //Order Data        
         $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel(); 
         $feedback = 'checkout/onepage';
+		$helper = Mage::helper('pagseguro');
 
-        if (($Order->getState() == Mage_Sales_Model_Order::STATE_NEW) and
-            ($Order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode()) and
-            ($Order->getId())) {
+        if (($order->getState() == Mage_Sales_Model_Order::STATE_NEW) and
+            ($order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode()) and
+            ($order->getId())) {
 
-            $orderId = $Order->getEntityId();
+            $orderId = $order->getEntityId();
             include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');  
             $environment = PagSeguroConfig::getEnvironment();
-            if ($environment == 'production') {
-                $environment = Mage::helper('pagseguro')->__("Produção");
-            } else {
-                $environment = Mage::helper('pagseguro')->__("Sandbox ");
-            }
-
+            if ($environment == 'production')
+                $environment = $helper->__("Produção");
+            else
+                $environment = $helper->__("Sandbox ");
+            
             $tp = (string)Mage::getConfig()->getTablePrefix();
             $table = $tp . 'pagseguro_orders';
             $read= Mage::getSingleton('core/resource')->getConnection('core_read');
@@ -103,31 +99,31 @@ class UOL_PagSeguro_PaymentController extends FrontAction
 
             try {
 
-                $PagSeguroPaymentModel->setOrder($Order);                
-                $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($Order));
+                $PagSeguroPaymentModel->setOrder($order);                
+                $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($order));
                 
                 //after verify if the order was created, instantiates the sendEmail() method
                 $this->sendEmail();
                 
             } catch (Exception $ex) {
                 Mage::log($ex->getMessage());
-                Mage::getSingleton('core/session')->addError(self::MENSAGEM);
+                Mage::getSingleton('core/session')->addError($helper->__(self::MENSAGEM));
 				$this->_redirectUrl(Mage::getUrl('checkout/cart'));
 				
                 if ($checkout == 'PADRAO') {
                     $this->_redirectUrl(Mage::getUrl() . $feedback);
                 }
-                $this->_canceledStatus($Order);
+                $this->_canceledStatus($order);
             }
             
         } else {
-            Mage::getSingleton('core/session/canceled')->addError(self::MENSAGEM);
+            Mage::getSingleton('core/session/canceled')->addError($helper->__(self::MENSAGEM));
 			$this->_redirectUrl(Mage::getUrl('checkout/cart'));
 			
             if ($checkout == 'PADRAO') {
                 $this->_redirectUrl(Mage::getUrl() . $feedback);
             }
-            $this->_canceledStatus($Order);
+            $this->_canceledStatus($order);
         }
     }
 
@@ -146,25 +142,13 @@ class UOL_PagSeguro_PaymentController extends FrontAction
             die($ex);
         }        
     }
-    
-    /**
-     * returns PagSeguro checkout configuration
-     * @return CheckoutStatus = 'LIGHTBOX' or 'PADRÃO'
-     */
-    private function getRedirectCheckout()
-    {
-        $idStore = Mage::app()->getStore()->getCode();
-        Mage::log("ID_DA_LOJA:".$idStore);
-		
-        return Mage::getStoreConfig('payment/pagseguro/checkout', $idStore);
-    }
 
     /**
-     * cancel order status
+     * The order pass to the status canceled
      */
-    private function _canceledStatus($Order)
+    private function _canceledStatus($order)
     {
-        $Order->cancel();
-        $Order->save();
+        $order->cancel();
+        $order->save();
     }
 }

@@ -23,12 +23,14 @@ include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php'
 use Mage_Core_Controller_Front_Action as FrontAction;
 
 class UOL_PagSeguro_PagSeguroSearchTransactionController extends FrontAction
-{
-    
+{    
     private $transactionCode;    
     private $objCredentials;    
     private $objTransaction;
     
+	/**
+     * Construct
+     */
     public function __construct()
     {
         $this->transactionCode = $_GET['transactionCode'];

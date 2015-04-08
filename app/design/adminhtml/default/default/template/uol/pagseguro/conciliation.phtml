@@ -31,7 +31,7 @@ limitations under the License.
 		<div class="wrapper">		    
 		    <?php echo $helper->getSideMenu();?>
 		    <div id="pagseguro-module-contents">
-				<h2 class="title" title="Conciliação"><?php echo $helper->__('Conciliação'); ?></h2>
+				<h2 class="title"><?php echo $helper->__('Conciliação'); ?></h2>
 				<p>
 					<?php 
 						$string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas. ';
@@ -43,20 +43,20 @@ limitations under the License.
 				</p>
 
 				<div class="pagseguro-search-tools">
-					<form action="javascript:void(0)" method="post" >
+					<form action="javascript:void(0)" method="post">
 						<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
 						<input type="submit" class="pagseguro-button" id="conciliation-search-button" value="<?php echo $helper->__('Pesquisar');?>">
-						<select class="pagseguro-field" id="pagseguro-conciliation-days-input" name="pagseguro_dias">
-					        <option value='5'>5</option>
-					        <option value='10'>10</option>
-					        <option value='15'>15</option>
-					        <option value='20'>20</option>
-					        <option value='25'>25</option>
-					        <option value='30'>30</option>
+						<select name="pagseguro-days" class="pagseguro-field" id="pagseguro-conciliation-days-input">
+					        <option value="5">5</option>
+					        <option value="10">10</option>
+					        <option value="15">15</option>
+					        <option value="20">20</option>
+					        <option value="25">25</option>
+					        <option value="30">30</option>
 					    </select>
 						<label><?php echo $helper->__('últimos dias'); ?></label>
 					    <div class="right-tools">
-						    	<input type="submit" class="pagseguro-button" id="conciliation-button" value="<?php echo $helper->__("Conciliar");?>" disabled>
+						    <input type="submit" class="pagseguro-button" id="conciliation-button" value="<?php echo $helper->__("Conciliar");?>" disabled />
 						</div>					    
 					</form>
 				</div>
@@ -67,11 +67,11 @@ limitations under the License.
 							<th class="select_checkbox" width="3%" onclick="checkboxes();">
 								<input type="checkbox" id="pagseguro-check-all" />
 							</th>
-							<th width="9%"><?php echo $helper->__('Data');?></th>
-							<th width="11%"><?php echo $helper->__('ID Magento');?></th>
+							<th width="10%"><?php echo $helper->__('Data');?></th>
+							<th width="12%"><?php echo $helper->__('ID Magento');?></th>
 							<th width="30%"><?php echo $helper->__('ID PagSeguro');?></th>
-							<th width="15%"><?php echo $helper->__('Status Magento');?></th>
-							<th width="20%"><?php echo $helper->__('Status PagSeguro');?></th>
+							<th width="17%"><?php echo $helper->__('Status Magento');?></th>
+							<th width="17%"><?php echo $helper->__('Status PagSeguro');?></th>
 							<th width="11%"><?php echo $helper->__('Pedido');?></th>
 						</tr>
 					</thead>
@@ -104,8 +104,9 @@ limitations under the License.
 		var requestTransactions = function() {
 			var getDays = jQuery('#pagseguro-conciliation-days-input').find(":selected").text();
         	var converted = '';
+        	
         	// calls the modal of loading
-        	Modal.showLoading();
+        	Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
         	
             jQuery.ajax({
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
@@ -143,6 +144,7 @@ limitations under the License.
 		var doConciliation = function(){
 			var ckbFalse = 0;
 			var j = 0;
+			
 			jQuery('input[name="conciliation_orders[]"]').each(function() {
 				if (jQuery(this).is(':checked') == false) {
 					ckbFalse++;					
@@ -154,6 +156,7 @@ limitations under the License.
 				setMsgError("<?php echo $helper->__($noTransactionSelected); ?>");
 			} else {
 				jQuery('#messages').empty();
+				
 				var config = '';
 		    	var id = '';
 		    	var code = '';
@@ -170,17 +173,20 @@ limitations under the License.
 						        code: config[1],
 						        status: config[2]
 						    });        			
-					}
-					    
-			    });	
+					}					    
+			    });
+			    
 			    var msg	= '';
-			    if (count == 1) {
+			    
+			    if (count == 1)
 			    	msg = '<?php echo " " . $helper->__($transactionSuccess); ?>';
-			    }  else {
+			    else
 			    	msg = count + '<?php echo " " . $helper->__($transactionsSuccess); ?>';
-			    } 
+			    
 		    	var converted = '';
-				Modal.showLoading();
+		    	
+				Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
+				
 				jQuery.ajax({
 	                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
 	                type: "POST",
@@ -198,23 +204,19 @@ limitations under the License.
 		                	jQuery('#messages').empty();					
 		                } else {
 		                	converted = JSON.parse(result);
+		                	
 		                    var oTable = jQuery('#conciliation-table').dataTable();
+		                    
 			                oTable.fnClearTable(false);           
 			                oTable.fnAddData(converted, false);
 			                oTable.fnStandingRedraw();
 		                    jQuery('#messages').empty();					
-		                }	 
+		                }
+		                	 
 		                jQuery(':checkbox').prop('checked','');
 		                jQuery('#conciliation-button').prop("disabled", true);
-
-		                var successMsg;
-		                if (jsonArr.length > 1) {
-		                	successMsg = 'Conciliações realizadas com sucesso.'; 
-		                } else {
-		                	successMsg = 'Conciliação realizada com sucesso.'; 
-		                }  
-		                Modal.message('success', successMsg);        
-	                    
+		                
+		                Modal.message('success', msg);
 	                },
 	                error: function() {
 	                     Modal.message('error', 'Não foi possível realizar a conciliação.');
@@ -240,6 +242,7 @@ limitations under the License.
 			    // BUT - if it is server side - then this should be handled by the server - so skip this step
 			    if(oSettings.oFeatures.bServerSide === false){
 			        var before = oSettings._iDisplayStart;
+			        
 			        oSettings.oApi._fnReDraw(oSettings);
 			        //iDisplayStart has been reset to zero - so lets change it back
 			        oSettings._iDisplayStart = before;
@@ -279,6 +282,7 @@ limitations under the License.
 					// Makes when clicked on a registry is redirected to the editing order of Magento	
 					oTable = this;
 					totalRows = oTable.fnGetData().length;
+					
 					var table = jQuery('#conciliation-table').DataTable();
 					var info = table.page.info();
 
@@ -300,8 +304,7 @@ limitations under the License.
 					}
 
 					//Checkbox enable | disable
-					jQuery('#conciliation-table tbody input:checkbox').change(function(){
-
+					jQuery('#conciliation-table input[type="checkbox"]').change(function(){
 		            	var isChecked = jQuery("#conciliation-table tbody :checked").length;
 		          
 						if (isChecked > 0) {
@@ -360,14 +363,15 @@ limitations under the License.
 
 		this.init = function() {
         	prepareTable();
+        	
             jQuery('#conciliation-search-button').click(function () {
                 requestTransactions();
             });
+            
             jQuery('#conciliation-button').click(function () {
                 doConciliation();
             });
         };
 	}
 </script>
-<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro.js');?>"></script>
 <script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js');?>"></script>

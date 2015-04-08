@@ -31,7 +31,7 @@ limitations under the License.
 		<div class="wrapper">		    
 		    <?php echo $helper->getSideMenu();?>			
 		    <div id="pagseguro-module-contents">
-				<h2 class="title" title="<?php echo $helper->__('Estorno'); ?>"><?php echo $helper->__('Estorno'); ?></h2>
+				<h2 class="title"><?php echo $helper->__('Estorno'); ?></h2>
 				<p>
 					<?php 
 						$string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas.';
@@ -42,19 +42,14 @@ limitations under the License.
 				<div class="pagseguro-search-tools">
 					<form action="javascript:void(0)" method="post" >
 						<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
-						<input type="submit" class="pagseguro-button" id="conciliation-search-button" value="<?php echo $helper->__('Pesquisar');?>">
-						<select class="pagseguro-field" id="pagseguro-refund-days-input" name="pagseguro_dias">
+						<input type="submit" class="pagseguro-button" id="refund-search-button" value="<?php echo $helper->__('Pesquisar');?>" />
+						<select class="pagseguro-field" name="pagseguro-days" id="pagseguro-refund-days-input">
 					        <option value='5'>5</option>
 					        <option value='10'>10</option>
 					        <option value='15'>15</option>
 					        <option value='20'>20</option>
 					        <option value='25'>25</option>
 					        <option value='30'>30</option>
-					        <option value='40'>40</option>
-					        <option value='60'>60</option>
-					        <option value='80'>80</option>
-					        <option value='100'>100</option>
-					        <option value='120'>120</option>
 					    </select>	
 					    <label><?php echo $helper->__('últimos dias'); ?></label>			    
 					</form>					
@@ -73,13 +68,12 @@ limitations under the License.
 				</table>
 
 				<?php
-					$noTransaction = 'Nenhum resultado.';	
-					$noTransactionSelected = $helper->__("Selecione pelo menos um campo da coluna 'Selecionar'.");
-					$transactionSuccess = $helper->__("Transação conciliada com sucesso!");
-					$transactionsSuccess = $helper->__("Transações conciliadas com sucesso!");
+					$noTransaction = 'Nenhum resultado.';
+					$refundSuccess = $helper->__("Transação cancelada com sucesso!");
+					$refundError = $helper->__("Não foi possível cancelar a transação.");
 				?>
 
-				<div id="conciliation-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
+				<div id="refund-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
 			        <p><?php echo $helper->__('Somente transações geradas a partir da versão 2.3 do módulo serão listadas.'); ?></p>
 			    </div>
 			</div>
@@ -92,16 +86,16 @@ limitations under the License.
 		
 	jQuery(document).ready(function(){
 		Menu.init();
-		PageConciliation.init();
+		PageRefund.init();		
     });
 
-    var PageConciliation = new function(){
+    var PageRefund = new function(){
 		var requestTransactions = function() {
 			var getDays = jQuery('#pagseguro-refund-days-input').find(":selected").text();
         	var converted = '';
         	
         	// calls the modal of loading
-        	Modal.showLoading();
+        	Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
         	
             jQuery.ajax({
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
@@ -118,7 +112,7 @@ limitations under the License.
 	                	// handle the return of ajax and dates back to table    	
 		                if (result == "run") {
 							jQuery('#refund-table').dataTable().fnClearTable(true);
-							Modal.message('alert', "Não há transações para conciliação no período.");
+							Modal.message('alert', "Não há transações para cancelar no período.");
 		                } else {
 		                	converted = JSON.parse(result);
 		                    jQuery('#refund-table').dataTable().fnClearTable(true);           
@@ -136,91 +130,57 @@ limitations under the License.
 			});	
 		}
 
-		var doConciliation = function(){
-			var ckbFalse = 0;
-			var j = 0;
-			jQuery('input[name="conciliation_refund[]"]').each(function() {
-				if (jQuery(this).is(':checked') == false) {
-					ckbFalse++;					
-				}
-				j++;
-			});	
-			if (j == ckbFalse) {
-				jQuery('#messages').empty();					
-				setMsgError("<?php echo $helper->__($noTransactionSelected); ?>");
-			} else {
-				jQuery('#messages').empty();
-				var config = '';
-		    	var id = '';
-		    	var code = '';
-		    	var status = '';
-		    	var jsonArr = [];
-		    	var count = 0;
-		    	
-		    	jQuery('input[name="conciliation_refund[]"]').each(function() {
-					if (jQuery(this).is(':checked') == true) {
-							count++;
-							config = jQuery(this).data('config').split('/');
-							jsonArr.push({
-						        id: config[0],
-						        code: config[1],
-						        status: config[2]
-						    });        			
-					}
-					    
-			    });	
+		var doRefund = function(){
+			jQuery('#messages').empty();
+			var config = '';
+	    	var id = '';
+	    	var code = '';
+	    	var status = '';
+	    	var jsonArr = [];	    	
+	    	
+			config = jQuery(this).data('config').split('/');
+			jsonArr.push({
+		        id: config[0],
+		        code: config[1],
+		        status: config[2]
+		    });  
 			    
-			    var msg	= '';
-			    if (count == 1) {
-			    	msg = '<?php echo " " . $helper->__($transactionSuccess); ?>';
-			    }  else {
-			    	msg = count + '<?php echo " " . $helper->__($transactionsSuccess); ?>';
-			    }
-			    
-		    	var converted = '';
-				Modal.showLoading();
-				jQuery.ajax({
-	                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
-	                type: "POST",
-	                data: { 
-	                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
-	                		json: jsonArr,
-	                		origin: 'refund'	                		
-	                	  },
-	                success: function(result) { 
-	                    i = 0;
+	    	var converted = '';
+			Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
+			jQuery.ajax({
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                type: "POST",
+                data: { 
+                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
+                		json: jsonArr,
+                		origin: 'refund'	                		
+                	  },
+                success: function(result) { 
+                    i = 0;
 
-		            	// handle the return of ajax and dates back to table    	
-		                if (result == "run") {
-							jQuery('#refund-table').dataTable().fnClearTable(true);
-		                	jQuery('#messages').empty();					
-		                } else {
-		                	converted = JSON.parse(result);
-		                    var oTable = jQuery('#refund-table').dataTable();
-			                oTable.fnClearTable(false);           
-			                oTable.fnAddData(converted, false);
-			                oTable.fnStandingRedraw();
-		                    jQuery('#messages').empty();					
-		                }
-		                 
-		                jQuery(':checkbox').prop('checked','');
-		                jQuery('#conciliation-button').prop("disabled", true);
-
-		                var successMsg;
-		                if (jsonArr.length > 1) {
-		                	successMsg = 'Conciliações realizadas com sucesso.'; 
-		                } else {
-		                	successMsg = 'Conciliação realizada com sucesso.'; 
-		                }
-		                
-		                Modal.message('success', successMsg);
-	                },
-	                error: function() {
-	                     Modal.message('error', 'Não foi possível realizar a conciliação.');
+	            	// handle the return of ajax and dates back to table    	
+	                if (result == "run") {
+						jQuery('#refund-table').dataTable().fnClearTable(true);
+	                	jQuery('#messages').empty();					
+	                } else {
+	                	converted = JSON.parse(result);
+	                    var oTable = jQuery('#refund-table').dataTable();
+		                oTable.fnClearTable(false);           
+		                oTable.fnAddData(converted, false);
+		                oTable.fnStandingRedraw();
+	                    jQuery('#messages').empty();					
 	                }
-	             });
-			}
-		}
+	                 
+	                jQuery(':checkbox').prop('checked','');
+	                jQuery('#conciliation-button').prop("disabled", true);             
+	                
+	                Modal.message('success', '<?php echo $refundSuccess; ?>');
+                },
+                error: function() {
+                     Modal.message('error', '<?php echo $refundError; ?>');
+                }
+        	});
+		};
 
 		var prepareTable = function(){
 			var flow = 0;
@@ -352,17 +312,14 @@ limitations under the License.
 			    }
 			});	
 		}
-
+		
 		this.init = function() {
         	prepareTable();
-            jQuery('#conciliation-search-button').click(function () {
+        	
+            jQuery('#refund-search-button').click(function () {
                 requestTransactions();
-            });
-            jQuery('#conciliation-button').click(function () {
-                doConciliation();
-            });
+            });                    
         };
 	}
 </script>
-<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro.js');?>"></script>
 <script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js');?>"></script>

@@ -19,10 +19,8 @@ limitations under the License.
 /* ************************************* */
 /* *********** MESSAGES **************** */
 /* ************************************* */
-var Messages = new function() {
-    
+var Messages = new function() {    
     var wrapper = jQuery("#pagseguro-module-contents");
-
     var getHtml = function(options) {
         return '<div id="'+ options.id +'" class="pagseguro-msg pagseguro-msg-'+options.type+' pagseguro-msg-'+options.size+'"><'+options.tag+'>' + options.message + '</'+options.tag+'></div>';
     }
@@ -57,17 +55,13 @@ var Messages = new function() {
             return getHtml(options);
         }
     };
-
 };
-
 
 /* ************************************* */
 /* *********** MODAL **************** */
 /* ************************************* */
-var Modal = new function(){
-    
-    var opened = false;
-    
+var Modal = new function(){    
+    var opened = false;    
     var defaults = {
         transition:"none",speed:300,initialWidth:"600",innerWidth:"525",initialHeight:"450",title:!1,opacity:.65,close:"fechar <strong>x</strong>",fixed:true
     };
@@ -90,17 +84,19 @@ var Modal = new function(){
         jQuery.colorbox(options);
     };
 
-    var showLoading = function() {
+    var showLoading = function(msg) {
         if (jQuery('#pagseguro-loading-message:visible').length > 0) {
             return false;
         }
+        
         var html = Messages.getHtml({
             id: 'pagseguro-loading-message',
             type: 'loading',
             size: 'medium',
-            message: 'Aguarde...',
+            message: msg,
             tag: 'h3'
         });
+        
         Messages.remove();
         open({
             html: html,
@@ -110,34 +106,11 @@ var Modal = new function(){
             escKey: false,
             close: false
         });
+        
         jQuery('#cboxClose').hide();
         resize();
     };
     
-    var showLoadingCheckout = function() {
-        if (jQuery('#pagseguro-loading-message:visible').length > 0) {
-            return false;
-        }
-        var html = Messages.getHtml({
-            id: 'pagseguro-loading-message',
-            type: 'loading',
-            size: 'medium',
-            message: 'Processando o pedido...',
-            tag: 'h3'
-        });
-        Messages.remove();
-        open({
-            html: html,
-            width:  330,
-            height: 600,
-            overlayClose: false,
-            escKey: false,
-            close: false
-        });
-        jQuery('#cboxClose').hide();
-        resize();
-    };
-
     var hideLoading = function(callback) {
         close(callback);
     };
@@ -149,12 +122,17 @@ var Modal = new function(){
             message: message,
             tag: 'h3'
         });
+        
         open({
             html: html,
             width:  400,
             height: 400
         });
         resize();
+    };
+    
+    var alertConciliation = function(message) {
+    	this.message('alert', message)
     };
 
     var resize = function() {
@@ -175,12 +153,12 @@ var Modal = new function(){
         open : open,
         resize : resize,
         showLoading: showLoading,
-        showLoadingCheckout: showLoadingCheckout,
         hideLoading: hideLoading,
-        message: message
+        message: message,
+        alertConciliation:alertConciliation
     }
-
 };
+
 /* ************************************* */
 /* *********** MENU **************** */
 /* ************************************* */
@@ -191,19 +169,15 @@ var Menu = new function() {
     var body = $("html, body");
     var windowSel  = jQuery(window);
     var animating = false;
-
     var applyMenu = function() {
-
         var selectedClass = "selected";
         var allItems = wrapper.find(".menu-item");
 
-        allItems.click(function(e){
-            
+        allItems.click(function(e){            
             e.preventDefault();
             e.stopPropagation();
             
             if (!animating) {
-
                 animating = true;
 
                 var item = jQuery(this);
@@ -213,10 +187,9 @@ var Menu = new function() {
                 allItems.removeClass(selectedClass);
                 item.addClass(selectedClass);
 
-                var showNewPage = function() {
-                    
+                var showNewPage = function() {                    
                     Messages.remove();
-
+                    
                     jQuery(".pagseguro-module-content").removeClass(selectedClass);
                     jQuery("#pagseguro-module-content-" + id).addClass(selectedClass);
                     
@@ -228,29 +201,21 @@ var Menu = new function() {
 
                     jQuery("#current-page-id").val(id);
                     animating = false;
-
                 };
 
-                if (windowSel.scrollTop() > 100) {
-                    
+                if (windowSel.scrollTop() > 100) {                    
                     body.animate({scrollTop:0}, 800, 'swing', function(){
                         setTimeout(showNewPage, 100);
                     });
-
                 } else {
                     showNewPage();
                 }
-
             };
-
             return false;
-
         });
-
     };
 
-    var applyFixedPostion = function() {
-        
+    var applyFixedPostion = function() {        
         var initialPos      = wrapper.offset().top;
         var initialLeft     = wrapper.offset().left;
         var initialWidth    = wrapper.width();
@@ -266,6 +231,7 @@ var Menu = new function() {
             if (!wrapper.hasClass('fixed')) {
                 wrapper.addClass(fixedClass);
             }
+            
             wrapper.css('top', parseInt(top - initialPos, 10) + 'px');
             wrapper.width(initialWidth);
         };
@@ -276,7 +242,6 @@ var Menu = new function() {
         };
 
         windowSel.scroll(function(e){
-
             var top = getWindowTop();
 
             if (top >= initialPos) {
@@ -284,18 +249,18 @@ var Menu = new function() {
             } else {
                 resetFixed();
             }
-
         });
 
         windowSel.resize(function(){
             var wasFixed = wrapper.hasClass(fixedClass);
+            
             resetFixed();
             initialWidth = wrapper.width();
+            
             if (wasFixed){
                 applyFixed(getWindowTop());
             }
         });
-
     };
 
     var applyGotoConfig = function() {
@@ -320,38 +285,33 @@ var Menu = new function() {
         applyGotoConfig();
         retractableMenu();
     };
-
 };
 
 /* ************************************* */
-/* *********** CHECKBOXES **************** */
+/* *********** CHECKBOX **************** */
 /* ************************************* */
-function checkboxes() {
+var checkboxes = function () {
 
-    var j = 0;
-    var ckbTrue = 0;
+	var j = 0;
+	var ckbTrue = 0;
 
-    jQuery('input[name="send_emails[]"]').each(function() {
-        if (jQuery(this).is(':checked') == true) {
-            ckbTrue++;
-        }
-        j++;
-    }); 
-    
-    jQuery('input[name="conciliation_orders[]"]').each(function() {
-        if (jQuery(this).is(':checked') == true) {
-            ckbTrue++;
-        }
-        j++;
-    }); 
-    
-    if (j == ckbTrue) {
-        jQuery(':checkbox').prop('checked','');
-        jQuery('#send-email-button').prop("disabled", true);
-        jQuery('#conciliation-button').prop("disabled", true);
-    } else {
-        jQuery(':checkbox').prop('checked','checked');
-        jQuery('#send-email-button').prop("disabled", false);
-        jQuery('#conciliation-button').prop("disabled", false);
-    }
-}
+	jQuery('input[name="send_emails[]"]').each(function() {
+		if (jQuery(this).is(':checked') == true) {
+			ckbTrue++;
+		}
+		j++;
+	});	
+	
+	jQuery('input[name="conciliation_orders[]"]').each(function() {
+		if (jQuery(this).is(':checked') == true) {
+			ckbTrue++;
+		}
+		j++;
+	});	
+	
+	if (j == ckbTrue) {
+		jQuery(':checkbox').prop('checked','');
+	} else {
+		jQuery(':checkbox').prop('checked','checked');
+	}
+} 

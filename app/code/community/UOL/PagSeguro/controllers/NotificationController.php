@@ -23,8 +23,7 @@ include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php'
 use Mage_Core_Controller_Front_Action as FrontAction;
 
 class UOL_PagSeguro_NotificationController extends FrontAction
-{
- 
+{ 
     private $objPagSeguro;
     private $objCredential;
     private $objNotification;
