@@ -66,6 +66,8 @@ Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum].
 Changelog
 ---------
 ---
+2.6.0
+
 2.5.0
  - Atualização do layout da tela de configuração;
  - Integração com Sandbox;
