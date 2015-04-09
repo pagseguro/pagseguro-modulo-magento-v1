@@ -18,19 +18,19 @@ limitations under the License.
 ************************************************************************
 */
 
-class UOL_PagSeguro_Block_Payment extends Mage_Core_Block_Template
+class UOL_PagSeguro_Block_Payment extends \Mage_Core_Block_Template
 {
     protected function getConvertCode()
     {
         $code = $this->getRequest()->getParam("code");
-        $payment_url = $this->base64url_decode($code);
+        $payment_url = $this->base64UrlDecode($code);
         $resultado = parse_url($payment_url);
         parse_str($resultado['query']);
 
         return array('code' => $code, 'fullUrl' => $payment_url);
     }
 
-    private function base64url_decode($b64Text)
+    private function base64UrlDecode($b64Text)
     {
         return base64_decode(strtr($b64Text, '-_,', '+/='));
     }
