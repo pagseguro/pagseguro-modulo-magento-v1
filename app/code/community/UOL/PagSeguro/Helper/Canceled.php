@@ -85,11 +85,11 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
             $actionOrder .= "<a class='action'" . $onclick . " href='javascript:void(0)'>";
             $actionOrder .= $this->__('Cancelar') . "</a>";
 
-            $array = array( 'date' => $dateOrder,
-                            'id_magento' => $idMagento,
-                            'id_pagseguro' => $idPagSeguro,
-                            'status_magento' => $statusMagento,
-                            'action' => $actionOrder);
+            $array = array('date' => $dateOrder,
+                           'id_magento' => $idMagento,
+                           'id_pagseguro' => $idPagSeguro,
+                           'status_magento' => $statusMagento,
+                           'action' => $actionOrder);
 
             $this->arrayPayments[] = $array;
         }
