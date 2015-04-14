@@ -21,78 +21,78 @@ limitations under the License.
 use UOL_PagSeguro_Helper_Data as HelperData;
 
 class UOL_PagSeguro_Helper_Requirements extends HelperData
-{	
-	/***
+{
+    /***
      * Validate if the requirements are enable for use correct of the PagSeguro
      * @return array
      */
     public function validateRequirements()
     {
-        $requirements = array('version' => '', 'spl' => '', 'curl' => '', 'dom' => '', 'currency' => '');
+        $req = array('version' => '', 'spl' => '', 'curl' => '', 'dom' => '', 'currency' => '');
 
         $version = str_replace('.', '', phpversion());
 
         if ($version < 533) {
-        	$msg = $this->__('PagSeguroLibrary: É necessária a versão 5.3.3 do PHP ou maior.');
-            $requirements['version']['text'] = $msg;
-            $requirements['version']['status'] = false;
+            $msg = $this->__('PagSeguroLibrary: É necessária a versão 5.3.3 do PHP ou maior.');
+            $req['version']['text'] = $msg;
+            $req['version']['status'] = false;
         } else {
-        	$requirements['version']['text'] = $this->__('Versão do PHP superior à 5.3.3.');
-        	$requirements['version']['status'] = true;
+            $req['version']['text'] = $this->__('Versão do PHP superior à 5.3.3.');
+            $req['version']['status'] = true;
         }
 
         if (!function_exists('spl_autoload_register')) {
-            $requirements['spl']['text'] = $this->__('PagSeguroLibrary: Biblioteca padrão do PHP (SPL) é necessária.');
-            $requirements['spl']['status'] = false;
+            $req['spl']['text'] = $this->__('PagSeguroLibrary: Biblioteca padrão do PHP (SPL) é necessária.');
+            $req['spl']['status'] = false;
         } else {
-        	$requirements['spl']['text'] = $this->__('Biblioteca padrão do PHP (SPL) instalada.');
-        	$requirements['spl']['status'] = true;
+            $req['spl']['text'] = $this->__('Biblioteca padrão do PHP (SPL) instalada.');
+            $req['spl']['status'] = true;
         }
 
         if (!function_exists('curl_init')) {
-            $requirements['curl']['text'] = $this->__('PagSeguroLibrary: A biblioteca cURL é necessária.');
-            $requirements['curl']['status'] = false;
+            $req['curl']['text'] = $this->__('PagSeguroLibrary: A biblioteca cURL é necessária.');
+            $req['curl']['status'] = false;
         } else {
-        	$requirements['curl']['text'] = $this->__('Biblioteca cURL instalada.');
-        	$requirements['curl']['status'] = true;
+            $req['curl']['text'] = $this->__('Biblioteca cURL instalada.');
+            $req['curl']['status'] = true;
         }
 
         if (!class_exists('DOMDocument')) {
-            $requirements['dom']['text'] = $this->__('PagSeguroLibrary: A extensão DOM XML é necessária.');
-            $requirements['dom']['status'] = false;
+            $req['dom']['text'] = $this->__('PagSeguroLibrary: A extensão DOM XML é necessária.');
+            $req['dom']['status'] = false;
         } else {
-        	$requirements['dom']['text'] = $this->__('DOM XML instalado.');
-        	$requirements['dom']['status'] = true;
+            $req['dom']['text'] = $this->__('DOM XML instalado.');
+            $req['dom']['status'] = true;
         }
 
-        $CurrencyCode = Mage::getStoreConfig('currency/options/allow');
-		
-        if ($CurrencyCode != "BRL"){
-        	$requirements['currency']['text'] = $this->__('Moeda REAL não instalada ou desativada.');
-        	$requirements['currency']['status'] = false;
+        $currencyCode = Mage::getStoreConfig('currency/options/allow');
+
+        if ($currencyCode != "BRL") {
+            $req['currency']['text'] = $this->__('Moeda REAL não instalada ou desativada.');
+            $req['currency']['status'] = false;
         } else {
-        	$requirements['currency']['text'] = $this->__('Moeda REAL instalada e ativa');
-        	$requirements['currency']['status'] = true;
+            $req['currency']['text'] = $this->__('Moeda REAL instalada e ativa');
+            $req['currency']['status'] = true;
         }
 
-        return $requirements;
+        return $req;
     }
-	
-	/**
-	 * Set the log when searched records
-	 * @method setLog - Set log in file
-	 */
-	public function setRequirementsLog()
-	{
-		$config = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
 
-		// Set title
-		$module = ' [Info] PagSeguroRequirements.';	
-		
-		// Sentence of log
-		$phrase = "get()";
-				   
-		// Creating the update log order
-		$this->setLog($phrase, $module);			
-	}
+    /**
+     * Set the log when searched records
+     * @method setLog - Set log in file
+     */
+    public function setRequirementsLog()
+    {
+        $config = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
+
+        // Set title
+        $module = ' [Info] PagSeguroRequirements.';
+
+        // Sentence of log
+        $phrase = "get()";
+
+        // Creating the update log order
+        $this->setLog($phrase, $module);
+    }
 }
