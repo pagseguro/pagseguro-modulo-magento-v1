@@ -20,17 +20,15 @@ limitations under the License.
 
 class UOL_PagSeguro_Model_Checkout
 {
-	/**
-	 * Options de buy, the default is directed to the site, and the lightbox continues in store
-	 * @return array - Returns an array of the available options
-	 */
+    /**
+     * Options de buy, the default is directed to the site, and the lightbox continues in store
+     * @return array - Returns an array of the available options
+     */
     public function toOptionArray()
     {
-    	$helper = Mage::helper('pagseguro');
-		
-        return array(
-                array("value" => "PADRAO" , "label" => $helper->__("Padrão")),
-                array("value" => "LIGHTBOX" , "label" => $helper->__("Lightbox"))
-        );
+        $helper = Mage::helper('pagseguro');
+
+        return array(array("value" => "PADRAO" , "label" => $helper->__("Padrão")),
+                     array("value" => "LIGHTBOX" , "label" => $helper->__("Lightbox")));
     }
 }
