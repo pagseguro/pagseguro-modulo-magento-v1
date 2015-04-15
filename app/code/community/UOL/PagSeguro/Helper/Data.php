@@ -445,7 +445,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     {
         $logo = Mage::getBaseUrl('skin') . 'adminhtml/default/default/uol/pagseguro/images/logo.png';
         $url = 'https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor';
-        $version = $this->__('Versão') . ' ' . $this->getVersion();
+        $version = $this->__('Versão %s', $this->getVersion());
         $id = 'pagseguro-registration-button';
 
         $html = '<div id="pagseguro-module-header">
