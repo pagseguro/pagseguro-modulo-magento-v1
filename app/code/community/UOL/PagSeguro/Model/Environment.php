@@ -20,17 +20,15 @@ limitations under the License.
 
 class UOL_PagSeguro_Model_Environment
 {
-	/**
-	 * Options de environment of module
-	 * @return array - Returns an array of the available options
-	 */
+    /**
+     * Options de environment of module
+     * @return array - Returns an array of the available options
+     */
     public function toOptionArray()
     {
-    	$helper = Mage::helper('pagseguro');
-    	
-        return array(
-                array("value" => "production", "label" => $helper->__("Produção")),
-                array("value" => "sandbox", "label" => $helper->__("Sandbox "))
-        );
+        $helper = Mage::helper('pagseguro');
+
+        return array(array("value" => "production", "label" => $helper->__("Produção")),
+                     array("value" => "sandbox", "label" => $helper->__("Sandbox ")));
     }
 }
