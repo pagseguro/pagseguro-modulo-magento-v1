@@ -20,21 +20,21 @@ limitations under the License.
 
 class AddressConfig
 {
-	/**
-	 * Remove the space at the end of the phrase, cut a piece of the phrase
-	 * @param string $e - Data to be ordained
-	 * @return Returns the phrase removed last  space, or a piece of phrase
-	 */
+    /**
+     * Remove the space at the end of the phrase, cut a piece of the phrase
+     * @param string $e - Data to be ordained
+     * @return Returns the phrase removed last  space, or a piece of phrase
+     */
     private static function endTrim($e)
     {
         return preg_replace('/^\W+|\W+$/', '', $e);
     }
-	
-	/**
-	 * Sort the data reported
-	 * @param string $text - Text to be ordained
-	 * @return array - Returns an array with the sorted data 
-	 */
+
+    /**
+     * Sort the data reported
+     * @param string $text - Text to be ordained
+     * @return array - Returns an array with the sorted data
+     */
     private static function sortData($text)
     {
         $broken = preg_split('/[-,\\n]/', $text);
@@ -51,7 +51,7 @@ class AddressConfig
 
         $text = preg_replace('/\s/', ' ', $text);
         $find = substr($text, -strlen($text));
-		
+
         for ($i  =0; $i < strlen($text); $i++) {
             if (is_numeric(substr($find, $i, 1))) {
                 return array(
@@ -65,11 +65,11 @@ class AddressConfig
         return array($text, '', '');
     }
 
-	/**
-	 * Treatment this address before being sent
-	 * @param string $fullAddress - Full address to treatment
-	 * @return array - Returns address of treatment in an array
-	 */
+    /**
+     * Treatment this address before being sent
+     * @param string $fullAddress - Full address to treatment
+     * @return array - Returns address of treatment in an array
+     */
     public static function treatmentAddress($fullAddress)
     {
         $address = $fullAddress;
