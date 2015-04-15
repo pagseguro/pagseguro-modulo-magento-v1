@@ -74,7 +74,7 @@ class UOL_PagSeguro_Model_Adminhtml_Config
                         ' . $helper->getHeader($this->logo). '
                      </div>';
 
-        $comment .= '<script src="' . $this->jquery . '"></script>';
+        $comment  = '<script src="' . $this->jquery . '"></script>';
         $comment .= '<script src="' . $this->js . '"></script>';
         $comment .= '<script src="' . $this->jsColorbox . '"></script>';
         $comment .= '<script type="text/javascript">
