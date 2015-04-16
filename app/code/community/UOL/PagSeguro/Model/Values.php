@@ -19,48 +19,52 @@ limitations under the License.
 */
 
 /**
- * Admin Charset Options  
+ * Admin Charset Options
  */
-include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/config/PagSeguroConfig.class.php');
 
 class UOL_PagSeguro_Model_Values
 {
-	/**
-	 * Displays the settings to choose charset
-	 * @return array - Returns the available charsets
-	 */   
+    /**
+     * Construct
+     */
+    public function __construct()
+    {
+        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/config/PagSeguroConfig.class.php');
+    }
+    /**
+     * Displays the settings to choose charset
+     * @return array - Returns the available charsets
+     */
     public function toOptionArray()
     {
         self::alertRequeriments();
-		$helper = Mage::helper('pagseguro');
-		        
-        return array(
-        			 array("value" => "UTF-8" , "label" => $helper->__("UTF-8")),
-                     array("value" => "ISO-8859-1" , "label" => $helper->__("ISO-8859-1"))
-    	);
+        $helper = Mage::helper('pagseguro');
+
+        return array(array("value" => "UTF-8" , "label" => $helper->__("UTF-8")),
+                     array("value" => "ISO-8859-1" , "label" => $helper->__("ISO-8859-1")));
     }
-    
-	/**
-	 * Alert the requiriement invalid, of cURL, version of PHP, SPL or DOM.
-	 */
+
+    /**
+     * Alert the requiriement invalid, of cURL, version of PHP, SPL or DOM.
+     */
     public function alertRequeriments()
     {
         $requirements = PagSeguroConfig::validateRequirements();
         $required = array();
-		
+
         foreach ($requirements as $key => $value) {
             if ($value != '') {
                 $required[] = $value;
             }
         }
-		
+
         if (!empty($required)) {
             $message = $helper = Mage::helper('pagseguro')->__("Requerimentos para o sistema funcionar:");
-			
+
             foreach ($required as $value) {
-                $message .= "<br>" . $value;
+                $message .= "<br />" . $value;
             }
-			
+
             Mage::getSingleton('core/session')->addError($message);
         }
     }
