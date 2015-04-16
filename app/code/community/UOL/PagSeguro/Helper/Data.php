@@ -759,4 +759,30 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 
         $writeConnection->query($sql);
     }
+
+    /**
+    * Get the transactions to be shown in the table
+    * @param  array $array - Contains transaction set
+    * @return json $dataSet - Contains json that the table interprets by updates ajax
+    */
+    public function getTransactionGrid($array)
+    {
+        $dataSet = '[';
+        $j = 1;
+
+        foreach ($array as $info) {
+            $i = 1;
+            $dataSet .= ($j > 1) ? ',[' : '[';
+            foreach ($info as $item) {
+                $dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';
+                $i++;
+            }
+            $dataSet .= ']';
+            $j++;
+        }
+
+        $dataSet .= ']';
+
+        return $dataSet;
+    }
 }
