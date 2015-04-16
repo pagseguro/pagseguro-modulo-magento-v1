@@ -18,8 +18,6 @@ limitations under the License.
 ************************************************************************
 */
 
-include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-
 use Mage_Payment_Model_Method_Abstract as MethodAbstract;
 
 class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
@@ -31,15 +29,16 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
     private $objNotificationType;
     private $objTransaction;
     private $post;
-    private $_helper;
+    private $helper;
 
     /**
      * Construct
      */
     public function __construct()
     {
-        parent::__construct();        
-        $this->_helper = Mage::helper('pagseguro');
+        parent::__construct();
+        $this->helper = Mage::helper('pagseguro');
+        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
     }
 
     /**
@@ -50,35 +49,34 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
     public function initialize($objCredential, $post)
     {
         $this->objCredential = $objCredential;
-        $this->post = $post;        
+        $this->post = $post;
         $this->createNotification();
         $this->initializeObjects();
-                
+
         if ($this->objNotificationType->getValue() == $this->notificationType) {
             $this->createTransaction();
-            
+
             if ($this->objTransaction) {
-            	$transactionStatus = $this->objTransaction->getStatus()->getValue();
-			    $this->updateOrderStatus($this->_helper->getPaymentStatusPagSeguro($transactionStatus, true));
+                $transactionStatus = $this->objTransaction->getStatus()->getValue();
+                $this->updateOrderStatus($this->helper->getPaymentStatusPagSeguro($transactionStatus, true));
             }
         }
-		
-		$this->objNotificationType->getValue();
+
+        $this->objNotificationType->getValue();
     }
-    
+
     /**
      * Create Notification
      */
     private function createNotification()
     {
-       $this->notificationType = (
-           isset($this->post['notificationType']) &&
-           trim($this->post['notificationType']) != "") ? $this->post['notificationType'] : null;
-       $this->notificationCode = (
-           isset($this->post['notificationCode']) &&
-           trim($this->post['notificationCode']) != "") ? $this->post['notificationCode'] : null;
+        $type = $this->post['notificationType'];
+        $code = $this->post['notificationCode'];
+
+        $this->notificationType = (isset($type) && trim($type) != "") ? $type : null;
+        $this->notificationCode = (isset($code) && trim($code) != "") ? $code : null;
     }
-    
+
     /**
      * Initialize Objects
      */
@@ -86,7 +84,7 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
     {
         $this->createNotificationType();
     }
-    
+
     /**
      * Create Notification Type
      */
@@ -95,48 +93,48 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $this->objNotificationType = new PagSeguroNotificationType();
         $this->objNotificationType->setByType('TRANSACTION');
     }
-    
+
     /**
     * Create Transaction
     */
     private function createTransaction()
     {
-    	$ckTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential, $this->notificationCode);
+        $ckTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential, $this->notificationCode);
         $this->objTransaction = $ckTransaction;
-		
-		$reference = $this->objTransaction->getReference();
-		$orderId = $this->_helper->getReferenceDecryptOrderID($reference);
-		
+
+        $reference = $this->objTransaction->getReference();
+        $orderId = $this->helper->getReferenceDecryptOrderID($reference);
+
         $this->reference = $orderId;
     }
-	
+
     /**
     * Update
     * @param type $status
     */
     private function updateOrderStatus($status)
-    {        
-		$comment = null;
-		$notify = true;						
-		$order = Mage::getModel('sales/order')->load($this->reference);
-		$order->addStatusToHistory($status, $comment, $notify);
-		$order->sendOrderUpdateEmail($notify, $comment);
-			
-		// Makes the notification of the order of historic displays the correct date and time
-		Mage::app()->getLocale()->date();
-		$order->save();	
-       
+    {
+        $comment = null;
+        $notify = true;
+        $order = Mage::getModel('sales/order')->load($this->reference);
+        $order->addStatusToHistory($status, $comment, $notify);
+        $order->sendOrderUpdateEmail($notify, $comment);
+
+        // Makes the notification of the order of historic displays the correct date and time
+        Mage::app()->getLocale()->date();
+        $order->save();
+
         try {
             $this->insertTransactionCode();
-            $order->save();            
+            $order->save();
         } catch (Exception $exc) {
             echo $exc->getTraceAsString();
         }
     }
-	
-	/**
-	 * Insert transaction code in order
-	 */
+
+    /**
+     * Insert transaction code in order
+     */
     private function insertTransactionCode()
     {
         $tp = (string)Mage::getConfig()->getTablePrefix();
@@ -147,7 +145,7 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $transactionId = $this->objTransaction->getCode();
 
         $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $sql = "UPDATE `" . $table . "` SET `transaction_code` = '" .$transactionId. "' WHERE order_id = " . $ref;
+        $sql = "UPDATE `" . $table . "` SET `transaction_code` = '" . $transactionId . "' WHERE order_id = " . $ref;
         $connection->query($sql);
     }
 }
