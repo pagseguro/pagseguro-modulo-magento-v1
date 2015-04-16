@@ -20,16 +20,20 @@ limitations under the License.
 
 class UOL_PagSeguro_Model_Observer
 {
-	/**
-	 * Query the existing transaction codes with the id of the request and assembles an array with these codes.
-	 * @param object $observer - It is an object of Event of observe.
-	 */
-	public function salesOrderGridCollectionLoadBefore($observer)
-	{
-	    $collection = $observer->getOrderGridCollection();
-	    $select = $collection->getSelect();
-		$tableCollection = Mage::getSingleton('core/resource')->getTableName('pagseguro_orders');
-	    $select->joinLeft(array('payment' => $tableCollection),'payment.order_id = main_table.entity_id',
-								array('payment_code'=>'transaction_code', 'payment_environment' => 'environment'));
-	}
+    /**
+     * Query the existing transaction codes with the id of the request and assembles an array with these codes.
+     * @param object $observer - It is an object of Event of observe.
+     */
+    public function salesOrderGridCollectionLoadBefore($observer)
+    {
+        $collection = $observer->getOrderGridCollection();
+        $select = $collection->getSelect();
+        $tableCollection = Mage::getSingleton('core/resource')->getTableName('pagseguro_orders');
+        $select->joinLeft(
+            array('payment' => $tableCollection),
+            'payment.order_id = main_table.entity_id',
+            array('payment_code'=>'transaction_code',
+            'payment_environment' => 'environment')
+        );
+    }
 }
