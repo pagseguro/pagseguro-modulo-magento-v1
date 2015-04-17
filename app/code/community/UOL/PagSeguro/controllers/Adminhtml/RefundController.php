@@ -20,14 +20,14 @@ limitations under the License.
 
 class UOL_PagSeguro_Adminhtml_RefundController extends Mage_Adminhtml_Controller_Action
 {
-	/**
-	 * Creates the layout of the administration
-	 * Set the PagSeguro menu must be selected
-	 */
+    /**
+     * Creates the layout of the administration
+     * Set the PagSeguro menu must be selected
+     */
     public function indexAction()
     {
-    	$_SESSION['store_id'] = Mage::app()->getRequest()->getParam('store');	    	
-        $this->loadLayout();		
-		$this->_setActiveMenu('pagseguro_menu')->renderLayout();				
-    }		
+        $_SESSION['store_id'] = Mage::app()->getRequest()->getParam('store');
+        $this->loadLayout();
+        $this->_setActiveMenu('pagseguro_menu')->renderLayout();
+    }
 }
