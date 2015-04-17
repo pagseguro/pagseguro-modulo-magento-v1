@@ -22,13 +22,13 @@ use Mage_Core_Controller_Front_Action as FrontAction;
 
 class UOL_PagSeguro_PaymentController extends FrontAction
 {
-    const CANCELADO = 7;    
+    const CANCELADO = 7;
     const MENSAGEM = 'Desculpe, infelizmente, houve um erro durante o checkout.
-    				  Entre em contato com o administrador da loja, se o problema persistir.';
-					  
+                      Entre em contato com o administrador da loja, se o problema persistir.';
+
     /**
      * Get Checkout Session
-	 * @return object - Returns current session 
+     * @return object - Returns current session
      */
     private function getCheckout()
     {
@@ -37,7 +37,7 @@ class UOL_PagSeguro_PaymentController extends FrontAction
 
     /**
      * Get the Order of Checkout
-	 * @return int - Return the id of order
+     * @return int - Return the id of order
      */
     private function getOrder()
     {
@@ -46,16 +46,16 @@ class UOL_PagSeguro_PaymentController extends FrontAction
 
     /**
      * Get PagSeguro Model instance
-	 * @return object - Class PaymentMethod
+     * @return object - Class PaymentMethod
      */
     private function getPagSeguroPaymentModel()
     {
         return Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod'); //Model
     }
 
-	/**
-	 * Construct layout of payment
-	 */
+    /**
+     * Construct layout of payment
+     */
     public function paymentAction()
     {
         $this->loadLayout();
@@ -66,64 +66,65 @@ class UOL_PagSeguro_PaymentController extends FrontAction
      * Process the payment request and redirect to PagSeguro Gateway
      */
     public function requestAction()
-    {    
-        $order = $this->getOrder(); //Order Data        
-        $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel(); 
+    {
+        $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel();
         $feedback = 'checkout/onepage';
-		$helper = Mage::helper('pagseguro');
+        $helper = Mage::helper('pagseguro');
 
-        if (($order->getState() == Mage_Sales_Model_Order::STATE_NEW) and
-            ($order->getPayment()->getMethod() == $PagSeguroPaymentModel->getCode()) and
-            ($order->getId())) {
+        $order = $this->getOrder(); //Order Data
+        $method = $order->getPayment()->getMethod();
+        $code = $PagSeguroPaymentModel->getCode();
 
+        if (($order->getState() == Mage_Sales_Model_Order::STATE_NEW) && ($method == $code) && ($order->getId())) {
             $orderId = $order->getEntityId();
-            include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');  
+            include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
             $environment = PagSeguroConfig::getEnvironment();
-            if ($environment == 'production')
+
+            if ($environment == 'production') {
                 $environment = $helper->__("Produção");
-            else
+            } else {
                 $environment = $helper->__("Sandbox ");
-            
+            }
+
             $tp = (string)Mage::getConfig()->getTablePrefix();
             $table = $tp . 'pagseguro_orders';
             $read= Mage::getSingleton('core/resource')->getConnection('core_read');
             $value = $read->query("SELECT `order_id` FROM `" . $table . "` WHERE `order_id` = " . $orderId);
-            $row = $value->fetch();     
-                
+            $row = $value->fetch();
+
             if ($row == false) {
                 $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-                $sql = "INSERT INTO `" . $table . "` (`order_id`, `environment`) 
-                        VALUES ('$orderId','$environment')";  
-                $connection->query($sql);    
+                $sql = "INSERT INTO `" . $table . "` (`order_id`, `environment`) VALUES ('$orderId','$environment')";
+                $connection->query($sql);
             }
 
             try {
-
-                $PagSeguroPaymentModel->setOrder($order);                
+                $PagSeguroPaymentModel->setOrder($order);
                 $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($order));
-                
+
                 //after verify if the order was created, instantiates the sendEmail() method
                 $this->sendEmail();
-                
+
             } catch (Exception $ex) {
                 Mage::log($ex->getMessage());
                 Mage::getSingleton('core/session')->addError($helper->__(self::MENSAGEM));
-				$this->_redirectUrl(Mage::getUrl('checkout/cart'));
-				
+                $this->_redirectUrl(Mage::getUrl('checkout/cart'));
+
                 if ($checkout == 'PADRAO') {
                     $this->_redirectUrl(Mage::getUrl() . $feedback);
                 }
-                $this->_canceledStatus($order);
+
+                $this->canceledStatus($order);
             }
-            
         } else {
             Mage::getSingleton('core/session/canceled')->addError($helper->__(self::MENSAGEM));
-			$this->_redirectUrl(Mage::getUrl('checkout/cart'));
-			
+            $this->_redirectUrl(Mage::getUrl('checkout/cart'));
+
             if ($checkout == 'PADRAO') {
                 $this->_redirectUrl(Mage::getUrl() . $feedback);
             }
-            $this->_canceledStatus($order);
+
+            $this->canceledStatus($order);
         }
     }
 
@@ -131,22 +132,22 @@ class UOL_PagSeguro_PaymentController extends FrontAction
      * Send a e-mail with shopping order.
      */
     private function sendEmail()
-    {        
+    {
         $order = new Mage_Sales_Model_Order();
         $incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         $order->loadByIncrementId($incrementId);
-		
+
         try {
             $order->sendNewOrderEmail();
         } catch (Exception $ex) {
             die($ex);
-        }        
+        }
     }
 
     /**
      * The order pass to the status canceled
      */
-    private function _canceledStatus($order)
+    private function canceledStatus($order)
     {
         $order->cancel();
         $order->save();
