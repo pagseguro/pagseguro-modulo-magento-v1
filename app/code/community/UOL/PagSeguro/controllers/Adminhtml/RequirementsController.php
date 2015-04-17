@@ -20,13 +20,13 @@ limitations under the License.
 
 class UOL_PagSeguro_Adminhtml_RequirementsController extends Mage_Adminhtml_Controller_Action
 {
-	/**
-	 * Creates the layout of the administration
-	 * Set the PagSeguro menu must be selected
-	 */
+    /**
+     * Creates the layout of the administration
+     * Set the PagSeguro menu must be selected
+     */
     public function indexAction()
     {
-        $this->loadLayout();		
-		$this->_setActiveMenu('pagseguro_menu')->renderLayout();				
-    }			
+        $this->loadLayout();
+        $this->_setActiveMenu('pagseguro_menu')->renderLayout();
+    }
 }
