@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-$installer = $this; 
+$installer = $this;
 $installer->startSetup();
 
 $resource = Mage::getSingleton('core/resource');
@@ -33,6 +33,6 @@ $tp = (string)Mage::getConfig()->getTablePrefix();
  */
 $sql  = "DROP TABLE IF EXISTS `" . $tp . "pagseguro_conciliation`;";
 $sql .= "DROP TABLE IF EXISTS `" . $tp . "pagseguro_sales_code`;";
-		 						 
+
 $installer->run($sql);
 $installer->endSetup();

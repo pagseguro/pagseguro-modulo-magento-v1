@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-$installer = $this; 
+$installer = $this;
 $installer->startSetup();
 
 $resource = Mage::getSingleton('core/resource');
@@ -29,69 +29,72 @@ $tp = (string)Mage::getConfig()->getTablePrefix();
 
 $table = $tp . 'pagseguro_conciliation';
 // checks if exists registry of reference
-if ($resource->getConnection('core_write')->isTableExists($table)) {	
-	$query = 'SELECT reference FROM ' . $resource->getTableName($table);
-	$results = $readConnection->fetchAll($query);
-	if (!Mage::getStoreConfig('uol_pagseguro/store/reference'))
-		$ref = current(current($results));
-} else {	
-	// Creates a reference to 5 characters that will be used as the only reference that store, the transaction PagSeguro
-	$ref = Mage::helper('pagseguro')->createReference(5,'true','true');
+if ($resource->getConnection('core_write')->isTableExists($table)) {
+    $query = 'SELECT reference FROM ' . $resource->getTableName($table);
+    $results = $readConnection->fetchAll($query);
+
+    if (!Mage::getStoreConfig('uol_pagseguro/store/reference')) {
+        $ref = current(current($results));
+    }
+} else {
+    // Creates a reference to 5 characters that will be used as the only reference that store, the transaction PagSeguro
+    $ref = Mage::helper('pagseguro')->createReference(5, 'true', 'true');
 }
 
-if (!Mage::getStoreConfig('uol_pagseguro/store/reference'))
-	// save the reference of store
-	Mage::getConfig()->saveConfig('uol_pagseguro/store/reference', $ref);
-
-
-// removes the table that contains the reference store in version 2.4
-//$sql = "DROP TABLE IF EXISTS `" . $table . "`;";
+if (!Mage::getStoreConfig('uol_pagseguro/store/reference')) {
+    // save the reference of store
+    Mage::getConfig()->saveConfig('uol_pagseguro/store/reference', $ref);
+}
 
 $table =  $tp . 'pagseguro_sales_code';
 $new_table =  $tp . 'pagseguro_orders';
+
 // checks if exists the table
 if ($resource->getConnection('core_write')->isTableExists($table)) {
-	if (!$resource->getConnection('core_write')->isTableExists($new_table)) {
-		//copies the transaction table used in version 2.4
-		$sql .= "CREATE TABLE `" . $new_table . "` LIKE `" . $table . "`;";
-		$sql .= "INSERT `" . $new_table . "` SELECT * FROM `" . $table . "`;";
-		
-		// change the table adding sent column
-		$sql .= "ALTER TABLE `" . $new_table . "` ADD sent int DEFAULT 0;";
-		$sql .= "ALTER TABLE `" . $new_table . "` ADD environment varchar(40);";
-	}	
+    if (!$resource->getConnection('core_write')->isTableExists($new_table)) {
+        //copies the transaction table used in version 2.4
+        $sql .= "CREATE TABLE `" . $new_table . "` LIKE `" . $table . "`;";
+        $sql .= "INSERT `" . $new_table . "` SELECT * FROM `" . $table . "`;";
+
+        // change the table adding sent column
+        $sql .= "ALTER TABLE `" . $new_table . "` ADD sent int DEFAULT 0;";
+        $sql .= "ALTER TABLE `" . $new_table . "` ADD environment varchar(40);";
+    }
 } else {
-	// Checks for the pagseguro_orders table if it does not exist is created
-	$sql .= "CREATE TABLE IF NOT EXISTS `" . $new_table . "` (
+    // Checks for the pagseguro_orders table if it does not exist is created
+    $sql .= "CREATE TABLE IF NOT EXISTS `" . $new_table . "` (
              `entity_id` int(11) NOT NULL AUTO_INCREMENT,
              `order_id` int(11),
              `transaction_code` varchar(80) NOT NULL,
              `sent` int DEFAULT 0,
              `environment` varchar(40),
              PRIMARY KEY (`entity_id`)
-             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";	
+             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 }
 
-// removes the table that contains the transactions store in version 2.4
-//$sql = "DROP TABLE IF EXISTS `" . $table . "`;";
+$table = $tp . "sales_order_status";
 
-// Verifies that no record of the status PagSeguro created, if you have not created	 
-$sql .= "INSERT INTO ".$tp."sales_order_status (STATUS, label)
-		 SELECT p.status, p.label FROM(SELECT 'chargeback_debitado_ps' AS STATUS, 'Chargeback Debitado' AS label) p
-		 WHERE (SELECT COUNT(STATUS) FROM ".$tp."sales_order_status WHERE STATUS = 'chargeback_debitado_ps') = 0;
-		 INSERT INTO ".$tp."sales_order_status (STATUS, label)
-		 SELECT p.status, p.label FROM(SELECT 'em_contestacao_ps' AS STATUS, 'Em Contestação' AS label) p
-		 WHERE (SELECT COUNT(STATUS) FROM ".$tp."sales_order_status WHERE STATUS = 'em_contestacao_ps') = 0;";
+// Verifies that no record of the status PagSeguro created, if you have not created
+$sql .= "INSERT INTO `" . $table . "` (STATUS, label)
+         SELECT p.status, p.label FROM(SELECT 'chargeback_debitado_ps' AS STATUS, 'Chargeback Debitado' AS label) p
+         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'chargeback_debitado_ps') = 0;
+
+         INSERT INTO `" . $table . "` (STATUS, label)
+         SELECT p.status, p.label FROM(SELECT 'em_contestacao_ps' AS STATUS, 'Em Contestação' AS label) p
+         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'em_contestacao_ps') = 0;";
+
+$table = $tp . "sales_order_status_state";
 
 // Verifies that no record of the status PagSeguro to be displayed on a new order if it has not created
-$sql .= "INSERT INTO ".$tp."sales_order_status_state (STATUS, state, is_default)
-		 SELECT p.status, p.state, p.is_default FROM
-		 (SELECT 'chargeback_debitado_ps' AS STATUS, 'new' AS state, '0' AS is_default) p
-		 WHERE (SELECT COUNT(STATUS) FROM ".$tp."sales_order_status_state WHERE STATUS = 'chargeback_debitado_ps') = 0;
-		 INSERT INTO ".$tp."sales_order_status_state (STATUS, state, is_default)
-		 SELECT p.status, p.state, p.is_default FROM
-		 (SELECT 'em_contestacao_ps' AS STATUS, 'new' AS state, '0' AS is_default) p
-		 WHERE (SELECT COUNT(STATUS) FROM ".$tp."sales_order_status_state WHERE STATUS = 'em_contestacao_ps') = 0;";
-		 						 
+$sql .= "INSERT INTO `" . $table . "` (STATUS, state, is_default)
+         SELECT p.status, p.state, p.is_default FROM
+         (SELECT 'chargeback_debitado_ps' AS STATUS, 'new' AS state, '0' AS is_default) p
+         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'chargeback_debitado_ps') = 0;
+
+         INSERT INTO `" . $table . "` (STATUS, state, is_default)
+         SELECT p.status, p.state, p.is_default FROM
+         (SELECT 'em_contestacao_ps' AS STATUS, 'new' AS state, '0' AS is_default) p
+         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'em_contestacao_ps') = 0;";
+
 $installer->run($sql);
 $installer->endSetup();
