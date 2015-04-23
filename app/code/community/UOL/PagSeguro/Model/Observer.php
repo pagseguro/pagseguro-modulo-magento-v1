@@ -36,4 +36,12 @@ class UOL_PagSeguro_Model_Observer
             'payment_environment' => 'environment')
         );
     }
+
+    /**
+    * Performs a function that checks if the credentials are correct.
+    */
+    public function adminSystemConfigPaymentSave()
+    {
+        Mage::helper('pagseguro')->checkCredentials();
+    }
 }

@@ -69,10 +69,15 @@ class UOL_PagSeguro_Model_Adminhtml_Config
         $alert  = $helper->__('Suas transações serão feitas em um ambiente de testes.') . '<br />';
         $alert .= $helper->__('Nenhuma das transações realizadas nesse ambiente tem valor monetário.');
 
+        $notification .= $helper->__('Email ou token inválidos para o ambiente selecionado.');
+
         $interface = '<div class="pagseguro-comment">
                         ' . $this->css . '
                         ' . $helper->getHeader($this->logo). '
                      </div>';
+        $email = Mage::getStoreConfig('payment/pagseguro/email');
+        $token = Mage::getStoreConfig('payment/pagseguro/token');
+        $credentials = Mage::getStoreConfig('uol_pagseguro/store/credentials');
 
         $comment  = '<script src="' . $this->jquery . '"></script>';
         $comment .= '<script src="' . $this->js . '"></script>';
@@ -95,6 +100,14 @@ class UOL_PagSeguro_Model_Adminhtml_Config
                                  Modal.message("success", "' . $alert . '");
                                 }
                             });
+
+                            var email  = "' . $email . '";
+                            var token  = "' . $token . '";
+                            var credentials  = "' . $credentials . '";
+
+                            if (email && token && credentials == 0) {
+                               Modal.message("error", "' . $notification . '");
+                            }
                         });
                      </script>';
         $comment .= $interface;

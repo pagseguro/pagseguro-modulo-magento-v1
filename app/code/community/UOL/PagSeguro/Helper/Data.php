@@ -633,11 +633,11 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     * @param date $dtFinaly - Date end of filter
     * @return object $transactions - It contains all transactions found
     */
-    private function getTransactionService($credential, $page, $dtStart, $dtFinaly)
+    private function getTransactionService($credential, $page, $nRecords, $dtStart, $dtFinaly)
     {
-        $transactions = PagSeguroTransactionSearchService::searchByDate($credential, $page, 1000, $dtStart, $dFinaly);
+        $records = PagSeguroTransactionSearchService::searchByDate($credential, $page, $nRecords, $dtStart, $dFinaly);
 
-        return $transactions;
+        return $records;
     }
 
     /**
@@ -654,12 +654,12 @@ class UOL_PagSeguro_Helper_Data extends HelperData
             $dateStart  = $this->getDateStart();
             $dateFinaly = $this->getDateFinally();
 
-            $transactions = $this->getTransactionService($credential, 1, $dateStart, $dateFinaly);
+            $transactions = $this->getTransactionService($credential, 1, 1000, $dateStart, $dateFinaly);
             $pages = $transactions->getTotalPages();
 
             if ($pages > 1) {
                 for ($i = 1; $i < ($pages + 1); $i++) {
-                    $transactions = $this->getTransactionService($credential, $i, $dateStart, $dateFinaly);
+                    $transactions = $this->getTransactionService($credential, $i, 1000, $dateStart, $dateFinaly);
                     $transactionArray .= array_push($transactions->getTransactions());
                 }
             } else {
@@ -784,5 +784,26 @@ class UOL_PagSeguro_Helper_Data extends HelperData
         $dataSet .= ']';
 
         return $dataSet;
+    }
+
+    /**
+    * Makes a query in webservice to detect if the credentials are correct.
+    * If are all right, is assigned value 1 else assigned value 2 to field credentials of table core_config_data
+    */
+    public function checkCredentials()
+    {
+        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
+        $obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
+
+        try {
+            $credential = $obj->getCredentialsInformation();
+            $dateStart  = $this->getDateStart();
+            $transactions = $this->getTransactionService($credential, 1, 1, $dateStart);
+            Mage::getConfig()->saveConfig('uol_pagseguro/store/credentials', 1);
+        } catch (PagSeguroServiceException $e) {
+            if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
+                Mage::getConfig()->saveConfig('uol_pagseguro/store/credentials', 0);
+            }
+        }
     }
 }

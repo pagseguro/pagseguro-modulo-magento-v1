@@ -21,7 +21,7 @@ limitations under the License.
         <UOL_PagSeguro>
             <version>2.6.0</version>
         </UOL_PagSeguro>
-    </modules> 
+    </modules>
     <global>
         <blocks>
             <uol_pagseguro>
@@ -32,12 +32,12 @@ limitations under the License.
             <uol_pagseguro>
                 <class>UOL_PagSeguro_Model</class>
             </uol_pagseguro>
-        </models>        
+        </models>
         <helpers>
             <pagseguro>
                 <class>UOL_PagSeguro_Helper</class>
             </pagseguro>
-        </helpers>		
+        </helpers>
 		<template>
             <email>
                 <payment_pagseguro_template translate="label" module="pagseguro">
@@ -46,7 +46,7 @@ limitations under the License.
                     <type>html</type>
                 </payment_pagseguro_template>
             </email>
-        </template> 
+        </template>
         <resources>
             <uol_pagseguro_setup>
                 <setup>
@@ -148,7 +148,7 @@ limitations under the License.
                     </children>
                 </admin>
             </resources>
-        </acl>        
+        </acl>
         <layout>
             <updates>
                 <pagseguro>
@@ -165,6 +165,14 @@ limitations under the License.
 					</uol_pagseguro>
 				</observers>
 			</sales_order_grid_collection_load_before>
+            <admin_system_config_changed_section_payment>
+                <observers>
+                    <uol_pagseguro>
+                        <model>uol_pagseguro/observer</model>
+                        <method>adminSystemConfigPaymentSave</method>
+                    </uol_pagseguro>
+                </observers>
+            </admin_system_config_changed_section_payment>
 		</events>
 	</adminhtml>
     <frontend>

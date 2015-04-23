@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-class UOL_PagSeguro_Block_Payment extends \Mage_Core_Block_Template
+class UOL_PagSeguro_Block_Payment extends Mage_Core_Block_Template
 {
     protected function getConvertCode()
     {

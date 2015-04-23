@@ -138,3 +138,10 @@ i.icon-pagseguro-msg.large,
 .pagseguro-msg.pagseguro-msg-large:before { font-size: 7em; }
 #pagseguro-module-contents .pagseguro-msg { background: #F3F3F3; border: solid 1px #E3E3E3; border-radius: 2px 2px 2px; }
 .system-tooltip-box { width: 37% !important; height: 150px !important; text-align: justify; border: none; padding-left: 3%; padding-top: 12%; }
+
+/* Modal */
+i.icon-pagseguro-msg.small, .pagseguro-msg.pagseguro-msg-small::before { font-size: 3em; margin: 0 0.33em 0 0.053em; }
+i.icon-pagseguro-msg.icon-error, .pagseguro-msg.pagseguro-msg-error::before { background-position: 0 -2.56em; }
+i.icon-pagseguro-msg, .pagseguro-msg::before { height: 1em; width: 1em; }
+.pagseguro-msg::before { content: ""; }
+i.icon-pagseguro-msg, .pagseguro-msg::before { background-image: url("../images/messages.png"); background-repeat: no-repeat; background-size: cover; display: inline-block; overflow: hidden; vertical-align: middle; }
