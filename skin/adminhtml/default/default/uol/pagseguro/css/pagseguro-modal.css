@@ -40,7 +40,7 @@ limitations under the License.
 #colorbox,
 #cboxContent,
 #cboxLoadedContent { box-sizing: content-box; }
-/* 
+/*
     User Style:
     Change the following styles to modify the appearance of ColorBox.  They are
     ordered & tabbed in a way that represents the nesting of the generated HTML.

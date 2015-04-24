@@ -26,7 +26,7 @@ limitations under the License.
             <block type="uol_pagseguro/payment" name="payment" template="uol/pagseguro/payment.phtml" />
         </reference>
     </pagseguro_payment_payment>
-    
+
     <pagseguro_payment_payment>
         <remove name="left"/>
         <reference name="root">
@@ -46,10 +46,10 @@ limitations under the License.
             <block type="uol_pagseguro/error" name="error" template="uol/pagseguro/error.phtml" />
         </reference>
     </pagseguro_payment_payment>
-	
-	<checkout_onepage_index translate="label">
-		<reference name="head">
-			<block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml" />
-		</reference>
-	</checkout_onepage_index>
+
+    <checkout_onepage_index translate="label">
+        <reference name="head">
+            <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml" />
+        </reference>
+    </checkout_onepage_index>
 </layout>

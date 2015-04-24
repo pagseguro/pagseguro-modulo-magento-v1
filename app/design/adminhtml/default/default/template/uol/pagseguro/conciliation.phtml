@@ -20,358 +20,358 @@ limitations under the License.
 
 ?>
 <?php
-	$helper = Mage::helper('pagseguro/conciliation');
-	$helper->checkTransactionAccess();
-	$_SESSION['days'] = 0;	
+    $helper = Mage::helper('pagseguro/conciliation');
+    $helper->checkTransactionAccess();
+    $_SESSION['days'] = 0;
 ?>
 
-<div id="pagseguro-module">	
+<div id="pagseguro-module">
     <?php echo $helper->getHeader(); ?>
-	<div id="pagseguro-module-content">
-		<div class="wrapper">		    
-		    <?php echo $helper->getSideMenu();?>
-		    <div id="pagseguro-module-contents">
-				<h2 class="title"><?php echo $helper->__('Conciliação'); ?></h2>
-				<p>
-					<?php 
-						$string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas. ';
-						$string .= 'Ela pode ser usada periodicamente para verificar se o seu sistema recebeu todas as notificações ';
-						$string .= 'de transações enviadas pelo PagSeguro, de forma a conciliar as transações armazenadas ';
-						$string .= 'em seu sistema com o PagSeguro.';
-						echo $helper->__($string);
-					 ?>
-				</p>
+    <div id="pagseguro-module-content">
+        <div class="wrapper">
+            <?php echo $helper->getSideMenu();?>
+            <div id="pagseguro-module-contents">
+                <h2 class="title"><?php echo $helper->__('Conciliação'); ?></h2>
+                <p>
+                    <?php
+                        $string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas. ';
+                        $string .= 'Ela pode ser usada periodicamente para verificar se o seu sistema recebeu todas as notificações ';
+                        $string .= 'de transações enviadas pelo PagSeguro, de forma a conciliar as transações armazenadas ';
+                        $string .= 'em seu sistema com o PagSeguro.';
+                        echo $helper->__($string);
+                     ?>
+                </p>
 
-				<div class="pagseguro-search-tools">
-					<form action="javascript:void(0)" method="post">
-						<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
-						<input type="submit" class="pagseguro-button" id="conciliation-search-button" value="<?php echo $helper->__('Pesquisar');?>">
-						<select name="pagseguro-days" class="pagseguro-field" id="pagseguro-conciliation-days-input">
-					        <option value="5">5</option>
-					        <option value="10">10</option>
-					        <option value="15">15</option>
-					        <option value="20">20</option>
-					        <option value="25">25</option>
-					        <option value="30">30</option>
-					    </select>
-						<label><?php echo $helper->__('últimos dias'); ?></label>
-					    <div class="right-tools">
-						    <input type="submit" class="pagseguro-button" id="conciliation-button" value="<?php echo $helper->__("Conciliar");?>" disabled />
-						</div>					    
-					</form>
-				</div>
+                <div class="pagseguro-search-tools">
+                    <form action="javascript:void(0)" method="post">
+                        <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
+                        <input type="submit" class="pagseguro-button" id="conciliation-search-button" value="<?php echo $helper->__('Pesquisar');?>">
+                        <select name="pagseguro-days" class="pagseguro-field" id="pagseguro-conciliation-days-input">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                            <option value="30">30</option>
+                        </select>
+                        <label><?php echo $helper->__('últimos dias'); ?></label>
+                        <div class="right-tools">
+                            <input type="submit" class="pagseguro-button" id="conciliation-button" value="<?php echo $helper->__("Conciliar");?>" disabled />
+                        </div>
+                    </form>
+                </div>
 
-				<table id="conciliation-table" class="pagseguro-table">
-					<thead>
-						<tr>
-							<th class="select_checkbox" width="3%" onclick="checkboxes();">
-								<input type="checkbox" id="pagseguro-check-all" />
-							</th>
-							<th width="10%"><?php echo $helper->__('Data');?></th>
-							<th width="12%"><?php echo $helper->__('ID Magento');?></th>
-							<th width="30%"><?php echo $helper->__('ID PagSeguro');?></th>
-							<th width="17%"><?php echo $helper->__('Status Magento');?></th>
-							<th width="17%"><?php echo $helper->__('Status PagSeguro');?></th>
-							<th width="11%"><?php echo $helper->__('Pedido');?></th>
-						</tr>
-					</thead>
-				</table>
+                <table id="conciliation-table" class="pagseguro-table">
+                    <thead>
+                        <tr>
+                            <th class="select_checkbox" width="3%" onclick="checkboxes();">
+                                <input type="checkbox" id="pagseguro-check-all" />
+                            </th>
+                            <th width="10%"><?php echo $helper->__('Data');?></th>
+                            <th width="12%"><?php echo $helper->__('ID Magento');?></th>
+                            <th width="30%"><?php echo $helper->__('ID PagSeguro');?></th>
+                            <th width="17%"><?php echo $helper->__('Status Magento');?></th>
+                            <th width="17%"><?php echo $helper->__('Status PagSeguro');?></th>
+                            <th width="11%"><?php echo $helper->__('Pedido');?></th>
+                        </tr>
+                    </thead>
+                </table>
 
-				<?php
-					$noTransaction = 'Nenhum resultado.';	
-					$noTransactionSelected = $helper->__("Selecione pelo menos um campo da coluna 'Selecionar'.");
-					$transactionSuccess = $helper->__("Transação conciliada com sucesso!");
-					$transactionsSuccess = $helper->__("Transações conciliadas com sucesso!");
-				?>
+                <?php
+                    $noTransaction = 'Nenhum resultado.';
+                    $noTransactionSelected = $helper->__("Selecione pelo menos um campo da coluna 'Selecionar'.");
+                    $transactionSuccess = $helper->__("Transação conciliada com sucesso!");
+                    $transactionsSuccess = $helper->__("Transações conciliadas com sucesso!");
+                ?>
 
-				<div id="conciliation-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
-			        <p><?php echo $helper->__('Somente transações geradas a partir da versão 2.3 do módulo serão listadas.'); ?></p>
-			    </div>
-			</div>
-		</div>
-	</div>
+                <div id="conciliation-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
+                    <p><?php echo $helper->__('Somente transações geradas a partir da versão 2.3 do módulo serão listadas.'); ?></p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<script type="text/javascript">	
-	var i = 0;	
-		
-	jQuery(document).ready(function(){
-		Menu.init();
-		PageConciliation.init();
+<script type="text/javascript">
+    var i = 0;
+
+    jQuery(document).ready(function(){
+        Menu.init();
+        PageConciliation.init();
     });
 
     var PageConciliation = new function(){
-		var requestTransactions = function() {
-			var getDays = jQuery('#pagseguro-conciliation-days-input').find(":selected").text();
-        	var converted = '';
-        	
-        	// calls the modal of loading
-        	Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
-        	
+        var requestTransactions = function() {
+            var getDays = jQuery('#pagseguro-conciliation-days-input').find(":selected").text();
+            var converted = '';
+
+            // calls the modal of loading
+            Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
+
             jQuery.ajax({
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
                 type: "POST",
-                data: { 
-                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
-                		days: getDays,
-                		origin: 'conciliation'
-                	  },
-                success: function(result) {   
-                	if (result == "[HTTP 401] - UNAUTHORIZED") {                		
-        				Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
-        			} else {                	
-	                	// handle the return of ajax and dates back to table    	
-		                if (result == "run") {
-							jQuery('#conciliation-table').dataTable().fnClearTable(true);
-							Modal.message('alert', "Não há transações para conciliação no período.");
-		                } else {
-		                	converted = JSON.parse(result);
-		                    jQuery('#conciliation-table').dataTable().fnClearTable(true);           
-		                    jQuery('#conciliation-table').dataTable().fnAddData(converted);
-		                    jQuery('#conciliation-table').dataTable()._fnInitComplete();
-		                    //After reassembling the table removes the modal of loading
-		                    Modal.hideLoading();
-		                }	
-	                }                   
+                data: {
+                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                        days: getDays,
+                        origin: 'conciliation'
+                      },
+                success: function(result) {
+                    if (result == "[HTTP 401] - UNAUTHORIZED") {
+                        Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
+                    } else {
+                        // handle the return of ajax and dates back to table
+                        if (result == "run") {
+                            jQuery('#conciliation-table').dataTable().fnClearTable(true);
+                            Modal.message('alert', "Não há transações para conciliação no período.");
+                        } else {
+                            converted = JSON.parse(result);
+                            jQuery('#conciliation-table').dataTable().fnClearTable(true);
+                            jQuery('#conciliation-table').dataTable().fnAddData(converted);
+                            jQuery('#conciliation-table').dataTable()._fnInitComplete();
+                            //After reassembling the table removes the modal of loading
+                            Modal.hideLoading();
+                        }
+                    }
                 },
                 error: function(err) {
-                	// Remove the modal of loading
+                    // Remove the modal of loading
                     Modal.hideLoading();
                 }
-			});	
-		}
+            });
+        }
 
-		var doConciliation = function(){
-			var ckbFalse = 0;
-			var j = 0;
-			
-			jQuery('input[name="conciliation_orders[]"]').each(function() {
-				if (jQuery(this).is(':checked') == false) {
-					ckbFalse++;					
-				}
-				j++;
-			});	
-			if (j == ckbFalse) {
-				jQuery('#messages').empty();					
-				setMsgError("<?php echo $helper->__($noTransactionSelected); ?>");
-			} else {
-				jQuery('#messages').empty();
-				
-				var config = '';
-		    	var id = '';
-		    	var code = '';
-		    	var status = '';
-		    	var jsonArr = [];
-		    	var count = 0;
-		    	
-		    	jQuery('input[name="conciliation_orders[]"]').each(function() {
-					if (jQuery(this).is(':checked') == true) {
-							count++;
-							config = jQuery(this).data('config').split('/');
-							jsonArr.push({
-						        id: config[0],
-						        code: config[1],
-						        status: config[2]
-						    });        			
-					}					    
-			    });
-			    
-			    var msg	= '';
-			    
-			    if (count == 1)
-			    	msg = '<?php echo " " . $helper->__($transactionSuccess); ?>';
-			    else
-			    	msg = count + '<?php echo " " . $helper->__($transactionsSuccess); ?>';
-			    
-		    	var converted = '';
-		    	
-				Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
-				
-				jQuery.ajax({
-	                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
-	                type: "POST",
-	                data: { 
-	                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
-	                		json: jsonArr,
-	                		origin: 'conciliation'	                		
-	                	  },
-	                success: function(result) { 
-	                    i = 0;
+        var doConciliation = function(){
+            var ckbFalse = 0;
+            var j = 0;
 
-		            	// handle the return of ajax and dates back to table    	
-		                if (result == "run") {
-							jQuery('#conciliation-table').dataTable().fnClearTable(true);
-		                	jQuery('#messages').empty();					
-		                } else {
-		                	converted = JSON.parse(result);
-		                	
-		                    var oTable = jQuery('#conciliation-table').dataTable();
-		                    
-			                oTable.fnClearTable(false);           
-			                oTable.fnAddData(converted, false);
-			                oTable.fnStandingRedraw();
-		                    jQuery('#messages').empty();					
-		                }
-		                	 
-		                jQuery(':checkbox').prop('checked','');
-		                jQuery('#conciliation-button').prop("disabled", true);
-		                
-		                Modal.message('success', msg);
-	                },
-	                error: function() {
-	                     Modal.message('error', 'Não foi possível realizar a conciliação.');
-	                }
-	             });
-			}
-		}
+            jQuery('input[name="conciliation_orders[]"]').each(function() {
+                if (jQuery(this).is(':checked') == false) {
+                    ckbFalse++;
+                }
+                j++;
+            });
+            if (j == ckbFalse) {
+                jQuery('#messages').empty();
+                setMsgError("<?php echo $helper->__($noTransactionSelected); ?>");
+            } else {
+                jQuery('#messages').empty();
 
-		var prepareTable = function(){
+                var config = '';
+                var id = '';
+                var code = '';
+                var status = '';
+                var jsonArr = [];
+                var count = 0;
 
-			var flow = 0;
-			var totalRows = 0;	
-			var page = 0;
-			var currentPage = 0;
-			var oTable;		
+                jQuery('input[name="conciliation_orders[]"]').each(function() {
+                    if (jQuery(this).is(':checked') == true) {
+                            count++;
+                            config = jQuery(this).data('config').split('/');
+                            jsonArr.push({
+                                id: config[0],
+                                code: config[1],
+                                status: config[2]
+                            });
+                    }
+                });
 
-			jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function(oSettings) {
-			    //redraw to account for filtering and sorting
-			    // concept here is that (for client side) there is a row got inserted at the end (for an add)
-			    // or when a record was modified it could be in the middle of the table
-			    // that is probably not supposed to be there - due to filtering / sorting
-			    // so we need to re process filtering and sorting
-			    // BUT - if it is server side - then this should be handled by the server - so skip this step
-			    if(oSettings.oFeatures.bServerSide === false){
-			        var before = oSettings._iDisplayStart;
-			        
-			        oSettings.oApi._fnReDraw(oSettings);
-			        //iDisplayStart has been reset to zero - so lets change it back
-			        oSettings._iDisplayStart = before;
-			        oSettings.oApi._fnCalculateEnd(oSettings);
-			    }
-			      
-			    //draw the 'current' page
-			    oSettings.oApi._fnDraw(oSettings);
-			};
-			
-			// Initiates the creation of the table dataTable
-			jQuery('#conciliation-table').dataTable({			
-				"info": false,
-				"lengthChange": false,
-				"searching": false,
-				"bStateSave": true,
-				"pageLength": 10,
-				"aaSorting": [[ 1, "desc" ]],
-				"aoColumnDefs": [
-					{ 'bSortable': false, 'aTargets': [ 0, 6] },
-					{ "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4, 5, 6 ] }
-				],
-				
-				// Creates paging and notifies when there is no record
-				"oLanguage": {
-					"sEmptyTable":"<?php echo $helper->__($noTransaction); ?>",
-					"oPaginate": {
-						"sNext": '<?php echo $helper->__('Próximo');?>',
-						"sLast": '<?php echo $helper->__('Último');?>',
-						"sFirst": '<?php echo $helper->__('Primeiro');?>',
-						"sPrevious": '<?php echo $helper->__('Anterior');?>'
-					}
-				},
-				
-				// Every interaction with the table it is called
-				"fnDrawCallback": function(oSettings) {	
-					// Makes when clicked on a registry is redirected to the editing order of Magento	
-					oTable = this;
-					totalRows = oTable.fnGetData().length;
-					
-					var table = jQuery('#conciliation-table').DataTable();
-					var info = table.page.info();
+                var msg = '';
 
-					//trClick
-					if (totalRows >= 1) {
-						var href;
-						jQuery('#conciliation-table tbody tr').unbind('click');
+                if (count == 1)
+                    msg = '<?php echo " " . $helper->__($transactionSuccess); ?>';
+                else
+                    msg = count + '<?php echo " " . $helper->__($transactionsSuccess); ?>';
 
-						jQuery('#conciliation-table tbody tr').bind('click', function () {
-							href = jQuery(table.row( this ).data()[6])[0].href;
-							jQuery('#conciliation-table tbody').off();
-							jQuery('#conciliation-table tbody').on('click', 'td', function () {
-								if (jQuery(this).index() != 0 && jQuery(this).index() != 6){
-									window.open(href, '_blank');
-								}
-							} );
-						} );
+                var converted = '';
 
-					}
+                Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
-					//Checkbox enable | disable
-					jQuery('#conciliation-table input[type="checkbox"]').change(function(){
-		            	var isChecked = jQuery("#conciliation-table tbody :checked").length;
-		          
-						if (isChecked > 0) {
-							jQuery('#conciliation-button').prop("disabled", false);
-						} else {
-							jQuery('#conciliation-button').prop("disabled", true);
-						}
+                jQuery.ajax({
+                    url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                    type: "POST",
+                    data: {
+                            form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                            json: jsonArr,
+                            origin: 'conciliation'
+                          },
+                    success: function(result) {
+                        i = 0;
 
-		            });
-					
-					// Only if greater than 10 records show paging
-					if (totalRows > 10) {					
-						jQuery('.dataTables_paginate').css('display','block');
-						flow = 1;					
-					} else {									
-						jQuery('.dataTables_paginate').css('display','none');
-						flow = 0;
-					}
-					
-					// If the home page does not display the previous page button
-					if (info.page == 0) {
-						jQuery('a#conciliation-table_previous').css('display','none');
-					}			
-					
-					// If the last page does not display the next page button
-					if ((info.page+1) == info.pages) {
-						jQuery('a#conciliation-table_next').css('display','none');
-					}	
-					
-					i++;
-					
-					// Stores which is the page that appears after update				
-					if (i == 1) {
-						if (page >= 1 && totalRows < 1) {
-							currentPage = page - 1;	
-						} else {
-							currentPage = page;	
-						}
-					}	
-					
-					// Stores the current page, calculated by number of records and number of records per page					
-					page  = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);					
-				},
-				
-				// When it completes assembly of the table is executed
-				"initComplete": function (oSettings) {				
-			        oTable = this;
-			        			        
-			        if (currentPage != 0) {
-			        	// When upgraded back on the page that was
-			        	oTable.fnPageChange(currentPage);	
-			        }	        
-			    }
-			});	
-		}
+                        // handle the return of ajax and dates back to table
+                        if (result == "run") {
+                            jQuery('#conciliation-table').dataTable().fnClearTable(true);
+                            jQuery('#messages').empty();
+                        } else {
+                            converted = JSON.parse(result);
 
-		this.init = function() {
-        	prepareTable();
-        	
+                            var oTable = jQuery('#conciliation-table').dataTable();
+
+                            oTable.fnClearTable(false);
+                            oTable.fnAddData(converted, false);
+                            oTable.fnStandingRedraw();
+                            jQuery('#messages').empty();
+                        }
+
+                        jQuery(':checkbox').prop('checked','');
+                        jQuery('#conciliation-button').prop("disabled", true);
+
+                        Modal.message('success', msg);
+                    },
+                    error: function() {
+                         Modal.message('error', 'Não foi possível realizar a conciliação.');
+                    }
+                 });
+            }
+        }
+
+        var prepareTable = function(){
+
+            var flow = 0;
+            var totalRows = 0;
+            var page = 0;
+            var currentPage = 0;
+            var oTable;
+
+            jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function(oSettings) {
+                //redraw to account for filtering and sorting
+                // concept here is that (for client side) there is a row got inserted at the end (for an add)
+                // or when a record was modified it could be in the middle of the table
+                // that is probably not supposed to be there - due to filtering / sorting
+                // so we need to re process filtering and sorting
+                // BUT - if it is server side - then this should be handled by the server - so skip this step
+                if(oSettings.oFeatures.bServerSide === false){
+                    var before = oSettings._iDisplayStart;
+
+                    oSettings.oApi._fnReDraw(oSettings);
+                    //iDisplayStart has been reset to zero - so lets change it back
+                    oSettings._iDisplayStart = before;
+                    oSettings.oApi._fnCalculateEnd(oSettings);
+                }
+
+                //draw the 'current' page
+                oSettings.oApi._fnDraw(oSettings);
+            };
+
+            // Initiates the creation of the table dataTable
+            jQuery('#conciliation-table').dataTable({
+                "info": false,
+                "lengthChange": false,
+                "searching": false,
+                "bStateSave": true,
+                "pageLength": 10,
+                "aaSorting": [[ 1, "desc" ]],
+                "aoColumnDefs": [
+                    { 'bSortable': false, 'aTargets': [ 0, 6] },
+                    { "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4, 5, 6 ] }
+                ],
+
+                // Creates paging and notifies when there is no record
+                "oLanguage": {
+                    "sEmptyTable":"<?php echo $helper->__($noTransaction); ?>",
+                    "oPaginate": {
+                        "sNext": '<?php echo $helper->__('Próximo');?>',
+                        "sLast": '<?php echo $helper->__('Último');?>',
+                        "sFirst": '<?php echo $helper->__('Primeiro');?>',
+                        "sPrevious": '<?php echo $helper->__('Anterior');?>'
+                    }
+                },
+
+                // Every interaction with the table it is called
+                "fnDrawCallback": function(oSettings) {
+                    // Makes when clicked on a registry is redirected to the editing order of Magento
+                    oTable = this;
+                    totalRows = oTable.fnGetData().length;
+
+                    var table = jQuery('#conciliation-table').DataTable();
+                    var info = table.page.info();
+
+                    //trClick
+                    if (totalRows >= 1) {
+                        var href;
+                        jQuery('#conciliation-table tbody tr').unbind('click');
+
+                        jQuery('#conciliation-table tbody tr').bind('click', function () {
+                            href = jQuery(table.row( this ).data()[6])[0].href;
+                            jQuery('#conciliation-table tbody').off();
+                            jQuery('#conciliation-table tbody').on('click', 'td', function () {
+                                if (jQuery(this).index() != 0 && jQuery(this).index() != 6){
+                                    window.open(href, '_blank');
+                                }
+                            } );
+                        } );
+
+                    }
+
+                    //Checkbox enable | disable
+                    jQuery('#conciliation-table input[type="checkbox"]').change(function(){
+                        var isChecked = jQuery("#conciliation-table tbody :checked").length;
+
+                        if (isChecked > 0) {
+                            jQuery('#conciliation-button').prop("disabled", false);
+                        } else {
+                            jQuery('#conciliation-button').prop("disabled", true);
+                        }
+
+                    });
+
+                    // Only if greater than 10 records show paging
+                    if (totalRows > 10) {
+                        jQuery('.dataTables_paginate').css('display','block');
+                        flow = 1;
+                    } else {
+                        jQuery('.dataTables_paginate').css('display','none');
+                        flow = 0;
+                    }
+
+                    // If the home page does not display the previous page button
+                    if (info.page == 0) {
+                        jQuery('a#conciliation-table_previous').css('display','none');
+                    }
+
+                    // If the last page does not display the next page button
+                    if ((info.page+1) == info.pages) {
+                        jQuery('a#conciliation-table_next').css('display','none');
+                    }
+
+                    i++;
+
+                    // Stores which is the page that appears after update
+                    if (i == 1) {
+                        if (page >= 1 && totalRows < 1) {
+                            currentPage = page - 1;
+                        } else {
+                            currentPage = page;
+                        }
+                    }
+
+                    // Stores the current page, calculated by number of records and number of records per page
+                    page  = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);
+                },
+
+                // When it completes assembly of the table is executed
+                "initComplete": function (oSettings) {
+                    oTable = this;
+
+                    if (currentPage != 0) {
+                        // When upgraded back on the page that was
+                        oTable.fnPageChange(currentPage);
+                    }
+                }
+            });
+        }
+
+        this.init = function() {
+            prepareTable();
+
             jQuery('#conciliation-search-button').click(function () {
                 requestTransactions();
             });
-            
+
             jQuery('#conciliation-button').click(function () {
                 doConciliation();
             });
         };
-	}
+    }
 </script>
 <script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js');?>"></script>

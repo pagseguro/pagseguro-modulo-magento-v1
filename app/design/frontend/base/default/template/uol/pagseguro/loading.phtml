@@ -20,9 +20,9 @@ limitations under the License.
 
 ?>
 <?php
-	$helper = Mage::helper('pagseguro');
-	$baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
-	$adminSkinUrl = $baseUrl . 'skin/adminhtml/default/default/';
+    $helper = Mage::helper('pagseguro');
+    $baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+    $adminSkinUrl = $baseUrl . 'skin/adminhtml/default/default/';
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $adminSkinUrl . 'uol/pagseguro/css/pagseguro-modal.css'; ?>" media="all" />
@@ -33,30 +33,30 @@ limitations under the License.
 <script type="text/javascript" src="<?php echo $adminSkinUrl . 'uol/pagseguro/js/pagseguro-module.js';?>"></script>
 
 <script type="text/javascript">
-	var jQuery = jQuery.noConflict();			
-	jQuery(document).ready(function(){		
-		jQuery(".button").click(function(e){
-			if (jQuery(this).attr('onclick') == 'payment.save()') {
-				if (jQuery.type(jQuery('.btn-checkout')[0]) == 'object') {	
-					jQuery('.btn-checkout').remove();
-				}
-				if (jQuery('input:radio[name="payment[method]"]:checked').val() == 'pagseguro') {					
-					var interval = setInterval(function() {
-						if (jQuery.type(jQuery('.btn-checkout')[0]) == 'object') {							
-							jQuery('.btn-checkout').attr('onclick','activeLoading(), review.save();');
-							clearInterval(interval);
-						}
-					}, 0);
-				}
-			}		    
-		});
-	});
-	
-	function activeLoading() {
-		jQuery('#review-please-wait.please-wait').addClass('ps_msg_hidden');
-		jQuery('.btn-checkout').remove();
-		Modal.showLoading('<?php echo $helper->__('Processando o pedido...') ?>');
-		jQuery('#pagseguro-loading-message h3').attr('style','min-width:210px; font-size: 16px !important;');
-		jQuery('#cboxContent').css('height','104px');
-	}
+    var jQuery = jQuery.noConflict();
+    jQuery(document).ready(function(){
+        jQuery(".button").click(function(e){
+            if (jQuery(this).attr('onclick') == 'payment.save()') {
+                if (jQuery.type(jQuery('.btn-checkout')[0]) == 'object') {
+                    jQuery('.btn-checkout').remove();
+                }
+                if (jQuery('input:radio[name="payment[method]"]:checked').val() == 'pagseguro') {
+                    var interval = setInterval(function() {
+                        if (jQuery.type(jQuery('.btn-checkout')[0]) == 'object') {
+                            jQuery('.btn-checkout').attr('onclick','activeLoading(), review.save();');
+                            clearInterval(interval);
+                        }
+                    }, 0);
+                }
+            }
+        });
+    });
+
+    function activeLoading() {
+        jQuery('#review-please-wait.please-wait').addClass('ps_msg_hidden');
+        jQuery('.btn-checkout').remove();
+        Modal.showLoading('<?php echo $helper->__('Processando o pedido...') ?>');
+        jQuery('#pagseguro-loading-message h3').attr('style','min-width:210px; font-size: 16px !important;');
+        jQuery('#cboxContent').css('height','104px');
+    }
 </script>

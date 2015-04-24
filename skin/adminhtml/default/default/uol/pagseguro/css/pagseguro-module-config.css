@@ -23,12 +23,12 @@ limitations under the License.
 #pagseguro-module { background: none repeat scroll 0 0 #F2F2F2; box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.2); margin-bottom: 5em; color: #666; font-family: Arial !important; font-size: 12px; overflow: hidden; position: relative; }
 #pagseguro-module .wrapper { margin: 0 auto; max-width: 96%; position: relative; }
 #pagseguro-module-content { padding:1em 0 2em 0; position: relative; background: url("../images/background.png") no-repeat scroll center 0 #FFF; background-size: contain; overflow: hidden; clear: both; min-height: 500px; }
-#pagseguro-module p { margin: 1em 0; line-height: 1.4em; } 
+#pagseguro-module p { margin: 1em 0; line-height: 1.4em; }
 
 /* Buttons */
 .pagseguro-button { -webkit-box-sizing : border-box; -moz-box-sizing : border-box; -ms-box-sizing : border-box; -o-box-sizing : border-box; box-sizing : border-box; }
 .pagseguro-button { font-family : "Arial"; font-size:1.4em!important; cursor : pointer; position : relative; display : inline-block; color : #FFF!important; height : auto !important; line-height : 1.1em !important; border:none; border-top: 0.1em solid rgba(0, 0, 0, 0.05); border-left: 0.1em solid rgba(0, 0, 0, 0.1); border-bottom: 0.1em solid rgba(0, 0, 0, 0.2); border-right: 0.1em solid rgba(0, 0, 0, 0.1); border-radius : 0.2em; padding : 0.3em 0.55em !important; background-image: -webkit-linear-gradient(transparent 20%, rgba(0, 0, 0, 0.1)); background-image: -moz-linear-gradient(transparent 20%, rgba(0, 0, 0, 0.1)); background-image: -o-linear-gradient(transparent 20%, rgba(0, 0, 0, 0.1)); background-image: linear-gradient(transparent 20%, rgba(0, 0, 0, 0.1)); -webkit-user-select : none; -moz-user-select : none; -ms-user-select : none; -o-user-select : none; user-select : none; text-decoration:none !important; appearance:none; -moz-appearance:none; -webkit-appearance:none; font-weight: bold; -webkit-transition:box-shadow 200ms; -o-transition:box-shadow 200ms; transition:box-shadow 200ms; }
-.pagseguro-button:active { box-shadow : 0 0.1125em 0.4125em rgba(0, 0, 0, 0.3) inset !important; } 
+.pagseguro-button:active { box-shadow : 0 0.1125em 0.4125em rgba(0, 0, 0, 0.3) inset !important; }
 .pagseguro-button:hover { box-shadow : 0 2em 2em rgba(255, 255, 255, 0.125) inset; }
 .pagseguro-button.theme-gray,
 .pagseguro-button.gray-theme { background-color : #f6f6f6; color : #41b320!important; text-shadow : none; }
@@ -58,7 +58,7 @@ limitations under the License.
 #colorbox,
 #cboxContent,
 #cboxLoadedContent{ box-sizing: content-box; }
-/* 
+/*
     User Style:
     Change the following styles to modify the appearance of ColorBox.  They are
     ordered & tabbed in a way that represents the nesting of the generated HTML.

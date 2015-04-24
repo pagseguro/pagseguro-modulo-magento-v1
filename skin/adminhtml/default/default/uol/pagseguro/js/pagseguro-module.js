@@ -13,13 +13,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-************************************************************************  
+************************************************************************
 */
 
 /* ************************************* */
 /* *********** MESSAGES **************** */
 /* ************************************* */
-var Messages = new function() {    
+var Messages = new function() {
     var wrapper = jQuery("#pagseguro-module-contents");
     var getHtml = function(options) {
         return '<div id="'+ options.id +'" class="pagseguro-msg pagseguro-msg-'+options.type+' pagseguro-msg-'+options.size+'"><'+options.tag+'>' + options.message + '</'+options.tag+'></div>';
@@ -60,12 +60,12 @@ var Messages = new function() {
 /* ************************************* */
 /* *********** MODAL **************** */
 /* ************************************* */
-var Modal = new function(){    
-    var opened = false;    
+var Modal = new function(){
+    var opened = false;
     var defaults = {
         transition:"none",speed:300,initialWidth:"600",innerWidth:"525",initialHeight:"450",title:!1,opacity:.65,close:"fechar <strong>x</strong>",fixed:true
     };
-    
+
     var _bindEvents = function(elements,o){
         var options = jQuery.extend({},defaults,o || {});
         $(elements).colorbox(options);
@@ -88,7 +88,7 @@ var Modal = new function(){
         if (jQuery('#pagseguro-loading-message:visible').length > 0) {
             return false;
         }
-        
+
         var html = Messages.getHtml({
             id: 'pagseguro-loading-message',
             type: 'loading',
@@ -96,7 +96,7 @@ var Modal = new function(){
             message: msg,
             tag: 'h3'
         });
-        
+
         Messages.remove();
         open({
             html: html,
@@ -106,11 +106,11 @@ var Modal = new function(){
             escKey: false,
             close: false
         });
-        
+
         jQuery('#cboxClose').hide();
         resize();
     };
-    
+
     var hideLoading = function(callback) {
         close(callback);
     };
@@ -122,7 +122,7 @@ var Modal = new function(){
             message: message,
             tag: 'h3'
         });
-        
+
         open({
             html: html,
             width:  400,
@@ -130,9 +130,9 @@ var Modal = new function(){
         });
         resize();
     };
-    
+
     var alertConciliation = function(message) {
-    	this.message('alert', message)
+        this.message('alert', message)
     };
 
     var resize = function() {
@@ -173,10 +173,10 @@ var Menu = new function() {
         var selectedClass = "selected";
         var allItems = wrapper.find(".menu-item");
 
-        allItems.click(function(e){            
+        allItems.click(function(e){
             e.preventDefault();
             e.stopPropagation();
-            
+
             if (!animating) {
                 animating = true;
 
@@ -187,12 +187,12 @@ var Menu = new function() {
                 allItems.removeClass(selectedClass);
                 item.addClass(selectedClass);
 
-                var showNewPage = function() {                    
+                var showNewPage = function() {
                     Messages.remove();
-                    
+
                     jQuery(".pagseguro-module-content").removeClass(selectedClass);
                     jQuery("#pagseguro-module-content-" + id).addClass(selectedClass);
-                    
+
                     if (hasForm) {
                         saveForm.show();
                     } else {
@@ -203,7 +203,7 @@ var Menu = new function() {
                     animating = false;
                 };
 
-                if (windowSel.scrollTop() > 100) {                    
+                if (windowSel.scrollTop() > 100) {
                     body.animate({scrollTop:0}, 800, 'swing', function(){
                         setTimeout(showNewPage, 100);
                     });
@@ -215,7 +215,7 @@ var Menu = new function() {
         });
     };
 
-    var applyFixedPostion = function() {        
+    var applyFixedPostion = function() {
         var initialPos      = wrapper.offset().top;
         var initialLeft     = wrapper.offset().left;
         var initialWidth    = wrapper.width();
@@ -231,7 +231,7 @@ var Menu = new function() {
             if (!wrapper.hasClass('fixed')) {
                 wrapper.addClass(fixedClass);
             }
-            
+
             wrapper.css('top', parseInt(top - initialPos, 10) + 'px');
             wrapper.width(initialWidth);
         };
@@ -253,10 +253,10 @@ var Menu = new function() {
 
         windowSel.resize(function(){
             var wasFixed = wrapper.hasClass(fixedClass);
-            
+
             resetFixed();
             initialWidth = wrapper.width();
-            
+
             if (wasFixed){
                 applyFixed(getWindowTop());
             }
@@ -269,14 +269,14 @@ var Menu = new function() {
             jQuery("#pagseguro-email-input").focus();
         });
     };
-    
+
     var retractableMenu = function() {
-    	jQuery("#pagseguro-module-menu .children").click(function(){
-    		if (jQuery(this).closest("li").hasClass("open")) 
-    			jQuery(this).closest("li").removeClass("open");
-    		else
-    			jQuery(this).closest("li").addClass("open");
-    	});
+        jQuery("#pagseguro-module-menu .children").click(function(){
+            if (jQuery(this).closest("li").hasClass("open"))
+                jQuery(this).closest("li").removeClass("open");
+            else
+                jQuery(this).closest("li").addClass("open");
+        });
     };
 
     this.init = function(){
@@ -292,26 +292,26 @@ var Menu = new function() {
 /* ************************************* */
 var checkboxes = function () {
 
-	var j = 0;
-	var ckbTrue = 0;
+    var j = 0;
+    var ckbTrue = 0;
 
-	jQuery('input[name="send_emails[]"]').each(function() {
-		if (jQuery(this).is(':checked') == true) {
-			ckbTrue++;
-		}
-		j++;
-	});	
-	
-	jQuery('input[name="conciliation_orders[]"]').each(function() {
-		if (jQuery(this).is(':checked') == true) {
-			ckbTrue++;
-		}
-		j++;
-	});	
-	
-	if (j == ckbTrue) {
-		jQuery(':checkbox').prop('checked','');
-	} else {
-		jQuery(':checkbox').prop('checked','checked');
-	}
-} 
+    jQuery('input[name="send_emails[]"]').each(function() {
+        if (jQuery(this).is(':checked') == true) {
+            ckbTrue++;
+        }
+        j++;
+    });
+
+    jQuery('input[name="conciliation_orders[]"]').each(function() {
+        if (jQuery(this).is(':checked') == true) {
+            ckbTrue++;
+        }
+        j++;
+    });
+
+    if (j == ckbTrue) {
+        jQuery(':checkbox').prop('checked','');
+    } else {
+        jQuery(':checkbox').prop('checked','checked');
+    }
+}

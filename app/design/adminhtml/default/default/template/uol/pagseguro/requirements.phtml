@@ -20,85 +20,85 @@ limitations under the License.
 
 ?>
 <?php
-	$helper = Mage::helper('pagseguro');
+    $helper = Mage::helper('pagseguro');
 ?>
 
 <div id="pagseguro-module">
-	<?php echo $helper->getHeader(); ?>
-	<div id="pagseguro-module-content">
-		<div class="wrapper">
-		    <?php echo $helper->getSideMenu();?>
-		    <div id="pagseguro-module-contents">
-				<h2 class="title" title="Requisitos do Sistema"><?php echo $helper->__('Requisitos do Sistema'); ?></h2>
-				<ul class="pagseguro-list">
-					
-				</ul>
-			</div>
-		</div>
-	</div>
+    <?php echo $helper->getHeader(); ?>
+    <div id="pagseguro-module-content">
+        <div class="wrapper">
+            <?php echo $helper->getSideMenu();?>
+            <div id="pagseguro-module-contents">
+                <h2 class="title" title="Requisitos do Sistema"><?php echo $helper->__('Requisitos do Sistema'); ?></h2>
+                <ul class="pagseguro-list">
+
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 
-<script type="text/javascript">	
-	var i = 0;	
-	Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
-	
-	jQuery(document).ready(function(){		
-		Menu.init();
-		PageRequirements.init();		
+<script type="text/javascript">
+    var i = 0;
+    Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
+
+    jQuery(document).ready(function(){
+        Menu.init();
+        PageRequirements.init();
     });
 
     var PageRequirements = new function(){
-		var requestRequirements = function() {
-			var list = jQuery('.pagseguro-list');		
-			
+        var requestRequirements = function() {
+            var list = jQuery('.pagseguro-list');
+
             jQuery.ajax({
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
                 type: "POST",
-                data: { 
-                		form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>", 
-                		origin: 'requirements'
-                	  },
-                success: function(result) {                   	
-                	result = JSON.parse(result);
-                	
-                	if (result.version.status) {
-                		list.append('<li>'+result.version.text+'</li>');
-                	} else {
-                		list.append('<li class="requirements-alert">'+result.version.text+'</li>');
-                	}
+                data: {
+                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                        origin: 'requirements'
+                      },
+                success: function(result) {
+                    result = JSON.parse(result);
 
-                	if (result.spl.status) {
-                		list.append('<li>'+result.spl.text+'</li>');
-                	} else {
-                		list.append('<li class="requirements-alert">'+result.spl.text+'</li>');
-                	}
+                    if (result.version.status) {
+                        list.append('<li>'+result.version.text+'</li>');
+                    } else {
+                        list.append('<li class="requirements-alert">'+result.version.text+'</li>');
+                    }
 
-                	if (result.curl.status) {
-                		list.append('<li>'+result.curl.text+'</li>');
-                	} else {
-                		list.append('<li class="requirements-alert">'+result.curl.text+'</li>');
-                	}
+                    if (result.spl.status) {
+                        list.append('<li>'+result.spl.text+'</li>');
+                    } else {
+                        list.append('<li class="requirements-alert">'+result.spl.text+'</li>');
+                    }
 
-                	if (result.dom.status) {
-                		list.append('<li>'+result.dom.text+'</li>');
-                	} else {
-                		list.append('<li class="requirements-alert">'+result.dom.text+'</li>');
-                	}
-                	
-                	if (result.currency.status) {
-                		list.append('<li>'+result.currency.text+'</li>');
-                	} else {
-                		list.append('<li class="requirements-alert">'+result.currency.text+'</li>');
-                	}
-                	
-                	Modal.hideLoading();                  
-                }                
-			});	
-		}
+                    if (result.curl.status) {
+                        list.append('<li>'+result.curl.text+'</li>');
+                    } else {
+                        list.append('<li class="requirements-alert">'+result.curl.text+'</li>');
+                    }
 
-		this.init = function() {
-        	requestRequirements();
+                    if (result.dom.status) {
+                        list.append('<li>'+result.dom.text+'</li>');
+                    } else {
+                        list.append('<li class="requirements-alert">'+result.dom.text+'</li>');
+                    }
+
+                    if (result.currency.status) {
+                        list.append('<li>'+result.currency.text+'</li>');
+                    } else {
+                        list.append('<li class="requirements-alert">'+result.currency.text+'</li>');
+                    }
+
+                    Modal.hideLoading();
+                }
+            });
+        }
+
+        this.init = function() {
+            requestRequirements();
         };
-	}
+    }
 </script>
 <script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js');?>"></script>

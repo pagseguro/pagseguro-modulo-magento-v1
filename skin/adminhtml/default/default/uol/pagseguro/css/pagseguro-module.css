@@ -88,7 +88,7 @@ limitations under the License.
 .pagseguro-table tfoot td { text-align:center; padding: 5px; }
 .pagseguro-table tr.over:hover td, tbody.over tr:hover td { background: #e1f1d3 !important; cursor: pointer; }
 .pagseguro-table tbody tr td { font-size: 1em; text-align: center; padding: 0.8em 0.5em; border: 1px solid #DEDEDE; border-top-width: 0; cursor: pointer; }
-.pagseguro-table tbody tr td:first-child { cursor: default;	}
+.pagseguro-table tbody tr td:first-child { cursor: default; }
 .pagseguro-adminhtml-canceled-index .pagseguro-table thead tr th:first-child,
 .pagseguro-adminhtml-refund-index .pagseguro-table thead tr th:first-child { cursor: pointer; }
 .pagseguro-adminhtml-canceled-index .pagseguro-table tbody tr td:first-child,
@@ -194,7 +194,7 @@ i.icon-pagseguro-msg.icon-success,
 .pagseguro-msg.pagseguro-msg-success:before { background-position: 0 -6.35em; }
 i.icon-pagseguro-msg.icon-loading,
 .pagseguro-msg.pagseguro-msg-loading:before { -webkit-animation: pagseguro-fx-loading 1.5s linear infinite; -moz-animation: pagseguro-fx-loading 1.5s linear infinite; -ms-animation: pagseguro-fx-loading 1.5s linear infinite; -o-animation: pagseguro-fx-loading 1.5s linear infinite; animation: pagseguro-fx-loading 1.5s linear infinite; }
-i.icon-pagseguro-msg, 
+i.icon-pagseguro-msg,
 .pagseguro-msg:before { width: 1em; height: 1em; }
 i.icon-pagseguro-msg.micro,
 .pagseguro-msg.pagseguro-msg-micro:before { font-size: 2em; margin: 0 0.3em 0 0; }

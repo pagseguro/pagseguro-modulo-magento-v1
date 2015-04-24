@@ -20,11 +20,11 @@ limitations under the License.
 
 ?>
 <?php
-	$baseUrl = Mage::getBaseDir('lib');
-	include_once ($baseUrl . '/PagSeguroLibrary/resources/PagSeguroResources.php');
-	include_once ($baseUrl . '/PagSeguroLibrary/config/PagSeguroConfig.php');
-	$environment = $PagSeguroConfig['environment'];
-	$ligthboxUrl = $PagSeguroResources['staticUrl'][$environment] ;
+    $baseUrl = Mage::getBaseDir('lib');
+    include_once ($baseUrl . '/PagSeguroLibrary/resources/PagSeguroResources.php');
+    include_once ($baseUrl . '/PagSeguroLibrary/config/PagSeguroConfig.php');
+    $environment = $PagSeguroConfig['environment'];
+    $ligthboxUrl = $PagSeguroResources['staticUrl'][$environment] ;
 ?>
 
 <div class="page-head">
@@ -39,10 +39,10 @@ limitations under the License.
         PagSeguroLightbox(
         '<?php echo $paymentData['code'] ?>',{
             success: function(token){
-            	window.location.href = "<?php echo Mage::getUrl('checkout/onepage/success', array('_secure' => true));?>";
+                window.location.href = "<?php echo Mage::getUrl('checkout/onepage/success', array('_secure' => true));?>";
             },
             abort: function(){
-            	window.location.href = '<?php echo $this->getBaseUrl(); ?>';
+                window.location.href = '<?php echo $this->getBaseUrl(); ?>';
             }
         });
     }
@@ -50,11 +50,11 @@ limitations under the License.
 
 <table style="width:100%;">
     <tr>
-        <td style="width:100%">            
+        <td style="width:100%">
             Sua compra est&aacute; em processo de finaliza&ccedil;&atilde;o, aguarde um estante.<br />
             Caso a p&aacute;gina de finaliza&ccedil;&atilde;o de pagamento n&atilde;o se inicie automaticamente, <a href="<?php echo $paymentData['fullUrl']?>" id="redirect">Clique Aqui</a>
             <script type="text/javascript">
-            	checkout();
+                checkout();
             </script>
         </td>
     </tr>
