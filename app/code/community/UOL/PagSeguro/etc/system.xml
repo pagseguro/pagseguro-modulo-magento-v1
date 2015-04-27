@@ -26,147 +26,257 @@ limitations under the License.
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
-                    <fields>     
-                    	<comment translate="label">
+                    <fields>
+                        <comment translate="label">
                             <label></label>
-							<comment>
-								<model>uol_pagseguro/adminhtml_config</model>
-							</comment>
+                            <comment>
+                                <model>uol_pagseguro/adminhtml_config</model>
+                            </comment>
                             <frontend_type>label</frontend_type>
                             <sort_order>1</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </comment>                   
+                            <show_in_store>1</show_in_store>
+                        </comment>
                         <active translate="label">
                             <label>ATIVAR MÓDULO</label>
-							<tooltip>Deseja habilitar o m&#243;dulo?</tooltip>
+                            <tooltip>Deseja habilitar o m&#243;dulo?</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </active>                        
+                            <show_in_store>1</show_in_store>
+                        </active>
                         <title translate="label">
                             <label>NOME DE EXIBIÇÃO</label>
-							<tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
+                            <tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
                             <frontend_type>text</frontend_type>
                             <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
+                            <show_in_store>1</show_in_store>
                         </title>
-						<environment translate="label">
+                        <environment translate="label">
                             <label>AMBIENTE</label>
-							<tooltip>Define o ambiente de uso.</tooltip>
+                            <tooltip>Define o ambiente de uso.</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>uol_pagseguro/environment</source_model>
                             <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>                            
+                            <show_in_store>0</show_in_store>
                         </environment>
                         <email translate="label">
                             <label>E-MAIL</label>
-							<comment>Clique &lt;a href=&quot;https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&amp;tipo=cadastro#!vendedor&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; e cadastre-se gr&#225;tis.</comment>
+                            <comment>Clique &lt;a href=&quot;https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&amp;tipo=cadastro#!vendedor&quot; target=&quot;_blank&quot;&gt;aqui&lt;/a&gt; e cadastre-se gr&#225;tis.</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
+                            <show_in_store>1</show_in_store>
                         </email>
                         <token translate="label">
                             <label>TOKEN</label>
-							<tooltip>Acesse sua conta PagSeguro ou Sandbox para obter um token.</tooltip>
+                            <tooltip>Acesse sua conta PagSeguro ou Sandbox para obter um token.</tooltip>
                             <frontend_type>text</frontend_type>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </token>												                        
+                            <show_in_store>1</show_in_store>
+                        </token>
                         <url translate="label">
                             <label>URL DE REDIRECIONAMENTO</label>
-							<tooltip>Ao final do fluxo de pagamento no PagSeguro, seu cliente será redirecionado de volta para sua loja ou para a URL que você informar neste campo. Para utilizar essa funcionalidade você deve acessar sua conta PagSeguro ou Sandbox e habilitar requisições de pagamentos gerados somente via API.</tooltip>
+                            <tooltip>Ao final do fluxo de pagamento no PagSeguro, seu cliente será redirecionado de volta para sua loja ou para a URL que você informar neste campo. Para utilizar essa funcionalidade você deve acessar sua conta PagSeguro ou Sandbox e habilitar requisições de pagamentos gerados somente via API.</tooltip>
                             <frontend_type>text</frontend_type>
                             <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                           
-                        </url>                        
+                            <show_in_store>1</show_in_store>
+                        </url>
                         <notification translate="label">
                             <label>URL DE NOTIFICAÇÃO</label>
-							<tooltip>Sempre que uma transa&#231;&#227;o mudar de status, o PagSeguro envia uma notifica&#231;&#227;o para sua loja ou para a URL que voc&#234; informar neste campo.</tooltip>
+                            <tooltip>Sempre que uma transa&#231;&#227;o mudar de status, o PagSeguro envia uma notifica&#231;&#227;o para sua loja ou para a URL que voc&#234; informar neste campo.</tooltip>
                             <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                           
-                        </notification>                        
+                            <show_in_store>1</show_in_store>
+                        </notification>
                         <charset translate="label">
                             <label>CHARSET</label>
-							<tooltip>Defina o charset de acordo com a codificação do seu sistema.</tooltip>
+                            <tooltip>Defina o charset de acordo com a codificação do seu sistema.</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>uol_pagseguro/values</source_model>
                             <sort_order>80</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </charset>                                    
+                            <show_in_store>1</show_in_store>
+                        </charset>
                         <log translate="label">
                             <label>ATIVAR LOG</label>
-							<tooltip>Criar arquivo de log?</tooltip>
+                            <tooltip>Criar arquivo de log?</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>90</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </log>                        
+                            <show_in_store>1</show_in_store>
+                        </log>
                         <log_file translate="label">
                             <label>DIRETÓRIO</label>
-							<tooltip>Caminho para o arquivo de log.</tooltip>
+                            <tooltip>Caminho para o arquivo de log.</tooltip>
                             <frontend_type>text</frontend_type>
                             <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                           
-							<depends>
-								<log>1</log>
-							</depends>
-                        </log_file>                        
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <log>1</log>
+                            </depends>
+                        </log_file>
                         <checkout translate="label">
                             <label>CHECKOUT</label>
-							<tooltip>Selecione o tipo de checkout desejado.</tooltip>
+                            <tooltip>Selecione o tipo de checkout desejado.</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>uol_pagseguro/checkout</source_model>
                             <sort_order>110</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </checkout>			
-						<abandoned translate="label">
+                            <show_in_store>1</show_in_store>
+                        </checkout>
+                        <abandoned translate="label">
                             <label>LISTAR TRANSAÇÔES ABANDONADAS?</label>
-							<tooltip>Ativa e desativa consulta de transações abandonadas</tooltip>
+                            <tooltip>Ativa e desativa consulta de transações abandonadas</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>120</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </abandoned>						
-						<template translate="label">
+                        </abandoned>
+                        <template translate="label">
                             <label>TEMPLATE DE E-MAIL</label>
-							<tooltip>Template usado para notificar o cliente sobre sua transação abandonada</tooltip>
+                            <tooltip>Template usado para notificar o cliente sobre sua transação abandonada</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_email_template</source_model>
                             <sort_order>130</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-							<depends>
+                            <depends>
                                 <abandoned>1</abandoned>
                             </depends>
-                        </template>	
+                        </template>
+                        <discount_credit_card translate="label">
+                            <label>OFERECER DESCONTO PARA CARTÃO DE CRÉDITO?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </discount_credit_card>
+                        <discount_credit_card_value translate="label">
+                            <label>PROCENTAGEM DE DESCONTO</label>
+                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
+                            <validate>validate-number validate-number-range number-range-0.01-99.99</validate>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>145</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <discount_credit_card>1</discount_credit_card>
+                            </depends>
+                        </discount_credit_card_value>
+                        <discount_billet translate="label">
+                            <label>OFERECER DESCONTO PARA BOLETO?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </discount_billet>
+                        <discount_billet_value translate="label">
+                            <label>PROCENTAGEM DE DESCONTO</label>
+                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
+                            <validate>validate-number validate-number-range number-range-0.01-99.99</validate>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>155</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <discount_billet>1</discount_billet>
+                            </depends>
+                        </discount_billet_value>
+                        <discount_electronic_debit translate="label">
+                            <label>OFERECER DESCONTO PARA DÉBITO ELETRÔNICO?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>160</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </discount_electronic_debit>
+                        <discount_electronic_debit_value translate="label">
+                            <label>PROCENTAGEM DE DESCONTO</label>
+                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
+                            <validate>validate-number validate-number-range number-range-0.01-99.99</validate>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>165</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <discount_electronic_debit>1</discount_electronic_debit>
+                            </depends>
+                        </discount_electronic_debit_value>
+                        <discount_deposit_account translate="label">
+                            <label>OFERECER DESCONTO PARA DEPÓSITO EM CONTA?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>170</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </discount_deposit_account>
+                        <discount_deposit_account_value translate="label">
+                            <label>PROCENTAGEM DE DESCONTO</label>
+                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
+                            <validate>validate-number validate-number-range number-range-0.01-99.99</validate>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>175</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <discount_deposit_account>1</discount_deposit_account>
+                            </depends>
+                        </discount_deposit_account_value>
+                        <discount_balance translate="label">
+                            <label>OFERECER DESCONTO PARA SALDO DO PAGSEGURO?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>180</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </discount_balance>
+                        <discount_balance_value translate="label">
+                            <label>PROCENTAGEM DE DESCONTO</label>
+                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
+                            <validate>validate-number validate-number-range number-range-0.01-99.99</validate>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>185</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <discount_balance>1</discount_balance>
+                            </depends>
+                        </discount_balance_value>
                     </fields>
                 </pagseguro>
             </groups>

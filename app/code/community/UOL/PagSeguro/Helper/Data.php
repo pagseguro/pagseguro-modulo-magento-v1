@@ -376,4 +376,18 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 	    unset($connection);
 	}
 
+	/**
+	* Cuts the value to 4 characters and converts to float
+	* @param int/double $value - Value filled by user
+	* @return double $floating - Returns the value already converted
+	*/
+	public function getDiscountFloat($value)
+	{
+		$double = floatval($value);
+
+		include_once(Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
+		$decimal = PagSeguroHelper::decimalFormat($double);
+
+		return $decimal;
+	}
 }
