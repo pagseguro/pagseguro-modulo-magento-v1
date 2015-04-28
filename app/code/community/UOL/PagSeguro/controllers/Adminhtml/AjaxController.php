@@ -70,7 +70,6 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 		}
 
 		try {
-		
 			// Rides array that returns the query transactions
 			if ($conciliationArray = $helper->getArrayPayments()) {				
 				$dataSet = '[';

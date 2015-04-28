@@ -320,3 +320,22 @@ function checkboxes() {
         jQuery('#conciliation-button').prop("disabled", false);
     }
 }
+
+/* ************************************* */
+/* *************** MASK **************** */
+/* ************************************* */
+function maskConfig(o, f) {
+    v_obj = o
+    v_fun = f
+    setTimeout('mask()', 1)
+}
+
+function mask() {
+    v_obj.value = v_fun(v_obj.value)
+}
+
+function maskDiscount(v) {
+    v = v.replace(/\D/g, "");
+    v = v.replace(/^(\d{2})(\d)/g, "$1.$2");
+    return v;
+}

@@ -103,12 +103,12 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
 		try {
 			$credential = $obj->getCredentialsInformation();
 			$dateStart = $this->getDateStart();		
-			$transactions = PagSeguroTransactionSearchService::searchByDate($credential, 1, 1000, $dateStart, $this->getDateFinally());
+			$transactions = PagSeguroTransactionSearchService::searchByDate($credential, 1, 1000, $dateStart);
 			$pages = $transactions->getTotalPages();
 			
 			if ($pages > 1) {
 				for ($i = 1; $i < ($pages + 1); $i++){
-					$transactions = PagSeguroTransactionSearchService::searchByDate($credential, $i, 1, $dateStart, $this->getDateFinally());
+					$transactions = PagSeguroTransactionSearchService::searchByDate($credential, $i, 1, $dateStart);
 					$transactionArray .= array_push($transactions->getTransactions());
 				}						
 			} else {

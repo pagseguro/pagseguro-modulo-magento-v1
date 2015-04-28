@@ -400,6 +400,9 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 								}
 							});
 
+							jQuery("#payment_pagseguro .discount-value").attr("maxlength", "5");
+							jQuery("#payment_pagseguro .discount-value").attr("onkeypress", "maskConfig(this, maskDiscount)");
+
 							jQuery("#payment_pagseguro .discount-confirm").change(function(){
 								if (jQuery(this).val() == 1) {
 									Modal.message("alert","O desconto será aplicado sobre o valor de todos os produtos, dentro do ambiente do PagSeguro.");

@@ -401,8 +401,8 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 	        }
 	    }
 
-	    if (Mage::getStoreConfig('payment/pagseguro/discount_billet', $storeId) == 1) {
-		    $boleto = (double) Mage::getStoreConfig('payment/pagseguro/discount_billet_value', $storeId);
+	    if (Mage::getStoreConfig('payment/pagseguro/discount_boleto', $storeId) == 1) {
+		    $boleto = (double) Mage::getStoreConfig('payment/pagseguro/discount_boleto_value', $storeId);
 
 	        if ($boleto && $boleto != 0.00) {
 	            $PaymentRequest->addPaymentMethodConfig('BOLETO', $boleto, 'DISCOUNT_PERCENT');
