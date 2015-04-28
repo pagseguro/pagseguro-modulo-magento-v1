@@ -378,16 +378,53 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 
 	/**
 	* Cuts the value to 4 characters and converts to float
-	* @param int/double $value - Value filled by user
-	* @return double $floating - Returns the value already converted
+	* @param object $PaymentRequest - Object responsible for passing the parameters to the webservice.
+	* @return object $PaymentRequest - Returns to the discount parameters object
 	*/
-	public function getDiscountFloat($value)
+	public function getDiscount($PaymentRequest)
 	{
-		$double = floatval($value);
+		$storeId = Mage::app()->getStore()->getStoreId();
 
-		include_once(Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-		$decimal = PagSeguroHelper::decimalFormat($double);
+        if (Mage::getStoreConfig('payment/pagseguro/discount_credit_card', $storeId) == 1) {
+	        $creditCard = (double) Mage::getStoreConfig('payment/pagseguro/discount_credit_card_value', $storeId);
 
-		return $decimal;
+			if ($creditCard && $creditCard != 0.00) {
+	            $PaymentRequest->addPaymentMethodConfig('CREDIT_CARD', $creditCard, 'DISCOUNT_PERCENT');
+	        }
+	    }
+
+	    if (Mage::getStoreConfig('payment/pagseguro/discount_electronic_debit', $storeId) == 1) {
+	    	$eft = (double) Mage::getStoreConfig('payment/pagseguro/discount_electronic_debit_value', $storeId);
+
+	        if ($eft && $eft != 0.00) {
+	            $PaymentRequest->addPaymentMethodConfig('EFT', $eft, 'DISCOUNT_PERCENT');
+	        }
+	    }
+
+	    if (Mage::getStoreConfig('payment/pagseguro/discount_billet', $storeId) == 1) {
+		    $boleto = (double) Mage::getStoreConfig('payment/pagseguro/discount_billet_value', $storeId);
+
+	        if ($boleto && $boleto != 0.00) {
+	            $PaymentRequest->addPaymentMethodConfig('BOLETO', $boleto, 'DISCOUNT_PERCENT');
+	        }
+	    }
+
+	    if (Mage::getStoreConfig('payment/pagseguro/discount_deposit_account', $storeId)) {
+		    $deposit = (double) Mage::getStoreConfig('payment/pagseguro/discount_deposit_account_value', $storeId);
+
+	        if ($deposit && $deposit != 0.00) {
+	            $PaymentRequest->addPaymentMethodConfig('DEPOSIT', $deposit, 'DISCOUNT_PERCENT');
+	        }
+		}
+
+		if (Mage::getStoreConfig('payment/pagseguro/discount_balance', $storeId)) {
+			$balance = (double) Mage::getStoreConfig('payment/pagseguro/discount_balance_value', $storeId);
+
+	        if ($balance && $balance != 0.00) {
+	            $PaymentRequest->addPaymentMethodConfig('BALANCE', $balance, 'DISCOUNT_PERCENT');
+	        }
+	    }
+
+		return $PaymentRequest;
 	}
 }

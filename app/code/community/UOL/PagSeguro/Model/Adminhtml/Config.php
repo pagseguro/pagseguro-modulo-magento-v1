@@ -395,8 +395,14 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 
 							jQuery("#payment_pagseguro_environment").change(function(){
 								
-								if (jQuery("#payment_pagseguro_environment").val() == "sandbox") {
+								if (jQuery(this).val() == "sandbox") {
 								 Modal.message("success", "Suas transações serão feitas em um ambiente de testes. Nenhuma das transações realizadas nesse ambiente tem valor monetário.");
+								}
+							});
+
+							jQuery("#payment_pagseguro .discount-confirm").change(function(){
+								if (jQuery(this).val() == 1) {
+									Modal.message("alert","O desconto será aplicado sobre o valor de todos os produtos, dentro do ambiente do PagSeguro.");
 								}
 							});
 

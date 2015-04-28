@@ -158,8 +158,10 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private function createPaymentRequest()
     {
+        $helper = Mage::helper('pagseguro');
+
 		// Get references that stored in the database
-		$reference = Mage::helper('pagseguro')->getStoreReference();
+		$reference = $helper->getStoreReference();
 
         $PaymentRequest = new PagSeguroPaymentRequest();
         $PaymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));
@@ -170,6 +172,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         $PaymentRequest->setShippingType(SHIPPING_TYPE);
         $PaymentRequest->setShippingCost(number_format($this->Order->getShippingAmount(), 2, '.', ''));
         $PaymentRequest->setNotificationURL($this->getNotificationURL());
+        $helper->getDiscount($PaymentRequest);
 
         //Define Redirect Url
         $redirect_url = $this->getRedirectUrl();
