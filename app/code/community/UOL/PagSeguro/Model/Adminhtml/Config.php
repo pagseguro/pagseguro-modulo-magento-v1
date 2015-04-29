@@ -401,11 +401,15 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 							});
 
 							jQuery("#payment_pagseguro .discount-value").attr("maxlength", "5");
-							jQuery("#payment_pagseguro .discount-value").attr("onkeypress", "maskConfig(this, maskDiscount)");
+							jQuery("#payment_pagseguro .discount-value").attr("onkeyup", "maskConfig(this, maskDiscount)");
+
+							var discountMsg = "O desconto será aplicado com base no subtotal do checkout PagSeguro. ";
+							discountMsg += "Eventuais valores de frete não serão levados em consideração para a aplicação do desconto." + "<br />";
+							discountMsg += "É recomendável que você simule o funcionamento desta feature no ambiente do Sandbox.";
 
 							jQuery("#payment_pagseguro .discount-confirm").change(function(){
 								if (jQuery(this).val() == 1) {
-									Modal.message("alert","O desconto será aplicado sobre o valor de todos os produtos, dentro do ambiente do PagSeguro.");
+									Modal.message("alert", discountMsg);
 								}
 							});
 

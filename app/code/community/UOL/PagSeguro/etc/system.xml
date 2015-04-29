@@ -169,7 +169,7 @@ limitations under the License.
                         </template>
                         <discount_credit_card translate="label">
                             <label>OFERECER DESCONTO PARA CARTÃO DE CRÉDITO?</label>
-                            <tooltip>Ao ativar esta opção seu comprador vai receber um desconto, a ser calculado no checkout do PagSeguro, caso escolha fazer o pagamento com este meio de pagamento.</tooltip>
+                            <tooltip>Ao ativar esta opção, seu comprador vai receber um desconto caso escolha pagar com este meio de pagamento. O desconto será aplicado com base no subtotal do checkout PagSeguro.</tooltip>
                             <validate>discount-confirm</validate>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -179,9 +179,9 @@ limitations under the License.
                             <show_in_store>1</show_in_store>
                         </discount_credit_card>
                         <discount_credit_card_value translate="label">
-                            <label>PROCENTAGEM DE DESCONTO</label>
-                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
-                            <validate>validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
+                            <label>PERCENTUAL DE DESCONTO</label>
+                            <tooltip>Informe o percentual de desconto a ser concedido para este meio de pagamento. Aceita valores de 0.01 à 99.99</tooltip>
+                            <validate>required-entry validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
                             <frontend_type>text</frontend_type>
                             <sort_order>145</sort_order>
                             <show_in_default>1</show_in_default>
@@ -193,7 +193,7 @@ limitations under the License.
                         </discount_credit_card_value>
                         <discount_boleto translate="label">
                             <label>OFERECER DESCONTO PARA BOLETO?</label>
-                            <tooltip>Ao ativar esta opção seu comprador vai receber um desconto, a ser calculado no checkout do PagSeguro, caso escolha fazer o pagamento com este meio de pagamento.</tooltip>
+                            <tooltip>Ao ativar esta opção, seu comprador vai receber um desconto caso escolha pagar com este meio de pagamento. O desconto será aplicado com base no subtotal do checkout PagSeguro.</tooltip>
                             <validate>discount-confirm</validate>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -203,9 +203,9 @@ limitations under the License.
                             <show_in_store>1</show_in_store>
                         </discount_boleto>
                         <discount_boleto_value translate="label">
-                            <label>PROCENTAGEM DE DESCONTO</label>
-                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
-                            <validate>validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
+                            <label>PERCENTUAL DE DESCONTO</label>
+                            <tooltip>Informe o percentual de desconto a ser concedido para este meio de pagamento. Aceita valores de 0.01 à 99.99</tooltip>
+                            <validate>required-entry validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
                             <frontend_type>text</frontend_type>
                             <sort_order>155</sort_order>
                             <show_in_default>1</show_in_default>
@@ -217,7 +217,7 @@ limitations under the License.
                         </discount_boleto_value>
                         <discount_electronic_debit translate="label">
                             <label>OFERECER DESCONTO PARA DÉBITO ELETRÔNICO?</label>
-                            <tooltip>Ao ativar esta opção seu comprador vai receber um desconto, a ser calculado no checkout do PagSeguro, caso escolha fazer o pagamento com este meio de pagamento.</tooltip>
+                            <tooltip>Ao ativar esta opção, seu comprador vai receber um desconto caso escolha pagar com este meio de pagamento. O desconto será aplicado com base no subtotal do checkout PagSeguro.</tooltip>
                             <validate>discount-confirm</validate>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -227,9 +227,9 @@ limitations under the License.
                             <show_in_store>1</show_in_store>
                         </discount_electronic_debit>
                         <discount_electronic_debit_value translate="label">
-                            <label>PROCENTAGEM DE DESCONTO</label>
-                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
-                            <validate>validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
+                            <label>PERCENTUAL DE DESCONTO</label>
+                            <tooltip>Informe o percentual de desconto a ser concedido para este meio de pagamento. Aceita valores de 0.01 à 99.99</tooltip>
+                            <validate>required-entry validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
                             <frontend_type>text</frontend_type>
                             <sort_order>165</sort_order>
                             <show_in_default>1</show_in_default>
@@ -241,7 +241,7 @@ limitations under the License.
                         </discount_electronic_debit_value>
                         <discount_deposit_account translate="label">
                             <label>OFERECER DESCONTO PARA DEPÓSITO EM CONTA?</label>
-                            <tooltip>Ao ativar esta opção seu comprador vai receber um desconto, a ser calculado no checkout do PagSeguro, caso escolha fazer o pagamento com este meio de pagamento.</tooltip>
+                            <tooltip>Ao ativar esta opção, seu comprador vai receber um desconto caso escolha pagar com este meio de pagamento. O desconto será aplicado com base no subtotal do checkout PagSeguro.</tooltip>
                             <validate>discount-confirm</validate>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -251,9 +251,9 @@ limitations under the License.
                             <show_in_store>1</show_in_store>
                         </discount_deposit_account>
                         <discount_deposit_account_value translate="label">
-                            <label>PROCENTAGEM DE DESCONTO</label>
-                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
-                            <validate>validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
+                            <label>PERCENTUAL DE DESCONTO</label>
+                            <tooltip>Informe o percentual de desconto a ser concedido para este meio de pagamento. Aceita valores de 0.01 à 99.99</tooltip>
+                            <validate>required-entry validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
                             <frontend_type>text</frontend_type>
                             <sort_order>175</sort_order>
                             <show_in_default>1</show_in_default>
@@ -265,7 +265,7 @@ limitations under the License.
                         </discount_deposit_account_value>
                         <discount_balance translate="label">
                             <label>OFERECER DESCONTO PARA SALDO PAGSEGURO?</label>
-                            <tooltip>Ao ativar esta opção seu comprador vai receber um desconto, a ser calculado no checkout do PagSeguro, caso escolha fazer o pagamento com este meio de pagamento.</tooltip>
+                            <tooltip>Ao ativar esta opção, seu comprador vai receber um desconto caso escolha pagar com este meio de pagamento. O desconto será aplicado com base no subtotal do checkout PagSeguro.</tooltip>
                             <validate>discount-confirm</validate>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -275,9 +275,9 @@ limitations under the License.
                             <show_in_store>1</show_in_store>
                         </discount_balance>
                         <discount_balance_value translate="label">
-                            <label>PROCENTAGEM DE DESCONTO</label>
-                            <tooltip>Informe a porcentagem que será aplicada para o desconto no checkout. Aceita os valores de 0.01 à 99.99</tooltip>
-                            <validate>validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
+                            <label>PERCENTUAL DE DESCONTO</label>
+                            <tooltip>Informe o percentual de desconto a ser concedido para este meio de pagamento. Aceita valores de 0.01 à 99.99</tooltip>
+                            <validate>required-entry validate-number validate-number-range number-range-0.01-99.99 discount-value</validate>
                             <frontend_type>text</frontend_type>
                             <sort_order>185</sort_order>
                             <show_in_default>1</show_in_default>
