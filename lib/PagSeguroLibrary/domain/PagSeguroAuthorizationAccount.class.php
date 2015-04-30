@@ -28,9 +28,9 @@ class PagSeguroAuthorizationAccount
 {
 
     /**
-     * @var $privateKey
+     * @var $publicKey
      */
-    private $privateKey;
+    private $publicKey;
 
     /***
      * Initializes a new instance of the PagSeguroAuthorizationAccount class
@@ -40,28 +40,28 @@ class PagSeguroAuthorizationAccount
     public function __construct($account = null)
     {
         if (isset($account)) {
-            $this->setPrivateKey($account);
+            $this->setPublicKey($account);
         } else {
             throw new Exception("Wasn't possible construct the account");
         }
     }
 
     /***
-     * @return string of private key
+     * @return string of public key
      */
-    public function getPrivateKey()
+    public function getPublicKey()
     {
-        return $this->privateKey;
+        return $this->publicKey;
     }
 
     /***
-     * Sets the authorization account private key
+     * Sets the authorization account public key
      * @param string $value
      */
-    public function setPrivateKey($value)
+    public function setPublicKey($value)
     {
         if (isset($value)) {
-            $this->privateKey = $value;
+            $this->publicKey = $value;
         }
     }
 }

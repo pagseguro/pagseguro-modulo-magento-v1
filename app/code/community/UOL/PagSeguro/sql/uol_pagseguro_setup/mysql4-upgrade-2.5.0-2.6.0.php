@@ -21,20 +21,8 @@ limitations under the License.
 $installer = $this;
 $installer->startSetup();
 
-$resource = Mage::getSingleton('core/resource');
-$readConnection = $resource->getConnection('core_read');
-
 // table prefix
 $tp = (string) Mage::getConfig()->getTablePrefix();
-$table =  $tp . 'pagseguro_orders';
-$columnName = 'discount';
-$definition = 'INT DEFAULT 0';
-
-/**
-* Adds the discount column in the table pagseguro_orders
-* This column is used as a check to add to a discount on order
-*/
-$resource->getConnection('core_write')->addColumn($table, $columnName, $definition);
 
 /**
  * Removal of the tables used in version 2.4.0.
