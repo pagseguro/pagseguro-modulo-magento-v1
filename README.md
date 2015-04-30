@@ -50,6 +50,8 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **checkout**: especifica o modelo de checkout que será utilizado. É possível escolher entre checkout padrão e checkout lightbox.
  - **listar transações abandonadas?**: ativa/desativa a pesquisa de transações que foram abandonadas no checkout do PagSeguro.
  - **template de e-mail**: define qual o template de email sua loja usuará para o envio do email de recuperação de venda.
+ - **oferecer desconto para ...**: ativa/desativa desconto para checkouts utilizando este meio de pagamento
+ - **percentual de desconto**: define o percentual de desconto a ser concedido para o meio de pagamento escolhido
  - **conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
  - **dias**: número de dias que devem ser considerados para a pesquisa de conciliação.
  - **abandonadas**: permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar email-s de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
@@ -66,6 +68,9 @@ Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum].
 Changelog
 ---------
 ---
+2.6.0
+ - Possibilidade de definir descontos com base no meio de pagamento escolhido durante o checkout PagSeguro;
+
 2.5.0
  - Atualização do layout da tela de configuração;
  - Integração com Sandbox;
