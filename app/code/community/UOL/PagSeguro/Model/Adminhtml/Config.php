@@ -64,12 +64,19 @@ class UOL_PagSeguro_Model_Adminhtml_Config
         $id = 'pagseguro-registration-button';
         $class = 'pagseguro-button gray-theme';
         $version = $helper->__('Versão %s', $this->version);
-        $backgroundCss = '#fff url(' . $this->background . ') no-repeat scroll center 45%';
+        $backgroundCss = '#fff url(' . $this->background . ') no-repeat scroll center 19%';
 
-        $alert  = $helper->__('Suas transações serão feitas em um ambiente de testes.') . '<br />';
-        $alert .= $helper->__('Nenhuma das transações realizadas nesse ambiente tem valor monetário.');
+        $alertEnvironment  = $helper->__('Suas transações serão feitas em um ambiente de testes.') . '<br />';
+        $alertEnvironment .= $helper->__('Nenhuma das transações realizadas nesse ambiente tem valor monetário.');
 
-        $notification .= $helper->__('Email ou token inválidos para o ambiente selecionado.');
+        $alertCredentials = $helper->__('Email ou token inválidos para o ambiente selecionado.');
+        $alertEmailToken  = $helper->__('Certifique-se de que o email e token foram preenchidos.');
+
+        $alertDiscount  = $helper->__('O desconto será aplicado com base no subtotal do checkout PagSeguro.');
+        $alertD = 'Eventuais valores de frete não serão levados em consideração para a aplicação do desconto.';
+        $alertDiscount .= $helper->__($alertD) . '<br />';
+        $alertD = 'É recomendável que você simule o funcionamento desta feature no ambiente do Sandbox.';
+        $alertDiscount .= $helper->__($alertD);
 
         $interface = '<div class="pagseguro-comment">
                         ' . $this->css . '
@@ -97,7 +104,7 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 
                             jQuery("#payment_pagseguro_environment").change(function(){
                                 if (jQuery("#payment_pagseguro_environment").val() == "sandbox") {
-                                 Modal.message("success", "' . $alert . '");
+                                 Modal.message("success", "' . $alertEnvironment . '");
                                 }
                             });
 
@@ -106,8 +113,25 @@ class UOL_PagSeguro_Model_Adminhtml_Config
                             var credentials  = "' . $credentials . '";
 
                             if (email && token && credentials == 0) {
-                               Modal.message("error", "' . $notification . '");
+                               Modal.message("error", "' . $alertCredentials . '");
+                            } else {
+                                email = jQuery("#payment_pagseguro_email").val();
+                                token = jQuery("#payment_pagseguro_token").val();
+
+                                if (!email || !token) {
+                                    Modal.message("error", "' . $alertEmailToken . '");
+                                }
                             }
+
+                            var discountId = "#payment_pagseguro .discount-value";
+                            jQuery(discountId).attr("maxlength", "5");
+                            jQuery(discountId).attr("onkeyup", "maskConfig(this, maskDiscount)");
+
+                            jQuery("#payment_pagseguro .discount-confirm").change(function(){
+                                if (jQuery(this).val() == 1) {
+                                    Modal.message("alert", "' . $alertDiscount . '");
+                                }
+                            });
                         });
                      </script>';
         $comment .= $interface;
