@@ -336,6 +336,7 @@ function mask() {
 
 function maskDiscount(v) {
     v = v.replace(/\D/g, "");
+    v = v.substr(0, 4);
 
     if (v.replace('.', '').length == 4) {
         v = v.replace(/^(\d{2})(\d)/g, "$1.$2");
