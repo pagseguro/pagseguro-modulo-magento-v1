@@ -195,6 +195,23 @@ class PagSeguroPaymentParser extends PagSeguroServiceParser
             }
         }
 
+        // paymentMethodConfig
+        if (count($payment->getPaymentMethodConfig()->getConfig()) > 0) {
+            $i = 0;
+            foreach ($payment->getPaymentMethodConfig()->getConfig() as $config) {
+                if ($config instanceof PagSeguroPaymentMethodConfigItem) {
+                    if (!PagSeguroHelper::isEmpty($config->getKey()) && !PagSeguroHelper::isEmpty($config->getValue())) {
+                        $i++;
+                        if (!PagSeguroHelper::isEmpty($config->getGroup())) {
+                            $data['paymentMethodGroup' . $i] = $config->getGroup();
+                        }
+                        $data['paymentMethodConfigKey' . $i . "_1"] = $config->getKey();
+                        $data['paymentMethodConfigValue' . $i . "_1"] = $config->getValue();
+                    }
+                }
+            }
+        }
+
         // parameter
         if (count($payment->getParameter()->getItems()) > 0) {
             foreach ($payment->getParameter()->getItems() as $item) {
@@ -209,7 +226,6 @@ class PagSeguroPaymentParser extends PagSeguroServiceParser
                 }
             }
         }
-
         return $data;
     }
 

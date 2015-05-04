@@ -21,11 +21,8 @@ limitations under the License.
 $installer = $this;
 $installer->startSetup();
 
-$resource = Mage::getSingleton('core/resource');
-$readConnection = $resource->getConnection('core_read');
-
 // table prefix
-$tp = (string)Mage::getConfig()->getTablePrefix();
+$tp = (string) Mage::getConfig()->getTablePrefix();
 
 /**
  * Removal of the tables used in version 2.4.0.

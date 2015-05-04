@@ -22,46 +22,50 @@
  */
 
 /***
- * Authorization account information
+ * Represent a payment method config
  */
-class PagSeguroAuthorizationAccount
+class PagSeguroPaymentMethodConfig
 {
 
-    /**
-     * @var $publicKey
+    /***
+     * @var array
      */
-    private $publicKey;
+    private $config;
 
     /***
-     * Initializes a new instance of the PagSeguroAuthorizationAccount class
-     * @param null|string $account
-     * @throws string Exception
+     * @param array $config
      */
-    public function __construct($account = null)
+    public function __construct(array $config = null)
     {
-        if (isset($account)) {
-            $this->setPublicKey($account);
-        } else {
-            throw new Exception("Wasn't possible construct the account");
+        if (!is_null($config) && count($config) > 0) {
+            $this->setConfig($config);
         }
     }
 
     /***
-     * @return string of public key
+     * @param PagSeguroPaymentMethodConfigItem $configItem
      */
-    public function getPublicKey()
+    public function addConfig(PagSeguroPaymentMethodConfigItem $configItem)
     {
-        return $this->publicKey;
+        $this->config[] = $configItem;
     }
 
     /***
-     * Sets the authorization account public key
-     * @param string $value
+     * @param array $config
      */
-    public function setPublicKey($value)
+    public function setConfig(array $config)
     {
-        if (isset($value)) {
-            $this->publicKey = $value;
+        $this->config = $config;
+    }
+
+    /***
+     * @return array
+     */
+    public function getConfig()
+    {
+        if ($this->config == null) {
+            $this->config = array();
         }
+        return $this->config;
     }
 }

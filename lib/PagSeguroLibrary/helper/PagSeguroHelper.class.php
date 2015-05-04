@@ -45,16 +45,17 @@ class PagSeguroHelper
     }
 
     /***
-     * @param $numeric
+     * @param $value
      * @return string
      */
-    public static function decimalFormat($numeric)
+    public static function decimalFormat($value)
     {
-        if (is_float($numeric)) {
-            $numeric = (float) $numeric;
-            $numeric = (string) number_format($numeric, 2, '.', '');
+        if (is_float($value)) {
+            $value = (float) $value;
+            $value = floor($value * 100) / 100;
+            $value = (string) number_format($value, 2, '.', '');
         }
-        return $numeric;
+        return $value;
     }
 
     /***

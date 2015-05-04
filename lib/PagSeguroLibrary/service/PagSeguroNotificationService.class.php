@@ -141,7 +141,7 @@ class PagSeguroNotificationService
      * @return bool|mixed|string
      * @throws PagSeguroServiceException
      */
-    private static function searchReturn($connection, $parsers, $code)
+    private function searchReturn($connection, $parsers, $code)
     {
         $httpStatus = new PagSeguroHttpStatus($connection->getStatus());
 
