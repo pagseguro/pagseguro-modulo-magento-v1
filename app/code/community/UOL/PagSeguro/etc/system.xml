@@ -216,7 +216,7 @@ limitations under the License.
                             </depends>
                         </discount_boleto_value>
                         <discount_electronic_debit translate="label">
-                            <label>OFERECER DESCONTO PARA DÉBITO ELETRÔNICO?</label>
+                            <label>OFERECER DESCONTO PARA DÉBITO ONLINE?</label>
                             <tooltip>Ao ativar esta opção, seu comprador vai receber um desconto caso escolha pagar com este meio de pagamento. O desconto será aplicado com base no subtotal do checkout PagSeguro.</tooltip>
                             <validate>discount-confirm</validate>
                             <frontend_type>select</frontend_type>

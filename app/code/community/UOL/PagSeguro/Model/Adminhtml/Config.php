@@ -391,7 +391,7 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 							}
 							jQuery("#row_payment_pagseguro_comment").remove();
 
-							jQuery("#payment_pagseguro").css("background", " #fff url('.$this->background.') no-repeat scroll center 45%");
+							jQuery("#payment_pagseguro").css("background", " #fff url('.$this->background.') no-repeat scroll center 19%");
 
 							jQuery("#payment_pagseguro_environment").change(function(){
 								
