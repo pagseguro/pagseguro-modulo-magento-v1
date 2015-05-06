@@ -69,9 +69,9 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
             $alertConciliation = $this->alertConciliation($this->__('cancelar'));
 
             if ($statusMagento == $statusPagSeguro) {
-                $onclick = " onclick='cancelOrder(this)' data-config='" . $config . "'";
+                $config = "class='action' data-config='" . $config . "'";
             } else {
-                $onclick = " onclick='Modal.alertConciliation(&#34;" . $alertConciliation . "&#34;)'";
+                $config = " onclick='Modal.alertConciliation(&#34;" . $alertConciliation . "&#34;)'";
             }
 
             // Receives the url edit order it from your id
@@ -82,7 +82,7 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
             $actionOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
             $actionOrder .= $this->__('Ver detalhes') . "</a>";
 
-            $actionOrder .= "<a class='action'" . $onclick . " href='javascript:void(0)'>";
+            $actionOrder .= "<a " . $config . " href='javascript:void(0)'>";
             $actionOrder .= $this->__('Cancelar') . "</a>";
 
             $array = array('date' => $dateOrder,
@@ -110,9 +110,9 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
      * Set log records listed
      * @method setLog - Set log in file
      */
-    public function setConciliationListLog($days)
+    public function setCanceledListLog($days)
     {
-        $module = ' [Info] PagSeguroConciliation.';
+        $module = ' [Info] PagSeguroCanceled.';
 
         // Sentence of log
         $phrase = "Searched( '" . $days . " days - Range of dates ";
@@ -127,9 +127,9 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
      * Set log of update order
      * @method setLog - Set log in file
      */
-    public function setConciliationUpdateOrderLog($orderId, $transactionCode, $orderStatus)
+    public function setCanceledUpdateOrderLog($orderId, $transactionCode, $orderStatus)
     {
-        $module = ' [Info] PagSeguroConciliation.';
+        $module = ' [Info] PagSeguroCanceled.';
 
         // Sentence of log
         $phrase = 'Update(';
@@ -139,5 +139,59 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
 
         // Creating the update log order
         $this->setLog($phrase, $module);
+    }
+
+    /**
+     * Cancels the order status of Magento
+     * Creates notification in the historical in order of Magento and sends email to the customer
+     * Insert the transaction code of PagSeguro in order of Magento
+     * @param int $orderId - Id of order of Magento
+     * @param string $transactionCode - Transaction code of PagSeguro
+     */
+    public function cancelOrderStatusMagento($orderId, $transactionCode)
+    {
+        if ($this->requestPagSeguroCancelService($transactionCode) == 'OK') {
+            $orderStatus = 'cancelada_ps';
+            $this->setCanceledUpdateOrderLog($orderId, $transactionCode, $orderStatus);
+
+            if ($this->getLastStatusOrder($orderId) != $orderStatus) {
+                $status = $orderStatus;
+                $comment = null;
+                $notify = true;
+                $order = Mage::getModel('sales/order')->load($orderId);
+                $order->addStatusToHistory($status, $comment, $notify);
+                $order->sendOrderUpdateEmail($notify, $comment);
+
+                // Makes the notification of the order of historic displays the correct date and time
+                Mage::app()->getLocale()->date();
+                $order->save();
+            }
+
+            //Get the resource model
+            $resource = Mage::getSingleton('core/resource');
+
+            //Retrieve the read connection
+            $readConnection = $resource->getConnection('core_read');
+
+            //Retrieve the write connection
+            $writeConnection = $resource->getConnection('core_write');
+
+            $tp    = (string)Mage::getConfig()->getTablePrefix();
+            $table = $tp . 'pagseguro_orders';
+
+            //Select sent column from pagseguro_orders to verify if exists a register
+            $query = 'SELECT order_id FROM ' . $resource->getTableName($table) . ' WHERE order_id = ' . $orderId;
+            $result = $readConnection->fetchAll($query);
+
+            if (!empty($result)) {
+                $sql = "UPDATE `" . $table . "` SET `transaction_code` = '$transactionCode' WHERE order_id = " . $orderId;
+            } else {
+                $environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
+                $sql = $query = "INSERT INTO " . $table . " (order_id, transaction_code, environment)
+                                 VALUES ('$orderId', '$transactionCode', '$environment')";
+            }
+
+            $writeConnection->query($sql);
+        }
     }
 }

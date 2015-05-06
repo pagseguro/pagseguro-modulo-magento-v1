@@ -54,6 +54,7 @@ limitations under the License.
 }
 .pagseguro-module-content { display: none; }
 .pagseguro-module-content.selected { display: block; }
+#pagseguro-module-content .tabela a { display: block; }
 
 /* Links */
 #pagseguro-module a,
@@ -211,5 +212,5 @@ i.icon-pagseguro-msg.large,
 #pagseguro-module-menu ul li.open ul li,
 #pagseguro-module-menu ul ul li.selected { display: block; }
 .pagseguro-adminhtml-canceled-index table.pagseguro-table a.edit,
-.pagseguro-adminhtml-refund-index table.pagseguro-table a.edit { display: none; }
+.pagseguro-adminhtml-refund-index table.pagseguro-table a.edit { display: none !important; }
 .ps_msg_hidden { display: none !important; }

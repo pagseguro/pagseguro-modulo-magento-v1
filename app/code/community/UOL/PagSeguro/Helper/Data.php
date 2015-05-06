@@ -613,19 +613,6 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-     * Get url of transaction search service
-     * @return string $url - Returns full url to query
-     */
-    protected function getUrlTransactionSearchService()
-    {
-        // Capture the url query the webservice
-        $url = $PagSeguroResources['webserviceUrl'][$this->environment] .
-               $PagSeguroResources['transactionSearchService']['servicePath'];
-
-        return $url;
-    }
-
-    /**
     * Gets transactions filtered of server of PagSeguro
     * @param object $credential - Server access credentials
     * @param int $page - Page of records to be visited
@@ -638,6 +625,48 @@ class UOL_PagSeguro_Helper_Data extends HelperData
         $records = PagSeguroTransactionSearchService::searchByDate($credential, $page, $nRecords, $dtStart, $dFinaly);
 
         return $records;
+    }
+
+    /**
+    * Makes a request to cancel a transaction
+    * @param string $transactionCode - Code of transaction
+    */
+    protected function requestPagSeguroCancelService($transactionCode)
+    {
+        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
+        $obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
+
+        try {
+            $credential = $obj->getCredentialsInformation();
+            $response = PagSeguroCancelService::createRequest($credential, $transactionCode);
+
+            return $response;
+        } catch (PagSeguroServiceException $e) {
+            if (trim($e->getMessage()) == '[HTTP 400] - BAD_REQUEST 0 [56002]') {
+                throw new Exception($e->getMessage());
+            }
+        }
+    }
+
+    /**
+    * Makes a request to refund a transaction
+    * @param string $transactionCode - Code of transaction
+    */
+    protected function requestPagSeguroRefundService($transactionCode)
+    {
+        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
+        $obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
+
+        try {
+            $credential = $obj->getCredentialsInformation();
+            $response = PagSeguroRefundService::createRefundRequest($credential, $transactionCode);
+
+            return $response;
+        } catch (PagSeguroServiceException $e) {
+            if (trim($e->getMessage()) == '[HTTP 400] - BAD_REQUEST 0 [14007]') {
+                throw new Exception($e->getMessage());
+            }
+        }
     }
 
     /**

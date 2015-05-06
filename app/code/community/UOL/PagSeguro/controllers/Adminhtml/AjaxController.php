@@ -57,7 +57,7 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 
     /**
      * Generates the data abandoned to populate the table
-     * @return array $dataSet - Array of data for table
+     * @return array $abandoned - Array of data for table
      */
     private function getAbandonedGrid($days)
     {
@@ -93,19 +93,30 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
 
     /**
      * Generates the data transactions to populate the table
-     * @return array $dataSet - Array of data for table
+     * @return array $canceled - Array of data for table
      */
     private function getCanceledGrid($days)
     {
-        $helper = Mage::helper('pagseguro/canceled');
+        $canceled = Mage::helper('pagseguro/canceled');
+
+        if ($json = $this->getRequest()->getPost('json')) {
+            foreach ($json as $value) {
+                $canceled->cancelOrderStatusMagento($value['id'], $value['code']);
+            }
+
+            $canceled->setDateStart($_SESSION['days']);
+        } else {
+            if ($_SESSION['days'] != 0) {
+                $canceled->setCanceledListLog($days);
+            }
+        }
 
         try {
-            if ($canceledArray = $helper->getArrayPayments()) {
-                return $helper->getTransactionGrid($canceledArray);
+            if ($canceledArray = $canceled->getArrayPayments()) {
+                return $canceled->getTransactionGrid($canceledArray);
             } else {
                 return 'run';
             }
-
         } catch (Exception $e) {
             return trim($e->getMessage());
         }
@@ -150,6 +161,18 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
     private function getRefundGrid($days)
     {
         $refund = Mage::helper('pagseguro/refund');
+
+        if ($json = $this->getRequest()->getPost('json')) {
+            foreach ($json as $value) {
+                $refund->refundOrderStatusMagento($value['id'], $value['code']);
+            }
+
+            $refund->setDateStart($_SESSION['days']);
+        } else {
+            if ($_SESSION['days'] != 0) {
+                $refund->setRefundListLog($days);
+            }
+        }
 
         try {
             if ($refundArray = $refund->getArrayPayments()) {

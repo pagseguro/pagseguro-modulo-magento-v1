@@ -130,15 +130,14 @@ limitations under the License.
             });
         }
 
-        var doRefund = function(){
+        var doRefund = function(config){
             jQuery('#messages').empty();
-            var config = '';
             var id = '';
             var code = '';
             var status = '';
             var jsonArr = [];
 
-            config = jQuery(this).data('config').split('/');
+            config = config.split('/');
             jsonArr.push({
                 id: config[0],
                 code: config[1],
@@ -170,9 +169,6 @@ limitations under the License.
                         oTable.fnStandingRedraw();
                         jQuery('#messages').empty();
                     }
-
-                    jQuery(':checkbox').prop('checked','');
-                    jQuery('#conciliation-button').prop("disabled", true);
 
                     Modal.message('success', '<?php echo $refundSuccess; ?>');
                 },
@@ -318,6 +314,10 @@ limitations under the License.
 
             jQuery('#refund-search-button').click(function () {
                 requestTransactions();
+            });
+
+            jQuery('#refund-table').on('click', 'a.action', function() {
+                doRefund(jQuery(this).data('config'));
             });
         };
     }

@@ -18,6 +18,7 @@ limitations under the License.
 
 /* Header */
 #pagseguro-module-header { border-bottom: 5px solid #90e265; margin-bottom: 10px; overflow: hidden; padding: 1.5em 0; background: #FFF; }
+#pagseguro-module-header .wrapper { min-width: 0; }
 #pagseguro-logo { float: left; }
 #pagseguro-registration-button { float: right; margin-top: 0.4em; }
 #pagseguro-module { background: none repeat scroll 0 0 #F2F2F2; box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.2); margin-bottom: 5em; color: #666; font-family: Arial !important; font-size: 12px; overflow: hidden; position: relative; }
@@ -145,3 +146,23 @@ i.icon-pagseguro-msg.icon-error, .pagseguro-msg.pagseguro-msg-error::before { ba
 i.icon-pagseguro-msg, .pagseguro-msg::before { height: 1em; width: 1em; }
 .pagseguro-msg::before { content: ""; }
 i.icon-pagseguro-msg, .pagseguro-msg::before { background-image: url("../images/messages.png"); background-repeat: no-repeat; background-size: cover; display: inline-block; overflow: hidden; vertical-align: middle; }
+
+@media screen and (max-width: 1000px) {
+    #payment_pagseguro { background-size: 682px !important; background-position: center 15.5% !important; }
+}
+
+@media screen and (min-width: 1001px) and (max-width: 1140px) {
+    #payment_pagseguro { background-size: 822px !important; background-position: center 16% !important; }
+}
+
+@media screen and (min-width: 1141px) and (max-width: 1280px) {
+    #payment_pagseguro { background-size: 962px !important; background-position: center 16.6% !important; }
+}
+
+@media screen and (min-width: 1281px) and (max-width: 1360px) {
+    #payment_pagseguro { background-size: 1048px !important; background-position: center 16.9% !important; }
+}
+
+@media screen and (min-width: 1361px) {
+    #payment_pagseguro { background-size: 100% !important; background-position: center 16.9% !important; }
+}
