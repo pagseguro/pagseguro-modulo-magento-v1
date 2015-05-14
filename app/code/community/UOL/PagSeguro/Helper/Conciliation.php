@@ -22,18 +22,6 @@ use UOL_PagSeguro_Helper_Data as HelperData;
 
 class UOL_PagSeguro_Helper_Conciliation extends HelperData
 {
-    // It is used to store the environment of transactions
-    private $environment;
-
-    /**
-     * Construct
-     */
-    public function __construct()
-    {
-        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        $this->environment = PagSeguroConfig::getEnvironment();
-    }
-
     /**
      * Creates the complete array with the necessary information for the table
      * @param int $orderId - Id of order of Magento
@@ -65,7 +53,7 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
             // Receives the parameter used to update an order
             $config = $order->getId() .'/'. $idPagSeguro .'/'. $this->getPaymentStatusPagSeguro($paymentStatus, true);
 
-            $checkbox =  "<label class='chk_email'>";
+            $checkbox  = "<label class='chk_email'>";
             $checkbox .= "<input type='checkbox' name='conciliation_orders[]' data-config='" . $config . "' />";
             $checkbox .= "</label>";
 
@@ -98,40 +86,5 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
         $this->getMagentoPayments();
 
         return $this->arrayPayments;
-    }
-
-    /**
-     * Set log records listed
-     * @method setLog - Set log in file
-     */
-    public function setConciliationListLog($days)
-    {
-        $module = ' [Info] PagSeguroConciliation.';
-
-        // Sentence of log
-        $phrase = "Searched( '" . $days . " days - Range of dates ";
-        $phrase .= $this->getDateStart() . " until " .
-                   $this->getDateFinally() . "' )";
-
-        // Creating the update log order
-        $this->setLog($phrase, $module);
-    }
-
-    /**
-     * Set log of update order
-     * @method setLog - Set log in file
-     */
-    public function setConciliationUpdateOrderLog($orderId, $transactionCode, $orderStatus)
-    {
-        $module = ' [Info] PagSeguroConciliation.';
-
-        // Sentence of log
-        $phrase = 'Update(';
-        $phrase .= "OrderStatusMagento: array (\n  'orderId' => " . $orderId . ",\n  ";
-        $phrase .= "'transactionCode' => '" . $transactionCode . "',\n  ";
-        $phrase .= "'orderStatus' => '" . $orderStatus . "'\n))";
-
-        // Creating the update log order
-        $this->setLog($phrase, $module);
     }
 }

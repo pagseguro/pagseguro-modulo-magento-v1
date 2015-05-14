@@ -65,6 +65,7 @@ class UOL_PagSeguro_Model_Adminhtml_Config
         $class = 'pagseguro-button gray-theme';
         $version = $helper->__('Versão %s', $this->version);
         $backgroundCss = '#fff url(' . $this->background . ') no-repeat scroll center 19%';
+        $html = Mage::helper('pagseguro/html');
 
         $alertEnvironment  = $helper->__('Suas transações serão feitas em um ambiente de testes.') . '<br />';
         $alertEnvironment .= $helper->__('Nenhuma das transações realizadas nesse ambiente tem valor monetário.');
@@ -80,7 +81,7 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 
         $interface = '<div class="pagseguro-comment">
                         ' . $this->css . '
-                        ' . $helper->getHeader($this->logo). '
+                        ' . $html->getHeader($this->logo). '
                      </div>';
         $email = Mage::getStoreConfig('payment/pagseguro/email');
         $token = Mage::getStoreConfig('payment/pagseguro/token');

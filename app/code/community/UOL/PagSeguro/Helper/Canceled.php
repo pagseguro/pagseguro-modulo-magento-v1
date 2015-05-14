@@ -22,18 +22,6 @@ use UOL_PagSeguro_Helper_Data as HelperData;
 
 class UOL_PagSeguro_Helper_Canceled extends HelperData
 {
-    // It is used to store the environment of transactions
-    private $environment;
-
-    /**
-     * Construct
-     */
-    public function __construct()
-    {
-        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        $this->environment = PagSeguroConfig::getEnvironment();
-    }
-
     /**
      * Creates the complete array with the necessary information for the table
      * @param int $orderId - Id of order of Magento
@@ -104,94 +92,5 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
         $this->getMagentoPayments();
 
         return $this->arrayPayments;
-    }
-
-    /**
-     * Set log records listed
-     * @method setLog - Set log in file
-     */
-    public function setCanceledListLog($days)
-    {
-        $module = ' [Info] PagSeguroCanceled.';
-
-        // Sentence of log
-        $phrase = "Searched( '" . $days . " days - Range of dates ";
-        $phrase .= $this->getDateStart() . " until " .
-                   $this->getDateFinally() . "' )";
-
-        // Creating the update log order
-        $this->setLog($phrase, $module);
-    }
-
-    /**
-     * Set log of update order
-     * @method setLog - Set log in file
-     */
-    public function setCanceledUpdateOrderLog($orderId, $transactionCode, $orderStatus)
-    {
-        $module = ' [Info] PagSeguroCanceled.';
-
-        // Sentence of log
-        $phrase = 'Update(';
-        $phrase .= "OrderStatusMagento: array (\n  'orderId' => " . $orderId . ",\n  ";
-        $phrase .= "'transactionCode' => '" . $transactionCode . "',\n  ";
-        $phrase .= "'orderStatus' => '" . $orderStatus . "'\n))";
-
-        // Creating the update log order
-        $this->setLog($phrase, $module);
-    }
-
-    /**
-     * Cancels the order status of Magento
-     * Creates notification in the historical in order of Magento and sends email to the customer
-     * Insert the transaction code of PagSeguro in order of Magento
-     * @param int $orderId - Id of order of Magento
-     * @param string $transactionCode - Transaction code of PagSeguro
-     */
-    public function cancelOrderStatusMagento($orderId, $transactionCode)
-    {
-        if ($this->requestPagSeguroCancelService($transactionCode) == 'OK') {
-            $orderStatus = 'cancelada_ps';
-            $this->setCanceledUpdateOrderLog($orderId, $transactionCode, $orderStatus);
-
-            if ($this->getLastStatusOrder($orderId) != $orderStatus) {
-                $status = $orderStatus;
-                $comment = null;
-                $notify = true;
-                $order = Mage::getModel('sales/order')->load($orderId);
-                $order->addStatusToHistory($status, $comment, $notify);
-                $order->sendOrderUpdateEmail($notify, $comment);
-
-                // Makes the notification of the order of historic displays the correct date and time
-                Mage::app()->getLocale()->date();
-                $order->save();
-            }
-
-            //Get the resource model
-            $resource = Mage::getSingleton('core/resource');
-
-            //Retrieve the read connection
-            $readConnection = $resource->getConnection('core_read');
-
-            //Retrieve the write connection
-            $writeConnection = $resource->getConnection('core_write');
-
-            $tp    = (string)Mage::getConfig()->getTablePrefix();
-            $table = $tp . 'pagseguro_orders';
-
-            //Select sent column from pagseguro_orders to verify if exists a register
-            $query = 'SELECT order_id FROM ' . $resource->getTableName($table) . ' WHERE order_id = ' . $orderId;
-            $result = $readConnection->fetchAll($query);
-
-            if (!empty($result)) {
-                $sql = "UPDATE `" . $table . "` SET `transaction_code` = '$transactionCode' WHERE order_id = " . $orderId;
-            } else {
-                $environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
-                $sql = $query = "INSERT INTO " . $table . " (order_id, transaction_code, environment)
-                                 VALUES ('$orderId', '$transactionCode', '$environment')";
-            }
-
-            $writeConnection->query($sql);
-        }
     }
 }

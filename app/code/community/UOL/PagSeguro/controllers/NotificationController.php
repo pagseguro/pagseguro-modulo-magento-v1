@@ -22,36 +22,12 @@ use Mage_Core_Controller_Front_Action as FrontAction;
 
 class UOL_PagSeguro_NotificationController extends FrontAction
 {
-    private $objPagSeguro;
-    private $objCredential;
-    private $objNotification;
-
     /**
      * Notification Action
      */
     public function sendAction()
     {
-        $this->createObjects();
-        $this->createCredential();
-
-        $this->objNotification->initialize($this->objCredential, $_POST);
-    }
-
-    /**
-     * Create Objects
-     */
-    private function createObjects()
-    {
-        include(Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        $this->objPagSeguro =  Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-        $this->objNotification = Mage::getSingleton('UOL_PagSeguro_Model_NotificationMethod');
-    }
-
-    /**
-     * Create Credential
-     */
-    private function createCredential()
-    {
-        $this->objCredential = $this->objPagSeguro->getCredentialsInformation();
+        $helper = Mage::helper('pagseguro');
+        $helper->requestNotificationMethod()->initialize($_POST);
     }
 }

@@ -24,10 +24,6 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
 {
     private $notificationType;
     private $notificationCode;
-    private $reference;
-    private $objCredential;
-    private $objNotificationType;
-    private $objTransaction;
     private $post;
     private $helper;
 
@@ -36,39 +32,20 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
      */
     public function __construct()
     {
-        parent::__construct();
         $this->helper = Mage::helper('pagseguro');
-        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
     }
 
-    /**
-     * Initialize
-     * @param type $objCredential
-     * @param type $post
-     */
-    public function initialize($objCredential, $post)
+    public function initialize($post)
     {
-        $this->objCredential = $objCredential;
         $this->post = $post;
-        $this->createNotification();
-        $this->initializeObjects();
+        $this->getNotificationPost();
 
-        if ($this->objNotificationType->getValue() == $this->notificationType) {
-            $this->createTransaction();
-
-            if ($this->objTransaction) {
-                $transactionStatus = $this->objTransaction->getStatus()->getValue();
-                $this->updateOrderStatus($this->helper->getPaymentStatusPagSeguro($transactionStatus, true));
-            }
+        if($this->notificationType == 'transaction') {
+            $this->setNotificationUpdateOrder();
         }
-
-        $this->objNotificationType->getValue();
     }
 
-    /**
-     * Create Notification
-     */
-    private function createNotification()
+    private function getNotificationPost()
     {
         $type = $this->post['notificationType'];
         $code = $this->post['notificationCode'];
@@ -77,75 +54,15 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $this->notificationCode = (isset($code) && trim($code) != "") ? $code : null;
     }
 
-    /**
-     * Initialize Objects
-     */
-    private function initializeObjects()
+    private function setNotificationUpdateOrder()
     {
-        $this->createNotificationType();
-    }
+        $class = get_class($this);
+        $transaction = $this->helper->requestWebservice()->requestPagSeguroService($class, $this->notificationCode);
 
-    /**
-     * Create Notification Type
-     */
-    private function createNotificationType()
-    {
-        $this->objNotificationType = new PagSeguroNotificationType();
-        $this->objNotificationType->setByType('TRANSACTION');
-    }
+        $orderId = $this->helper->getReferenceDecryptOrderID($transaction->getReference());
+        $transactionCode = $transaction->getCode();
+        $orderStatus = $this->helper->getPaymentStatusPagSeguro($transaction->getStatus()->getValue(), true);
 
-    /**
-    * Create Transaction
-    */
-    private function createTransaction()
-    {
-        $ckTransaction = PagSeguroNotificationService::checkTransaction($this->objCredential, $this->notificationCode);
-        $this->objTransaction = $ckTransaction;
-
-        $reference = $this->objTransaction->getReference();
-        $orderId = $this->helper->getReferenceDecryptOrderID($reference);
-
-        $this->reference = $orderId;
-    }
-
-    /**
-    * Update
-    * @param type $status
-    */
-    private function updateOrderStatus($status)
-    {
-        $comment = null;
-        $notify = true;
-        $order = Mage::getModel('sales/order')->load($this->reference);
-        $order->addStatusToHistory($status, $comment, $notify);
-        $order->sendOrderUpdateEmail($notify, $comment);
-
-        // Makes the notification of the order of historic displays the correct date and time
-        Mage::app()->getLocale()->date();
-        $order->save();
-
-        try {
-            $this->insertTransactionCode();
-            $order->save();
-        } catch (Exception $exc) {
-            echo $exc->getTraceAsString();
-        }
-    }
-
-    /**
-     * Insert transaction code in order
-     */
-    private function insertTransactionCode()
-    {
-        $tp = (string)Mage::getConfig()->getTablePrefix();
-        $table = $tp . 'pagseguro_orders';
-        $ref = $this->reference;
-
-        $read= Mage::getSingleton('core/resource')->getConnection('core_read');
-        $transactionId = $this->objTransaction->getCode();
-
-        $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $sql = "UPDATE `" . $table . "` SET `transaction_code` = '" . $transactionId . "' WHERE order_id = " . $ref;
-        $connection->query($sql);
+        $this->helper->updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus);
     }
 }

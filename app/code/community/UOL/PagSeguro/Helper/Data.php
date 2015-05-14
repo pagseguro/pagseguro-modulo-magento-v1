@@ -26,7 +26,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     protected $arrayPayments = array();
 
     // It is used to store the initial consultation date of transactions
-    private $dateStart = '';
+    private $initialDate;
 
     /**
      * Construct
@@ -43,7 +43,8 @@ class UOL_PagSeguro_Helper_Data extends HelperData
      */
     public function getVersion()
     {
-        return Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version;
+        $version = Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version;
+        return $version;
     }
 
     /**
@@ -230,26 +231,26 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 
     /**
      * Get date start
-     * @return date $dateStart - Example Y-m-dT00:00
+     * @return date $initialDate - Example Y-m-dT00:00
      */
-    public function getDateStart()
+    public function getInitialDate()
     {
-        $this->dateStart = $_SESSION['dateStart'];
+        $this->initialDate = $_SESSION['initialDate'];
 
-        if ($this->dateStart != '') {
-            $dateStart = $this->dateStart . 'T00:00';
+        if ($this->initialDate != '') {
+            $initialDate = $this->initialDate . 'T00:00';
         } else {
-            $dateStart = date('Y-m-d') . 'T00:00';
+            $initialDate = date('Y-m-d') . 'T00:00';
         }
 
-        return $dateStart;
+        return $initialDate;
     }
 
     /**
      * Get date finally for query
      * @return date $date - Returns the end date (Y-m-dTH:i)
      */
-    public function getDateFinally()
+    public function getFinalDate()
     {
         // set date and time by time zone selected by merchant
         date_default_timezone_set(Mage::getStoreConfig('general/locale/timezone'));
@@ -282,34 +283,10 @@ class UOL_PagSeguro_Helper_Data extends HelperData
      */
     public function getEditOrderUrl($idOrder)
     {
-        $obj = Mage::getSingleton('adminhtml/url');
-        $url = $obj->getUrl('adminhtml/sales_order/view', array('order_id' => $idOrder));
+        $adminhtmlUrl = Mage::getSingleton('adminhtml/url');
+        $url = $adminhtmlUrl->getUrl('adminhtml/sales_order/view', array('order_id' => $idOrder));
 
         return $url;
-    }
-
-    /**
-     * Creating log for conciliation and abandoned
-     * @param string $phrase - It's the phrase that completes the log
-     * @param string $module - It's the title that completes the log
-     */
-    public function setLog($phrase, $module)
-    {
-        $obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-
-        // value 0/1
-        $log = $obj->getConfigData('log');
-
-        if ($log == 1) {
-            if ($obj->getConfigData('log_file') != '') {
-                $directoryLog = Mage::getBaseDir() . '/' . $obj->getConfigData('log_file');
-            } else {
-                $directoryLog = Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguro.log';
-            }
-            $date = '{' . Mage::app()->getLocale()->date() . '}';
-            $return = $date . $module . $phrase . "\r\n";
-            file_put_contents($directoryLog, $return, FILE_APPEND);
-        }
     }
 
     /**
@@ -360,7 +337,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
         $environment = Mage::getStoreConfig('payment/pagseguro/environment');
 
         //Define table name with their prefix
-        $tp    = (string)Mage::getConfig()->getTablePrefix();
+        $tp    = (string) Mage::getConfig()->getTablePrefix();
         $table = $tp . 'adminnotification_inbox';
 
         $sql = "SELECT notification_id  FROM `" . $table . "` WHERE title LIKE '%[UOL_PagSeguro]%'";
@@ -437,100 +414,6 @@ class UOL_PagSeguro_Helper_Data extends HelperData
         unset($connection);
     }
 
-    /**
-     * Get html of header of backend
-     * @return string $html - Html of header
-     */
-    public function getHeader($logo)
-    {
-        $logo = Mage::getBaseUrl('skin') . 'adminhtml/default/default/uol/pagseguro/images/logo.png';
-        $url = 'https://pagseguro.uol.com.br/registration/registration.jhtml?ep=7&tipo=cadastro#!vendedor';
-        $version = $this->__('Versão %s', $this->getVersion());
-        $id = 'pagseguro-registration-button';
-
-        $html = '<div id="pagseguro-module-header">
-                    <div class="wrapper">
-                        <div id="pagseguro-logo">
-                            <img class="pagseguro_logo" src="' . $logo . '" />
-                            <div id="pagseguro-module-version">' . $version . '</div>
-                        </div>
-                        <a id="' . $id . '" class="pagseguro-button gray-theme" href="' . $url . '" target="_blank">
-                            ' . $this->__('Faça seu cadastro') . '
-                        </a>
-                    </div>
-                </div>';
-
-        return $html;
-    }
-
-    /**
-     * Get url of access the page correct
-     * @param string $path - Path of the page to be returned
-     * @return string $url - Returns the url of page.
-     */
-    private function getSideMenuUrl($path)
-    {
-        $obj = Mage::getSingleton('adminhtml/url');
-
-        if ($path == 'pagseguro_configuration') {
-            $url = $obj->getUrl('adminhtml/system_config/edit/section/payment/key');
-        } else {
-            $correctPath = str_replace('pagseguro_', 'adminhtml_', $path);
-            $url = $obj->getUrl('pagseguro/' . $correctPath);
-        }
-
-        return $url;
-    }
-
-    /**
-     * Get html of side menu of backend
-     * @return string $html - Html of side menu
-     */
-    public function getSideMenu()
-    {
-        // Set controller name of page in variable $page
-        $page = str_replace('adminhtml_', 'pagseguro_', Mage::app()->getRequest()->getControllerName());
-        $menu = new Mage_Adminhtml_Block_Page_Menu();
-        $menuArray = $menu->getMenuArray();
-
-        $html = '<div id="pagseguro-module-menu">' .
-                '   <ul>';
-
-        foreach ($menuArray['pagseguro_menu']['children'] as $key => $item) {
-            $selected = ($page == $key) ? ' class="selected"' : '';
-
-            $html .= '<li id="menu-item-' . $key . '"' . $selected . ' data-has-form="true">';
-
-            if ($item['children']) {
-                $html .= '<span class="children"><i class="icon"></i>' . $item['label'] . '</span>
-                          <ul>';
-
-                foreach ($item['children'] as $key => $subItem) {
-                    $selected = ($page == $key) ? ' class="selected"' : '';
-
-                    $html .= '<li id="menu-subitem-' . $key . '"' . $selected . ' data-has-form="true">
-                                <a href="' . $this->getSideMenuUrl($key) . '">
-                                ' . $subItem['label'] . '
-                                </a>
-                              </li>';
-                }
-
-                $html .= '</ul>';
-            } else {
-                $html .= '<a href="' . $this->getSideMenuUrl($key) . '">
-                            ' . $item['label'] . '
-                        </a>';
-            }
-
-            $html .= '</li>';
-        }
-
-        $html .= '  </ul>' .
-                 '</div>';
-
-        return $html;
-    }
-
     /*
      * Checks if email was filled and token
      * Checks if email and token are valid
@@ -538,15 +421,13 @@ class UOL_PagSeguro_Helper_Data extends HelperData
      */
     public function checkTransactionAccess()
     {
-        $obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-
         // Displays this error in title
         $module = 'PagSeguro - ';
 
         // Receive url editing methods ja payment with key
         $configUrl = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/');
-        $email = $obj->getConfigData('email');
-        $token = $obj->getConfigData('token');
+        $email = $this->requestPaymentMethod()->getConfigData('email');
+        $token = $this->requestPaymentMethod()->getConfigData('token');
 
         if ($email) {
             if (!$token) {
@@ -570,9 +451,9 @@ class UOL_PagSeguro_Helper_Data extends HelperData
      * Set the start date to be found on webservice, starting from the days entered
      * @param int $days - Days preceding the date should be initiated
      */
-    public function setDateStart($days)
+    public function setInitialDate($days)
     {
-        $_SESSION['dateStart'] = $this->getDateSubtracted($days);
+        $_SESSION['initialDate'] = $this->getDateSubtracted($days);
     }
 
     /**
@@ -594,9 +475,9 @@ class UOL_PagSeguro_Helper_Data extends HelperData
      */
     protected function getLastStatusOrder($orderId)
     {
-        $obj = Mage::getModel('sales/order')->load($orderId);
+        $order = Mage::getModel('sales/order')->load($orderId);
 
-        return $obj->getStatus();
+        return $order->getStatus();
     }
 
     /**
@@ -613,82 +494,18 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-    * Gets transactions filtered of server of PagSeguro
-    * @param object $credential - Server access credentials
-    * @param int $page - Page of records to be visited
-    * @param date $dtStart - Date start of filter
-    * @param date $dtFinaly - Date end of filter
-    * @return object $transactions - It contains all transactions found
-    */
-    private function getTransactionService($credential, $page, $nRecords, $dtStart, $dtFinaly)
-    {
-        $records = PagSeguroTransactionSearchService::searchByDate($credential, $page, $nRecords, $dtStart, $dFinaly);
-
-        return $records;
-    }
-
-    /**
-    * Makes a request to cancel a transaction
-    * @param string $transactionCode - Code of transaction
-    */
-    protected function requestPagSeguroCancelService($transactionCode)
-    {
-        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        $obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-
-        try {
-            $credential = $obj->getCredentialsInformation();
-            $response = PagSeguroCancelService::createRequest($credential, $transactionCode);
-
-            return $response;
-        } catch (PagSeguroServiceException $e) {
-            if (trim($e->getMessage()) == '[HTTP 400] - BAD_REQUEST 0 [56002]') {
-                throw new Exception($e->getMessage());
-            }
-        }
-    }
-
-    /**
-    * Makes a request to refund a transaction
-    * @param string $transactionCode - Code of transaction
-    */
-    protected function requestPagSeguroRefundService($transactionCode)
-    {
-        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        $obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-
-        try {
-            $credential = $obj->getCredentialsInformation();
-            $response = PagSeguroRefundService::createRefundRequest($credential, $transactionCode);
-
-            return $response;
-        } catch (PagSeguroServiceException $e) {
-            if (trim($e->getMessage()) == '[HTTP 400] - BAD_REQUEST 0 [14007]') {
-                throw new Exception($e->getMessage());
-            }
-        }
-    }
-
-    /**
      * Get list of payment PagSeguro
      * @return array $transactionArray - Array with transactions
      */
     protected function getPagSeguroPaymentList()
     {
-        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        $obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-
         try {
-            $credential = $obj->getCredentialsInformation();
-            $dateStart  = $this->getDateStart();
-            $dateFinaly = $this->getDateFinally();
-
-            $transactions = $this->getTransactionService($credential, 1, 1000, $dateStart, $dateFinaly);
+            $transactions = $this->requestWebservice()->getTransactionService('searchByDate', 1, 1000);
             $pages = $transactions->getTotalPages();
 
             if ($pages > 1) {
                 for ($i = 1; $i < ($pages + 1); $i++) {
-                    $transactions = $this->getTransactionService($credential, $i, 1000, $dateStart, $dateFinaly);
+                    $transactions = $this->requestWebservice()->getTransactionService('searchByDate', $i, 1000);
                     $transactionArray .= array_push($transactions->getTransactions());
                 }
             } else {
@@ -738,58 +555,6 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-     * Updates the order status of Magento
-     * Creates notification in the historical in order of Magento and sends email to the customer
-     * Insert the transaction code of PagSeguro in order of Magento
-     * @param int $orderId - Id of order of Magento
-     * @param string $transactionCode - Transaction code of PagSeguro
-     * @param string $orderStatus - Status of transaction of PagSeguro
-     */
-    public function updateOrderStatusMagento($orderId, $transactionCode, $orderStatus)
-    {
-        $this->setConciliationUpdateOrderLog($orderId, $transactionCode, $orderStatus);
-
-        if ($this->getLastStatusOrder($orderId) != $orderStatus) {
-            $status = $orderStatus;
-            $comment = null;
-            $notify = true;
-            $order = Mage::getModel('sales/order')->load($orderId);
-            $order->addStatusToHistory($status, $comment, $notify);
-            $order->sendOrderUpdateEmail($notify, $comment);
-
-            // Makes the notification of the order of historic displays the correct date and time
-            Mage::app()->getLocale()->date();
-            $order->save();
-        }
-
-        //Get the resource model
-        $resource = Mage::getSingleton('core/resource');
-
-        //Retrieve the read connection
-        $readConnection = $resource->getConnection('core_read');
-
-        //Retrieve the write connection
-        $writeConnection = $resource->getConnection('core_write');
-
-        $tp    = (string)Mage::getConfig()->getTablePrefix();
-        $table = $tp . 'pagseguro_orders';
-
-        //Select sent column from pagseguro_orders to verify if exists a register
-        $query = 'SELECT order_id FROM ' . $resource->getTableName($table) . ' WHERE order_id = ' . $orderId;
-        $result = $readConnection->fetchAll($query);
-
-        if (!empty($result)) {
-            $sql = "UPDATE `" . $table . "` SET `transaction_code` = '$transactionCode' WHERE order_id = " . $orderId;
-        } else {
-            $environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
-            $sql = $query = "INSERT INTO " . $table . " (order_id, transaction_code, environment)
-                             VALUES ('$orderId', '$transactionCode', '$environment')";
-        }
-
-        $writeConnection->query($sql);
-    }
-
-    /**
     * Get the transactions to be shown in the table
     * @param  array $array - Contains transaction set
     * @return json $dataSet - Contains json that the table interprets by updates ajax
@@ -802,10 +567,12 @@ class UOL_PagSeguro_Helper_Data extends HelperData
         foreach ($array as $info) {
             $i = 1;
             $dataSet .= ($j > 1) ? ',[' : '[';
+
             foreach ($info as $item) {
                 $dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';
                 $i++;
             }
+
             $dataSet .= ']';
             $j++;
         }
@@ -821,13 +588,8 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     */
     public function checkCredentials()
     {
-        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        $obj = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-
         try {
-            $credential = $obj->getCredentialsInformation();
-            $dateStart  = $this->getDateStart();
-            $transactions = $this->getTransactionService($credential, 1, 1, $dateStart);
+            $transactions = $this->requestWebservice()->getTransactionService('searchByDate', 1, 1, $initialDate);
             Mage::getConfig()->saveConfig('uol_pagseguro/store/credentials', 1);
         } catch (PagSeguroServiceException $e) {
             if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
@@ -841,7 +603,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     * @param object $PaymentRequest - Object responsible for passing the parameters to the webservice.
     * @return object $PaymentRequest - Returns to the discount parameters object
     */
-    public function getDiscount($PaymentRequest)
+    public function getDiscount($paymentRequest)
     {
         $storeId = Mage::app()->getStore()->getStoreId();
 
@@ -849,7 +611,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
             $creditCard = (double) Mage::getStoreConfig('payment/pagseguro/discount_credit_card_value', $storeId);
 
             if ($creditCard && $creditCard != 0.00) {
-                $PaymentRequest->addPaymentMethodConfig('CREDIT_CARD', $creditCard, 'DISCOUNT_PERCENT');
+                $paymentRequest->addPaymentMethodConfig('CREDIT_CARD', $creditCard, 'DISCOUNT_PERCENT');
             }
         }
 
@@ -857,7 +619,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
             $eft = (double) Mage::getStoreConfig('payment/pagseguro/discount_electronic_debit_value', $storeId);
 
             if ($eft && $eft != 0.00) {
-                $PaymentRequest->addPaymentMethodConfig('EFT', $eft, 'DISCOUNT_PERCENT');
+                $paymentRequest->addPaymentMethodConfig('EFT', $eft, 'DISCOUNT_PERCENT');
             }
         }
 
@@ -865,7 +627,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
             $boleto = (double) Mage::getStoreConfig('payment/pagseguro/discount_boleto_value', $storeId);
 
             if ($boleto && $boleto != 0.00) {
-                $PaymentRequest->addPaymentMethodConfig('BOLETO', $boleto, 'DISCOUNT_PERCENT');
+                $paymentRequest->addPaymentMethodConfig('BOLETO', $boleto, 'DISCOUNT_PERCENT');
             }
         }
 
@@ -873,7 +635,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
             $deposit = (double) Mage::getStoreConfig('payment/pagseguro/discount_deposit_account_value', $storeId);
 
             if ($deposit && $deposit != 0.00) {
-                $PaymentRequest->addPaymentMethodConfig('DEPOSIT', $deposit, 'DISCOUNT_PERCENT');
+                $paymentRequest->addPaymentMethodConfig('DEPOSIT', $deposit, 'DISCOUNT_PERCENT');
             }
         }
 
@@ -881,10 +643,121 @@ class UOL_PagSeguro_Helper_Data extends HelperData
             $balance = (double) Mage::getStoreConfig('payment/pagseguro/discount_balance_value', $storeId);
 
             if ($balance && $balance != 0.00) {
-                $PaymentRequest->addPaymentMethodConfig('BALANCE', $balance, 'DISCOUNT_PERCENT');
+                $paymentRequest->addPaymentMethodConfig('BALANCE', $balance, 'DISCOUNT_PERCENT');
             }
         }
 
-        return $PaymentRequest;
+        return $paymentRequest;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus)
+    {
+        if ($this->getLastStatusOrder($orderId) != $orderStatus) {
+            if ($class == 'UOL_PagSeguro_Helper_Canceled') {
+                if ($this->requestWebservice()->requestPagSeguroService($class, $transactionCode) == 'OK') {
+                    $orderStatus = 'cancelada_ps';
+                }
+            } elseif ($class == 'UOL_PagSeguro_Helper_Refund') {
+                if ($this->requestWebservice()->requestPagSeguroService($class, $transactionCode) == 'OK') {
+                    $orderStatus = 'devolvida_ps';
+                }
+            }
+
+            $this->notifyCustomer($orderId, $orderStatus);
+            Mage::helper('pagseguro/log')->setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus);
+        }
+
+        $this->setTransactionRecord($orderId, $transactionCode);
+    }
+
+    private function notifyCustomer($orderId, $orderStatus)
+    {
+        $status = $orderStatus;
+        $comment = null;
+        $notify = true;
+        $order = Mage::getModel('sales/order')->load($orderId);
+        $order->addStatusToHistory($status, $comment, $notify);
+        $order->sendOrderUpdateEmail($notify, $comment);
+
+        // Makes the notification of the order of historic displays the correct date and time
+        Mage::app()->getLocale()->date();
+        $order->save();
+    }
+
+    public function setTransactionRecord($orderId, $transactionCode = false, $send = false)
+    {
+        //Get the resource model
+        $resource = Mage::getSingleton('core/resource');
+
+        //Retrieve the read connection
+        $readConnection = $resource->getConnection('core_read');
+
+        //Retrieve the write connection
+        $writeConnection = $resource->getConnection('core_write');
+
+        $tp    = (string) Mage::getConfig()->getTablePrefix();
+        $table = $tp . 'pagseguro_orders';
+
+        //Select sent column from pagseguro_orders to verify if exists a register
+        $query = 'SELECT order_id, sent FROM ' . $resource->getTableName($table) . ' WHERE order_id = ' . $orderId;
+        $result = $readConnection->fetchAll($query);
+
+        if (!empty($result)) {
+            if ($send == true) {
+                $sent  = $result[0]['sent'] + 1;
+                $value = "sent = '" . $sent . "'";
+            } else {
+                $value = "transaction_code = '" . $transactionCode . "'";
+            }
+
+            $sql = "UPDATE `" . $table . "` SET " . $value . " WHERE order_id = " . $orderId;
+        } else {
+            $environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
+            if ($send == true) {
+                $column = "(order_id, sent, environment)";
+                $values = "('$orderId', 1, '$environment')";
+            } else {
+                $column = "(order_id, transaction_code, environment)";
+                $values = "('$orderId', '$transactionCode', '$environment')";
+            }
+
+            $sql = "INSERT INTO `" . $table . "` " . $column . " VALUES " . $values;
+        }
+
+        $writeConnection->query($sql);
+    }
+
+    public function requestWebservice()
+    {
+        $webservice = Mage::helper('pagseguro/webservice');
+
+        return $webservice;
+    }
+
+    public function requestPaymentMethod()
+    {
+        $paymentMethod = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
+
+        return $paymentMethod;
+    }
+
+    public function requestNotificationMethod()
+    {
+        $notificationMethod = Mage::getSingleton('UOL_PagSeguro_Model_NotificationMethod');
+
+        return $notificationMethod;
     }
 }

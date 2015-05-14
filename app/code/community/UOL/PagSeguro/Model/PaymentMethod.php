@@ -166,31 +166,31 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         // Get references that stored in the database
         $reference = $helper->getStoreReference();
 
-        $PaymentRequest = new PagSeguroPaymentRequest();
-        $PaymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));
-        $PaymentRequest->setReference($reference . $this->order->getId()); //Order ID
-        $PaymentRequest->setShipping($this->getShippingInformation()); //Shipping
-        $PaymentRequest->setSender($this->getSenderInformation()); //Sender
-        $PaymentRequest->setItems($this->getItensInformation()); //Itens
-        $PaymentRequest->setShippingType(SHIPPING_TYPE);
-        $PaymentRequest->setShippingCost(number_format($this->order->getShippingAmount(), 2, '.', ''));
-        $PaymentRequest->setNotificationURL($this->getNotificationURL());
-        $helper->getDiscount($PaymentRequest);
+        $paymentRequest = new PagSeguroPaymentRequest();
+        $paymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));
+        $paymentRequest->setReference($reference . $this->order->getId()); //Order ID
+        $paymentRequest->setShipping($this->getShippingInformation()); //Shipping
+        $paymentRequest->setSender($this->getSenderInformation()); //Sender
+        $paymentRequest->setItems($this->getItensInformation()); //Itens
+        $paymentRequest->setShippingType(SHIPPING_TYPE);
+        $paymentRequest->setShippingCost(number_format($this->order->getShippingAmount(), 2, '.', ''));
+        $paymentRequest->setNotificationURL($this->getNotificationURL());
+        $helper->getDiscount($paymentRequest);
 
         //Define Redirect Url
         $redirectUrl = $this->getRedirectUrl();
 
         if (!empty($redirectUrl) and $redirectUrl != null) {
-                $PaymentRequest->setRedirectURL($redirectUrl);
+                $paymentRequest->setRedirectURL($redirectUrl);
         } else {
-                $PaymentRequest->setRedirectURL(Mage::getUrl() . 'checkout/onepage/success/');
+                $paymentRequest->setRedirectURL(Mage::getUrl() . 'checkout/onepage/success/');
         }
 
         //Define Extra Amount Information
-        $PaymentRequest->setExtraAmount($this->extraAmount());
+        $paymentRequest->setExtraAmount($this->extraAmount());
 
         try {
-            $paymentUrl = $PaymentRequest->register($this->getCredentialsInformation());
+            $paymentUrl = $paymentRequest->register($this->getCredentialsInformation());
         } catch (PagSeguroServiceException $ex) {
             Mage::log($ex->getMessage());
             $this->redirectUrl(Mage::getUrl() . 'checkout/onepage');

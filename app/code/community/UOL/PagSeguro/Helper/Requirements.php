@@ -22,7 +22,7 @@ use UOL_PagSeguro_Helper_Data as HelperData;
 
 class UOL_PagSeguro_Helper_Requirements extends HelperData
 {
-    /***
+    /**
      * Validate if the requirements are enable for use correct of the PagSeguro
      * @return array
      */
@@ -76,23 +76,5 @@ class UOL_PagSeguro_Helper_Requirements extends HelperData
         }
 
         return $req;
-    }
-
-    /**
-     * Set the log when searched records
-     * @method setLog - Set log in file
-     */
-    public function setRequirementsLog()
-    {
-        $config = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-
-        // Set title
-        $module = ' [Info] PagSeguroRequirements.';
-
-        // Sentence of log
-        $phrase = "get()";
-
-        // Creating the update log order
-        $this->setLog($phrase, $module);
     }
 }

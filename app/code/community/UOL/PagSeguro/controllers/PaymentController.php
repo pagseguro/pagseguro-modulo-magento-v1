@@ -36,24 +36,6 @@ class UOL_PagSeguro_PaymentController extends FrontAction
     }
 
     /**
-     * Get the Order of Checkout
-     * @return int - Return the id of order
-     */
-    private function getOrder()
-    {
-        return Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
-    }
-
-    /**
-     * Get PagSeguro Model instance
-     * @return object - Class PaymentMethod
-     */
-    private function getPagSeguroPaymentModel()
-    {
-        return Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod'); //Model
-    }
-
-    /**
      * Construct layout of payment
      */
     public function paymentAction()
@@ -67,13 +49,14 @@ class UOL_PagSeguro_PaymentController extends FrontAction
      */
     public function requestAction()
     {
-        $PagSeguroPaymentModel = $this->getPagSeguroPaymentModel();
-        $feedback = 'checkout/onepage';
         $helper = Mage::helper('pagseguro');
 
-        $order = $this->getOrder(); //Order Data
+        $paymentMethod = $helper->requestPaymentMethod();
+        $feedback = 'checkout/onepage';
+
+        $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
         $method = $order->getPayment()->getMethod();
-        $code = $PagSeguroPaymentModel->getCode();
+        $code = $paymentMethod->getCode();
 
         if (($order->getState() == Mage_Sales_Model_Order::STATE_NEW) && ($method == $code) && ($order->getId())) {
             $orderId = $order->getEntityId();
@@ -86,7 +69,7 @@ class UOL_PagSeguro_PaymentController extends FrontAction
                 $environment = $helper->__("Sandbox ");
             }
 
-            $tp = (string)Mage::getConfig()->getTablePrefix();
+            $tp = (string) Mage::getConfig()->getTablePrefix();
             $table = $tp . 'pagseguro_orders';
             $read= Mage::getSingleton('core/resource')->getConnection('core_read');
             $value = $read->query("SELECT `order_id` FROM `" . $table . "` WHERE `order_id` = " . $orderId);
@@ -99,8 +82,8 @@ class UOL_PagSeguro_PaymentController extends FrontAction
             }
 
             try {
-                $PagSeguroPaymentModel->setOrder($order);
-                $this->_redirectUrl($PagSeguroPaymentModel->getRedirectPaymentHtml($order));
+                $paymentMethod->setOrder($order);
+                $this->_redirectUrl($paymentMethod->getRedirectPaymentHtml($order));
 
                 //after verify if the order was created, instantiates the sendEmail() method
                 $this->sendEmail();

@@ -20,13 +20,13 @@ limitations under the License.
 
 class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_Action
 {
-    /**
-     * Creates the layout of the administration
-     * Receives the post and comes back
-     */
+    private $log;
+
     public function indexAction()
     {
+        $this->log = Mage::helper('pagseguro/log');
         $helper = Mage::helper('pagseguro');
+
         $origin = $this->getRequest()->getPost('origin');
         $sendmail = $this->getRequest()->getPost('sendmail');
         $days = $this->getRequest()->getPost('days');
@@ -34,16 +34,11 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
         // Saves the day searching for the global variable that receives the array
         if ($days) {
             $_SESSION['days'] = $days;
-            $helper->setDateStart($days);
+            $helper->setInitialDate($days);
         }
 
         if ($origin == 'abandoned') {
-            $json = $this->getRequest()->getPost('json');
-            if ($json) {
-                echo $this->sendAbandonedMail($json);
-            } else {
-                echo $this->getAbandonedGrid($days);
-            }
+            echo $this->getAbandonedGrid($days);
         } elseif ($origin == 'canceled') {
             echo $this->getCanceledGrid($days);
         } elseif ($origin == 'conciliation') {
@@ -55,15 +50,25 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
         }
     }
 
-    /**
-     * Generates the data abandoned to populate the table
-     * @return array $abandoned - Array of data for table
-     */
     private function getAbandonedGrid($days)
     {
         $abandoned = Mage::helper('pagseguro/abandoned');
-        $abandoned->setAbandonedListLog($days);
         $abandoned->checkAbandonedAccess($days);
+        $abandoned->setAdminLocaleCode(Mage::app()->getLocale()->getLocaleCode());
+
+        if ($json = $this->getRequest()->getPost('json')) {
+            foreach ($json as $value) {
+                $abandoned->sendAbandonedEmail($value['id'], $value['recovery']);
+            }
+
+            $abandoned->setInitialDate($_SESSION['days']);
+
+            return 'run';
+        } else {
+            if ($_SESSION['days'] != 0) {
+                $this->log->setSearchTransactionLog(get_class($abandoned), $days);
+            }
+        }
 
         try {
             if ($abandonedArray = $abandoned->getArrayAbandoned()) {
@@ -74,40 +79,19 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
         }
     }
 
-    /**
-     * Generates emailing abandoned customer
-     * @param array $json - Records to send
-     * @return string $run - String to guide it displays the notification message
-     */
-    private function sendAbandonedMail($json)
-    {
-        $abandoned = Mage::helper('pagseguro/abandoned');
-        $abandoned->setAdminLocaleCode(Mage::app()->getLocale()->getLocaleCode());
-
-        foreach ($json as $value) {
-            $abandoned->sendAbandonedEmail($value['id'], $value['recovery']);
-        }
-
-        return 'run';
-    }
-
-    /**
-     * Generates the data transactions to populate the table
-     * @return array $canceled - Array of data for table
-     */
     private function getCanceledGrid($days)
     {
         $canceled = Mage::helper('pagseguro/canceled');
 
         if ($json = $this->getRequest()->getPost('json')) {
             foreach ($json as $value) {
-                $canceled->cancelOrderStatusMagento($value['id'], $value['code']);
+                $canceled->updateOrderStatusMagento(get_class($canceled), $value['id'], $value['code']);
             }
 
-            $canceled->setDateStart($_SESSION['days']);
+            $canceled->setInitialDate($_SESSION['days']);
         } else {
             if ($_SESSION['days'] != 0) {
-                $canceled->setCanceledListLog($days);
+                $this->log->setSearchTransactionLog(get_class($canceled), $days);
             }
         }
 
@@ -122,10 +106,6 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
         }
     }
 
-    /**
-     * Generates the data conciliation to populate the table
-     * @return array $dataSet - Array of data for table
-     */
     private function getConciliationGrid($days)
     {
         $conciliation = Mage::helper('pagseguro/conciliation');
@@ -133,13 +113,14 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
         // Upgrade from Magento order status
         if ($json = $this->getRequest()->getPost('json')) {
             foreach ($json as $value) {
-                $conciliation->updateOrderStatusMagento($value['id'], $value['code'], $value['status']);
+                $class = get_class($conciliation);
+                $conciliation->updateOrderStatusMagento($class, $value['id'], $value['code'], $value['status']);
             }
 
-            $conciliation->setDateStart($_SESSION['days']);
+            $conciliation->setInitialDate($_SESSION['days']);
         } else {
             if ($_SESSION['days'] != 0) {
-                $conciliation->setConciliationListLog($days);
+                $this->log->setSearchTransactionLog(get_class($conciliation), $days);
             }
         }
 
@@ -154,23 +135,19 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
         }
     }
 
-    /**
-     * Generates the data transactions to populate the table
-     * @return array $dataSet - Array of data for table
-     */
     private function getRefundGrid($days)
     {
         $refund = Mage::helper('pagseguro/refund');
 
         if ($json = $this->getRequest()->getPost('json')) {
             foreach ($json as $value) {
-                $refund->refundOrderStatusMagento($value['id'], $value['code']);
+                $refund->updateOrderStatusMagento(get_class($refund), $value['id'], $value['code']);
             }
 
-            $refund->setDateStart($_SESSION['days']);
+            $refund->setInitialDate($_SESSION['days']);
         } else {
             if ($_SESSION['days'] != 0) {
-                $refund->setRefundListLog($days);
+                $this->log->setSearchTransactionLog(get_class($refund), $days);
             }
         }
 
@@ -185,15 +162,13 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
         }
     }
 
-    /**
-     * Generates the data abandoned to populate the table
-     * @return array $dataSet - Array of data for table
-     */
     private function getRequirements()
     {
         $requeriments = Mage::helper('pagseguro/requirements');
-        $requeriments->setRequirementsLog();
+        $this->log->setRequirementsLog();
 
-        return json_encode($requeriments->validateRequirements());
+        $json = json_encode($requeriments->validateRequirements());
+
+        return $json;
     }
 }
