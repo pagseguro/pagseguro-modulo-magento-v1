@@ -161,6 +161,7 @@ limitations under the License.
 .pagseguro-msg { display: table; overflow: hidden; zoom: 1; font-size: 1em; width: 100%; font-family: Arial; padding: 0.5em; margin-bottom: 1em; /* IEs */ margin-bottom: 0.4rem; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; -o-box-sizing: border-box; box-sizing: border-box; text-align: left; }
 .pagseguro-msg h3,
 .pagseguro-msg p { display: table-cell; vertical-align: middle; width: 100%; }
+.pagseguro-msg span { display: normal; vertical-align: middle; float:right; width: 86%; font-size:1.4em !important; margin-top: 2%;}
 .pagseguro-msg dl,
 .pagseguro-msg ul { display: table-cell; vertical-align: top; width: 100%; }
 .pagseguro-msg h3,
@@ -169,11 +170,14 @@ limitations under the License.
 .pagseguro-msg dt,
 .pagseguro-msg dd { color: #4F4F4F !important; }
 .pagseguro-msg h3,
+.pagseguro-msg span,
 .pagseguro-msg dt { font-weight: bold; }
 .pagseguro-msg dd { margin: 0; padding: 0; }
 .pagseguro-msg li { padding: 0; list-style-type: none; }
 .pagseguro-msg dd,
 .pagseguro-msg li + li { margin-top: 0.4em; }
+.pagseguro-msg hr {  border: 0; height: 0; border-top: 1px solid rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+.pagseguro-msg button {float: right; margin: 1% 0 0 1%;}
 i.icon-pagseguro-msg,
 .pagseguro-msg:before { display: inline-block; vertical-align: middle; overflow: hidden; background-image: url('../images/messages.png'); background-repeat: no-repeat; background-size: cover; }
 i.icon-pagseguro-msg.icon-loading,
@@ -206,6 +210,7 @@ i.icon-pagseguro-msg.medium,
 i.icon-pagseguro-msg.large,
 .pagseguro-msg.pagseguro-msg-large:before { font-size: 7em; margin: 0 0.171em 0 0.0514em; }
 #pagseguro-module-contents .pagseguro-msg { background: #F3F3F3; border:solid 1px #E3E3E3; border-radius: 2px 2px 2px; }
+#pagseguro-module-contents .pagseguro-confirm { background: #999; border:solid 1px #E3E3E3; border-radius: 2px 2px 2px; }
 #pagseguro-module-contents #conciliation-info { margin-top: 40px; }
 #pagseguro-loading-message { width: 65px; }
 #pagseguro-module-menu ul ul li { display: none; }

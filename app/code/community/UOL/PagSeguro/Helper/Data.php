@@ -649,20 +649,14 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 
         return $paymentRequest;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    /**
+    * Update status in a Magento Order.
+    * @param string $class - Represents a PagSeguro Service type
+    * @param int $orderId - Id of magento order
+    * @param mixed $transactionCode - Code of transaction PagSeguro
+    * @param int $orderStatus - Status of magento order
+    */
     public function updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus)
     {
         if ($this->getLastStatusOrder($orderId) != $orderStatus) {
@@ -682,7 +676,12 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 
         $this->setTransactionRecord($orderId, $transactionCode);
     }
-
+    
+    /**
+    * Set a transaction record
+    * @param int $orderId - Id of Magento order
+    * @param int $orderStatus - Status of Magento order
+    */
     private function notifyCustomer($orderId, $orderStatus)
     {
         $status = $orderStatus;
@@ -696,7 +695,13 @@ class UOL_PagSeguro_Helper_Data extends HelperData
         Mage::app()->getLocale()->date();
         $order->save();
     }
-
+    
+    /**
+    * Set a transaction record
+    * @param int $orderId - Id of magento order
+    * @param mixed $transactionCode - Code of transaction PagSeguro
+    * @param bool $send
+    */
     public function setTransactionRecord($orderId, $transactionCode = false, $send = false)
     {
         //Get the resource model
@@ -739,21 +744,33 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 
         $writeConnection->query($sql);
     }
-
+    
+    /**
+    * Request webservice
+    * @return $webservice of UOL_PagSeguro_Helper_Webservice
+    */
     public function requestWebservice()
     {
         $webservice = Mage::helper('pagseguro/webservice');
 
         return $webservice;
     }
-
+    
+    /**
+    * Request Payment Method
+    * @return $paymentMethod of UOL_PagSeguro_Model_PaymentMethod
+    */
     public function requestPaymentMethod()
     {
         $paymentMethod = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
 
         return $paymentMethod;
     }
-
+    
+    /**
+    * Request Notification Method
+    * @return $notificationMethod of UOL_PagSeguro_Model_NotificationMethod
+    */
     public function requestNotificationMethod()
     {
         $notificationMethod = Mage::getSingleton('UOL_PagSeguro_Model_NotificationMethod');

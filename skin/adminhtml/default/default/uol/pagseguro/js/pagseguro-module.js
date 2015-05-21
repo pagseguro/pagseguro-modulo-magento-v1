@@ -24,6 +24,10 @@ var Messages = new function() {
     var getHtml = function(options) {
         return '<div id="'+ options.id +'" class="pagseguro-msg pagseguro-msg-'+options.type+' pagseguro-msg-'+options.size+'"><'+options.tag+'>' + options.message + '</'+options.tag+'></div>';
     }
+    
+    var getConfirmHtml = function(options) {
+        return '<div id="'+ options.id +'" class="pagseguro-msg pagseguro-msg-'+options.type+' pagseguro-msg-'+options.size+'"><'+options.tag+'>' + options.message + '</'+options.tag+'><hr /><div class="confirm"><button type="button" class="pagseguro-button pagseguro-confirm-button" id="accept">Sim</button><button type="button" class="pagseguro-button pagseguro-confirm-button" id="reject">Não</button></div></div>'; 
+    }
 
     var remove = function() {
         wrapper.find('.pagseguro-msg-error, .pagseguro-msg-success').remove();
@@ -40,7 +44,7 @@ var Messages = new function() {
         remove();
         wrapper.prepend(html);
     };
-
+    
     return {
         addError: function(message) {
             add(message, 'error');
@@ -53,6 +57,9 @@ var Messages = new function() {
         },
         getHtml: function(options) {
             return getHtml(options);
+        },
+        getConfirmHtml: function(options) {
+            return getConfirmHtml(options);
         }
     };
 };
@@ -130,9 +137,29 @@ var Modal = new function(){
         });
         resize();
     };
+    
+    var showConfirm = function(type, message) {
+        var html = Messages.getConfirmHtml({
+            type: type,
+            size: 'small',
+            message: message,
+            tag: 'span'
+        });
+        
+        open({
+            html: html,
+            width:  400,
+            height: 400
+        });
+        resize();
+    };
 
     var alertConciliation = function(message) {
         this.message('alert', message)
+    };
+    
+    var confirm = function(message) {
+        this.showConfirm('wait', message)
     };
 
     var resize = function() {
@@ -154,8 +181,10 @@ var Modal = new function(){
         resize : resize,
         showLoading: showLoading,
         hideLoading: hideLoading,
+        showConfirm: showConfirm,
         message: message,
-        alertConciliation:alertConciliation
+        alertConciliation:alertConciliation,
+        confirm: confirm
     }
 };
 
@@ -290,32 +319,36 @@ var Menu = new function() {
 /* ************************************* */
 /* *********** CHECKBOX **************** */
 /* ************************************* */
-var checkboxes = function () {
+jQuery(document).ready(function () {
+    jQuery('#pagseguro-check-all').click(function(event) {  //on click 
 
-    var j = 0;
-    var ckbTrue = 0;
-
-    jQuery('input[name="send_emails[]"]').each(function() {
-        if (jQuery(this).is(':checked') == true) {
-            ckbTrue++;
+        if (this.checked) { // check select status
+            jQuery('.checkbox').each(function () { //loop through each checkbox
+                this.checked = true;  //select all checkboxes with class "checkbox1"               
+            });
+        } else {
+            jQuery('.checkbox').each(function () { //loop through each checkbox
+                this.checked = false; //deselect all checkboxes with class "checkbox1"                       
+            });
         }
-        j++;
-    });
 
-    jQuery('input[name="conciliation_orders[]"]').each(function() {
-        if (jQuery(this).is(':checked') == true) {
-            ckbTrue++;
+        var aCount = 0;
+        jQuery('.checkbox').each(function (e) {
+            if (jQuery(this).prop('checked')) {
+                aCount++;
+            }
+        });
+
+        if (aCount > 0) {
+            jQuery('#conciliation-button').prop("disabled", false);
+            jQuery('#send-email-button').prop("disabled", false);
+        } else {
+            jQuery('#conciliation-button').prop("disabled", true);
+            jQuery('#send-email-button').prop("disabled", true);
         }
-        j++;
+      
     });
-
-    if (j == ckbTrue) {
-        jQuery(':checkbox').prop('checked','');
-    } else {
-        jQuery(':checkbox').prop('checked','checked');
-    }
-}
-
+});
 /* ************************************* */
 /* *************** MASK **************** */
 /* ************************************* */

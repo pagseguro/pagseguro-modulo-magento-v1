@@ -138,20 +138,21 @@ class UOL_PagSeguro_Adminhtml_AjaxController extends Mage_Adminhtml_Controller_A
     private function getRefundGrid($days)
     {
         $refund = Mage::helper('pagseguro/refund');
-
+        
         if ($json = $this->getRequest()->getPost('json')) {
             foreach ($json as $value) {
                 $refund->updateOrderStatusMagento(get_class($refund), $value['id'], $value['code']);
             }
-
+            
             $refund->setInitialDate($_SESSION['days']);
         } else {
             if ($_SESSION['days'] != 0) {
                 $this->log->setSearchTransactionLog(get_class($refund), $days);
             }
         }
-
+        
         try {
+            
             if ($refundArray = $refund->getArrayPayments()) {
                 return $refund->getTransactionGrid($refundArray);
             } else {

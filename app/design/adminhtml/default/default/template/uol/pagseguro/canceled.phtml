@@ -21,15 +21,16 @@ limitations under the License.
 ?>
 <?php
     $helper = Mage::helper('pagseguro/canceled');
+    $html   = Mage::helper('pagseguro/html');
     $helper->checkTransactionAccess();
     $_SESSION['days'] = 0;
 ?>
 
 <div id="pagseguro-module">
-    <?php echo $helper->getHeader(); ?>
+    <?php echo $html->getHeader(); ?>
     <div id="pagseguro-module-content">
         <div class="wrapper">
-            <?php echo $helper->getSideMenu();?>
+            <?php echo $html->getSideMenu();?>
             <div id="pagseguro-module-contents">
                 <h2 class="title"><?php echo $helper->__('Cancelamento'); ?></h2>
                 <p>
@@ -129,8 +130,9 @@ limitations under the License.
                 }
             });
         }
-
+        
         var doCanceled = function(config){
+        
             jQuery('#messages').empty();
             var id = '';
             var code = '';
@@ -316,9 +318,22 @@ limitations under the License.
                 requestTransactions();
             });
 
-            jQuery('#canceled-table').on('click', 'a.action', function() {
-                doCanceled(jQuery(this).data('config'));
+            jQuery('#canceled-table').on('click', 'a.action', function(e) {
+            
+                var cancel = jQuery(this);
+                
+                Modal.confirm('Deseja realizar o cancelamento?');
+                
+                jQuery('.pagseguro-confirm-button').on('click', function(target) {
+                    if (target.currentTarget.id == 'accept') {
+                        doCanceled(cancel.data('config'));
+                    } else {
+                        Modal.hideLoading();
+                    }
+                });
             });
+            
+            
         };
     }
 </script>

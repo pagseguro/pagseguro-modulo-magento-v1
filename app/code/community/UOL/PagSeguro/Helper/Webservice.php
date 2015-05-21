@@ -40,7 +40,12 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
         $this->refundService = new PagSeguroRefundService();
         $this->notificationService = new PagSeguroNotificationService();
     }
-
+    
+    /**
+     * Request a PagSeguro Service
+     * @param $class string type of service
+     * @param $transactionCode code for this transaction
+     */
     public function requestPagSeguroService($class, $transactionCode)
     {
         try {
@@ -57,7 +62,10 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
             throw new Exception($e->getMessage());
         }
     }
-
+    
+    /**
+     * Get a list with abandoned transactions
+     */
     public function getPagSeguroAbandonedList()
     {
         $this->initialDate = $this->getDateSubtracted($this->days);
@@ -73,7 +81,13 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
             }
         }
     }
-
+    
+    /**
+     * Get a transaction information
+     * @param $type string type of transaction service
+     * @param $page int quantity of pages in result
+     * @param $nRecords int quantity of records to return in result
+     */
     public function getTransactionService($type, $page, $nRecords)
     {
         try {

@@ -21,13 +21,14 @@ limitations under the License.
 ?>
 <?php
     $helper = Mage::helper('pagseguro');
+    $html   = Mage::helper('pagseguro/html');
 ?>
 
 <div id="pagseguro-module">
-    <?php echo $helper->getHeader(); ?>
+    <?php echo $html->getHeader(); ?>
     <div id="pagseguro-module-content">
         <div class="wrapper">
-            <?php echo $helper->getSideMenu();?>
+            <?php echo $html->getSideMenu();?>
             <div id="pagseguro-module-contents">
                 <h2 class="title" title="Requisitos do Sistema"><?php echo $helper->__('Requisitos do Sistema'); ?></h2>
                 <ul class="pagseguro-list">

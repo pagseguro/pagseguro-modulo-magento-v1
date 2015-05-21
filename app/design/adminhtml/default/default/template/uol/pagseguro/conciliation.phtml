@@ -21,15 +21,16 @@ limitations under the License.
 ?>
 <?php
     $helper = Mage::helper('pagseguro/conciliation');
+    $html   = Mage::helper('pagseguro/html');
     $helper->checkTransactionAccess();
     $_SESSION['days'] = 0;
 ?>
 
 <div id="pagseguro-module">
-    <?php echo $helper->getHeader(); ?>
+    <?php echo $html->getHeader(); ?>
     <div id="pagseguro-module-content">
         <div class="wrapper">
-            <?php echo $helper->getSideMenu();?>
+            <?php echo $html->getSideMenu();?>
             <div id="pagseguro-module-contents">
                 <h2 class="title"><?php echo $helper->__('Conciliação'); ?></h2>
                 <p>
@@ -64,7 +65,7 @@ limitations under the License.
                 <table id="conciliation-table" class="pagseguro-table">
                     <thead>
                         <tr>
-                            <th class="select_checkbox" width="3%" onclick="checkboxes();">
+                            <th class="select_checkbox" width="3%">
                                 <input type="checkbox" id="pagseguro-check-all" />
                             </th>
                             <th width="10%"><?php echo $helper->__('Data');?></th>
@@ -304,8 +305,8 @@ limitations under the License.
                     }
 
                     //Checkbox enable | disable
-                    jQuery('#conciliation-table input[type="checkbox"]').change(function(){
-                        var isChecked = jQuery("#conciliation-table tbody :checked").length;
+                    jQuery('.checkbox').change(function(){
+                        var isChecked = jQuery(".checkbox:checked").length;
 
                         if (isChecked > 0) {
                             jQuery('#conciliation-button').prop("disabled", false);

@@ -23,7 +23,7 @@ use UOL_PagSeguro_Helper_Data as HelperData;
 class UOL_PagSeguro_Helper_Log extends HelperData
 {
     /**
-     * Creating log for conciliation and abandoned
+     * Creating log for helpers
      * @param string $phrase - It's the phrase that completes the log
      * @param string $module - It's the title that completes the log
      */
@@ -46,7 +46,12 @@ class UOL_PagSeguro_Helper_Log extends HelperData
             file_put_contents($directoryLog, $return, FILE_APPEND);
         }
     }
-
+    
+    /**
+     * Creating log for search transations
+     * @param string $class - Represents a transaction service type
+     * @param int $days - Range of days to search
+     */
     public function setSearchTransactionLog($class, $days)
     {
         $option = end(explode('_', $class));
@@ -60,6 +65,13 @@ class UOL_PagSeguro_Helper_Log extends HelperData
         $this->setLog($phrase, $module);
     }
 
+    /**
+     * Creating log for search transations
+     * @param string $class - Represents a transaction service type
+     * @param int $orderId - Id of magento order
+     * @param mixed $transactionCode - Code of transaction PagSeguro
+     * @param int $orderStatus - Status of magento order
+     */
     public function setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus)
     {
         $option = end(explode('_', $class));

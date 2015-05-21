@@ -21,14 +21,15 @@ limitations under the License.
 ?>
 <?php
     $helper = Mage::helper('pagseguro/abandoned');
+    $html   = Mage::helper('pagseguro/html');
     $helper->checkAbandonedAccess();
 ?>
 
 <div id="pagseguro-module">
-    <?php echo $helper->getHeader(); ?>
+    <?php echo $html->getHeader(); ?>
     <div id="pagseguro-module-content">
         <div class="wrapper">
-            <?php echo $helper->getSideMenu();?>
+            <?php echo $html->getSideMenu();?>
             <div id="pagseguro-module-contents">
                 <h2 class="title"><?php echo $helper->__('Transações Abandonadas'); ?></h2>
                 <p>
@@ -67,7 +68,7 @@ limitations under the License.
                 <table id="abandoned-transactions-table" class="pagseguro-table">
                     <thead>
                         <tr>
-                            <th class="select_checkbox" width="3%" onclick="checkboxes();">
+                            <th class="select_checkbox" width="3%">
                                 <input type="checkbox" id="pagseguro-check-all" />
                             </th>
                             <th width="20%"><?php echo $helper->__('Data do Pedido');?></th>
@@ -315,9 +316,8 @@ limitations under the License.
                     }
 
                     //Checkbox enable | disable
-                    jQuery('#abandoned-transactions-table input[type="checkbox"]').change(function(){
-                        var isChecked = jQuery("#abandoned-transactions-table tbody :checked").length;
-
+                    jQuery('.checkbox').change(function(){
+                        var isChecked = jQuery(".checkbox:checked").length;
                         if (isChecked > 0) {
                             jQuery('#send-email-button').prop("disabled", false);
                         } else {

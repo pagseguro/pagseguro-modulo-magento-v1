@@ -54,7 +54,7 @@ class UOL_PagSeguro_Helper_Conciliation extends HelperData
             $config = $order->getId() .'/'. $idPagSeguro .'/'. $this->getPaymentStatusPagSeguro($paymentStatus, true);
 
             $checkbox  = "<label class='chk_email'>";
-            $checkbox .= "<input type='checkbox' name='conciliation_orders[]' data-config='" . $config . "' />";
+            $checkbox .= "<input type='checkbox' name='conciliation_orders[]' class='checkbox' data-config='" . $config . "' />";
             $checkbox .= "</label>";
 
             // Receives the url edit order it from your id

@@ -21,15 +21,16 @@ limitations under the License.
 ?>
 <?php
     $helper = Mage::helper('pagseguro/refund');
+    $html   = Mage::helper('pagseguro/html');
     $helper->checkTransactionAccess();
     $_SESSION['days'] = 0;
 ?>
 
 <div id="pagseguro-module">
-    <?php echo $helper->getHeader(); ?>
+    <?php echo $html->getHeader(); ?>
     <div id="pagseguro-module-content">
         <div class="wrapper">
-            <?php echo $helper->getSideMenu();?>
+            <?php echo $html->getSideMenu();?>
             <div id="pagseguro-module-contents">
                 <h2 class="title"><?php echo $helper->__('Estorno'); ?></h2>
                 <p>
@@ -317,7 +318,18 @@ limitations under the License.
             });
 
             jQuery('#refund-table').on('click', 'a.action', function() {
-                doRefund(jQuery(this).data('config'));
+            
+                var refund = jQuery(this);
+                
+                Modal.confirm('Deseja realizar o estorno?');
+                
+                jQuery('.pagseguro-confirm-button').on('click', function(target) {
+                    if (target.currentTarget.id == 'accept') {
+                        doRefund(refund.data('config'));
+                    } else {
+                        Modal.hideLoading();
+                    }
+                });
             });
         };
     }
