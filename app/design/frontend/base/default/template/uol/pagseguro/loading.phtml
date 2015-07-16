@@ -20,24 +20,32 @@ limitations under the License.
 
 ?>
 <?php
-	$baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+
+	$browserUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+	$skinUrlWithSkin = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);
+	$skinUrl = substr($skinUrlWSkin,0,-5);
+
+	$baseUrl = ($browserUrl == $skinUrl) ? $browserUrl : $skinUrl;
+
 	$adminSkinUrl = $baseUrl . 'skin/adminhtml/default/default/';
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $adminSkinUrl . 'uol/pagseguro/css/pagseguro_loading.css'; ?>" media="all" />
 <script type="text/javascript" src="<?php echo $adminSkinUrl . 'uol/pagseguro/js/jquery-1.11.1.js'; ?>"></script>
 <script type="text/javascript" src="<?php echo $adminSkinUrl . 'uol/pagseguro/js/jquery.blockUI.js'; ?>"></script>
 <script type="text/javascript">
-	var jQuery = jQuery.noConflict();
-	jQuery(document).ready(function(){
-		jQuery(".button").click(function(e){
-			if (jQuery(this).attr('onclick') == 'payment.save()') {
-				if (jQuery.type(jQuery('.btn-checkout')[0]) == 'object') {	
-					jQuery('.btn-checkout').remove();
+	// 
+
+	var jQueryPagseguro = jQuery.noConflict();
+	jQueryPagseguro(document).ready(function(){
+		jQueryPagseguro(".button").click(function(e){
+			if (jQueryPagseguro(this).attr('onclick') == 'payment.save()') {
+				if (jQueryPagseguro.type(jQueryPagseguro('.btn-checkout')[0]) == 'object') {	
+					jQueryPagseguro('.btn-checkout').remove();
 				}
-				if (jQuery('input:radio[name="payment[method]"]:checked').val() == 'pagseguro') {					
+				if (jQueryPagseguro('input:radio[name="payment[method]"]:checked').val() == 'pagseguro') {					
 					var interval = setInterval(function() {
-						if (jQuery.type(jQuery('.btn-checkout')[0]) == 'object') {							
-							jQuery('.btn-checkout').attr('onclick','activeLoading(), review.save();');
+						if (jQueryPagseguro.type(jQueryPagseguro('.btn-checkout')[0]) == 'object') {							
+							jQueryPagseguro('.btn-checkout').attr('onclick','activeLoading(), review.save();');
 							clearInterval(interval);
 						}
 					}, 0);
@@ -47,15 +55,15 @@ limitations under the License.
 	});
 	
 	function activeLoading() {
-		jQuery('#review-please-wait.please-wait').addClass('ps_msg_hidden');
-		jQuery('.btn-checkout').remove();
+		jQueryPagseguro('#review-please-wait.please-wait').addClass('ps_msg_hidden');
+		jQueryPagseguro('.btn-checkout').remove();
 		blockModal();
 	}
 	
 	function blockModal() {
 		var gif = '<?php echo $adminSkinUrl . 'uol/pagseguro/images/wait_big.gif'; ?>';
 		var logo = '<?php echo $adminSkinUrl . 'uol/pagseguro/images/logo_loading.png'; ?>';
-	    jQuery.blockUI({
+	    jQueryPagseguro.blockUI({
 	        message: '<div class="ps_loading">' +
 	        		 '<span id="loading"></span>' +
     				 '<span class="ps_msg"><?php echo 'Processando o pedido...'; ?></span>' +
