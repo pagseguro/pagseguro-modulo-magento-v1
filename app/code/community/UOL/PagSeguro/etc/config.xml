@@ -101,7 +101,6 @@ limitations under the License.
                     </pagseguro_configuration>
                     <pagseguro_transaction translate="title" module="pagseguro">
                         <title>Transações</title>
-                        <action>pagseguro/adminhtml_transaction</action>
                         <sort_order>2100</sort_order>
                         <children>
                             <pagseguro_abandoned translate="title" module="pagseguro">

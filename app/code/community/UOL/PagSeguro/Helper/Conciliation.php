@@ -18,73 +18,212 @@ limitations under the License.
 ************************************************************************
 */
 
-use UOL_PagSeguro_Helper_Data as HelperData;
-
-class UOL_PagSeguro_Helper_Conciliation extends HelperData
+class UOL_PagSeguro_Helper_Conciliation extends UOL_PagSeguro_Helper_Data
 {
     /**
-     * Creates the complete array with the necessary information for the table
-     * @param int $orderId - Id of order of Magento
-     * @param string $paymentCode - Transaction code of PagSeguro
-     * @param int $paymentStatus - Status of payment of PagSeguro
-     * @method array $this->arrayPayments - Set the complete array with the necessary information for the table
+     * @var int
      */
-    public function createArrayPayments($orderId, $paymentCode, $paymentStatus)
+    private $days;
+    
+    /**
+     * @var Array
+     */
+    private $magentoPaymentList;
+    
+    /**
+     * @var Array
+     */
+    private $PagSeguroPaymentList;
+    
+    /**
+     * @var Array
+     */
+    protected $arrayPayments;
+
+    /**
+     * Executes the essentials functions for this helper
+     * @param $days
+     */
+    public function initialize($days)
     {
-        // Receives the object of order that was entered the id
-        $order = Mage::getModel('sales/order')->load($orderId);
+        $this->days = $days;
+        $this->getPagSeguroPayments();
+        $this->requestTransactionsToConciliation();
+    }
 
-        // Receives the status already converted and translated of order of Magento
-        $statusMagento = strtolower($this->getPaymentStatusMagento($this->__(ucfirst($order->getStatus()))));
+    /**
+     * Returns payment array
+     * @return mixed $this->arrayPayment
+     */
+    public function getPaymentsArray()
+    {
+        return $this->arrayPayments;
+    }
 
-        // Receives the status of the transaction PagSeguro already converted
-        $statusPagSeguro = strtolower($this->getPaymentStatusPagSeguro($paymentStatus));
+    /**
+     * Build a array with PagSeguroTransaction
+     */
+    private function requestTransactionsToConciliation()
+    {
 
-        if ($statusMagento != $statusPagSeguro) {
-            // Receives the creation date of the application which is converted to the format d/m/Y
-            $dateOrder = $this->getOrderMagetoDateConvert($order->getCreatedAt());
+        foreach ($this->PagSeguroPaymentList->getTransactions() as $payment) {
+            $orderId = $this->getReferenceDecryptOrderID($payment->getReference());
+            $orderHandler = Mage::getModel('sales/order')->load($orderId);
 
-            // Receives the number of order
-            $idMagento = '#' . $order->getIncrementId();
+            if ($this->getStoreReference() == $this->getReferenceDecrypt($payment->getReference())) {
+                if (Mage::getStoreConfig('payment/pagseguro/environment')
+                    == strtolower(trim($this->getOrderEnvironment($orderId)))) {
+                    if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
+                        if (Mage::getSingleton('core/session')->getData("store_id") == $orderHandler->getStoreId()) {
+                            if ($orderHandler->getStatus()
+                                != $this->getPaymentStatusFromKey($payment->getStatus()->getValue())) {
+                                $this->arrayPayments[] = $this->build($payment, $orderHandler);
+                            }
+                        }
+                    } elseif ($orderHandler) {
+                        if ($orderHandler->getStatus()
+                            != $this->getPaymentStatusFromKey($payment->getStatus()->getValue())) {
+                            $this->arrayPayments[] = $this->build($payment, $orderHandler);
+                        }
+                    }
+                }
+            }
+        }
+        Mage::getSingleton('core/session')->unsetData('store_id');
+    }
 
-            // Receives the transaction code of PagSeguro
-            $idPagSeguro = $paymentCode;
+    /**
+     * @param PagSeguroSummaryItem $PagSeguroSummaryItem
+     * @param Mage_Sales_Model_Order $order
+     * @return multitype:date string NULL Ambigous <boolean, string, string, multitype:>
+     */
+    public function build($payment, $order)
+    {
 
-            // Receives the parameter used to update an order
-            $config = $order->getId() .'/'. $idPagSeguro .'/'. $this->getPaymentStatusPagSeguro($paymentStatus, true);
+        $config = $order->getId() .'/'. $payment->getCode() .'/'
+            . $this->getPaymentStatusFromKey($payment->getStatus()->getValue(), true);
 
-            $checkbox  = "<label class='chk_email'>";
-            $checkbox .= "<input type='checkbox' name='conciliation_orders[]' class='checkbox' data-config='" . $config . "' />";
-            $checkbox .= "</label>";
+        $checkbox  = "<label class='chk_email'>";
+        $checkbox .= "<input type='checkbox' name='conciliation_orders[]' class='checkbox' data-config='"
+            . $config . "' />";
+        $checkbox .= "</label>";
 
-            // Receives the url edit order it from your id
-            $editUrl = $this->getEditOrderUrl($orderId);
-            $textEdit = $this->__('Ver detalhes');
+        // Receives the full html link to edit an order
+        $editOrder = "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($order->getEntityId()) . "'>";
+        $editOrder .= $this->__('Ver detalhes') . "</a>";
 
-            // Receives the full html link to edit an order
-            $editOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
-            $editOrder .= $this->__('Ver detalhes') . "</a>";
+        return array('checkbox' => $checkbox,
+            'date' => $this->getOrderMagetoDateConvert($order->getCreatedAt()),
+            'id_magento' => "#".$order->getIncrementId(),
+            'id_pagseguro' => $payment->getCode(),
+            'status_magento' => $this->getPaymentStatusToString($this->getPaymentStatusFromValue($order->getStatus())),
+            'status_pagseguro' => $this->getPaymentStatusToString($payment->getStatus()->getValue()),
+            'edit' => $editOrder);
+    }
 
-            $array = array('checkbox' => $checkbox,
-                           'date' => $dateOrder,
-                           'id_magento' => $idMagento,
-                           'id_pagseguro' => $idPagSeguro,
-                           'status_magento' => $statusMagento,
-                           'status_pagseguro' => $statusPagSeguro,
-                           'edit' => $editOrder);
+    /**
+     * Get PagSeguroTransaction from webservice in a date range.
+     * @param null $page
+     */
+    private function getPagSeguroPayments($page = null)
+    {
+        if (is_null($page)) {
+            $page = 1;
+        }
 
-            $this->arrayPayments[] = $array;
+        $date = new DateTime(date("Y-m-d\TH:i:s"));
+        $date->setTimezone(new DateTimeZone("America/Sao_Paulo"));
+        $dateInterval = "P".(String)$this->days."D";
+        $date->sub(new DateInterval($dateInterval));
+
+        if (is_null($this->PagSeguroPaymentList)) {
+            $this->PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 20, $date);
+        } else {
+            $PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 20, $date);
+
+            $this->PagSeguroPaymentList->setDate($PagSeguroPaymentList->getDate());
+            $this->PagSeguroPaymentList->setCurrentPage($PagSeguroPaymentList->getCurrentPage());
+            $this->PagSeguroPaymentList->setTotalPages($PagSeguroPaymentList->getTotalPages());
+            $this->PagSeguroPaymentList->setResultsInThisPage(
+                $PagSeguroPaymentList->getResultsInThisPage() + $this->PagSeguroPaymentList->getResultsInThisPage
+            );
+
+            $this->PagSeguroPaymentList->setTransactions(
+                array_merge(
+                    $this->PagSeguroPaymentList->getTransactions(),
+                    $PagSeguroPaymentList->getTransactions()
+                )
+            );
+        }
+
+        if ($this->PagSeguroPaymentList->getTotalPages() > $page) {
+            $this->getPagSeguroPayments(++$page);
         }
     }
 
     /**
-     * Get the full array with only the requests made ​​in Magento with PagSeguro
-     * @return array $this->arrayPayments - Returns an array with the necessary information to fill the table
+     * Get order environment
+     * @param int $orderId
+     * @return string Order environment
      */
-    public function getArrayPayments()
+    private function getOrderEnvironment($orderId)
     {
-        $this->getMagentoPayments();
+        $reader = Mage::getSingleton("core/resource")->getConnection('core_read');
+        $table = Mage::getConfig()->getTablePrefix() . 'pagseguro_orders';
 
-        return $this->arrayPayments;
+        $query = "SELECT environment FROM ".$table." WHERE order_id = ".$orderId;
+
+        return $reader->fetchOne($query);
+
+    }
+    
+    /**
+     * Check config for access
+     * @return multitype:string boolean
+     */
+    private function checkAccess()
+    {
+        $paymentModel = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
+
+        if (!Mage::getStoreConfig('uol_pagseguro/store/credentials')) {
+            return array(
+                'message' => "E-mail e/ou token inválido(s) para o ambiente selecionado.",
+                'status' => false
+            );
+        }
+
+        if (!$paymentModel->getConfigData('email')) {
+            return array(
+                'message' => "Preencha o e-mail do vendedor",
+                'status' => false
+            );
+        }
+
+        if (!$paymentModel->getConfigData('token')) {
+            return array(
+                'message' => "Preencha o token.",
+                'status' => false
+            );
+        }
+
+        return array(
+            'message' => "",
+            'status' => true
+        );
+
+    }
+    
+    /**
+     * Check for access and set errors if exists.
+     */
+    public function checkViewAccess()
+    {
+        $access = $this->checkAccess();
+        if (!$access['status']) {
+            Mage::getSingleton('core/session')->addError($access['message']);
+            Mage::app()->getResponse()->setRedirect(
+                Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/')
+            );
+        }
     }
 }

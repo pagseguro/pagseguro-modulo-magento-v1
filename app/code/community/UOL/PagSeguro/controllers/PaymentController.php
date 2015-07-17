@@ -51,7 +51,7 @@ class UOL_PagSeguro_PaymentController extends FrontAction
     {
         $helper = Mage::helper('pagseguro');
 
-        $paymentMethod = $helper->requestPaymentMethod();
+        $paymentMethod = $helper->paymentModel();
         $feedback = 'checkout/onepage';
 
         $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());

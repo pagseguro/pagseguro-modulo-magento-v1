@@ -42,6 +42,14 @@ class UOL_PagSeguro_Model_Observer
     */
     public function adminSystemConfigPaymentSave()
     {
-        Mage::helper('pagseguro')->checkCredentials();
+        if (!Mage::getStoreConfig("payment/pagseguro/init")) {
+            Mage::getConfig()->saveConfig('payment/pagseguro/init', 1);
+        }
+
+        if (Mage::getStoreConfig("payment/pagseguro/email") && Mage::getStoreConfig("payment/pagseguro/token")) {
+            Mage::helper('pagseguro')->checkCredentials();
+        } else {
+            throw new Exception("Certifique-se de que o e-mail e token foram preenchidos.");
+        }
     }
 }

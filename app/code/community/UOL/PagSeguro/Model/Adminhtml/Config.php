@@ -70,8 +70,8 @@ class UOL_PagSeguro_Model_Adminhtml_Config
         $alertEnvironment  = $helper->__('Suas transações serão feitas em um ambiente de testes.') . '<br />';
         $alertEnvironment .= $helper->__('Nenhuma das transações realizadas nesse ambiente tem valor monetário.');
 
-        $alertCredentials = $helper->__('Email ou token inválidos para o ambiente selecionado.');
-        $alertEmailToken  = $helper->__('Certifique-se de que o email e token foram preenchidos.');
+        $alertCredentials = $helper->__('E-mail e/ou token inválido(s) para o ambiente selecionado.');
+        $alertEmailToken  = $helper->__('Certifique-se de que o e-mail e token foram preenchidos.');
 
         $alertDiscount  = $helper->__('O desconto será aplicado com base no subtotal do checkout PagSeguro.');
         $alertD = 'Eventuais valores de frete não serão levados em consideração para a aplicação do desconto.';
@@ -83,6 +83,7 @@ class UOL_PagSeguro_Model_Adminhtml_Config
                         ' . $this->css . '
                         ' . $html->getHeader($this->logo). '
                      </div>';
+        $init = Mage::getStoreConfig('payment/pagseguro/init');
         $email = Mage::getStoreConfig('payment/pagseguro/email');
         $token = Mage::getStoreConfig('payment/pagseguro/token');
         $credentials = Mage::getStoreConfig('uol_pagseguro/store/credentials');
@@ -105,22 +106,41 @@ class UOL_PagSeguro_Model_Adminhtml_Config
 
                             jQuery("#payment_pagseguro_environment").change(function(){
                                 if (jQuery("#payment_pagseguro_environment").val() == "sandbox") {
-                                 Modal.message("success", "' . $alertEnvironment . '");
+                                 Modal.message("warning", "' . $alertEnvironment . '");
                                 }
                             });
 
+                            var init  = "' . $init . '";
                             var email  = "' . $email . '";
                             var token  = "' . $token . '";
                             var credentials  = "' . $credentials . '";
 
-                            if (email && token && credentials == 0) {
-                               Modal.message("error", "' . $alertCredentials . '");
-                            } else {
-                                email = jQuery("#payment_pagseguro_email").val();
-                                token = jQuery("#payment_pagseguro_token").val();
+                            if (init) {
+                                if (!email) {
 
-                                if (!email || !token) {
                                     Modal.message("error", "' . $alertEmailToken . '");
+                                } else if (!token) {
+
+                                    Modal.message("error", "' . $alertEmailToken . '");
+                                } else if (credentials == 0) {
+
+                                    Modal.message("error", "' . $alertCredentials . '");
+                                } else {
+
+                                    email = jQuery("#payment_pagseguro_email").val();
+                                    if (!email) {
+                                        Modal.message("error", "' . $alertEmailToken . '");
+                                    }
+
+                                    token = jQuery("#payment_pagseguro_token").val();
+                                    if (!token) {
+                                        Modal.message("error", "' . $alertEmailToken . '");
+                                    }
+                                }
+
+                                if (email && token && credentials == 0) {
+
+                                   Modal.message("error", "' . $alertCredentials . '");
                                 }
                             }
 

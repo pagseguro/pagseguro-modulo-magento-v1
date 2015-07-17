@@ -159,7 +159,7 @@ var Modal = new function(){
     };
     
     var confirm = function(message) {
-        this.showConfirm('wait', message)
+        this.showConfirm('warning', message)
     };
 
     var resize = function() {
@@ -198,6 +198,7 @@ var Menu = new function() {
     var body = $("html, body");
     var windowSel  = jQuery(window);
     var animating = false;
+
     var applyMenu = function() {
         var selectedClass = "selected";
         var allItems = wrapper.find(".menu-item");
@@ -301,11 +302,23 @@ var Menu = new function() {
 
     var retractableMenu = function() {
         jQuery("#pagseguro-module-menu .children").click(function(){
-            if (jQuery(this).closest("li").hasClass("open"))
+
+            if (jQuery(this).closest("li").hasClass("open")) {
                 jQuery(this).closest("li").removeClass("open");
-            else
+                sessionStorage.setItem('hasOpen', false);
+            } else {
                 jQuery(this).closest("li").addClass("open");
+                sessionStorage.setItem('hasOpen', true);
+            }
+
         });
+    };
+
+    var sessionRetractable = function(){
+
+        if (sessionStorage.getItem('hasOpen') == 'true') {
+            jQuery("#pagseguro-module-menu .children").closest("li").addClass("open");
+        }
     };
 
     this.init = function(){
@@ -313,6 +326,7 @@ var Menu = new function() {
         applyMenu();
         applyGotoConfig();
         retractableMenu();
+        sessionRetractable();
     };
 };
 

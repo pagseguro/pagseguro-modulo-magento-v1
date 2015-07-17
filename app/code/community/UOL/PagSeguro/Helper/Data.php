@@ -18,19 +18,34 @@ limitations under the License.
 ************************************************************************
 */
 
-use Mage_Payment_Helper_Data as HelperData;
-
-class UOL_PagSeguro_Helper_Data extends HelperData
+class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
 {
-    // It is used to store the array of transactions
-    protected $arrayPayments = array();
-
-    // It is used to store the initial consultation date of transactions
-    private $initialDate;
 
     /**
-     * Construct
+     * @var Array
      */
+    protected $arrayPayments = array();
+
+    /**
+     * @var Array
+     */
+    private $arrayPaymentStatusList = array(
+        0 => "pending",
+        1 => "aguardando_pagamento_ps",
+        2 => "em_analise_ps",
+        3 => "paga_ps",
+        4 => "disponivel_ps",
+        5 => "em_disputa_ps",
+        6 => "devolvida_ps",
+        7 => "cancelada_ps",
+        8 => "chargeback_debitado_ps",
+        9 => "em_contestacao_ps"
+    );
+    
+    const REFUND_CLASS = "UOL_PagSeguro_Helper_Refund";
+    const CANCELED_CLASS = "UOL_PagSeguro_Helper_Canceled";
+    const TABLE_NAME = "pagseguro_orders";
+
     public function __construct()
     {
         $this->changeEnvironment();
@@ -38,134 +53,19 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-     * Get the current version of module
-     * @return string - Returns the current version of the module
+     * Get module version
      */
     public function getVersion()
     {
-        $version = Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version;
-        return $version;
+        return Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version;
     }
 
     /**
-     * Get status of PagSeguro or string required to change the order status Magento
-     * @param int $status - Number that contains the status of PagSeguro
-     * @param boolean $orderMagento - If the return will be to change order status Magento
-     * @return string $status - String that will be displayed in the table or used to change the order status Magento
-     */
-    public function getPaymentStatusPagSeguro($status, $orderMagento)
-    {
-        if ($orderMagento == true) {
-            switch ($status) {
-                case 1:
-                    $status = 'aguardando_pagamento_ps';
-                    break;
-                case 2:
-                    $status = 'em_analise_ps';
-                    break;
-                case 3:
-                    $status = 'paga_ps';
-                    break;
-                case 4:
-                    $status = 'disponivel_ps';
-                    break;
-                case 5:
-                    $status = 'em_disputa_ps';
-                    break;
-                case 6:
-                    $status = 'devolvida_ps';
-                    break;
-                case 7:
-                    $status = 'cancelada_ps';
-                    break;
-                case 8:
-                    $status = 'chargeback_debitado_ps';
-                    break;
-                case 9:
-                    $status = 'em_contestacao_ps';
-                    break;
-            }
-        } else {
-            switch ($status) {
-                case 1:
-                    $status = $this->__('Aguardando pagamento');
-                    break;
-                case 2:
-                    $status = $this->__('Em an&aacute;lise');
-                    break;
-                case 3:
-                    $status = $this->__('Paga');
-                    break;
-                case 4:
-                    $status = $this->__('Dispon&iacute;vel');
-                    break;
-                case 5:
-                    $status = $this->__('Em disputa');
-                    break;
-                case 6:
-                    $status = $this->__('Devolvida');
-                    break;
-                case 7:
-                    $status = $this->__('Cancelada');
-                    break;
-                case 8:
-                    $status = $this->__('Chargeback Debitado');
-                    break;
-                case 9:
-                    $status = $this->__('Em Contestação');
-                    break;
-            }
-        }
-
-        return $status;
-    }
-
-    /**
-     * Get status of order of magento
-     * @param string $status - Strin that contains the status of PagSeguro in order Magento
-     * @return string $status - Returns the correct status queried the current status
-     */
-    public function getPaymentStatusMagento($status)
-    {
-        switch ($status) {
-            case 'Aguardando_pagamento_ps':
-                $status = 'Aguardando pagamento';
-                break;
-            case 'Em_analise_ps':
-                $status = 'Em an&aacute;lise';
-                break;
-            case 'Paga_ps':
-                $status = 'Paga';
-                break;
-            case 'Disponivel_ps':
-                $status = 'Dispon&iacute;vel';
-                break;
-            case 'Em_disputa_ps':
-                $status = 'Em disputa';
-                break;
-            case 'Devolvida_ps':
-                $status = 'Devolvida';
-                break;
-            case 'Cancelada_ps':
-                $status = 'Cancelada';
-                break;
-            case 'Chargeback_debitado_ps':
-                $status = 'Chargeback debitado';
-                break;
-            case 'Em_contestacao_ps':
-                $status = 'Em contestação';
-                break;
-        }
-
-        return $status;
-    }
-
-    /**
-     * Return reference of 5 digits
-     * @param number $size - String length
-     * @param boolean $uppercase - Active uppercase words in string
-     * @param boolen $number - Active number in string
-     * @return string  $string - String encrypted of 5 characters
+     * Creates a new store reference
+     * @param bool $size
+     * @param bool $uppercase
+     * @param bool $number
+     * @return string
      */
     public function createReference($size, $uppercase, $number)
     {
@@ -195,91 +95,38 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-     * Returns the registered references in the database
-     * @return string $reference - String encrypted of 5 characters of database
+     * Get store reference
+     * @return mixed
      */
     public function getStoreReference()
     {
-        $reference = Mage::getStoreConfig('uol_pagseguro/store/reference');
-
-        return $reference;
+        return  Mage::getStoreConfig('uol_pagseguro/store/reference');
     }
 
     /**
-     * Get reference decrypt of transactions PagSeguro
-     * @param string $reference - String complete reference
-     * @return string $refDecrypted - String of 5 characteres
+     * Decrypt a reference and returns the reference string
+     * @param string $reference
+     * @return string
      */
     public function getReferenceDecrypt($reference)
     {
-        $refDecrypted = substr($reference, 0, 5);
-
-        return $refDecrypted;
+        return substr($reference, 0, 5);
     }
 
     /**
-     * Get id of order, of returned of reference of the transaction PagSeguro
-     * @param string $reference - String complete reference
-     * @return int $orderIdDecrypted - Id of order
+     * Decrypt a reference and returns the reference order identifier
+     * @param string $reference
+     * @return string
      */
     public function getReferenceDecryptOrderID($reference)
     {
-        $orderIdDecrypted = str_replace(substr($reference, 0, 5), '', $reference);
-
-        return $orderIdDecrypted;
+        return str_replace(substr($reference, 0, 5), '', $reference);
     }
 
     /**
-     * Get date start
-     * @return date $initialDate - Example Y-m-dT00:00
-     */
-    public function getInitialDate()
-    {
-        $this->initialDate = $_SESSION['initialDate'];
-
-        if ($this->initialDate != '') {
-            $initialDate = $this->initialDate . 'T00:00';
-        } else {
-            $initialDate = date('Y-m-d') . 'T00:00';
-        }
-
-        return $initialDate;
-    }
-
-    /**
-     * Get date finally for query
-     * @return date $date - Returns the end date (Y-m-dTH:i)
-     */
-    public function getFinalDate()
-    {
-        // set date and time by time zone selected by merchant
-        date_default_timezone_set(Mage::getStoreConfig('general/locale/timezone'));
-        $date = date('Y-m-d') . 'T' . date('H:i');
-
-        return $date;
-    }
-
-    /**
-     * Verifies that the correct date, starting a certain number of days
-     * @param int $days - Number of days to be checked the date
-     * @return date $correctDate - Returns the correct date
-     */
-    public function getDateSubtracted($days)
-    {
-        $days = ($days > 30) ? 30 : $days;
-        $thisyear = date('Y');
-        $thismonth = date('m');
-        $thisday = date('d');
-        $nextdate = mktime(0, 0, 0, $thismonth, $thisday - $days, $thisyear);
-        $correctDate = strftime("%Y-%m-%d", $nextdate);
-
-        return $correctDate;
-    }
-
-    /**
-     * Get url request editing Magento
-     * @param int $idOrder - Id of order of Magento
-     * @return string $url - url full of the application for editing
+     * Get magento order URL
+     * @param int $idOrder
+     * @return URI
      */
     public function getEditOrderUrl($idOrder)
     {
@@ -290,7 +137,7 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-     * Change the environment if necessary.
+     * Change the environment
      */
     private function changeEnvironment()
     {
@@ -414,9 +261,8 @@ class UOL_PagSeguro_Helper_Data extends HelperData
         unset($connection);
     }
 
-    /*
-     * Checks if email was filled and token
-     * Checks if email and token are valid
+    /**
+     * Checks configuration and validades
      * If not completed one or both, is directed and notified so it can be filled
      */
     public function checkTransactionAccess()
@@ -426,8 +272,8 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 
         // Receive url editing methods ja payment with key
         $configUrl = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/');
-        $email = $this->requestPaymentMethod()->getConfigData('email');
-        $token = $this->requestPaymentMethod()->getConfigData('token');
+        $email = $this->paymentModel()->getConfigData('email');
+        $token = $this->paymentModel()->getConfigData('token');
 
         if ($email) {
             if (!$token) {
@@ -448,24 +294,13 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-     * Set the start date to be found on webservice, starting from the days entered
-     * @param int $days - Days preceding the date should be initiated
-     */
-    public function setInitialDate($days)
-    {
-        $_SESSION['initialDate'] = $this->getDateSubtracted($days);
-    }
-
-    /**
      * Get the date of the request from Magento and convert to the format (d/m/Y)
      * @param date $date - Initial date of order, in default format of Magento
      * @return date $dateConverted - Returns the date converted
      */
     protected function getOrderMagetoDateConvert($date)
     {
-        $dateConverted = date('d/m/Y', strtotime($date));
-
-        return $dateConverted;
+        return date("d/m/Y H:i:s", Mage::getModel("core/date")->timestamp($date));
     }
 
     /**
@@ -494,113 +329,8 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     }
 
     /**
-     * Get list of payment PagSeguro
-     * @return array $transactionArray - Array with transactions
-     */
-    protected function getPagSeguroPaymentList()
-    {
-        try {
-            $transactions = $this->requestWebservice()->getTransactionService('searchByDate', 1, 1000);
-            $pages = $transactions->getTotalPages();
-
-            if ($pages > 1) {
-                for ($i = 1; $i < ($pages + 1); $i++) {
-                    $transactions = $this->requestWebservice()->getTransactionService('searchByDate', $i, 1000);
-                    $transactionArray .= array_push($transactions->getTransactions());
-                }
-            } else {
-                $transactionArray = $transactions->getTransactions();
-            }
-
-            return $transactionArray;
-        } catch (PagSeguroServiceException $e) {
-            if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
-                throw new Exception($e->getMessage());
-            }
-        }
-    }
-
-    /**
-     * Filters by payments PagSeguro containing the same request Store
-     * @var int $orderId - Id of order
-     * @var string $info['code'] - Transaction code of PagSeguro
-     * @var string $info['status'] - Status of payment of PagSeguro
-     * @method array $this->createArrayPayments - Stores the array that contains only the payments
-     * that were made in the store at PagSeguro
-     */
-    protected function getMagentoPayments()
-    {
-        $reference = $this->getStoreReference();
-        $paymentList = $this->getPagSeguroPaymentList();
-        $this->arrayPayments = '';
-
-        if ($paymentList) {
-            foreach ($paymentList as $info) {
-                if ($reference == $this->getReferenceDecrypt($info->getReference())) {
-                    $orderId = $this->getReferenceDecryptOrderID($info->getReference());
-                    $order = Mage::getModel('sales/order')->load($orderId);
-
-                    if ($_SESSION['store_id'] != '') {
-                        if ($order->getStoreId() == $_SESSION['store_id']) {
-                            $this->createArrayPayments($orderId, $info->getCode(), $info->getStatus()->getValue());
-                        }
-                    } elseif ($order) {
-                        $this->createArrayPayments($orderId, $info->getCode(), $info->getStatus()->getValue());
-                    }
-
-                    $_SESSION['store_id'] == '';
-                }
-            }
-        }
-    }
-
-    /**
-    * Get the transactions to be shown in the table
-    * @param  array $array - Contains transaction set
-    * @return json $dataSet - Contains json that the table interprets by updates ajax
-    */
-    public function getTransactionGrid($array)
-    {
-        $dataSet = '[';
-        $j = 1;
-
-        foreach ($array as $info) {
-            $i = 1;
-            $dataSet .= ($j > 1) ? ',[' : '[';
-
-            foreach ($info as $item) {
-                $dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';
-                $i++;
-            }
-
-            $dataSet .= ']';
-            $j++;
-        }
-
-        $dataSet .= ']';
-
-        return $dataSet;
-    }
-
-    /**
-    * Makes a query in webservice to detect if the credentials are correct.
-    * If are all right, is assigned value 1 else assigned value 2 to field credentials of table core_config_data
-    */
-    public function checkCredentials()
-    {
-        try {
-            $transactions = $this->requestWebservice()->getTransactionService('searchByDate', 1, 1, $initialDate);
-            Mage::getConfig()->saveConfig('uol_pagseguro/store/credentials', 1);
-        } catch (PagSeguroServiceException $e) {
-            if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
-                Mage::getConfig()->saveConfig('uol_pagseguro/store/credentials', 0);
-            }
-        }
-    }
-
-    /**
     * Cuts the value to 4 characters and converts to float
-    * @param object $PaymentRequest - Object responsible for passing the parameters to the webservice.
+    * @param object $PaymentRequest - Object responsible for passing the parameters to the webserviceHelper.
     * @return object $PaymentRequest - Returns to the discount parameters object
     */
     public function getDiscount($paymentRequest)
@@ -649,6 +379,25 @@ class UOL_PagSeguro_Helper_Data extends HelperData
 
         return $paymentRequest;
     }
+
+    /**
+     * Check PagSeguroAccountCredentials config
+     * @throws Exception
+     */
+    final public function checkCredentials()
+    {
+        $date = new DateTime(date("Y-m-d\TH:i:s"));
+        $date->sub(new DateInterval("P1D"));
+
+        try {
+            $this->webserviceHelper()->getTransactionsByDate(1, 1, $date);
+            Mage::getConfig()->saveConfig('uol_pagseguro/store/credentials', 1);
+
+        } catch (PagSeguroServiceException $e) {
+            Mage::getConfig()->saveConfig('uol_pagseguro/store/credentials', 0);
+            throw new Exception($e->getMessage());
+        }
+    }
     
     /**
     * Update status in a Magento Order.
@@ -659,13 +408,16 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     */
     public function updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus)
     {
+
         if ($this->getLastStatusOrder($orderId) != $orderStatus) {
-            if ($class == 'UOL_PagSeguro_Helper_Canceled') {
-                if ($this->requestWebservice()->requestPagSeguroService($class, $transactionCode) == 'OK') {
+            if ($class == self::CANCELED_CLASS) {
+                if ($this->webserviceHelper()->cancelRequest($transactionCode) == 'OK') {
                     $orderStatus = 'cancelada_ps';
                 }
-            } elseif ($class == 'UOL_PagSeguro_Helper_Refund') {
-                if ($this->requestWebservice()->requestPagSeguroService($class, $transactionCode) == 'OK') {
+            }
+
+            if ($class == self::REFUND_CLASS) {
+                if ($this->webserviceHelper()->refundRequest($transactionCode) == 'OK') {
                     $orderStatus = 'devolvida_ps';
                 }
             }
@@ -702,22 +454,17 @@ class UOL_PagSeguro_Helper_Data extends HelperData
     * @param mixed $transactionCode - Code of transaction PagSeguro
     * @param bool $send
     */
-    public function setTransactionRecord($orderId, $transactionCode = false, $send = false)
+    final public function setTransactionRecord($orderId, $transactionCode = false, $send = false)
     {
-        //Get the resource model
+
         $resource = Mage::getSingleton('core/resource');
-
-        //Retrieve the read connection
         $readConnection = $resource->getConnection('core_read');
-
-        //Retrieve the write connection
         $writeConnection = $resource->getConnection('core_write');
-
-        $tp    = (string) Mage::getConfig()->getTablePrefix();
-        $table = $tp . 'pagseguro_orders';
-
+        
+        $table = $resource->getTableName(self::TABLE_NAME);
+        
         //Select sent column from pagseguro_orders to verify if exists a register
-        $query = 'SELECT order_id, sent FROM ' . $resource->getTableName($table) . ' WHERE order_id = ' . $orderId;
+        $query = 'SELECT order_id, sent FROM ' . $table . ' WHERE order_id = ' . $orderId;
         $result = $readConnection->fetchAll($query);
 
         if (!empty($result)) {
@@ -727,8 +474,8 @@ class UOL_PagSeguro_Helper_Data extends HelperData
             } else {
                 $value = "transaction_code = '" . $transactionCode . "'";
             }
-
             $sql = "UPDATE `" . $table . "` SET " . $value . " WHERE order_id = " . $orderId;
+
         } else {
             $environment = ucfirst(Mage::getStoreConfig('payment/pagseguro/environment'));
             if ($send == true) {
@@ -738,43 +485,138 @@ class UOL_PagSeguro_Helper_Data extends HelperData
                 $column = "(order_id, transaction_code, environment)";
                 $values = "('$orderId', '$transactionCode', '$environment')";
             }
-
             $sql = "INSERT INTO `" . $table . "` " . $column . " VALUES " . $values;
         }
 
         $writeConnection->query($sql);
     }
-    
+
+    /**
+     * Convert to Json manually
+     * @param array $array
+     * @return string
+     */
+    public function getTransactionGrid($array)
+    {
+        $dataSet = '[';
+        $j = 1;
+
+        foreach ($array as $info) {
+            $i = 1;
+            $dataSet .= ($j > 1) ? ',[' : '[';
+
+            foreach ($info as $item) {
+                $dataSet .= (count($info) != $i) ? '"' . $item . '",' : '"' . $item . '"';
+                $i++;
+            }
+
+            $dataSet .= ']';
+            $j++;
+        }
+
+        $dataSet .= ']';
+
+        return $dataSet;
+    }
+
     /**
     * Request webservice
-    * @return $webservice of UOL_PagSeguro_Helper_Webservice
+    * @return UOL_PagSeguro_Helper_Webservice
     */
-    public function requestWebservice()
+    final public function webserviceHelper()
     {
-        $webservice = Mage::helper('pagseguro/webservice');
-
-        return $webservice;
+        return Mage::helper('pagseguro/webservice');
     }
     
     /**
-    * Request Payment Method
-    * @return $paymentMethod of UOL_PagSeguro_Model_PaymentMethod
+    * Request payment method
+    * @return UOL_PagSeguro_Model_PaymentMethod
     */
-    public function requestPaymentMethod()
+    final public function paymentModel()
     {
-        $paymentMethod = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-
-        return $paymentMethod;
+        return Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
     }
     
     /**
-    * Request Notification Method
-    * @return $notificationMethod of UOL_PagSeguro_Model_NotificationMethod
+    * Request notification method
+    * @return UOL_PagSeguro_Model_NotificationMethod
     */
-    public function requestNotificationMethod()
+    final public function notificationModel()
     {
-        $notificationMethod = Mage::getSingleton('UOL_PagSeguro_Model_NotificationMethod');
+        return  Mage::getSingleton('UOL_PagSeguro_Model_NotificationMethod');
+    }
 
-        return $notificationMethod;
+    /**
+     * Get the name of payment status
+     * @param Integer $key
+     * @return multitype:|boolean
+     */
+    public function getPaymentStatusFromKey(Integer $key)
+    {
+        if (array_key_exists($key, $this->arrayPaymentStatusList)) {
+            return $this->arrayPaymentStatusList[$key];
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the key of payment status
+     * @param String $value
+     * @return number|boolean
+     */
+    public function getPaymentStatusFromValue(String $value)
+    {
+        $key = array_search($value, $this->arrayPaymentStatusList);
+
+        if (is_numeric($key)) {
+            return (int)$key;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the name to string of payment status
+     * @param Integer $key
+     * @return Ambigous <string, string, multitype:>|boolean
+     */
+    public function getPaymentStatusToString(Integer $key)
+    {
+        if (array_key_exists($key, $this->arrayPaymentStatusList)) {
+            switch ($key) {
+                case 0:
+                    return $this->__('Pendente');
+                    break;
+                case 1:
+                    return $this->__('Aguardando pagamento');
+                    break;
+                case 2:
+                    return $this->__('Em an&aacute;lise');
+                    break;
+                case 3:
+                    return $this->__('Paga');
+                    break;
+                case 4:
+                    return $this->__('Dispon&iacute;vel');
+                    break;
+                case 5:
+                    return $this->__('Em disputa');
+                    break;
+                case 6:
+                    return $this->__('Devolvida');
+                    break;
+                case 7:
+                    return $this->__('Cancelada');
+                    break;
+                case 8:
+                    return $this->__('Chargeback Debitado');
+                    break;
+                case 9:
+                    return $this->__('Em Contestação');
+                    break;
+            }
+        }
+        return false;
     }
 }

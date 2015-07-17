@@ -24,12 +24,25 @@ $installer->startSetup();
 $resource = Mage::getSingleton('core/resource');
 $readConnection = $resource->getConnection('core_read');
 
-// table prefix
 $tp = (string)Mage::getConfig()->getTablePrefix();
-
 $table = $tp . 'pagseguro_conciliation';
+
+function getMagentoVersion()
+{
+    return substr(str_replace(".", "", Mage::getVersion()), 0, 2);
+}
+
+function _tableExists($table, $resource)
+{
+    if (getMagentoVersion() < 16) {
+        return array_search($table, $resource->getConnection('core_write')->listTables());
+    } 
+
+    return $resource->getConnection('core_write')->isTableExists($table);
+}
+
 // checks if exists registry of reference
-if ($resource->getConnection('core_write')->isTableExists($table)) {
+if (_tableExists($table, $resource)) {
     $query = 'SELECT reference FROM ' . $resource->getTableName($table);
     $results = $readConnection->fetchAll($query);
 
@@ -50,8 +63,8 @@ $table =  $tp . 'pagseguro_sales_code';
 $new_table =  $tp . 'pagseguro_orders';
 
 // checks if exists the table
-if ($resource->getConnection('core_write')->isTableExists($table)) {
-    if (!$resource->getConnection('core_write')->isTableExists($new_table)) {
+if (_tableExists($table, $resource)) {
+    if (!_tableExists($new_table, $resource)) {
         //copies the transaction table used in version 2.4
         $sql .= "CREATE TABLE `" . $new_table . "` LIKE `" . $table . "`;";
         $sql .= "INSERT `" . $new_table . "` SELECT * FROM `" . $table . "`;";

@@ -18,202 +18,199 @@ limitations under the License.
 ************************************************************************
 */
 
-use UOL_PagSeguro_Helper_Data as HelperData;
-
-class UOL_PagSeguro_Helper_Abandoned extends HelperData
+class UOL_PagSeguro_Helper_Abandoned extends UOL_PagSeguro_Helper_Data
 {
-    // It is used to store the array of abandoned
-    private $arrayAbandoned = array();
 
-    // It active/disable abandoned for notification
-    private $access = '';
-
-    // It the code of admin
-    private $admLocaleCode = '';
-
-    /*
-     * Checks that is active query abandoned
-     * Checks if email was filled and token
-     * Checks if email and token are valid
-     * If not completed one or both, is directed and notified so it can be filled
+    /**
+     * @var int
      */
-    public function checkAbandonedAccess($days)
+    private $days;
+    
+    /**
+     * @var Array
+     */
+    private $magentoPaymentList;
+    
+    /**
+     * @var Array
+     */
+    private $PagSeguroAbandonedPaymentList;
+    
+    /**
+     * @var Array
+     */
+    protected $arrayPayments;
+
+    /**
+     * @var int
+     */
+    const VALID_RANGE_DAYS = 10;
+
+    /**
+     * Executes the essentials functions for this helper
+     * @param $days
+     */
+    public function initialize($days)
     {
-        // Abandoned access
-        $this->access = 1;
-
-        if (!is_null($days)) {
             $this->days = $days;
-        }
-
-        // Displays this error in title
-        $module = 'PagSeguro - ';
-
-        // Receive url editing methods ja payment with key
-        $configUrl = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/');
-
-        if ($this->requestPaymentMethod()->getConfigData('abandoned') == 0) {
-            $this->access = 0;
-            $message =  $module . $this->__('Consulta de transações abandonadas está desativado.');
-            Mage::getSingleton('core/session')->addError($message);
-            Mage::app()->getResponse()->setRedirect($configUrl);
-        } else {
-            // Check if email and token was filled
-            $this->checkTransactionAccess();
-        }
+            $this->getPagSeguroAbandonedPayments();
+            $this->requestAbandonedTransactions();
     }
 
     /**
-     * Filters by payments PagSeguro containing the same request Store
-     * @var int $orderId - Id of order
-     * @var string $info->getRecoveryCode() - Abandoned code for recovery transaction
-     * @method array $this->createArrayAbandoned - Stores the array that contains transactions abandoned at PagSeguro
+     * Returns payment array
+     * @return mixed $this->arrayPayment
      */
-    private function getMagentoAbandoned()
+    public function getPaymentsArray()
     {
-        $reference = $this->getStoreReference();
-        $abandonedtList = $this->requestWebservice()->getPagSeguroAbandonedList();
-        $this->arrayAbandoned = '';
+        return $this->arrayPayments;
+    }
 
-        if ($abandonedtList) {
-            foreach ($abandonedtList as $info) {
-                if ($reference == $this->getReferenceDecrypt($info->getReference())) {
-                    $orderId = $this->getReferenceDecryptOrderID($info->getReference());
-                    $order = Mage::getModel('sales/order')->load($orderId);
+    /**
+     * Build a array with abandoned PagSeguroTransaction
+     */
+    private function requestAbandonedTransactions()
+    {
 
-                    if ($_SESSION['store_id'] != '') {
-                        if ($order->getStoreId() == $_SESSION['store_id']) {
-                            $this->createArrayAbandoned($orderId, $info->getRecoveryCode());
+        foreach ($this->PagSeguroAbandonedPaymentList->getTransactions() as $payment) {
+            $orderId = $this->getReferenceDecryptOrderID($payment->getReference());
+            $orderHandler = Mage::getModel('sales/order')->load($orderId);
+
+            if ($this->getStoreReference() == $this->getReferenceDecrypt($payment->getReference())) {
+                if (Mage::getStoreConfig('payment/pagseguro/environment')
+                        == strtolower(trim($this->getOrderEnvironment($orderId)))) {
+                    if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
+                        if (Mage::getSingleton('core/session')->getData("store_id") == $orderHandler->getStoreId()) {
+                            $this->arrayPayments[] = $this->build($payment, $orderHandler);
                         }
-                    } elseif ($order) {
-                        $this->createArrayAbandoned($orderId, $info->getRecoveryCode());
+                    } elseif ($orderHandler) {
+                        $this->arrayPayments[] = $this->build($payment, $orderHandler);
                     }
-
-                    $_SESSION['store_id'] == '';
                 }
             }
         }
+        Mage::getSingleton('core/session')->unsetData('store_id');
     }
 
     /**
-     * Creates the complete array with the necessary information for the table
-     * @param int $orderId - Id of order of Magento
-     * @param string $recoveryCode - Code of recovery transaction in PagSeguro
-     * @method array $this->arrayAbandoned - Set the complete array with the necessary information for the table
+     * @param PagSeguroTransaction $payment
+     * @param Mage_Sales_Model_Order $order
+     * @return multitype:string date Ambigous <number, mixed> NULL
      */
-    private function createArrayAbandoned($orderId, $recoveryCode)
+    public function build($payment, $order)
     {
-        // force default time zone
-        date_default_timezone_set(Mage_Core_Model_Locale::DEFAULT_TIMEZONE);
 
-        // Receives the parameter used to send e-mail
-        $config = $orderId . '/' . $recoveryCode;
+        $config = $order->getEntityId() . '/' . $payment->getRecoveryCode();
 
         // Checkbox of selection for send e-mail
         $checkbox  = "<label class='chk_email'>";
         $checkbox .= "<input type='checkbox' name='send_emails[]' class='checkbox' data-config='" . $config . "' />";
         $checkbox .= "</label>";
 
-        // Receives the object of order that was entered the id
-        $order = Mage::getModel('sales/order')->load($orderId);
-
-        // Receives the creation date of the application which is converted to the format d/m/Y
-        $dateOrder = Mage::app()->getLocale()->date($order->getCreatedAt(), null, null, true);
-
-        // Receives the number of order
-        $idMagento = '#' . $order->getIncrementId();
-
-        $validity_link = $this->getAbandonedDateAddDays(10, $order->getCreatedAt());
-
-        // Receives the url edit order it from your id
-        $editUrl = $this->getEditOrderUrl($orderId);
-        $editText = $this->__('Ver detalhes');
+        //$dateOrder = Mage::app()->getLocale()->date($order->getCreatedAt(), null, null, true);
 
         // Receives the full html link to edit an order
-        $editOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
+        $editOrder = "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($order->getEntityId()) . "'>";
         $editOrder .= $this->__('Ver detalhes') . "</a>";
 
-        $sent = $this->getSentEmailsById($orderId);
+        $sent = $this->getSentEmailsById($order->getEntityId());
         $sent = current($sent);
 
         if (empty($sent)) {
             $sent = 0;
         }
 
-        $array = array('checkbox' => $checkbox,
-                       'date' => $dateOrder,
-                       'id_magento' => $idMagento,
-                       'validity_link' => $validity_link,
-                       'email' => $sent,
-                       'visualize' => $editOrder);
-
-        $this->arrayAbandoned[] = $array;
+        return array('checkbox' => $checkbox,
+            'date' => $this->getOrderMagetoDateConvert($order->getCreatedAt()),
+            'id_magento' => "#".$order->getIncrementId(),
+            'validity_link' => $this->convertAbandonedDayIntervalToDate($order->getCreatedAt()),
+            'email' => $sent,
+            'visualize' => $editOrder);
     }
 
     /**
-     * Get the full array with only the requests made ​​in Magento with PagSeguro
-     * @return array $this->arrayAbandoned - Returns an array with the necessary information to fill the table
+     * Get abandoned PagSeguroTransaction from webservice in a date interval.
+     * @param string $page
      */
-    public function getArrayAbandoned()
+    private function getPagSeguroAbandonedPayments($page = null)
     {
-        $this->getMagentoAbandoned();
+        if (is_null($page)) {
+            $page = 1;
+        }
 
-        return $this->arrayAbandoned;
+        $date = new DateTime(date("Y-m-d\TH:i:s"));
+        $date->setTimezone(new DateTimeZone("America/Sao_Paulo"));
+        $dateInterval = "P".(String)$this->days."D";
+        $date->sub(new DateInterval($dateInterval));
+
+        if (is_null($this->PagSeguroAbandonedPaymentList)) {
+            $this->PagSeguroAbandonedPaymentList = Mage::helper('pagseguro/webservice')->abandonedRequest($date);
+        } else {
+            $PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->abandonedRequest($date, $page);
+
+            $this->PagSeguroAbandonedPaymentList->setDate($PagSeguroPaymentList->getDate());
+            $this->PagSeguroAbandonedPaymentList->setCurrentPage($PagSeguroPaymentList->getCurrentPage());
+            $this->PagSeguroAbandonedPaymentList->setTotalPages($PagSeguroPaymentList->getTotalPages());
+            $totalResults = $PagSeguroPaymentList->getResultsInThisPage()
+                + $this->PagSeguroAbandonedPaymentList->getResultsInThisPage;
+            $this->PagSeguroAbandonedPaymentList->setResultsInThisPage($totalResults);
+
+            $this->PagSeguroAbandonedPaymentList->setTransactions(
+                array_merge(
+                    $this->PagSeguroAbandonedPaymentList->getTransactions(),
+                    $PagSeguroPaymentList->getTransactions()
+                )
+            );
+        }
+
+        if ($this->PagSeguroAbandonedPaymentList->getTotalPages() > $page) {
+            $this->getPagSeguroAbandonedPayments(++$page);
+        }
     }
 
     /**
-     * Get quantity of times this e-mail was been sent
-     * @param int $order_id - Id of order of Magento
-     * @return array $sent qty.
+     * Get order environment
+     * @param int $orderId
+     * @return string Order environment
+     */
+    private function getOrderEnvironment($orderId)
+    {
+        $reader = Mage::getSingleton("core/resource")->getConnection('core_read');
+        $table = Mage::getConfig()->getTablePrefix() . 'pagseguro_orders';
+
+        $query = "SELECT environment FROM ".$table." WHERE order_id = ".$orderId;
+
+        return $reader->fetchOne($query);
+
+    }
+
+    /**
+     * Get quantity of sent e-mails by identifier
+     * @param int $orderId
      */
     private function getSentEmailsById($orderId)
     {
         //Get the resource model
         $resource = Mage::getSingleton('core/resource');
 
-        //Retrieve the read connection
-        $readConnection = $resource->getConnection('core_read');
-
-        //Get table name
         $table = $resource->getTableName('pagseguro_orders');
+        $query = 'SELECT sent FROM ' . $table . ' WHERE order_id = ' . $orderId;
 
-        //Select sent column from pagseguro_orders to verify if exists a register
-        $query = 'SELECT sent FROM ' . $resource->getTableName($table) . ' WHERE order_id = ' . $orderId;
-
-        return $readConnection->fetchCol($query);
+        return $resource->getConnection('core_read')->fetchCol($query);
     }
 
     /**
-     * Adds days in the given date
-     * @param int $days - Number of days
-     * @param date $initialDate - Informed start date
-     * @return date $correctDate - Returns the date with the days added
-     */
-    private function getAbandonedDateAddDays($days, $initialDate)
-    {
-        $date = date('m/d/Y', strtotime($initialDate));
-        $days = ($days > 10) ? 10 : $days;
-        $thisyear = date('Y', strtotime($date));
-        $thismonth = date('m', strtotime($date));
-        $thisday = date('d', strtotime($date));
-        $nextdate = mktime(0, 0, 0, $thismonth, $thisday + $days, $thisyear);
-        $correctDate = strftime("%d/%m/%Y", $nextdate);
-
-        return $correctDate;
-    }
-
-    /**
-     * Send email of abandoned transactions for customers
-     * @param int $orderId - Id of order of Magento
-     * @param string $recoveryCode - Code of recovery transaction
+     * Send a e-mail with a recovery link for a abandoned PagSeguroTransaction
+     * @param int $orderId
+     * @param string $recoveryCode
      */
     public function sendAbandonedEmail($orderId, $recoveryCode)
     {
         // set log when sending email
         Mage::helper('pagseguro/log')->setAbandonedSendEmailLog($orderId, $recoveryCode);
 
-        // update status
-        $this->setAbandonedUpdateOrder($orderId);
+        // update statusetAbandonedUpdateOrders
+        $this->updateAbandonedOrder($orderId);
 
         // update or insert sent information into pagseguro_orders
         $this->setTransactionRecord($orderId, false, true);
@@ -228,31 +225,27 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
         $emailTemplate = Mage::getModel('core/email_template');
 
         // Verify the theme selected of configuration of module
-        if ($this->requestPaymentMethod()->getConfigData('template') == 'payment_pagseguro_template') {
-            $emailTemplate->loadDefault($this->requestPaymentMethod()->getConfigData('template'));
+        if ($this->paymentModel()->getConfigData('template') == 'payment_pagseguro_template') {
+            $emailTemplate->loadDefault($this->paymentModel()->getConfigData('template'));
         } else {
-            $emailTemplate->load($this->requestPaymentMethod()->getConfigData('template'));
+            $emailTemplate->load($this->paymentModel()->getConfigData('template'));
         }
 
-        // Get email of Sales
+        // Get sales
         $email = Mage::getStoreConfig('trans_email/ident_sales/email');
-
-        // Get name of Sales
         $name = Mage::getStoreConfig('trans_email/ident_sales/name');
 
         // Get object of stores
         $store = Mage::app()->getStore();
 
-        // Set name of Sales of store
+        // Set sales
         $emailTemplate->setSenderName($name, $store->getId());
-
-        // Set email of Sales of store
         $emailTemplate->setSenderEmail($email, $store->getId());
 
         // Variables of template
         $emailTemplateVariables['store'] = $store;
         $emailTemplateVariables['order'] = $order;
-        $emailTemplateVariables['pagseguro_transaction_url'] = $this->getUrlAbandonedRecovery($recoveryCode);
+        $emailTemplateVariables['pagseguro_transaction_url'] = $this->buildAbandonedRecoveryUrl($recoveryCode);
         $emailTemplateVariables['comment'] = '';
 
         // Set variables values of template
@@ -266,76 +259,121 @@ class UOL_PagSeguro_Helper_Abandoned extends HelperData
     }
 
     /**
-     * Get url to access the abandoned transaction
-     * @param string $recoveryCode - Code of recovery transaction
-     * @return string $url - Url of abandoned transaction
+     * Update a order history
+     * @param int $orderId
      */
-    private function getUrlAbandonedRecovery($recoveryCode)
+    private function updateAbandonedOrder($orderId)
+    {
+        $comment = ($this->admLocaleCode == 'pt_BR') ? 'Transação abandonada' : 'Abandoned transaction';
+
+        $order = Mage::getModel('sales/order')->load($orderId);
+        $order->addStatusToHistory($order->getStatus(), $comment, true);
+
+        Mage::app()->getLocale()->date();
+
+        $order->save();
+    }
+
+    /**
+     * Build a URL for recovery a PagSeguroTransaction
+     * @param string $recoveryCode
+     * @return URI
+     */
+    private function buildAbandonedRecoveryUrl($recoveryCode)
     {
         include_once(Mage::getBaseDir('lib') . '/PagSeguroLibrary/config/PagSeguroConfig.php');
 
-        // Get environment
-        $sandbox = ($PagSeguroConfig['environment'] == 'sandbox') ? 'sandbox.' : '';
-        $url = 'https://' . $sandbox . 'pagseguro.uol.com.br/checkout/v2/resume.html?r=' . $recoveryCode;
+        if (strtolower(Mage::getStoreConfig('payment/pagseguro/environment')) == "sandbox") {
+            return 'https://sandbox.pagseguro.uol.com.br/checkout/v2/resume.html?r=' . $recoveryCode;
+        }
 
-        return $url;
+        return 'https://pagseguro.uol.com.br/checkout/v2/resume.html?r=' . $recoveryCode;
     }
 
     /**
-     * Set admin locale code
-     * @param string $code - Current code
-     * @var string $this->admLocaleCode- Current admin code
-     */
-    public function setAdminLocaleCode($code)
-    {
-        $this->admLocaleCode = $code;
-    }
-
-    /**
-     * Set current store for send correct abandoned email
-     * @param int $orderId - Id of order Magento
+     * Sets the current store
+     * @param int $orderId
      */
     private function setCurrentStore($orderId)
     {
-        // get order
         $order = Mage::getModel('sales/order')->load($orderId);
-
-        // Set store of Sets the store where it was purchased
         Mage::app()->setCurrentStore($order->getStoreId());
-
-        // Get local of language examples en_US, pt_BR
-        $localeCode = Mage::getStoreConfig('general/locale/code');
-
-        // Set local for send correct email language
-        Mage::getSingleton('core/translate')->setLocale($localeCode)->init('frontend', true);
+        Mage::getSingleton('core/translate')->setLocale(
+            Mage::getStoreConfig('general/locale/code')
+        )->init('frontend', true);
     }
 
     /**
-     * Set history in order and change if necessary the status
-     * @param int $orderId - Id of order Magento
-     * @method addStatusToHistory - Set history in order
+     * Converts a day interval to date.
+     * @param DateTime $orderCreatedAt
+     * @return string
      */
-    private function setAbandonedUpdateOrder($orderId)
+    private function convertAbandonedDayIntervalToDate($orderCreatedAt)
     {
-        // get order
-        $order = Mage::getModel('sales/order')->load($orderId);
+        $date = new DateTime($orderCreatedAt);
+        $date->setTimezone(new DateTimeZone("America/Sao_Paulo"));
+        $dateInterval = "P".(String)self::VALID_RANGE_DAYS."D";
+        $date->add(new DateInterval($dateInterval));
 
-        // get stats of order
-        $status = $order->getStatus();
+        return date("d/m/Y H:i:s", $date->getTimestamp());
+    }
 
-        // Comment of history order
-        $comment = ($this->admLocaleCode == 'pt_BR') ? 'Transação abandonada' : 'Abandoned transaction';
+    
+    /**
+     * Check config for access
+     * @return multitype:string boolean
+     */
+    private function checkAccess()
+    {
+        $paymentModel = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
 
-        // if show icone notify in history order
-        $notify = true;
+        if ($paymentModel->getConfigData('abandoned') == 0) {
+            return array(
+                'message' => "Consulta de transações abandonadas está desativada.",
+                'status' => false
+            );
 
-        // Update history order and status order
-        $order->addStatusToHistory($status, $comment, $notify);
+        }
 
-        // Set correct time zone of store
-        Mage::app()->getLocale()->date();
+        if (!Mage::getStoreConfig('uol_pagseguro/store/credentials')) {
+            return array(
+                'message' => "E-mail e/ou token inválido(s) para o ambiente selecionado.",
+                'status' => false
+            );
+        }
 
-        // Save and recorded in history order
-        $order->save();
+        if (!$paymentModel->getConfigData('email')) {
+            return array(
+                'message' => "Preencha o e-mail do vendedor",
+                'status' => false
+            );
+        }
+
+        if (!$paymentModel->getConfigData('token')) {
+            return array(
+                'message' => "Preencha o token.",
+                'status' => false
+            );
+        }
+
+        return array(
+            'message' => "",
+            'status' => true
+        );
+
+    }
+
+    /**
+     * Check for access and set errors if exists.
+     */
+    public function checkViewAccess()
+    {
+        $access = $this->checkAccess();
+        if (!$access['status']) {
+            Mage::getSingleton('core/session')->addError($access['message']);
+            Mage::app()->getResponse()->setRedirect(
+                Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/')
+            );
+        }
     }
 }

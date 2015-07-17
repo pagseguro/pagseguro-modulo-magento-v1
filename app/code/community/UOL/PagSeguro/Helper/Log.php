@@ -52,14 +52,14 @@ class UOL_PagSeguro_Helper_Log extends HelperData
      * @param string $class - Represents a transaction service type
      * @param int $days - Range of days to search
      */
-    public function setSearchTransactionLog($class, $days)
+    public function setSearchTransactionLog($class, $days, $initialDate)
     {
         $option = end(explode('_', $class));
         $module = ' [Info] PagSeguro' . $option . '.';
 
         // Sentence of log
         $phrase  = "Searched( '" . $days . " days - Range of dates ";
-        $phrase .= $this->getInitialDate() . " until " . $this->getFinalDate() . "' )";
+        $phrase .= $initialDate . " until " . date("d/m/Y H:i:s") . "' )";
 
         // Creating the update log order
         $this->setLog($phrase, $module);
@@ -118,7 +118,7 @@ class UOL_PagSeguro_Helper_Log extends HelperData
 
         // Sentence of log
         $phrase  = "SentEmailUpdate( Has been updated to " . $sent . " the number of emails sent,";
-        $phrase .= " belonging to order " . $order_id . " )";
+        $phrase .= " belonging to order " . $orderId . " )";
 
         // Creating the update log order
         $this->setLog($phrase, $module);

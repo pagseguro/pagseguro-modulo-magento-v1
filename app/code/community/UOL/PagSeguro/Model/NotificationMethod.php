@@ -40,7 +40,7 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $this->post = $post;
         $this->getNotificationPost();
 
-        if($this->notificationType == 'transaction') {
+        if ($this->notificationType == 'transaction') {
             $this->setNotificationUpdateOrder();
         }
     }

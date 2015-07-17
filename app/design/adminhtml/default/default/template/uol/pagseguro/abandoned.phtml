@@ -22,7 +22,7 @@ limitations under the License.
 <?php
     $helper = Mage::helper('pagseguro/abandoned');
     $html   = Mage::helper('pagseguro/html');
-    $helper->checkAbandonedAccess();
+    $helper->checkViewAccess();
 ?>
 
 <div id="pagseguro-module">
@@ -34,9 +34,10 @@ limitations under the License.
                 <h2 class="title"><?php echo $helper->__('Transações Abandonadas'); ?></h2>
                 <p>
                     <?php
-                        $string .= 'Com esta funcionalidade, você poderá listar as transações abandonadas e disparar, manualmente, ';
-                        $string .= 'um e-mail para seu comprador. Este e-mail conterá um link que o redirecionará para o fluxo de ';
-                        $string .= 'pagamento, exatamente no ponto onde ele parou.';
+                        $string = "Com esta funcionalidade você poderá listar as transações abandonadas durante o
+                            checkout PagSeguro e disparar, manualmente, um e-mail para seu comprador. Este e-mail
+                            conterá um link que o redirecionará para o fluxo de pagamento, exatamente no ponto onde
+                            ele parou.";
                         echo $helper->__($string);
                      ?>
                 </p>
@@ -71,11 +72,11 @@ limitations under the License.
                             <th class="select_checkbox" width="3%">
                                 <input type="checkbox" id="pagseguro-check-all" />
                             </th>
-                            <th width="20%"><?php echo $helper->__('Data do Pedido');?></th>
+                            <th width="20%"><?php echo $helper->__('Data');?></th>
                             <th width="20%"><?php echo $helper->__('ID Magento');?></th>
                             <th width="20%"><?php echo $helper->__('Validade do Link');?></th>
                             <th width="20%"><?php echo $helper->__('E-mails Enviados');?></th>
-                            <th width="17%"><?php echo $helper->__('Pedido');?></th>
+                            <th width="17%"><?php echo $helper->__('Ação');?></th>
                         </tr>
                     </thead>
                 </table>
@@ -105,12 +106,15 @@ limitations under the License.
         var defaultPage = 0;
 
         var onRequestTransactions = function(transactions, callback) {
-            if (transactions != "") {
-                converted = JSON.parse(transactions);
+            if (transactions == "false") {
 
+                jQuery('#abandoned-transactions-table').dataTable().fnClearTable(true);
+                Modal.message('alert', "Sem resultados para o período solicitado.");
+
+            } else {
                 var oTable = jQuery('#abandoned-transactions-table').dataTable();
-                oTable.fnClearTable(false);
-                oTable.fnAddData(converted, false);
+                oTable.fnClearTable(true);
+                oTable.fnAddData(JSON.parse(transactions), true);
                 oTable.fnStandingRedraw();
 
                 if (typeof callback == 'function') {
@@ -118,31 +122,26 @@ limitations under the License.
                 } else {
                     Modal.hideLoading();
                 }
-            } else {
-                jQuery('#abandoned-transactions-table').dataTable().fnClearTable(true);
-                Modal.message('alert', "Não há transações abandonadas no período.");
             }
         };
 
         var requestTransactions = function(callback) {
-            var getDays = jQuery('#pagseguro-daystorecovery-input').find(":selected").text();
-            var converted = '';
 
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_abandoned/doPost'); ?>",
                 type: "POST",
                 data: {
                         form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        origin: 'abandoned',
-                        days: getDays
+                        days: jQuery('#pagseguro-daystorecovery-input').find(":selected").text()
                       },
-                success: function(result) {
-                    if (result == "[HTTP 401] - UNAUTHORIZED") {
-                        Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
+                success: function(xhrResult) {
+
+                    if (xhrResult == "[HTTP 401] - UNAUTHORIZED") {
+                        Modal.message('error', xhrResult);
                     } else {
-                        onRequestTransactions(result, callback);
+                        onRequestTransactions(xhrResult, callback);
                     }
                 },
                 error: function() {
@@ -152,22 +151,23 @@ limitations under the License.
         };
 
         var sendMailRequest = function(params, count) {
-            var onError = function(){
-                Modal.message('error', 'Não foi possível enviar o(s) e-mail(s).');
-            };
 
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_abandoned/doAbandoned'); ?>",
                 type: "POST",
                 data: {
                         form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        json: params,
-                        origin: 'abandoned'
+                        data: params,
+                        days: jQuery('#pagseguro-daystorecovery-input').find(":selected").text()
                       },
                 success: function(result) {
-                    if (result == 'run') {
+                    if (result == "false") {
+
+                        Modal.message('error', 'Não foi possível enviar o(s) e-mail(s).');
+
+                    } else {
                         jQuery(':checkbox').prop('checked','');
                         jQuery('#messages').empty();
                         jQuery('#send-email-button').prop("disabled", true);
@@ -181,8 +181,7 @@ limitations under the License.
                                 msg = count + '<?php echo " " . $helper->__($emailsSendSuccess); ?>';
                             Modal.message('success', msg);
                         });
-                    } else {
-                        onError();
+
                     }
                 },
                 error: function() {

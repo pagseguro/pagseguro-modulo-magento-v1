@@ -20,13 +20,43 @@ limitations under the License.
 
 class UOL_PagSeguro_Adminhtml_RequirementsController extends Mage_Adminhtml_Controller_Action
 {
+
     /**
-     * Creates the layout of the administration
-     * Set the PagSeguro menu must be selected
+     * @var UOL_PagSeguro_Helper_Log
+     */
+    private $log;
+    
+    /**
+     * @var UOL_PagSeguro_Helper_Requirements
+     */
+    private $requirements;
+
+    /**
+     * Render canceled layout in administration interface
      */
     public function indexAction()
     {
         $this->loadLayout();
         $this->_setActiveMenu('pagseguro_menu')->renderLayout();
+    }
+    
+    /**
+     * Get status of server extensions required for PagSeguro module.
+     * @return JSON|null of requirement list
+     */
+    public function doRequirementsAction()
+    {
+        $this->builder();
+        $this->log->setRequirementsLog();
+        print json_encode($this->requirements->validateRequirements());
+    }
+    
+    /**
+     * Initializes helpers and instance vars.
+     */
+    private function builder()
+    {
+        $this->requirements = Mage::helper('pagseguro/requirements');
+        $this->log = Mage::helper('pagseguro/log');
     }
 }

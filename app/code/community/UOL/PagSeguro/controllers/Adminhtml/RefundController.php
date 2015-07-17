@@ -20,14 +20,89 @@ limitations under the License.
 
 class UOL_PagSeguro_Adminhtml_RefundController extends Mage_Adminhtml_Controller_Action
 {
+
     /**
-     * Creates the layout of the administration
-     * Set the PagSeguro menu must be selected
+     * @var int
+     */
+    private $days;
+    
+    /**
+     * @var UOL_PagSeguro_Helper_Log
+     */
+    private $log;
+    
+    /**
+     * @var UOL_PagSeguro_Helper_Refund
+     */
+    private $refund;
+
+    /**
+     * Render canceled layout in administration interface
      */
     public function indexAction()
     {
-        $_SESSION['store_id'] = Mage::app()->getRequest()->getParam('store');
+        Mage::getSingleton('core/session')->setData(
+            'store_id',
+            Mage::app()->getRequest()->getParam('store')
+        );
         $this->loadLayout();
         $this->_setActiveMenu('pagseguro_menu')->renderLayout();
+    }
+    
+    /**
+     * Get a list of PagSeguroTransaction from webservice.
+     * @return JSON|null of PagSeguroTransaction list
+     */
+    public function doPostAction()
+    {
+        $this->builder();
+        if ($this->days) {
+            $this->log->setSearchTransactionLog(get_class($this->refund), $this->days);
+
+            $this->refund->initialize($this->days);
+
+            try {
+                if (!$this->refund->getPaymentsArray()) {
+                    print json_encode(false);
+                    exit();
+                }
+
+                print $this->refund->getTransactionGrid($this->refund->getPaymentsArray());
+
+            } catch (Exception $e) {
+                print $e->getMessage();
+            }
+        }
+    }
+    
+    /**
+     * Call a helper to request a refund of a PagSeguroTransaction and update the order status.
+     */
+    public function doRefundAction()
+    {
+        $this->builder();
+        if ($this->getRequest()->getPost('data')) {
+            foreach ($this->getRequest()->getPost('data') as $data) {
+                $this->refund->updateOrderStatusMagento(get_class($this->refund), $data['id'], $data['code']);
+            }
+            
+            $this->doPostAction();
+            exit();
+        }
+
+        print json_encode('error');
+        exit();
+    }
+    
+    /**
+     * Initializes helpers and instance vars.
+     */
+    private function builder()
+    {
+        $this->refund = Mage::helper('pagseguro/refund');
+        $this->log = Mage::helper('pagseguro/log');
+        if ($this->getRequest()->getPost('days')) {
+            $this->days = $this->getRequest()->getPost('days');
+        }
     }
 }

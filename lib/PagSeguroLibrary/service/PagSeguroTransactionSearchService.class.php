@@ -52,7 +52,7 @@ class PagSeguroTransactionSearchService
      */
     private static function buildSearchUrlByDate(PagSeguroConnectionData $connectionData, array $searchParams)
     {
-        $url = $connectionData->getServiceUrl('v2');
+        $url = $connectionData->getServiceUrl('v3');
         $initialDate = $searchParams['initialDate'] != null ? $searchParams['initialDate'] : "";
         $finalDate = $searchParams['finalDate'] != null ? ("&finalDate=" . $searchParams['finalDate']) : "";
         if ($searchParams['pageNumber'] != null) {
@@ -82,6 +82,7 @@ class PagSeguroTransactionSearchService
         if ($searchParams['maxPageResults'] != null) {
             $maxPageResults = "&maxPageResults=" . $searchParams['maxPageResults'];
         }
+
         return "{$url}/abandoned/?" . $connectionData->getCredentialsUrlQuery() .
             "&initialDate={$initialDate}&finalDate={$finalDate}{$page}{$maxPageResults}";
     }
@@ -97,7 +98,7 @@ class PagSeguroTransactionSearchService
         $reference,
         $searchParams = null
     ){
-        $url = $connectionData->getServiceUrl('v2');
+        $url = $connectionData->getServiceUrl('v3');
         if ($searchParams == null) {
             return "{$url}?" . $connectionData->getCredentialsUrlQuery() . "&reference=" . $reference;
         } else {

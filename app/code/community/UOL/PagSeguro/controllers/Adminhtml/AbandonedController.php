@@ -20,14 +20,85 @@ limitations under the License.
 
 class UOL_PagSeguro_Adminhtml_AbandonedController extends Mage_Adminhtml_Controller_Action
 {
+
     /**
-     * Creates the layout of the administration
-     * Set the PagSeguro menu must be selected
+     * @var int
+     */
+    private $days;
+    
+    /**
+     * @var UOL_PagSeguro_Helper_Log
+     */
+    private $log;
+    
+    /**
+     * @var UOL_PagSeguro_Helper_Abandoned
+     */
+    private $abandoned;
+
+    /**
+     * Render abandoned layout in administration interface
      */
     public function indexAction()
     {
-        $_SESSION['store_id'] = Mage::app()->getRequest()->getParam('store');
+        Mage::getSingleton('core/session')->setData(
+            'store_id',
+            Mage::app()->getRequest()->getParam('store')
+        );
         $this->loadLayout();
         $this->_setActiveMenu('pagseguro_menu')->renderLayout();
+    }
+
+    /**
+     * Get a list of abandoned PagSeguroTransaction from webservice.
+     * @return JSON|null of PagSeguroTransaction list
+     */
+    public function doPostAction()
+    {
+        $this->builder();
+        if ($this->days) {
+            $this->log->setSearchTransactionLog(get_class($this->abandoned), $this->days);
+
+            $this->abandoned->initialize($this->days);
+
+            try {
+                if (!$this->abandoned->getPaymentsArray()) {
+                    print json_encode(false);
+                    exit();
+                }
+
+                print $this->abandoned->getTransactionGrid($this->abandoned->getPaymentsArray());
+
+            } catch (Exception $e) {
+                print $e->getMessage();
+            }
+        }
+    }
+
+    /**
+     * Call a helper to send an email with PagSeguroTransaction resume link
+     */
+    public function doAbandonedAction()
+    {
+        $this->builder();
+        if ($this->getRequest()->getPost('data')) {
+            foreach ($this->getRequest()->getPost('data') as $data) {
+                $this->abandoned->sendAbandonedEmail($data['id'], $data['recovery']);
+            }
+        }
+
+        $this->doPostAction();
+    }
+
+    /**
+     * Initializes helpers and instance vars.
+     */
+    private function builder()
+    {
+        $this->abandoned = Mage::helper('pagseguro/abandoned');
+        $this->log = Mage::helper('pagseguro/log');
+        if ($this->getRequest()->getPost('days')) {
+            $this->days = $this->getRequest()->getPost('days');
+        }
     }
 }

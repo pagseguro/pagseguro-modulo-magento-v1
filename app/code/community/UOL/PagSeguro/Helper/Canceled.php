@@ -23,74 +23,256 @@ use UOL_PagSeguro_Helper_Data as HelperData;
 class UOL_PagSeguro_Helper_Canceled extends HelperData
 {
     /**
-     * Creates the complete array with the necessary information for the table
-     * @param int $orderId - Id of order of Magento
-     * @param string $paymentCode - Transaction code of PagSeguro
-     * @param int $paymentStatus - Status of payment of PagSeguro
-     * @method array $this->arrayPayments - Set the complete array with the necessary information for the table
+     * @var int
      */
-    public function createArrayPayments($orderId, $paymentCode, $paymentStatus)
+    private $days;
+    
+    /**
+     * @var Array
+     */
+    private $magentoPaymentList;
+    
+    /**
+     * @var Array
+     */
+    private $PagSeguroPaymentList;
+    
+    /**
+     * @var Array
+     */
+    protected $arrayPayments;
+    
+    /**
+     * Executes the essentials functions for this helper
+     * @param $days
+     */
+    public function initialize($days)
     {
-        // Receives the object of order that was entered the id
-        $order = Mage::getModel('sales/order')->load($orderId);
+        $this->days = $days;
+        $this->getPagSeguroPayments();
+        $this->getMagentoPayments();
+        $this->requestTransactionsToCancel();
+    }
+    
+    /**
+     * Returns payment array
+     * @return mixed $this->arrayPayment
+     */
+    public function getPaymentsArray()
+    {
+        return $this->arrayPayments;
+    }
+    
+    /**
+     * Get magento orders in a date range.
+     */
+    protected function getMagentoPayments()
+    {
+        $date = new DateTime(date("Y-m-d H:i:s"));
+        $date->setTimezone(new DateTimeZone("America/Sao_Paulo"));
+        $dateInterval = "P".(String)$this->days."D";
+        $date->sub(new DateInterval($dateInterval));
 
-        // Receives the status already converted and translated of order of Magento
-        $statusMagento = strtolower($this->getPaymentStatusMagento($this->__(ucfirst($order->getStatus()))));
+        $collection = Mage::getModel('sales/order')->getCollection()
+            ->addAttributeToFilter('created_at', array('from'=>$date->date, 'to'=>date('Y-m-d H:i:s')));
 
-        // Receives the status of the transaction PagSeguro already converted
-        $statusPagSeguro = strtolower($this->getPaymentStatusPagSeguro($paymentStatus));
-
-        if ($paymentStatus == 1 || $paymentStatus == 2) {
-            // Receives the creation date of the application which is converted to the format d/m/Y
-            $dateOrder = $this->getOrderMagetoDateConvert($order->getCreatedAt());
-
-            // Receives the number of order
-            $idMagento = '#' . $order->getIncrementId();
-
-            // Receives the transaction code of PagSeguro
-            $idPagSeguro = $paymentCode;
-
-            // Receives the parameter used to update an order
-            $config = $order->getId() .'/'. $idPagSeguro .'/'. $this->getPaymentStatusPagSeguro($paymentStatus, true);
-
-            // If the order is not reconciled, show a warning
-            $alertConciliation = $this->alertConciliation($this->__('cancelar'));
-
-            if ($statusMagento == $statusPagSeguro) {
-                $config = "class='action' data-config='" . $config . "'";
-            } else {
-                $config = " onclick='Modal.alertConciliation(&#34;" . $alertConciliation . "&#34;)'";
-            }
-
-            // Receives the url edit order it from your id
-            $editUrl = $this->getEditOrderUrl($orderId);
-            $textEdit = $this->__('Ver detalhes');
-
-            // Receives the full html link to edit and action an order
-            $actionOrder .= "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($orderId) . "'>";
-            $actionOrder .= $this->__('Ver detalhes') . "</a>";
-
-            $actionOrder .= "<a " . $config . " href='javascript:void(0)'>";
-            $actionOrder .= $this->__('Cancelar') . "</a>";
-
-            $array = array('date' => $dateOrder,
-                           'id_magento' => $idMagento,
-                           'id_pagseguro' => $idPagSeguro,
-                           'status_magento' => $statusMagento,
-                           'action' => $actionOrder);
-
-            $this->arrayPayments[] = $array;
+        foreach ($collection as $order) {
+            $this->magentoPaymentList[] = $order->getId();
         }
+    }
+    
+    /**
+     * Build a array with PagSeguroTransaction where status is cancelable
+     */
+    private function requestTransactionsToCancel()
+    {
+        foreach ($this->magentoPaymentList as $orderId) {
+            $orderHandler = Mage::getModel('sales/order')->load($orderId);
+
+            if (Mage::getStoreConfig('payment/pagseguro/environment')
+                    == strtolower(trim($this->getOrderEnvironment($orderId)))) {
+                if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
+                    if (Mage::getSingleton('core/session')->getData("store_id") == $orderHandler->getStoreId()) {
+                        if ($orderHandler->getStatus() == "em_analise_ps"
+                            or $orderHandler->getStatus() == 'aguardando_pagamento_ps'
+                        ) {
+                            $PagSeguroSummaryItem = $this->findPagSeguroTransactionByReference(
+                                $orderHandler->getEntityId()
+                            );
+
+                            if (!is_null($PagSeguroSummaryItem)) {
+                                $this->arrayPayments[] = $this->build($PagSeguroSummaryItem, $orderHandler);
+                            }
+                        }
+                    }
+                } elseif ($orderHandler) {
+                    if ($orderHandler->getStatus() == "em_analise_ps"
+                        or $orderHandler->getStatus() == 'aguardando_pagamento_ps'
+                    ) {
+                        $PagSeguroSummaryItem = $this->findPagSeguroTransactionByReference(
+                            $orderHandler->getEntityId()
+                        );
+
+                        if (!is_null($PagSeguroSummaryItem)) {
+                            $this->arrayPayments[] = $this->build($PagSeguroSummaryItem, $orderHandler);
+                        }
+                    }
+                }
+            }
+        }
+        Mage::getSingleton('core/session')->unsetData('store_id');
     }
 
     /**
-     * Get the full array with only the requests made ​​in Magento with PagSeguro
-     * @return array $this->arrayPayments - Returns an array with the necessary information to fill the table
+     * @param PagSeguroSummaryItem $PagSeguroSummaryItem
+     * @param Mage_Sales_Model_Order $order
+     * @return multitype:date string NULL Ambigous <boolean, string, string, multitype:>
      */
-    public function getArrayPayments()
+    public function build($PagSeguroSummaryItem, $order)
     {
-        $this->getMagentoPayments();
 
-        return $this->arrayPayments;
+        $PagSeguroStatusValue = $this->getPaymentStatusFromKey($PagSeguroSummaryItem->getStatus()->getValue());
+
+        if ($order->getStatus() == $PagSeguroStatusValue) {
+            $config = "class='action' data-config='" . $order->getId() .'/'. $PagSeguroSummaryItem->getCode() .'/'.
+                $this->getPaymentStatusFromKey($PagSeguroSummaryItem->getStatus()) . "'";
+        } else {
+            $config = " onclick='Modal.alertConciliation(&#34;"
+                . $this->alertConciliation($this->__('estornar')) . "&#34;)'";
+        }
+
+        $actionOrder = "<a class='edit' target='_blank' href='" . $this->getEditOrderUrl($order->getId()) . "'>";
+        $actionOrder .= $this->__('Ver detalhes') . "</a>";
+        $actionOrder .= "<a " . $config . " href='javascript:void(0)'>";
+        $actionOrder .= $this->__('Cancelar') . "</a>";
+
+        return array( 'date' => $this->getOrderMagetoDateConvert($order->getCreatedAt()),
+            'id_magento' => $order->getIncrementId(),
+            'id_pagseguro' => $PagSeguroSummaryItem->getCode(),
+            'status_magento' => $this->getPaymentStatusToString($this->getPaymentStatusFromValue($order->getStatus())),
+            'action' => $actionOrder);
+
+    }
+    
+    /**
+     * Get PagSeguroTransaction from webservice in a date range.
+     * @param null $page
+     */
+    private function getPagSeguroPayments($page = null)
+    {
+        if (is_null($page)) {
+            $page = 1;
+        }
+
+        $date = new DateTime(date("Y-m-d\TH:i:s"));
+        $date->setTimezone(new DateTimeZone("America/Sao_Paulo"));
+        $dateInterval = "P".(String)$this->days."D";
+        $date->sub(new DateInterval($dateInterval));
+
+        if (is_null($this->PagSeguroPaymentList)) {
+            $this->PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 20, $date);
+        } else {
+            $PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 20, $date);
+
+            $this->PagSeguroPaymentList->setDate($PagSeguroPaymentList->getDate());
+            $this->PagSeguroPaymentList->setCurrentPage($PagSeguroPaymentList->getCurrentPage());
+            $this->PagSeguroPaymentList->setTotalPages($PagSeguroPaymentList->getTotalPages());
+            $this->PagSeguroPaymentList->setResultsInThisPage(
+                $PagSeguroPaymentList->getResultsInThisPage() + $this->PagSeguroPaymentList->getResultsInThisPage
+            );
+
+            $this->PagSeguroPaymentList->setTransactions(
+                array_merge(
+                    $this->PagSeguroPaymentList->getTransactions(),
+                    $PagSeguroPaymentList->getTransactions()
+                )
+            );
+        }
+
+        if ($this->PagSeguroPaymentList->getTotalPages() > $page) {
+            $this->getPagSeguroPayments(++$page);
+        }
+    }
+    
+    /**
+     * Find a PagSeguroTransaction by referece
+     * @param $orderId
+     * @return mixed
+     */
+    private function findPagSeguroTransactionByReference($orderId)
+    {
+        foreach ($this->PagSeguroPaymentList->getTransactions() as $list) {
+            if ($this->getReferenceDecrypt($list->getReference()) == $this->getStoreReference()) {
+                if ($this->getReferenceDecryptOrderID($list->getReference()) == $orderId) {
+                    return $list;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Get order environment
+     * @param int $orderId
+     * @return string Order environment
+     */
+    private function getOrderEnvironment($orderId)
+    {
+        $reader = Mage::getSingleton("core/resource")->getConnection('core_read');
+        $table = Mage::getConfig()->getTablePrefix() . 'pagseguro_orders';
+
+        $query = "SELECT environment FROM ".$table." WHERE order_id = ".$orderId;
+
+        return $reader->fetchOne($query);
+
+    }
+    
+    /**
+     * Check config for access
+     * @return multitype:string boolean
+     */
+    private function checkAccess()
+    {
+        $paymentModel = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
+
+        if (!$paymentModel->getConfigData('email')) {
+            return array(
+                'message' => "Preencha o e-mail do vendedor",
+                'status' => false
+            );
+        }
+
+        if (!$paymentModel->getConfigData('token')) {
+            return array(
+                'message' => "Preencha o token.",
+                'status' => false
+            );
+        }
+
+        if (!Mage::getStoreConfig('uol_pagseguro/store/credentials')) {
+            return array(
+                'message' => "E-mail e/ou token inválido(s) para o ambiente selecionado.",
+                'status' => false
+            );
+        }
+
+        return array(
+            'message' => "",
+            'status' => true
+        );
+
+    }
+    
+    /**
+     * Check for access and set errors if exists.
+     */
+    public function checkViewAccess()
+    {
+        $access = $this->checkAccess();
+        if (!$access['status']) {
+            Mage::getSingleton('core/session')->addError($access['message']);
+            Mage::app()->getResponse()->setRedirect(
+                Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/')
+            );
+        }
     }
 }

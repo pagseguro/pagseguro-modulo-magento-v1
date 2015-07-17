@@ -22,8 +22,7 @@ limitations under the License.
 <?php
     $helper = Mage::helper('pagseguro/conciliation');
     $html   = Mage::helper('pagseguro/html');
-    $helper->checkTransactionAccess();
-    $_SESSION['days'] = 0;
+    $helper->checkViewAccess();
 ?>
 
 <div id="pagseguro-module">
@@ -35,10 +34,10 @@ limitations under the License.
                 <h2 class="title"><?php echo $helper->__('Conciliação'); ?></h2>
                 <p>
                     <?php
-                        $string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas. ';
-                        $string .= 'Ela pode ser usada periodicamente para verificar se o seu sistema recebeu todas as notificações ';
-                        $string .= 'de transações enviadas pelo PagSeguro, de forma a conciliar as transações armazenadas ';
-                        $string .= 'em seu sistema com o PagSeguro.';
+                        $string .= ' Com esta funcionalidade você poderá listar as transações realizadas em um
+                            determinado intervalo de datas. Ela pode ser usada periodicamente para verificar se o seu
+                            sistema recebeu todas as notificações enviadas pelo PagSeguro e, consequentemente,
+                            manter o status de suas transações sempre atualizados.';
                         echo $helper->__($string);
                      ?>
                 </p>
@@ -103,32 +102,32 @@ limitations under the License.
 
     var PageConciliation = new function(){
         var requestTransactions = function() {
-            var getDays = jQuery('#pagseguro-conciliation-days-input').find(":selected").text();
-            var converted = '';
 
             // calls the modal of loading
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_conciliation/doPost'); ?>",
                 type: "POST",
                 data: {
                         form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        days: getDays,
-                        origin: 'conciliation'
+                        days: jQuery('#pagseguro-conciliation-days-input').find(":selected").text()
                       },
-                success: function(result) {
-                    if (result == "[HTTP 401] - UNAUTHORIZED") {
-                        Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
+                success: function(xhrResult) {
+
+                    if (xhrResult == "[HTTP 401] - UNAUTHORIZED") {
+                        Modal.message('error', xhrResult);
                     } else {
                         // handle the return of ajax and dates back to table
-                        if (result == "run") {
+                        if (xhrResult == "false") {
+
                             jQuery('#conciliation-table').dataTable().fnClearTable(true);
-                            Modal.message('alert', "Não há transações para conciliação no período.");
+                            Modal.message('alert', "Sem resultados para o período solicitado.");
+
                         } else {
-                            converted = JSON.parse(result);
+
                             jQuery('#conciliation-table').dataTable().fnClearTable(true);
-                            jQuery('#conciliation-table').dataTable().fnAddData(converted);
+                            jQuery('#conciliation-table').dataTable().fnAddData(JSON.parse(xhrResult));
                             jQuery('#conciliation-table').dataTable()._fnInitComplete();
                             //After reassembling the table removes the modal of loading
                             Modal.hideLoading();
@@ -152,11 +151,11 @@ limitations under the License.
                 }
                 j++;
             });
+
             if (j == ckbFalse) {
-                jQuery('#messages').empty();
+
                 setMsgError("<?php echo $helper->__($noTransactionSelected); ?>");
             } else {
-                jQuery('#messages').empty();
 
                 var config = '';
                 var id = '';
@@ -177,52 +176,44 @@ limitations under the License.
                     }
                 });
 
-                var msg = '';
-
-                if (count == 1)
-                    msg = '<?php echo " " . $helper->__($transactionSuccess); ?>';
-                else
-                    msg = count + '<?php echo " " . $helper->__($transactionsSuccess); ?>';
-
-                var converted = '';
-
                 Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
                 jQuery.ajax({
-                    url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                    url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_conciliation/doConciliation'); ?>",
                     type: "POST",
                     data: {
                             form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                            json: jsonArr,
-                            origin: 'conciliation'
+                            data: jsonArr,
+                            days: jQuery('#pagseguro-conciliation-days-input').find(":selected").text()
                           },
-                    success: function(result) {
-                        i = 0;
+                    success: function(xhrResult) {
 
-                        // handle the return of ajax and dates back to table
-                        if (result == "run") {
+                        if (xhrResult == "false") {
                             jQuery('#conciliation-table').dataTable().fnClearTable(true);
-                            jQuery('#messages').empty();
+                            Modal.hideLoading();
                         } else {
-                            converted = JSON.parse(result);
 
-                            var oTable = jQuery('#conciliation-table').dataTable();
+                            jQuery('#conciliation-table').dataTable().fnClearTable(true);
+                            jQuery('#conciliation-table').dataTable().fnAddData(JSON.parse(xhrResult));
+                            jQuery('#conciliation-table').dataTable()._fnInitComplete();
 
-                            oTable.fnClearTable(false);
-                            oTable.fnAddData(converted, false);
-                            oTable.fnStandingRedraw();
-                            jQuery('#messages').empty();
+                            if (count == 1)
+                                msg = '<?php echo " " . $helper->__($transactionSuccess); ?>';
+                            else
+                                msg = count + '<?php echo " " . $helper->__($transactionsSuccess); ?>';
+
+                            Modal.message('success', msg);
                         }
 
                         jQuery(':checkbox').prop('checked','');
                         jQuery('#conciliation-button').prop("disabled", true);
 
-                        Modal.message('success', msg);
                     },
-                    error: function() {
+                    error: function(xhrError) {
+
                          Modal.message('error', 'Não foi possível realizar a conciliação.');
                     }
-                 });
+                });
             }
         }
 

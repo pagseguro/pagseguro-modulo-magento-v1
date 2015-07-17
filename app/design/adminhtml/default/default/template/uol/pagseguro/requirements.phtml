@@ -22,6 +22,7 @@ limitations under the License.
 <?php
     $helper = Mage::helper('pagseguro');
     $html   = Mage::helper('pagseguro/html');
+
 ?>
 
 <div id="pagseguro-module">
@@ -53,11 +54,10 @@ limitations under the License.
             var list = jQuery('.pagseguro-list');
 
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_requirements/doRequirements'); ?>",
                 type: "POST",
                 data: {
-                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        origin: 'requirements'
+                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>"
                       },
                 success: function(result) {
                     result = JSON.parse(result);

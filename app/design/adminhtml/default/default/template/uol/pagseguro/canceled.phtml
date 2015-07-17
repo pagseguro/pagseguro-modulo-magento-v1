@@ -22,8 +22,7 @@ limitations under the License.
 <?php
     $helper = Mage::helper('pagseguro/canceled');
     $html   = Mage::helper('pagseguro/html');
-    $helper->checkTransactionAccess();
-    $_SESSION['days'] = 0;
+    $helper->checkViewAccess();
 ?>
 
 <div id="pagseguro-module">
@@ -35,7 +34,9 @@ limitations under the License.
                 <h2 class="title"><?php echo $helper->__('Cancelamento'); ?></h2>
                 <p>
                     <?php
-                        $string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas.';
+                        $string .= 'Com esta funcionalidade você poderá listar e cancelar transações que ainda estão
+                            nos status “Em análise” e “Aguardando Pagamento”. É aconselhável que antes de usar esta
+                            funcionalidade você faça a conciliação de suas transações para obter os status mais atuais.';
                         echo $helper->__($string);
                      ?>
                 </p>
@@ -71,7 +72,7 @@ limitations under the License.
                 <?php
                     $noTransaction = 'Nenhum resultado.';
                     $canceledSuccess = $helper->__("Transação cancelada com sucesso!");
-                    $canceledError = $helper->__("Não foi possível cancelar a transação.");
+                    $canceledError = $helper->__("Não foi possível executar esta ação. <br /> Utilize a conciliação de transações primeiro ou tente novamente mais tarde.");
                 ?>
 
                 <div id="canceled-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
@@ -92,48 +93,50 @@ limitations under the License.
 
     var PageCanceled = new function(){
         var requestTransactions = function() {
-            var getDays = jQuery('#pagseguro-canceled-days-input').find(":selected").text();
-            var converted = '';
 
             // calls the modal of loading
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_canceled/doPost'); ?>",
                 type: "POST",
                 data: {
-                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        days: getDays,
-                        origin: 'canceled'
-                      },
-                success: function(result) {
-                    if (result == "[HTTP 401] - UNAUTHORIZED") {
-                        Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                    days: jQuery('#pagseguro-canceled-days-input').find(":selected").text()
+                },
+                success: function(xhrResult) {
+
+                    if (xhrResult == "[HTTP 401] - UNAUTHORIZED") {
+
+                        Modal.message('error', xhrResult);
                     } else {
-                        // handle the return of ajax and dates back to table
-                        if (result == "run") {
+
+                        // Ajax result handler and populates dataTable
+
+                        if (xhrResult == "false") {
+
                             jQuery('#canceled-table').dataTable().fnClearTable(true);
-                            Modal.message('alert', "Não há transações para cancelar no período.");
+                            Modal.message('alert', "Sem resultados para o período solicitado.");
+
                         } else {
-                            converted = JSON.parse(result);
+
                             jQuery('#canceled-table').dataTable().fnClearTable(true);
-                            jQuery('#canceled-table').dataTable().fnAddData(converted);
+                            jQuery('#canceled-table').dataTable().fnAddData(JSON.parse(xhrResult));
                             jQuery('#canceled-table').dataTable()._fnInitComplete();
                             //After reassembling the table removes the modal of loading
                             Modal.hideLoading();
+
                         }
                     }
                 },
-                error: function(err) {
-                    // Remove the modal of loading
-                    Modal.hideLoading();
+                error: function(xhrErr) {
+                    Modal.message('error', xhrErr);
                 }
             });
         }
         
         var doCanceled = function(config){
-        
-            jQuery('#messages').empty();
+
             var id = '';
             var code = '';
             var status = '';
@@ -146,36 +149,38 @@ limitations under the License.
                 status: config[2]
             });
 
-            var converted = '';
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
+
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_canceled/doCanceled'); ?>",
                 type: "POST",
                 data: {
-                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        json: jsonArr,
-                        origin: 'canceled'
-                      },
-                success: function(result) {
-                    i = 0;
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                    data: jsonArr,
+                    days: jQuery('#pagseguro-canceled-days-input').find(":selected").text()
+                },
+                success: function(xhrResult) {
 
-                    // handle the return of ajax and dates back to table
-                    if (result == "run") {
+                    if (xhrResult == "false") {
+
                         jQuery('#canceled-table').dataTable().fnClearTable(true);
-                        jQuery('#messages').empty();
-                    } else {
-                        converted = JSON.parse(result);
-                        var oTable = jQuery('#canceled-table').dataTable();
-                        oTable.fnClearTable(false);
-                        oTable.fnAddData(converted, false);
-                        oTable.fnStandingRedraw();
-                        jQuery('#messages').empty();
-                    }
+                        Modal.message('success', '<?php echo $canceledSuccess; ?>');
 
-                    Modal.message('success', '<?php echo $canceledSuccess; ?>');
+                    } else if (xhrResult == "error") {
+
+                        jQuery('#canceled-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
+
+                    }else {
+                        var oTable = jQuery('#canceled-table').dataTable();
+                        oTable.fnClearTable(true);
+                        oTable.fnAddData(JSON.parse(xhrResult), true);
+                        oTable.fnStandingRedraw();
+                        Modal.message('success', '<?php echo $canceledSuccess; ?>');
+                    }
                 },
                 error: function() {
-                     Modal.message('error', '<?php echo $canceledError; ?>');
+                    Modal.message('error', '<?php echo $canceledError; ?>');
                 }
             });
         };
@@ -254,17 +259,6 @@ limitations under the License.
                         } );
                     }
 
-                    //Checkbox enable | disable
-                    jQuery('#canceled-table tbody input:checkbox').change(function(){
-                        var isChecked = jQuery("#canceled-table tbody :checked").length;
-
-                        if (isChecked > 0) {
-                            jQuery('#conciliation-button').prop("disabled", false);
-                        } else {
-                            jQuery('#conciliation-button').prop("disabled", true);
-                        }
-                    });
-
                     // Only if greater than 10 records show paging
                     if (totalRows > 10) {
                         jQuery('.dataTables_paginate').css('display','block');
@@ -321,8 +315,8 @@ limitations under the License.
             jQuery('#canceled-table').on('click', 'a.action', function(e) {
             
                 var cancel = jQuery(this);
-                
-                Modal.confirm('Deseja realizar o cancelamento?');
+
+                Modal.confirm('Não será possível reverter esta ação. \nDeseja continuar?');
                 
                 jQuery('.pagseguro-confirm-button').on('click', function(target) {
                     if (target.currentTarget.id == 'accept') {

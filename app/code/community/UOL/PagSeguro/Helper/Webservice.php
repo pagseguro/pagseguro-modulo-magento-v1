@@ -22,11 +22,35 @@ use UOL_PagSeguro_Helper_Data as HelperData;
 
 class UOL_PagSeguro_Helper_Webservice extends HelperData
 {
+    /**
+     * @var PagSeguroAccountCredentials
+     */
     private $credentials;
-    private $service;
+    
+    /**
+     * @var PagSeguroTransactionSearchService
+     */
+    private $searchService;
+    
+    /**
+     * @var PagSeguroCancelService
+     */
     private $cancelService;
+    
+    /**
+     * @var PagSeguroRefundService
+     */
     private $refundService;
+    
+    /**
+     * @var PagSeguroNotificationService
+     */
     private $notificationService;
+    
+    /**
+     * @var unknown
+     */
+    private $initialDate;
 
     /**
      * Construct
@@ -34,8 +58,8 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
     public function __construct()
     {
         include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        $this->credentials = $this->requestPaymentMethod()->getCredentialsInformation();
-        $this->service = new PagSeguroTransactionSearchService();
+        $this->credentials = $this->paymentModel()->getCredentialsInformation();
+        $this->searchService = new PagSeguroTransactionSearchService();
         $this->cancelService = new PagSeguroCancelService();
         $this->refundService = new PagSeguroRefundService();
         $this->notificationService = new PagSeguroNotificationService();
@@ -50,31 +74,31 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
     {
         try {
             if ($class == 'UOL_PagSeguro_Helper_Canceled') {
-                $response = $this->cancelService->createRequest($this->credentials, $transactionCode);
-            } elseif ($class == 'UOL_PagSeguro_Helper_Refund') {
-                $response = $this->refundService->createRefundRequest($this->credentials, $transactionCode);
+                return $this->cancelService->createRequest($this->credentials, $transactionCode);
+            } elseif ($class == 'UOL_PagSeguro_Adminhtml_RefundController') {
+                return $this->refundService->createRefundRequest($this->credentials, $transactionCode);
             } elseif ($class == 'UOL_PagSeguro_Model_NotificationMethod') {
-                $response = $this->notificationService->checkTransaction($this->credentials, $transactionCode);
+                return $this->notificationService->checkTransaction($this->credentials, $transactionCode);
             }
 
-            return $response;
         } catch (PagSeguroServiceException $e) {
             throw new Exception($e->getMessage());
         }
     }
-    
+
     /**
      * Get a list with abandoned transactions
+     * @throws Exception
      */
     public function getPagSeguroAbandonedList()
     {
         $this->initialDate = $this->getDateSubtracted($this->days);
 
         try {
-            $response = $this->service->searchAbandoned($this->credentials, 1, 1000, $this->getInitialDate());
-            $transactions = $response->getTransactions();
+            $response = $this->searchService->searchAbandoned($this->credentials, 1, 1000, $this->getInitialDate());
 
-            return $transactions;
+            return  $response->getTransactions();
+
         } catch (PagSeguroServiceException $e) {
             if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
                 throw new Exception($e->getMessage());
@@ -90,20 +114,74 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
      */
     public function getTransactionService($type, $page, $nRecords)
     {
+
         try {
-            $initialDate = $this->getInitialDate();
-            $finalDate   = $this->getFinalDate();
-            $credentials = $this->credentials;
-
             if ($type == 'searchByDate') {
-                $response = $this->service->searchByDate($credentials, $page, $nRecords, $initialDate, $finalDate);
+                return $this->searchService->searchByDate(
+                    $this->credentials,
+                    $page,
+                    $nRecords,
+                    $this->getInitialDate()
+                );
             }
-
-            return $response;
         } catch (PagSeguroServiceException $e) {
             if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
                 throw new Exception($e->getMessage());
             }
         }
+    }
+
+    /**
+     * Request abandoned PagSeguroTransactions
+     * @param DateTime $initialDate
+     * @param string $page
+     * @param string $resultsInPage
+     * @return PagSeguroTransactionSearchResult
+     */
+    public function abandonedRequest($initialDate, $page = null, $resultsInPage = null)
+    {
+        if (is_null($page)) {
+            $page = 1;
+        }
+        if (is_null($resultsInPage)) {
+            $resultsInPage = 1000;
+        }
+
+        return $this->searchService->searchAbandoned($this->credentials, $page, $resultsInPage, $initialDate);
+    }
+
+    /**
+     * Request a PagSeguro refund
+     * @param string $transactionCode
+     * @return Ambigous <boolean, NULL, string, unknown>
+     */
+    public function refundRequest($transactionCode)
+    {
+        return $this->refundService->createRefundRequest($this->credentials, $transactionCode);
+    }
+
+    /**
+     * Request a PagSeguro cancel
+     * @param string $transactionCode
+     * @return Ambigous <boolean, NULL, string, unknown>
+     */
+    public function cancelRequest($transactionCode)
+    {
+        return $this->cancelService->createRequest($this->credentials, $transactionCode);
+    }
+
+    /**
+     * Request a list of  PagSeguraTransaction in a date range
+     * @param Integer $page
+     * @param Integer $maxPageResults
+     * @param DateTime $initialDate
+     * @return PagSeguroTransactionSearchResult
+     */
+    public function getTransactionsByDate(
+        Integer $page,
+        Integer $maxPageResults,
+        DateTime $initialDate
+    ) {
+        return $this->searchService->searchByDate($this->credentials, $page, $maxPageResults, $initialDate);
     }
 }

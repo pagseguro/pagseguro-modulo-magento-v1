@@ -22,8 +22,7 @@ limitations under the License.
 <?php
     $helper = Mage::helper('pagseguro/refund');
     $html   = Mage::helper('pagseguro/html');
-    $helper->checkTransactionAccess();
-    $_SESSION['days'] = 0;
+    $helper->checkViewAccess();
 ?>
 
 <div id="pagseguro-module">
@@ -35,7 +34,7 @@ limitations under the License.
                 <h2 class="title"><?php echo $helper->__('Estorno'); ?></h2>
                 <p>
                     <?php
-                        $string .= 'Esta consulta permite obter as transações recebidas por você em um intervalo de datas.';
+                        $string .= 'Com esta funcionalidade você poderá estornar os valores de transações que estejam nos status “Paga”, “Disponível” e “Em disputa”. É aconselhável que antes de usar esta funcionalidade você faça a conciliação de suas transações para obter os status mais atuais.';
                         echo $helper->__($string);
                      ?>
                 </p>
@@ -70,8 +69,8 @@ limitations under the License.
 
                 <?php
                     $noTransaction = 'Nenhum resultado.';
-                    $refundSuccess = $helper->__("Transação cancelada com sucesso!");
-                    $refundError = $helper->__("Não foi possível cancelar a transação.");
+                    $refundSuccess = $helper->__("Transação estornada com sucesso!");
+                    $refundError = $helper->__("Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.");
                 ?>
 
                 <div id="refund-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
@@ -92,41 +91,45 @@ limitations under the License.
 
     var PageRefund = new function(){
         var requestTransactions = function() {
-            var getDays = jQuery('#pagseguro-refund-days-input').find(":selected").text();
-            var converted = '';
 
-            // calls the modal of loading
+            // show loading modal
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_refund/doPost'); ?>",
                 type: "POST",
                 data: {
                         form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        days: getDays,
-                        origin: 'refund'
+                        days: jQuery('#pagseguro-refund-days-input').find(":selected").text()
                       },
-                success: function(result) {
-                    if (result == "[HTTP 401] - UNAUTHORIZED") {
-                        Modal.message('error', "[HTTP 401] - Usuário não autorizado.");
+                success: function(xhrResult) {
+
+                    if (xhrResult == "[HTTP 401] - UNAUTHORIZED") {
+
+                        Modal.message('error', xhrResult);
                     } else {
-                        // handle the return of ajax and dates back to table
-                        if (result == "run") {
+
+                        // Ajax result handler and populates dataTable
+
+                        if (xhrResult == "false") {
+
                             jQuery('#refund-table').dataTable().fnClearTable(true);
-                            Modal.message('alert', "Não há transações para cancelar no período.");
+                            Modal.message('alert', "Sem resultados para o período solicitado.");
+
                         } else {
-                            converted = JSON.parse(result);
+
                             jQuery('#refund-table').dataTable().fnClearTable(true);
-                            jQuery('#refund-table').dataTable().fnAddData(converted);
+                            jQuery('#refund-table').dataTable().fnAddData(JSON.parse(xhrResult));
                             jQuery('#refund-table').dataTable()._fnInitComplete();
                             //After reassembling the table removes the modal of loading
                             Modal.hideLoading();
+
                         }
                     }
+
                 },
-                error: function(err) {
-                    // Remove the modal of loading
-                    Modal.hideLoading();
+                error: function(xhrErr) {
+                    Modal.message('error', xhrErr);
                 }
             });
         }
@@ -145,30 +148,35 @@ limitations under the License.
                 status: config[2]
             });
 
-            var converted = '';
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_ajax'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_refund/doRefund'); ?>",
                 type: "POST",
                 data: {
                         form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        json: jsonArr,
-                        origin: 'refund'
+                        data: jsonArr,
+                        days: jQuery('#pagseguro-refund-days-input').find(":selected").text()
                       },
-                success: function(result) {
-                    i = 0;
+                success: function(xhrResult) {
 
-                    // handle the return of ajax and dates back to table
-                    if (result == "run") {
+                    if (xhrResult == "false") {
+
                         jQuery('#refund-table').dataTable().fnClearTable(true);
-                        jQuery('#messages').empty();
+                        Modal.message('alert', "Sem resultados para o período solicitado.");
+
+                    } else if (xhrResult == "error") {
+
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
+
                     } else {
-                        converted = JSON.parse(result);
-                        var oTable = jQuery('#refund-table').dataTable();
-                        oTable.fnClearTable(false);
-                        oTable.fnAddData(converted, false);
-                        oTable.fnStandingRedraw();
-                        jQuery('#messages').empty();
+
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        jQuery('#refund-table').dataTable().fnAddData(JSON.parse(xhrResult));
+                        jQuery('#refund-table').dataTable()._fnInitComplete();
+                        //After reassembling the table removes the modal of loading
+                        Modal.hideLoading();
+
                     }
 
                     Modal.message('success', '<?php echo $refundSuccess; ?>');
@@ -318,11 +326,11 @@ limitations under the License.
             });
 
             jQuery('#refund-table').on('click', 'a.action', function() {
-            
+
                 var refund = jQuery(this);
-                
-                Modal.confirm('Deseja realizar o estorno?');
-                
+
+                Modal.confirm('Não será possível reverter esta ação. Deseja continuar?');
+
                 jQuery('.pagseguro-confirm-button').on('click', function(target) {
                     if (target.currentTarget.id == 'accept') {
                         doRefund(refund.data('config'));
