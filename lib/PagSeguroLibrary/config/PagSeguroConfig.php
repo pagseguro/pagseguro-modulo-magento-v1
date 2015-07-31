@@ -23,7 +23,7 @@
 
 $PagSeguroConfig = array();
 
-$PagSeguroConfig['environment'] = "production"; // production, sandbox
+$PagSeguroConfig['environment'] = "sandbox"; // production, sandbox
 
 $PagSeguroConfig['credentials'] = array();
 $PagSeguroConfig['credentials']['email'] = "your_pagseguro_email";

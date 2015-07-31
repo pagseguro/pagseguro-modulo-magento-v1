@@ -322,10 +322,10 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
      */
     protected function alertConciliation($action)
     {
-        $msg  = $this->__('Não foi possível ' . $action . ' a transação.') . '<br />';
-        $msg .= $this->__('Utilize a conciliação de transações.');
-
-        return $msg;
+        $message = $this->__('Não foi possível executar esta ação. Utilize a conciliação de transações primeiro');
+        $message.= $this->__(' ou tente novamente mais tarde.');
+        
+        return $message;
     }
 
     /**
