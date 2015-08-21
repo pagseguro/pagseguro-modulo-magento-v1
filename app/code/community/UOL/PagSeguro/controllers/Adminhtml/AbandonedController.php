@@ -59,18 +59,23 @@ class UOL_PagSeguro_Adminhtml_AbandonedController extends Mage_Adminhtml_Control
         if ($this->days) {
             $this->log->setSearchTransactionLog(get_class($this->abandoned), $this->days);
 
-            $this->abandoned->initialize($this->days);
-
             try {
+
+                $this->abandoned->initialize($this->days);
+
                 if (!$this->abandoned->getPaymentsArray()) {
-                    print json_encode(false);
+                    print json_encode(array("status" => false));
                     exit();
                 }
 
                 print $this->abandoned->getTransactionGrid($this->abandoned->getPaymentsArray());
 
             } catch (Exception $e) {
-                print $e->getMessage();
+                print json_encode(array(
+                        "status" => false,
+                        "err" => trim($e->getMessage())
+                    )
+                );
             }
         }
     }

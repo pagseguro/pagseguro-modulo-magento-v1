@@ -68,7 +68,7 @@ class PagSeguroNotificationService
      */
     public static function checkTransaction(PagSeguroCredentials $credentials, $notificationCode)
     {
-
+   
         LogPagSeguro::info("PagSeguroNotificationService.CheckTransaction(notificationCode=$notificationCode) - begin");
         $connectionData = new PagSeguroConnectionData($credentials, self::SERVICE_NAME);
 

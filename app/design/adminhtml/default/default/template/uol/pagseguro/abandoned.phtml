@@ -110,7 +110,8 @@ limitations under the License.
         var defaultPage = 0;
 
         var onRequestTransactions = function(transactions, callback) {
-            if (transactions == "false") {
+
+            if (transactions.status == false) {
 
                 jQuery('#abandoned-transactions-table').dataTable().fnClearTable(true);
                 Modal.message('alert', "Sem resultados para o período solicitado.");
@@ -118,7 +119,7 @@ limitations under the License.
             } else {
                 var oTable = jQuery('#abandoned-transactions-table').dataTable();
                 oTable.fnClearTable(true);
-                oTable.fnAddData(JSON.parse(transactions), true);
+                oTable.fnAddData(transactions, true);
                 oTable.fnStandingRedraw();
 
                 if (typeof callback == 'function') {
@@ -142,14 +143,16 @@ limitations under the License.
                       },
                 success: function(xhrResult) {
 
-                    if (xhrResult == "[HTTP 401] - UNAUTHORIZED") {
-                        Modal.message('error', xhrResult);
+                    xhrResult = JSON.parse(xhrResult);
+
+                    if (xhrResult.status == false && xhrResult.err == "[HTTP 401] - UNAUTHORIZED") {
+                        Modal.message('error', "Não foi possível realizar a consulta.");
                     } else {
                         onRequestTransactions(xhrResult, callback);
                     }
                 },
                 error: function() {
-                    Modal.message('error', "Não foi possível obter os dados de transações abandonadas.");
+                    Modal.message('error', "Não foi possível realizar a consulta.");
                 }
              });
         };
@@ -167,9 +170,13 @@ limitations under the License.
                         days: jQuery('#pagseguro-daystorecovery-input').find(":selected").text()
                       },
                 success: function(result) {
-                    if (result == "false") {
 
-                        Modal.message('error', 'Não foi possível enviar o(s) e-mail(s).');
+                    result = JSON.parse(result);
+
+                    if (result == false) {
+
+                        //Modal.message('error', 'Não foi possível enviar o(s) e-mail(s).');
+                        Modal.message('error', result.err);
 
                     } else {
                         jQuery(':checkbox').prop('checked','');

@@ -57,18 +57,24 @@ class UOL_PagSeguro_Adminhtml_CanceledController extends Mage_Adminhtml_Controll
         if ($this->days) {
             $this->log->setSearchTransactionLog(get_class($this->canceled), $this->days);
 
-            $this->canceled->initialize($this->days);
-
             try {
+
+                $this->canceled->initialize($this->days);
+
                 if (!$this->canceled->getPaymentsArray()) {
-                    print json_encode(false);
+                    print json_encode(array("status" => false));
                     exit();
                 }
 
                 print $this->canceled->getTransactionGrid($this->canceled->getPaymentsArray());
 
             } catch (Exception $e) {
-                print $e->getMessage();
+
+                print json_encode(array(
+                        "status" => false,
+                        "err" => trim($e->getMessage())
+                    )
+                );
             }
         }
     }
@@ -88,7 +94,10 @@ class UOL_PagSeguro_Adminhtml_CanceledController extends Mage_Adminhtml_Controll
             exit();
         }
 
-        print json_encode('error');
+        print json_encode(array(
+            "status" => false, 
+            "err" => true)
+        );
         exit();
     }
     

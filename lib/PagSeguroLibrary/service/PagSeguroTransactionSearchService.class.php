@@ -84,7 +84,7 @@ class PagSeguroTransactionSearchService
         }
 
         return "{$url}/abandoned/?" . $connectionData->getCredentialsUrlQuery() .
-            "&initialDate={$initialDate}&finalDate={$finalDate}{$page}{$maxPageResults}";
+            "&initialDate={$initialDate}{$finalDate}{$page}{$maxPageResults}";
     }
 
     /**

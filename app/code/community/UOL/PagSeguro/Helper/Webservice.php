@@ -148,6 +148,7 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
         }
 
         return $this->searchService->searchAbandoned($this->credentials, $page, $resultsInPage, $initialDate);
+
     }
 
     /**
@@ -183,5 +184,15 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
         DateTime $initialDate
     ) {
         return $this->searchService->searchByDate($this->credentials, $page, $maxPageResults, $initialDate);
+    }
+
+    /**
+     * Request a list of  PagSeguraTransaction by notificationCode
+     * @param String $transactionCode
+     * @return PagSeguroTransactionSearchResult
+     */
+    public function getNotification($transactionCode)
+    {
+        return $this->notificationService->checkTransaction($this->credentials, $transactionCode);
     }
 }

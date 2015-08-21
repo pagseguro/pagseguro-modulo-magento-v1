@@ -131,33 +131,40 @@ class UOL_PagSeguro_Helper_Conciliation extends UOL_PagSeguro_Helper_Data
             $page = 1;
         }
 
-        $date = new DateTime(date("Y-m-d\TH:i:s"));
-        $date->setTimezone(new DateTimeZone("America/Sao_Paulo"));
-        $dateInterval = "P".(String)$this->days."D";
-        $date->sub(new DateInterval($dateInterval));
+        $date = new DateTime ( "now" );
+        $date->setTimezone ( new DateTimeZone ( "America/Sao_Paulo" ) );
+        $dateInterval = "P" . ( string ) $this->days . "D";
+        $date->sub ( new DateInterval ( $dateInterval ) );
+        $date->setTime ( 00, 00, 00 );
+        $date = $date->format ( "Y-m-d\TH:i:s" );
 
-        if (is_null($this->PagSeguroPaymentList)) {
-            $this->PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 20, $date);
-        } else {
-            $PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 20, $date);
+        try {
 
-            $this->PagSeguroPaymentList->setDate($PagSeguroPaymentList->getDate());
-            $this->PagSeguroPaymentList->setCurrentPage($PagSeguroPaymentList->getCurrentPage());
-            $this->PagSeguroPaymentList->setTotalPages($PagSeguroPaymentList->getTotalPages());
-            $this->PagSeguroPaymentList->setResultsInThisPage(
-                $PagSeguroPaymentList->getResultsInThisPage() + $this->PagSeguroPaymentList->getResultsInThisPage
-            );
+            if (is_null($this->PagSeguroPaymentList)) {
+                $this->PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 1000, $date);
+            } else {
+                $PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 1000, $date);
 
-            $this->PagSeguroPaymentList->setTransactions(
-                array_merge(
-                    $this->PagSeguroPaymentList->getTransactions(),
-                    $PagSeguroPaymentList->getTransactions()
-                )
-            );
-        }
+                $this->PagSeguroPaymentList->setDate($PagSeguroPaymentList->getDate());
+                $this->PagSeguroPaymentList->setCurrentPage($PagSeguroPaymentList->getCurrentPage());
+                $this->PagSeguroPaymentList->setTotalPages($PagSeguroPaymentList->getTotalPages());
+                $this->PagSeguroPaymentList->setResultsInThisPage(
+                    $PagSeguroPaymentList->getResultsInThisPage() + $this->PagSeguroPaymentList->getResultsInThisPage
+                );
 
-        if ($this->PagSeguroPaymentList->getTotalPages() > $page) {
-            $this->getPagSeguroPayments(++$page);
+                $this->PagSeguroPaymentList->setTransactions(
+                    array_merge(
+                        $this->PagSeguroPaymentList->getTransactions(),
+                        $PagSeguroPaymentList->getTransactions()
+                    )
+                );
+            }
+
+            if ($this->PagSeguroPaymentList->getTotalPages() > $page) {
+                $this->getPagSeguroPayments(++$page);
+            }
+        } catch (Exception $pse) {
+            throw $pse;     
         }
     }
 

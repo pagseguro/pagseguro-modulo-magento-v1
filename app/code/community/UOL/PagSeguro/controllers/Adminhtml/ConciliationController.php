@@ -58,18 +58,24 @@ class UOL_PagSeguro_Adminhtml_ConciliationController extends Mage_Adminhtml_Cont
         if ($this->days) {
             $this->log->setSearchTransactionLog(get_class($this->conciliation), $this->days);
 
-            $this->conciliation->initialize($this->days);
-
             try {
+
+                 $this->conciliation->initialize($this->days);
+
                 if (!$this->conciliation->getPaymentsArray()) {
-                    print json_encode(false);
+                    print json_encode(array("status" => false));
                     exit();
                 }
 
                 print $this->conciliation->getTransactionGrid($this->conciliation->getPaymentsArray());
 
             } catch (Exception $e) {
-                print $e->getMessage();
+
+                print json_encode(array(
+                        "status" => false,
+                        "err" => trim($e->getMessage())
+                    )
+                );
             }
         }
     }

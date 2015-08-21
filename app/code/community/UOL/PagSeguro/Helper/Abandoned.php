@@ -138,33 +138,40 @@ class UOL_PagSeguro_Helper_Abandoned extends UOL_PagSeguro_Helper_Data
             $page = 1;
         }
 
-        $date = new DateTime(date("Y-m-d\TH:i:s"));
-        $date->setTimezone(new DateTimeZone("America/Sao_Paulo"));
-        $dateInterval = "P".(String)$this->days."D";
-        $date->sub(new DateInterval($dateInterval));
+        $date = new DateTime ( "now" );
+        $date->setTimezone ( new DateTimeZone ( "America/Sao_Paulo" ) );
+        $dateInterval = "P" . ( string ) $this->days . "D";
+        $date->sub ( new DateInterval ( $dateInterval ) );
+        $date->setTime ( 00, 00, 00 );
+        $date = $date->format ( "Y-m-d\TH:i:s" );
 
-        if (is_null($this->PagSeguroAbandonedPaymentList)) {
-            $this->PagSeguroAbandonedPaymentList = Mage::helper('pagseguro/webservice')->abandonedRequest($date);
-        } else {
-            $PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->abandonedRequest($date, $page);
+        try {
 
-            $this->PagSeguroAbandonedPaymentList->setDate($PagSeguroPaymentList->getDate());
-            $this->PagSeguroAbandonedPaymentList->setCurrentPage($PagSeguroPaymentList->getCurrentPage());
-            $this->PagSeguroAbandonedPaymentList->setTotalPages($PagSeguroPaymentList->getTotalPages());
-            $totalResults = $PagSeguroPaymentList->getResultsInThisPage()
-                + $this->PagSeguroAbandonedPaymentList->getResultsInThisPage;
-            $this->PagSeguroAbandonedPaymentList->setResultsInThisPage($totalResults);
+            if (is_null($this->PagSeguroAbandonedPaymentList)) {
+                $this->PagSeguroAbandonedPaymentList = Mage::helper('pagseguro/webservice')->abandonedRequest($date);
+            } else {
+                $PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->abandonedRequest($date, $page);
 
-            $this->PagSeguroAbandonedPaymentList->setTransactions(
-                array_merge(
-                    $this->PagSeguroAbandonedPaymentList->getTransactions(),
-                    $PagSeguroPaymentList->getTransactions()
-                )
-            );
-        }
+                $this->PagSeguroAbandonedPaymentList->setDate($PagSeguroPaymentList->getDate());
+                $this->PagSeguroAbandonedPaymentList->setCurrentPage($PagSeguroPaymentList->getCurrentPage());
+                $this->PagSeguroAbandonedPaymentList->setTotalPages($PagSeguroPaymentList->getTotalPages());
+                $totalResults = $PagSeguroPaymentList->getResultsInThisPage()
+                    + $this->PagSeguroAbandonedPaymentList->getResultsInThisPage;
+                $this->PagSeguroAbandonedPaymentList->setResultsInThisPage($totalResults);
 
-        if ($this->PagSeguroAbandonedPaymentList->getTotalPages() > $page) {
-            $this->getPagSeguroAbandonedPayments(++$page);
+                $this->PagSeguroAbandonedPaymentList->setTransactions(
+                    array_merge(
+                        $this->PagSeguroAbandonedPaymentList->getTransactions(),
+                        $PagSeguroPaymentList->getTransactions()
+                    )
+                );
+            }
+
+            if ($this->PagSeguroAbandonedPaymentList->getTotalPages() > $page) {
+                $this->getPagSeguroAbandonedPayments(++$page);
+            }
+        } catch (Exception $pse) {
+            throw $pse;
         }
     }
 
@@ -333,27 +340,6 @@ class UOL_PagSeguro_Helper_Abandoned extends UOL_PagSeguro_Helper_Data
                 'status' => false
             );
 
-        }
-
-        if (!Mage::getStoreConfig('uol_pagseguro/store/credentials')) {
-            return array(
-                'message' => "E-mail e/ou token inválido(s) para o ambiente selecionado.",
-                'status' => false
-            );
-        }
-
-        if (!$paymentModel->getConfigData('email')) {
-            return array(
-                'message' => "Preencha o e-mail do vendedor",
-                'status' => false
-            );
-        }
-
-        if (!$paymentModel->getConfigData('token')) {
-            return array(
-                'message' => "Preencha o token.",
-                'status' => false
-            );
         }
 
         return array(

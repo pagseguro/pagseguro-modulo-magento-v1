@@ -22,7 +22,6 @@ limitations under the License.
 <?php
     $helper = Mage::helper('pagseguro/conciliation');
     $html   = Mage::helper('pagseguro/html');
-    $helper->checkViewAccess();
 ?>
 
 <div id="pagseguro-module">
@@ -72,7 +71,7 @@ limitations under the License.
                             <th width="30%"><?php echo $helper->__('ID PagSeguro');?></th>
                             <th width="17%"><?php echo $helper->__('Status Magento');?></th>
                             <th width="17%"><?php echo $helper->__('Status PagSeguro');?></th>
-                            <th width="11%"><?php echo $helper->__('Pedido');?></th>
+                            <th width="11%"><?php echo $helper->__('Ação');?></th>
                         </tr>
                     </thead>
                 </table>
@@ -115,11 +114,14 @@ limitations under the License.
                       },
                 success: function(xhrResult) {
 
-                    if (xhrResult == "[HTTP 401] - UNAUTHORIZED") {
-                        Modal.message('error', xhrResult);
+                    xhrResult = JSON.parse(xhrResult);
+
+                    if (xhrResult.status == false && xhrResult.err == "[HTTP 401] - UNAUTHORIZED") {
+
+                        Modal.message('error', "Não foi possível realizar a consulta.");
                     } else {
                         // handle the return of ajax and dates back to table
-                        if (xhrResult == "false") {
+                        if (xhrResult.status == false) {
 
                             jQuery('#conciliation-table').dataTable().fnClearTable(true);
                             Modal.message('alert', "Sem resultados para o período solicitado.");
@@ -127,7 +129,7 @@ limitations under the License.
                         } else {
 
                             jQuery('#conciliation-table').dataTable().fnClearTable(true);
-                            jQuery('#conciliation-table').dataTable().fnAddData(JSON.parse(xhrResult));
+                            jQuery('#conciliation-table').dataTable().fnAddData(xhrResult);
                             jQuery('#conciliation-table').dataTable()._fnInitComplete();
                             //After reassembling the table removes the modal of loading
                             Modal.hideLoading();
@@ -188,13 +190,26 @@ limitations under the License.
                           },
                     success: function(xhrResult) {
 
-                        if (xhrResult == "false") {
-                            jQuery('#conciliation-table').dataTable().fnClearTable(true);
-                            Modal.hideLoading();
+                        xhrResult = JSON.parse(xhrResult);
+
+                        if (xhrResult.status == false && xhrResult.err == true) {
+                        
+                            jQuery('#canceled-table').dataTable().fnClearTable(true);
+                            Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
+                        } else if (xhrResult.status == false) {
+
+                            jQuery('#conciliation-table').dataTable().fnClearTable(true); 
+                            
+                            if (count == 1)
+                                msg = '<?php echo " " . $helper->__($transactionSuccess); ?>';
+                            else
+                                msg = count + '<?php echo " " . $helper->__($transactionsSuccess); ?>';
+
+                            Modal.message('success', msg);
                         } else {
 
                             jQuery('#conciliation-table').dataTable().fnClearTable(true);
-                            jQuery('#conciliation-table').dataTable().fnAddData(JSON.parse(xhrResult));
+                            jQuery('#conciliation-table').dataTable().fnAddData(xhrResult);
                             jQuery('#conciliation-table').dataTable()._fnInitComplete();
 
                             if (count == 1)

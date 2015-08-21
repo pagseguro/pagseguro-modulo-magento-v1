@@ -58,8 +58,25 @@ class UOL_PagSeguro_Helper_Log extends HelperData
         $module = ' [Info] PagSeguro' . $option . '.';
 
         // Sentence of log
-        $phrase  = "Searched( '" . $days . " days - Range of dates ";
+        $phrase  = "Search( '" . $days . " days - Range of dates ";
         $phrase .= $initialDate . " until " . date("d/m/Y H:i:s") . "' )";
+
+        // Creating the update log order
+        $this->setLog($phrase, $module);
+    }
+
+    /**
+     * Creating log for search transations
+     * @param string $class - Represents a transaction service type
+     * @param int $days - Range of days to search
+     */
+    public function setInitialDateSearchTransactionLog($initialDate)
+    {
+        $option = end(explode('_', $class));
+        $module = ' [Info] PagSeguro' . $option . '.';
+
+        // Sentence of log
+        $phrase  = "Searched.InitialDate(".$initialDate.")";
 
         // Creating the update log order
         $this->setLog($phrase, $module);

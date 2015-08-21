@@ -22,7 +22,6 @@ limitations under the License.
 <?php
     $helper = Mage::helper('pagseguro/refund');
     $html   = Mage::helper('pagseguro/html');
-    $helper->checkViewAccess();
 ?>
 
 <div id="pagseguro-module">
@@ -104,14 +103,17 @@ limitations under the License.
                       },
                 success: function(xhrResult) {
 
-                    if (xhrResult == "[HTTP 401] - UNAUTHORIZED") {
+                    xhrResult = JSON.parse(xhrResult);
 
-                        Modal.message('error', xhrResult);
+                    if (xhrResult.status == false && xhrResult.err == "[HTTP 401] - UNAUTHORIZED") {
+
+                        Modal.message('error', "Não foi possível realizar a consulta.");
+
                     } else {
 
                         // Ajax result handler and populates dataTable
 
-                        if (xhrResult == "false") {
+                        if (xhrResult.status == false) {
 
                             jQuery('#refund-table').dataTable().fnClearTable(true);
                             Modal.message('alert', "Sem resultados para o período solicitado.");
@@ -119,7 +121,7 @@ limitations under the License.
                         } else {
 
                             jQuery('#refund-table').dataTable().fnClearTable(true);
-                            jQuery('#refund-table').dataTable().fnAddData(JSON.parse(xhrResult));
+                            jQuery('#refund-table').dataTable().fnAddData(xhrResult);
                             jQuery('#refund-table').dataTable()._fnInitComplete();
                             //After reassembling the table removes the modal of loading
                             Modal.hideLoading();
@@ -159,24 +161,23 @@ limitations under the License.
                       },
                 success: function(xhrResult) {
 
-                    if (xhrResult == "false") {
+                    xhrResult = JSON.parse(xhrResult);
 
-                        jQuery('#refund-table').dataTable().fnClearTable(true);
-                        Modal.message('alert', "Sem resultados para o período solicitado.");
-
-                    } else if (xhrResult == "error") {
+                    if (xhrResult.status == false && xhrResult.err == true) {
 
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
-
-                    } else {
+                    } else if (xhrResult.status == false) {
 
                         jQuery('#refund-table').dataTable().fnClearTable(true);
-                        jQuery('#refund-table').dataTable().fnAddData(JSON.parse(xhrResult));
+                        Modal.message('alert', "Sem resultados para o período solicitado.");
+                    } else {
+                        console.log("?");
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        jQuery('#refund-table').dataTable().fnAddData(xhrResult);
                         jQuery('#refund-table').dataTable()._fnInitComplete();
                         //After reassembling the table removes the modal of loading
                         Modal.hideLoading();
-
                     }
 
                     Modal.message('success', '<?php echo $refundSuccess; ?>');

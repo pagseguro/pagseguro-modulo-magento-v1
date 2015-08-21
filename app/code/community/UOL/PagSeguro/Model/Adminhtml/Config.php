@@ -125,22 +125,6 @@ class UOL_PagSeguro_Model_Adminhtml_Config
                                 } else if (credentials == 0) {
 
                                     Modal.message("error", "' . $alertCredentials . '");
-                                } else {
-
-                                    email = jQuery("#payment_pagseguro_email").val();
-                                    if (!email) {
-                                        Modal.message("error", "' . $alertEmailToken . '");
-                                    }
-
-                                    token = jQuery("#payment_pagseguro_token").val();
-                                    if (!token) {
-                                        Modal.message("error", "' . $alertEmailToken . '");
-                                    }
-                                }
-
-                                if (email && token && credentials == 0) {
-
-                                   Modal.message("error", "' . $alertCredentials . '");
                                 }
                             }
 

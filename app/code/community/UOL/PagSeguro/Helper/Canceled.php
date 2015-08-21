@@ -68,10 +68,12 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
      */
     protected function getMagentoPayments()
     {
-        $date = new DateTime(date("Y-m-d H:i:s"));
-        $date->setTimezone(new DateTimeZone("America/Sao_Paulo"));
-        $dateInterval = "P".(String)$this->days."D";
-        $date->sub(new DateInterval($dateInterval));
+        $date = new DateTime ( "now" );
+        $date->setTimezone ( new DateTimeZone ( "America/Sao_Paulo" ) );
+        $dateInterval = "P" . ( string ) $this->days . "D";
+        $date->sub ( new DateInterval ( $dateInterval ) );
+        $date->setTime ( 00, 00, 00 );
+        $date = $date->format ( "Y-m-d\TH:i:s" );
 
         $collection = Mage::getModel('sales/order')->getCollection()
             ->addAttributeToFilter('created_at', array('from'=>$date->date, 'to'=>date('Y-m-d H:i:s')));
@@ -164,33 +166,39 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
             $page = 1;
         }
 
-        $date = new DateTime(date("Y-m-d\TH:i:s"));
-        $date->setTimezone(new DateTimeZone("America/Sao_Paulo"));
-        $dateInterval = "P".(String)$this->days."D";
-        $date->sub(new DateInterval($dateInterval));
+        $date = new DateTime ( "now" );
+        $date->setTimezone ( new DateTimeZone ( "America/Sao_Paulo" ) );
+        $dateInterval = "P" . ( string ) $this->days . "D";
+        $date->sub ( new DateInterval ( $dateInterval ) );
+        $date->setTime ( 00, 00, 00 );
+        $date = $date->format ( "Y-m-d\TH:i:s" );
 
-        if (is_null($this->PagSeguroPaymentList)) {
-            $this->PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 20, $date);
-        } else {
-            $PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 20, $date);
+        try {
+            if (is_null($this->PagSeguroPaymentList)) {
+                $this->PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 1000, $date);
+            } else {
+                $PagSeguroPaymentList = Mage::helper('pagseguro/webservice')->getTransactionsByDate($page, 1000, $date);
 
-            $this->PagSeguroPaymentList->setDate($PagSeguroPaymentList->getDate());
-            $this->PagSeguroPaymentList->setCurrentPage($PagSeguroPaymentList->getCurrentPage());
-            $this->PagSeguroPaymentList->setTotalPages($PagSeguroPaymentList->getTotalPages());
-            $this->PagSeguroPaymentList->setResultsInThisPage(
-                $PagSeguroPaymentList->getResultsInThisPage() + $this->PagSeguroPaymentList->getResultsInThisPage
-            );
+                $this->PagSeguroPaymentList->setDate($PagSeguroPaymentList->getDate());
+                $this->PagSeguroPaymentList->setCurrentPage($PagSeguroPaymentList->getCurrentPage());
+                $this->PagSeguroPaymentList->setTotalPages($PagSeguroPaymentList->getTotalPages());
+                $this->PagSeguroPaymentList->setResultsInThisPage(
+                    $PagSeguroPaymentList->getResultsInThisPage() + $this->PagSeguroPaymentList->getResultsInThisPage
+                );
 
-            $this->PagSeguroPaymentList->setTransactions(
-                array_merge(
-                    $this->PagSeguroPaymentList->getTransactions(),
-                    $PagSeguroPaymentList->getTransactions()
-                )
-            );
-        }
+                $this->PagSeguroPaymentList->setTransactions(
+                    array_merge(
+                        $this->PagSeguroPaymentList->getTransactions(),
+                        $PagSeguroPaymentList->getTransactions()
+                    )
+                );
+            }
 
-        if ($this->PagSeguroPaymentList->getTotalPages() > $page) {
-            $this->getPagSeguroPayments(++$page);
+            if ($this->PagSeguroPaymentList->getTotalPages() > $page) {
+                $this->getPagSeguroPayments(++$page);
+            }
+        } catch (Exception $pse) {
+            throw $pse;
         }
     }
     
@@ -224,55 +232,5 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
 
         return $reader->fetchOne($query);
 
-    }
-    
-    /**
-     * Check config for access
-     * @return multitype:string boolean
-     */
-    private function checkAccess()
-    {
-        $paymentModel = Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
-
-        if (!$paymentModel->getConfigData('email')) {
-            return array(
-                'message' => "Preencha o e-mail do vendedor",
-                'status' => false
-            );
-        }
-
-        if (!$paymentModel->getConfigData('token')) {
-            return array(
-                'message' => "Preencha o token.",
-                'status' => false
-            );
-        }
-
-        if (!Mage::getStoreConfig('uol_pagseguro/store/credentials')) {
-            return array(
-                'message' => "E-mail e/ou token inválido(s) para o ambiente selecionado.",
-                'status' => false
-            );
-        }
-
-        return array(
-            'message' => "",
-            'status' => true
-        );
-
-    }
-    
-    /**
-     * Check for access and set errors if exists.
-     */
-    public function checkViewAccess()
-    {
-        $access = $this->checkAccess();
-        if (!$access['status']) {
-            Mage::getSingleton('core/session')->addError($access['message']);
-            Mage::app()->getResponse()->setRedirect(
-                Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/')
-            );
-        }
     }
 }

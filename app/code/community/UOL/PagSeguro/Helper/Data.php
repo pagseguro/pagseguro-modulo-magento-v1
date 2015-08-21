@@ -388,6 +388,13 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     {
         $date = new DateTime(date("Y-m-d\TH:i:s"));
         $date->sub(new DateInterval("P1D"));
+        
+        $useCache = Mage::app()->useCache();
+
+        if ($useCache['config'])
+        {
+            Mage::app()->getCacheInstance()->flush();
+        } 
 
         try {
             $this->webserviceHelper()->getTransactionsByDate(1, 1, $date);

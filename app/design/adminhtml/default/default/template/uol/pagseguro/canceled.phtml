@@ -22,7 +22,6 @@ limitations under the License.
 <?php
     $helper = Mage::helper('pagseguro/canceled');
     $html   = Mage::helper('pagseguro/html');
-    $helper->checkViewAccess();
 ?>
 
 <div id="pagseguro-module">
@@ -106,14 +105,15 @@ limitations under the License.
                 },
                 success: function(xhrResult) {
 
-                    if (xhrResult == "[HTTP 401] - UNAUTHORIZED") {
+                    xhrResult = JSON.parse(xhrResult);
 
-                        Modal.message('error', xhrResult);
+                    if (xhrResult.status == false && xhrResult.err == "[HTTP 401] - UNAUTHORIZED") {
+
+                        Modal.message('error', "Não foi possível realizar a consulta.");
                     } else {
 
                         // Ajax result handler and populates dataTable
-
-                        if (xhrResult == "false") {
+                        if (xhrResult.status == false) {
 
                             jQuery('#canceled-table').dataTable().fnClearTable(true);
                             Modal.message('alert', "Sem resultados para o período solicitado.");
@@ -121,7 +121,7 @@ limitations under the License.
                         } else {
 
                             jQuery('#canceled-table').dataTable().fnClearTable(true);
-                            jQuery('#canceled-table').dataTable().fnAddData(JSON.parse(xhrResult));
+                            jQuery('#canceled-table').dataTable().fnAddData(xhrResult);
                             jQuery('#canceled-table').dataTable()._fnInitComplete();
                             //After reassembling the table removes the modal of loading
                             Modal.hideLoading();
@@ -161,20 +161,21 @@ limitations under the License.
                 },
                 success: function(xhrResult) {
 
-                    if (xhrResult == "false") {
+                    xhrResult = JSON.parse(xhrResult);
+
+                    if (xhrResult.status == false && xhrResult.err == true) {
+                        
+                        jQuery('#canceled-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
+                    } else if (xhrResult.status == false) {
 
                         jQuery('#canceled-table').dataTable().fnClearTable(true);
                         Modal.message('success', '<?php echo $canceledSuccess; ?>');
-
-                    } else if (xhrResult == "error") {
-
-                        jQuery('#canceled-table').dataTable().fnClearTable(true);
-                        Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
-
                     }else {
+
                         var oTable = jQuery('#canceled-table').dataTable();
                         oTable.fnClearTable(true);
-                        oTable.fnAddData(JSON.parse(xhrResult), true);
+                        oTable.fnAddData(xhrResult, true);
                         oTable.fnStandingRedraw();
                         Modal.message('success', '<?php echo $canceledSuccess; ?>');
                     }
