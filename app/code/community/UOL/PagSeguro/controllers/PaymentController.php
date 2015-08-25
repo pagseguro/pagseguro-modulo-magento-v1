@@ -64,7 +64,7 @@ class UOL_PagSeguro_PaymentController extends FrontAction
             $environment = PagSeguroConfig::getEnvironment();
 
             if ($environment == 'production') {
-                $environment = $helper->__("Produção");
+                $environment = $helper->__("Production");
             } else {
                 $environment = $helper->__("Sandbox ");
             }
