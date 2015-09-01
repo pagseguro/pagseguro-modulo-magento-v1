@@ -167,6 +167,9 @@ limitations under the License.
                         
                         jQuery('#canceled-table').dataTable().fnClearTable(true);
                         Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
+                    } else if (xhrResult.status == false && xhrResult.err == "[HTTP 403] - FORBIDDEN") {
+                        
+                        Modal.message('error', "Sua conta PagSeguro não tem permissão para realizar esta ação. Em caso de dúvidas acesse <a href='http://forum.pagseguro.uol.com.br' target='_blank'>http://forum.pagseguro.uol.com.br</a>");
                     } else if (xhrResult.status == false) {
 
                         jQuery('#canceled-table').dataTable().fnClearTable(true);

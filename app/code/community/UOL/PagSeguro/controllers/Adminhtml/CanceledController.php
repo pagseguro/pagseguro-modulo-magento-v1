@@ -86,8 +86,17 @@ class UOL_PagSeguro_Adminhtml_CanceledController extends Mage_Adminhtml_Controll
     {
         $this->builder();
         if ($this->getRequest()->getPost('data')) {
-            foreach ($this->getRequest()->getPost('data') as $data) {
+            
+            $data = current($this->getRequest()->getPost('data'));
+            try {
                 $this->canceled->updateOrderStatusMagento(get_class($this->canceled), $data['id'], $data['code']);
+            } catch (Exception $pse) {
+                
+                print json_encode(array(
+                    "status" => false, 
+                    "err" => trim($pse->getMessage()))
+                );
+                exit();
             }
 
             $this->doPostAction();

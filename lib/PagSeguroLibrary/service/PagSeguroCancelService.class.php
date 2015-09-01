@@ -56,7 +56,7 @@ class PagSeguroCancelService
 
         LogPagSeguro::info("PagSeguroCancelService.Register(".$transactionCode.") - begin");
         $connectionData = new PagSeguroConnectionData($credentials, self::SERVICE_NAME);
-
+        
         try {
 
            $connection = new PagSeguroHttpConnection();

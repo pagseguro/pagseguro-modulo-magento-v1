@@ -90,9 +90,10 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
     {
         foreach ($this->magentoPaymentList as $orderId) {
             $orderHandler = Mage::getModel('sales/order')->load($orderId);
-
+                
             if (Mage::getStoreConfig('payment/pagseguro/environment')
                     == strtolower(trim($this->getOrderEnvironment($orderId)))) {
+                
                 if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
                     if (Mage::getSingleton('core/session')->getData("store_id") == $orderHandler->getStoreId()) {
                         if ($orderHandler->getStatus() == "em_analise_ps"
@@ -230,7 +231,12 @@ class UOL_PagSeguro_Helper_Canceled extends HelperData
 
         $query = "SELECT environment FROM ".$table." WHERE order_id = ".$orderId;
 
-        return $reader->fetchOne($query);
+        if ($reader->fetchOne($query) == 'Produção')
+        {
+            return "production";
+        } else {
+            return $reader->fetchOne($query);
+        }
 
     }
 }

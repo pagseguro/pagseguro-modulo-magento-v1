@@ -415,25 +415,28 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     */
     public function updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus)
     {
-
-        if ($this->getLastStatusOrder($orderId) != $orderStatus) {
-            if ($class == self::CANCELED_CLASS) {
-                if ($this->webserviceHelper()->cancelRequest($transactionCode) == 'OK') {
-                    $orderStatus = 'cancelada_ps';
+        try {
+            if ($this->getLastStatusOrder($orderId) != $orderStatus) {
+                if ($class == self::CANCELED_CLASS) {
+                    if ($this->webserviceHelper()->cancelRequest($transactionCode) == 'OK') {
+                        $orderStatus = 'cancelada_ps';
+                    }
                 }
+
+                if ($class == self::REFUND_CLASS) {
+                    if ($this->webserviceHelper()->refundRequest($transactionCode) == 'OK') {
+                        $orderStatus = 'devolvida_ps';
+                    }
+                }
+
+                $this->notifyCustomer($orderId, $orderStatus);
+                Mage::helper('pagseguro/log')->setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus);
             }
 
-            if ($class == self::REFUND_CLASS) {
-                if ($this->webserviceHelper()->refundRequest($transactionCode) == 'OK') {
-                    $orderStatus = 'devolvida_ps';
-                }
-            }
-
-            $this->notifyCustomer($orderId, $orderStatus);
-            Mage::helper('pagseguro/log')->setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus);
+            $this->setTransactionRecord($orderId, $transactionCode);
+        } catch (Exception $pse) {
+            throw $pse;
         }
-
-        $this->setTransactionRecord($orderId, $transactionCode);
     }
     
     /**

@@ -221,7 +221,6 @@ class UOL_PagSeguro_Helper_Refund extends UOL_PagSeguro_Helper_Data
         }
     }
 
-
     /**
      * Get order environment
      * @param int $orderId
@@ -234,7 +233,11 @@ class UOL_PagSeguro_Helper_Refund extends UOL_PagSeguro_Helper_Data
 
         $query = "SELECT environment FROM ".$table." WHERE order_id = ".$orderId;
 
-        return $reader->fetchOne($query);
-
+        if ($reader->fetchOne($query) == 'Produção')
+        {
+            return "production";
+        } else {
+            return $reader->fetchOne($query);
+        }
     }
 }
