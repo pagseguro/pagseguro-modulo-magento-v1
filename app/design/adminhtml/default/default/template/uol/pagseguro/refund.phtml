@@ -175,15 +175,14 @@ limitations under the License.
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('alert', "Sem resultados para o período solicitado.");
                     } else {
-                        console.log("?");
+
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         jQuery('#refund-table').dataTable().fnAddData(xhrResult);
                         jQuery('#refund-table').dataTable()._fnInitComplete();
-                        //After reassembling the table removes the modal of loading
-                        Modal.hideLoading();
+                        Modal.message('success', '<?php echo $refundSuccess; ?>');
                     }
 
-                    Modal.message('success', '<?php echo $refundSuccess; ?>');
+                    
                 },
                 error: function() {
                      Modal.message('error', '<?php echo $refundError; ?>');

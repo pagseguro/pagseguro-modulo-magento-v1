@@ -88,8 +88,17 @@ class UOL_PagSeguro_Adminhtml_RefundController extends Mage_Adminhtml_Controller
     {
         $this->builder();
         if ($this->getRequest()->getPost('data')) {
-            foreach ($this->getRequest()->getPost('data') as $data) {
+            $data = current($this->getRequest()->getPost('data'));
+            
+            try {
                 $this->refund->updateOrderStatusMagento(get_class($this->refund), $data['id'], $data['code']);
+            } catch (Exception $pse) {
+                
+                print json_encode(array(
+                    "status" => false, 
+                    "err" => trim($pse->getMessage()))
+                );
+                exit();
             }
             
             $this->doPostAction();
