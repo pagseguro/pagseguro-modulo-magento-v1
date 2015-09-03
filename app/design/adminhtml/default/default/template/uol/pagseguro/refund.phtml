@@ -173,7 +173,7 @@ limitations under the License.
                     } else if (xhrResult.status == false) {
 
                         jQuery('#refund-table').dataTable().fnClearTable(true);
-                        Modal.message('alert', "Sem resultados para o período solicitado.");
+                        Modal.message('success', '<?php echo $refundSuccess; ?>');
                     } else {
 
                         jQuery('#refund-table').dataTable().fnClearTable(true);
