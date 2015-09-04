@@ -56,7 +56,7 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **transações -> abandonadas -> dias**: defina a quantidade máxima de dias em que a transação foi abandonada. Ex.: se você definir 8, então somente as transações abandonadas nos últimos 8 dias serão exibidas.
  - **transações -> cancelamento**: esta pesquisa retornará todas as transações que estejam com status "em análise" e "aguardando pagamento", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o cancelamento destas transações.
  - **transações -> cancelamento -> dias**: número de dias que devem ser considerados para a pesquisa.
- - **transações -> conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
+ - **transações -> conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30 dias. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
  - **transações -> conciliação -> dias**: número de dias que devem ser considerados para a pesquisa.
  - **transações -> estorno**: esta pesquisa retornará todas as transações que estejam com status "paga", "disponível" e "em disputa", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o estorno dos valores pagos para seus compradores.
  - **transações -> estorno -> dias**: número de dias que devem ser considerados para a pesquisa.
