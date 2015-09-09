@@ -51,11 +51,11 @@ class PagSeguroHelper
     public static function decimalFormat($value)
     {
         if (is_float($value)) {
-            $value = (float) $value;
-            $value = floor($value * 100) / 100;
-            $value = (string) number_format($value, 2, '.', '');
+            if (strcspn(strrev($value), '.') >= 3) {
+                $value = floor($value * 100) / 100;
+            }
         }
-        return $value;
+        return (string)number_format($value, 2, '.', '');
     }
 
     /***
