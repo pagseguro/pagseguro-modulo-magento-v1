@@ -52,10 +52,14 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **template de e-mail**: define qual o template de email sua loja usuará para o envio do email de recuperação de venda.
  - **oferecer desconto para ...**: ativa/desativa desconto para checkouts utilizando este meio de pagamento
  - **percentual de desconto**: define o percentual de desconto a ser concedido para o meio de pagamento escolhido
- - **conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
- - **dias**: número de dias que devem ser considerados para a pesquisa de conciliação.
- - **abandonadas**: permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar email-s de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
- - **dias**: defina a quantidade máxima de dias em que a transação foi abandonada. Ex.: se você definir 8, então somente as transações abandonadas nos últimos 8 dias serão exibidas.
+ - **transações -> abandonadas**: permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar email-s de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
+ - **transações -> abandonadas -> dias**: defina a quantidade máxima de dias em que a transação foi abandonada. Ex.: se você definir 8, então somente as transações abandonadas nos últimos 8 dias serão exibidas.
+ - **transações -> cancelamento**: esta pesquisa retornará todas as transações que estejam com status "em análise" e "aguardando pagamento", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o cancelamento destas transações.
+ - **transações -> cancelamento -> dias**: número de dias que devem ser considerados para a pesquisa.
+ - **transações -> conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30 dias. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
+ - **transações -> conciliação -> dias**: número de dias que devem ser considerados para a pesquisa.
+ - **transações -> estorno**: esta pesquisa retornará todas as transações que estejam com status "paga", "disponível" e "em disputa", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o estorno dos valores pagos para seus compradores.
+ - **transações -> estorno -> dias**: número de dias que devem ser considerados para a pesquisa.
  - **requisitos**: exibe se os pré-requisitos básicos para o correto funcionamento do módulo estão sendo atendidos
 
 
@@ -68,6 +72,12 @@ Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum].
 Changelog
 ---------
 ---
+2.7.0
+ - Possibilidade de consultar e solicitar o cancelamento de transações;
+ - Possibilidade de consultar e solicitar o estorno de transações;
+ - Ajustes em geral;
+ - Obs.: As funcionalidades descritas acima ainda não estão disponíveis comercialmente para todos os vendedores. Em caso de dúvidas acesse nosso [fórum].
+
 2.6.0
  - Possibilidade de definir descontos com base no meio de pagamento escolhido durante o checkout PagSeguro;
 
