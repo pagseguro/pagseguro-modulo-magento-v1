@@ -95,7 +95,7 @@ limitations under the License.
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_refund/doPost'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/pagseguro_refund/doPost'); ?>",
                 type: "POST",
                 data: {
                         form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
@@ -152,7 +152,7 @@ limitations under the License.
 
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_refund/doRefund'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/pagseguro_refund/doRefund'); ?>",
                 type: "POST",
                 data: {
                         form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",

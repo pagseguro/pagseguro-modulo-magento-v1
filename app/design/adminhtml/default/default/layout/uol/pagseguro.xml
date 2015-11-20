@@ -53,7 +53,7 @@ limitations under the License.
     <adminhtml_sales_order_index>
         <update handle="sales_order_grid_update_handle" />
     </adminhtml_sales_order_index>
-    <pagseguro_adminhtml_abandoned_index>
+    <adminhtml_pagseguro_abandoned_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
@@ -66,8 +66,8 @@ limitations under the License.
             <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
             <block type="adminhtml/template" name="abandoned" template="uol/pagseguro/abandoned.phtml"/>
         </reference>
-    </pagseguro_adminhtml_abandoned_index>
-    <pagseguro_adminhtml_canceled_index>
+    </adminhtml_pagseguro_abandoned_index>
+    <adminhtml_pagseguro_canceled_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
@@ -80,8 +80,8 @@ limitations under the License.
             <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
             <block type="adminhtml/template" name="canceled" template="uol/pagseguro/canceled.phtml"/>
         </reference>
-    </pagseguro_adminhtml_canceled_index>
-    <pagseguro_adminhtml_conciliation_index>
+    </adminhtml_pagseguro_canceled_index>
+    <adminhtml_pagseguro_conciliation_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
@@ -94,8 +94,8 @@ limitations under the License.
             <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
             <block type="adminhtml/template" name="conciliation" template="uol/pagseguro/conciliation.phtml"/>
         </reference>
-    </pagseguro_adminhtml_conciliation_index>
-    <pagseguro_adminhtml_refund_index>
+    </adminhtml_pagseguro_conciliation_index>
+    <adminhtml_pagseguro_refund_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
@@ -108,8 +108,8 @@ limitations under the License.
             <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
             <block type="adminhtml/template" name="refund" template="uol/pagseguro/refund.phtml"/>
         </reference>
-    </pagseguro_adminhtml_refund_index>
-    <pagseguro_adminhtml_requirements_index>
+    </adminhtml_pagseguro_refund_index>
+    <adminhtml_pagseguro_requirements_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
@@ -121,5 +121,5 @@ limitations under the License.
         <reference name="content">
             <block type="adminhtml/template" name="requirements" template="uol/pagseguro/requirements.phtml"/>
         </reference>
-    </pagseguro_adminhtml_requirements_index>
+    </adminhtml_pagseguro_requirements_index>
 </layout>

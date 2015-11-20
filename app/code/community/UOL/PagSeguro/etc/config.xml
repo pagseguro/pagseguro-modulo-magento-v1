@@ -70,13 +70,13 @@ limitations under the License.
     </global>
     <admin>
         <routers>
-            <pagseguro>
-                <use>admin</use>
+            <adminhtml>
                 <args>
-                    <module>UOL_PagSeguro</module>
-                    <frontName>pagseguro</frontName>
+                    <modules>
+                        <UOL_PagSeguro after="Mage_Adminhtml">UOL_PagSeguro_Adminhtml</UOL_PagSeguro>
+                    </modules>
                 </args>
-            </pagseguro>
+            </adminhtml>
         </routers>
     </admin>
     <adminhtml>
@@ -105,29 +105,29 @@ limitations under the License.
                         <children>
                             <pagseguro_abandoned translate="title" module="pagseguro">
                                 <title>Abandonadas</title>
-                                <action>pagseguro/adminhtml_abandoned</action>
+                                <action>adminhtml/pagseguro_abandoned</action>
                                 <sort_order>2110</sort_order>
                             </pagseguro_abandoned>
                             <pagseguro_canceled translate="title" module="pagseguro">
                                 <title>Cancelamento</title>
-                                <action>pagseguro/adminhtml_canceled</action>
+                                <action>adminhtml/pagseguro_canceled</action>
                                 <sort_order>2120</sort_order>
                             </pagseguro_canceled>
                             <pagseguro_conciliation translate="title" module="pagseguro">
                                 <title>Conciliação</title>
-                                <action>pagseguro/adminhtml_conciliation</action>
+                                <action>adminhtml/pagseguro_conciliation</action>
                                 <sort_order>2130</sort_order>
                             </pagseguro_conciliation>
                             <pagseguro_refund translate="title" module="pagseguro">
                                 <title>Estorno</title>
-                                <action>pagseguro/adminhtml_refund</action>
+                                <action>adminhtml/pagseguro_refund</action>
                                 <sort_order>2140</sort_order>
                             </pagseguro_refund>
                         </children>
                     </pagseguro_transaction>
                     <pagseguro_requirements translate="title" module="pagseguro">
                         <title>Requisitos</title>
-                        <action>pagseguro/adminhtml_requirements</action>
+                        <action>adminhtml/pagseguro_requirements</action>
                         <sort_order>2200</sort_order>
                     </pagseguro_requirements>
                 </children>

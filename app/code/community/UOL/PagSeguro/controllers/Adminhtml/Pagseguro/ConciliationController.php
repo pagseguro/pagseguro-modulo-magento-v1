@@ -18,24 +18,25 @@ limitations under the License.
 ************************************************************************
 */
 
-class UOL_PagSeguro_Adminhtml_CanceledController extends Mage_Adminhtml_Controller_Action
+class UOL_PagSeguro_Adminhtml_Pagseguro_ConciliationController extends Mage_Adminhtml_Controller_Action
 {
-
     /**
      * @var int
      */
     private $days;
+    
     /**
      * @var UOL_PagSeguro_Helper_Log
      */
     private $log;
+    
     /**
-     * @var UOL_PagSeguro_Helper_Canceled
+     * @var UOL_PagSeguro_Helper_Conciliation
      */
-    private $canceled;
+    private $conciliation;
 
     /**
-     * Render canceled layout in administration interface
+     * Render conciliation layout in administration interface
      */
     public function indexAction()
     {
@@ -46,27 +47,27 @@ class UOL_PagSeguro_Adminhtml_CanceledController extends Mage_Adminhtml_Controll
         $this->loadLayout();
         $this->_setActiveMenu('pagseguro_menu')->renderLayout();
     }
-
+    
     /**
-     * Get a list of PagSeguroTransaction from webservice.
+     * Get a PagSeguroTransaction list from webservice.
      * @return JSON|null of PagSeguroTransaction list
      */
     public function doPostAction()
     {
         $this->builder();
         if ($this->days) {
-            $this->log->setSearchTransactionLog(get_class($this->canceled), $this->days);
+            $this->log->setSearchTransactionLog(get_class($this->conciliation), $this->days);
 
             try {
 
-                $this->canceled->initialize($this->days);
+                 $this->conciliation->initialize($this->days);
 
-                if (!$this->canceled->getPaymentsArray()) {
+                if (!$this->conciliation->getPaymentsArray()) {
                     print json_encode(array("status" => false));
                     exit();
                 }
 
-                print $this->canceled->getTransactionGrid($this->canceled->getPaymentsArray());
+                print $this->conciliation->getTransactionGrid($this->conciliation->getPaymentsArray());
 
             } catch (Exception $e) {
 
@@ -80,34 +81,25 @@ class UOL_PagSeguro_Adminhtml_CanceledController extends Mage_Adminhtml_Controll
     }
     
     /**
-     * Call a helper to request a cancellation of a PagSeguroTransaction and update the order status.
+     * Call a helper to update the order status.
      */
-    public function doCanceledAction()
+    public function doConciliationAction()
     {
         $this->builder();
+
         if ($this->getRequest()->getPost('data')) {
-            
-            $data = current($this->getRequest()->getPost('data'));
-            try {
-                $this->canceled->updateOrderStatusMagento(get_class($this->canceled), $data['id'], $data['code']);
-            } catch (Exception $pse) {
-                
-                print json_encode(array(
-                    "status" => false, 
-                    "err" => trim($pse->getMessage()))
+            foreach ($this->getRequest()->getPost('data') as $data) {
+                $this->conciliation->updateOrderStatusMagento(
+                    get_class($this->conciliation),
+                    $data['id'],
+                    $data['code'],
+                    $data['status']
                 );
-                exit();
             }
-
-            $this->doPostAction();
-            exit();
         }
-
-        print json_encode(array(
-            "status" => false, 
-            "err" => true)
-        );
-        exit();
+        
+        //Call this function for reload data in DataTables.
+        $this->doPostAction();
     }
     
     /**
@@ -115,7 +107,7 @@ class UOL_PagSeguro_Adminhtml_CanceledController extends Mage_Adminhtml_Controll
      */
     private function builder()
     {
-        $this->canceled = Mage::helper('pagseguro/canceled');
+        $this->conciliation = Mage::helper('pagseguro/conciliation');
         $this->log = Mage::helper('pagseguro/log');
         if ($this->getRequest()->getPost('days')) {
             $this->days = $this->getRequest()->getPost('days');

@@ -106,7 +106,7 @@ limitations under the License.
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_conciliation/doPost'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/pagseguro_conciliation/doPost'); ?>",
                 type: "POST",
                 data: {
                         form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
@@ -181,7 +181,7 @@ limitations under the License.
                 Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
                 jQuery.ajax({
-                    url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_conciliation/doConciliation'); ?>",
+                    url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/pagseguro_conciliation/doConciliation'); ?>",
                     type: "POST",
                     data: {
                             form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",

@@ -18,7 +18,7 @@ limitations under the License.
 ************************************************************************
 */
 
-class UOL_PagSeguro_Adminhtml_RefundController extends Mage_Adminhtml_Controller_Action
+class UOL_PagSeguro_Adminhtml_Pagseguro_RefundController extends Mage_Adminhtml_Controller_Action
 {
 
     /**
