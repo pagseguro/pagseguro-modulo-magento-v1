@@ -189,12 +189,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
         //Define Extra Amount Information
         $paymentRequest->setExtraAmount($this->extraAmount());
 
-        try {
-            $paymentUrl = $paymentRequest->register($this->getCredentialsInformation());
-        } catch (PagSeguroServiceException $ex) {
-            Mage::log($ex->getMessage());
-            $this->redirectUrl(Mage::getUrl() . 'checkout/onepage');
-        }
+        $paymentUrl = $paymentRequest->register($this->getCredentialsInformation());
 
         return $paymentUrl;
     }
