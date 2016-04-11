@@ -173,14 +173,14 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
 
     /**
      * Request a list of  PagSeguraTransaction in a date range
-     * @param Integer $page
-     * @param Integer $maxPageResults
+     * @param Int $page
+     * @param Int $maxPageResults
      * @param DateTime $initialDate
      * @return PagSeguroTransactionSearchResult
      */
     public function getTransactionsByDate(
-        Integer $page,
-        Integer $maxPageResults,
+        Int $page,
+        Int $maxPageResults,
         DateTime $initialDate
     ) {
         return $this->searchService->searchByDate($this->credentials, $page, $maxPageResults, $initialDate);
