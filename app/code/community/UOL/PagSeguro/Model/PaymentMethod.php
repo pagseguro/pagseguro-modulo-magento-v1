@@ -312,9 +312,11 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
      */
     private function getSenderInformation()
     {
+        $phone = Mage::helper('pagseguro')->formatPhone($this->order->getBillingAddress()->getTelephone());
         $PagSeguroSender = new PagSeguroSender();
         $PagSeguroSender->setEmail($this->order['customer_email']);
         $PagSeguroSender->setName($this->order['customer_firstname'] . ' ' . $this->order['customer_lastname']);
+        $PagSeguroSender->setPhone($phone['areaCode'], $phone['number']);
 
         return $PagSeguroSender;
     }
