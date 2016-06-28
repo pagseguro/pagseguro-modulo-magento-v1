@@ -72,7 +72,7 @@ Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum].
 Changelog
 ---------
 ---
-2.7.0
+2.8.0
  - Possibilidade de consultar e solicitar o cancelamento de transações;
  - Possibilidade de consultar e solicitar o estorno de transações;
  - Ajustes em geral;
