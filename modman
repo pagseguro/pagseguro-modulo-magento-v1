@@ -1,0 +1,11 @@
+app/code/community/UOL/PagSeguro app/code/community/UOL/PagSeguro
+app/design/adminhtml/default/default/layout/uol app/design/adminhtml/default/default/layout/uol
+app/design/adminhtml/default/default/template/uol/pagseguro app/design/adminhtml/default/default/template/uol/pagseguro
+app/design/frontend/base/default/layout/uol app/design/frontend/base/default/layout/uol
+app/design/frontend/base/default/template/uol/pagseguro app/design/frontend/base/default/template/uol/pagseguro
+app/etc/modules/* app/etc/modules/
+app/locale/en_US/template/email/sales/* app/locale/en_US/template/email/sales
+app/locale/pt_BR/*.CSV app/locale/pt_BR/
+app/locale/pt_BR/template/email/sales/* app/locale/pt_BR/template/email/sales
+lib/PagSeguroLibrary lib/PagSeguroLibrary
+skin/adminhtml/default/default/uol/pagseguro skin/adminhtml/default/default/uol/pagseguro
