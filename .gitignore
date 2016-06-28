@@ -178,5 +178,12 @@ pip-log.txt
 .idea/
 *.iml
 
-# logs
+#################
+## Logs
+#################
 *PagSeguro.log
+
+#################
+## Composer
+#################
+vendor
