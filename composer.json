@@ -1,7 +1,7 @@
 {
   "name": "pagseguro/magento",
   "type": "magento-module",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description": "Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como opção de pagamento em sua loja.",
   "require": {
     "php": ">=5.4"
