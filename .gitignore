@@ -180,3 +180,6 @@ pip-log.txt
 
 # logs
 *PagSeguro.log
+
+# composer
+vendor
