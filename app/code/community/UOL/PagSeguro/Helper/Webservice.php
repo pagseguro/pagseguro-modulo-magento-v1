@@ -26,27 +26,27 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
      * @var PagSeguroAccountCredentials
      */
     private $credentials;
-    
+
     /**
      * @var PagSeguroTransactionSearchService
      */
     private $searchService;
-    
+
     /**
      * @var PagSeguroCancelService
      */
     private $cancelService;
-    
+
     /**
      * @var PagSeguroRefundService
      */
     private $refundService;
-    
+
     /**
      * @var PagSeguroNotificationService
      */
     private $notificationService;
-    
+
     /**
      * @var unknown
      */
@@ -64,7 +64,7 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
         $this->refundService = new PagSeguroRefundService();
         $this->notificationService = new PagSeguroNotificationService();
     }
-    
+
     /**
      * Request a PagSeguro Service
      * @param $class string type of service
@@ -105,7 +105,7 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
             }
         }
     }
-    
+
     /**
      * Get a transaction information
      * @param $type string type of transaction service
@@ -179,8 +179,8 @@ class UOL_PagSeguro_Helper_Webservice extends HelperData
      * @return PagSeguroTransactionSearchResult
      */
     public function getTransactionsByDate(
-        Integer $page,
-        Integer $maxPageResults,
+        $page,
+        $maxPageResults,
         DateTime $initialDate
     ) {
         return $this->searchService->searchByDate($this->credentials, $page, $maxPageResults, $initialDate);

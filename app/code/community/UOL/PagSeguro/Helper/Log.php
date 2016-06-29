@@ -46,7 +46,7 @@ class UOL_PagSeguro_Helper_Log extends HelperData
             file_put_contents($directoryLog, $return, FILE_APPEND);
         }
     }
-    
+
     /**
      * Creating log for search transations
      * @param string $class - Represents a transaction service type
@@ -54,7 +54,8 @@ class UOL_PagSeguro_Helper_Log extends HelperData
      */
     public function setSearchTransactionLog($class, $days, $initialDate)
     {
-        $option = end(explode('_', $class));
+        $class = explode('_', $class);
+        $option = end($class);
         $module = ' [Info] PagSeguro' . $option . '.';
 
         // Sentence of log
@@ -72,7 +73,8 @@ class UOL_PagSeguro_Helper_Log extends HelperData
      */
     public function setInitialDateSearchTransactionLog($initialDate)
     {
-        $option = end(explode('_', $class));
+        $class = explode('_', $class);
+        $option = end($class);
         $module = ' [Info] PagSeguro' . $option . '.';
 
         // Sentence of log
@@ -91,7 +93,8 @@ class UOL_PagSeguro_Helper_Log extends HelperData
      */
     public function setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus)
     {
-        $option = end(explode('_', $class));
+        $class = explode('_', $class);
+        $option = end($class);
         $module = ' [Info] PagSeguro' . $option . '.';
 
         // Sentence of log

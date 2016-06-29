@@ -43,10 +43,17 @@ class PagSeguroAutoloader
 
     private function __construct()
     {
-        if (function_exists('__autoload')) {
-            spl_autoload_register('__autoload');
+        $splAutoloads = spl_autoload_functions();
+
+        foreach ($splAutoloads as $function) {
+          spl_autoload_unregister($function);
         }
-        spl_autoload_register(array($this, 'addClass'));
+        
+        array_unshift($splAutoloads, array($this, 'addClass'));
+
+        foreach ($splAutoloads as $function) {
+          spl_autoload_register($function);
+        }
     }
 
     public static function init()

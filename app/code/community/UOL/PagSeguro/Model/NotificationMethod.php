@@ -35,10 +35,10 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $this->helper = Mage::helper('pagseguro');
     }
 
-    public function initialize($post)
+    public function initialize($paymentAction, $stateObject)
     {
 
-        $this->post = $post;
+        $this->post = $stateObject;
         $this->getNotificationPost();
 
         if ($this->notificationType == 'transaction') {
@@ -58,14 +58,11 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
 
     private function setNotificationUpdateOrder()
     {
-
         $transaction = $this->helper->webserviceHelper()->getNotification($this->notificationCode);
-
         $orderId = $this->helper->getReferenceDecryptOrderID($transaction->getReference());
-        
         $transactionCode = $transaction->getCode();
-
         $orderStatus = $this->helper->getPaymentStatusFromKey($transaction->getStatus()->getValue());
+        $class = get_class($transaction);
 
         $this->helper->updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus);
     }

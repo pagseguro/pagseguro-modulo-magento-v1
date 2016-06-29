@@ -41,7 +41,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
         8 => "chargeback_debitado_ps",
         9 => "em_contestacao_ps"
     );
-    
+
     const REFUND_CLASS = "UOL_PagSeguro_Helper_Refund";
     const CANCELED_CLASS = "UOL_PagSeguro_Helper_Canceled";
     const TABLE_NAME = "pagseguro_orders";
@@ -324,7 +324,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     {
         $message = $this->__('Não foi possível executar esta ação. Utilize a conciliação de transações primeiro');
         $message.= $this->__(' ou tente novamente mais tarde.');
-        
+
         return $message;
     }
 
@@ -388,13 +388,13 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     {
         $date = new DateTime(date("Y-m-d\TH:i:s"));
         $date->sub(new DateInterval("P1D"));
-        
+
         $useCache = Mage::app()->useCache();
 
         if ($useCache['config'])
         {
             Mage::app()->getCacheInstance()->flush();
-        } 
+        }
 
         try {
             $this->webserviceHelper()->getTransactionsByDate(1, 1, $date);
@@ -405,7 +405,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
             throw new Exception($e->getMessage());
         }
     }
-    
+
     /**
     * Update status in a Magento Order.
     * @param string $class - Represents a PagSeguro Service type
@@ -438,7 +438,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
             throw $pse;
         }
     }
-    
+
     /**
     * Set a transaction record
     * @param int $orderId - Id of Magento order
@@ -457,7 +457,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
         Mage::app()->getLocale()->date();
         $order->save();
     }
-    
+
     /**
     * Set a transaction record
     * @param int $orderId - Id of magento order
@@ -470,9 +470,9 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
         $resource = Mage::getSingleton('core/resource');
         $readConnection = $resource->getConnection('core_read');
         $writeConnection = $resource->getConnection('core_write');
-        
+
         $table = $resource->getTableName(self::TABLE_NAME);
-        
+
         //Select sent column from pagseguro_orders to verify if exists a register
         $query = 'SELECT order_id, sent FROM ' . $table . ' WHERE order_id = ' . $orderId;
         $result = $readConnection->fetchAll($query);
@@ -537,7 +537,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     {
         return Mage::helper('pagseguro/webservice');
     }
-    
+
     /**
     * Request payment method
     * @return UOL_PagSeguro_Model_PaymentMethod
@@ -546,7 +546,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     {
         return Mage::getSingleton('UOL_PagSeguro_Model_PaymentMethod');
     }
-    
+
     /**
     * Request notification method
     * @return UOL_PagSeguro_Model_NotificationMethod
@@ -561,7 +561,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
      * @param Integer $key
      * @return multitype:|boolean
      */
-    public function getPaymentStatusFromKey(Integer $key)
+    public function getPaymentStatusFromKey($key)
     {
         if (array_key_exists($key, $this->arrayPaymentStatusList)) {
             return $this->arrayPaymentStatusList[$key];
@@ -591,7 +591,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
      * @param Integer $key
      * @return Ambigous <string, string, multitype:>|boolean
      */
-    public function getPaymentStatusToString(Integer $key)
+    public function getPaymentStatusToString($key)
     {
         if (array_key_exists($key, $this->arrayPaymentStatusList)) {
             switch ($key) {
