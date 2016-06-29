@@ -28,6 +28,6 @@ class UOL_PagSeguro_NotificationController extends FrontAction
     public function sendAction()
     {
         $helper = Mage::helper('pagseguro');
-        $helper->notificationModel()->initialize($_POST);
+        $helper->notificationModel()->initialize(null, $_POST);
     }
 }
