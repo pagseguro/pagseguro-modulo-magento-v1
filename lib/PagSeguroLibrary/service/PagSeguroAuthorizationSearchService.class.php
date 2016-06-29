@@ -113,7 +113,7 @@ class PagSeguroAuthorizationSearchService
             throw $err;
         }
     }
-    
+
     /***
      * Finds a authorization with a matching notification code
      *
@@ -217,7 +217,7 @@ class PagSeguroAuthorizationSearchService
      * @return bool|mixed|string
      * @throws PagSeguroServiceException
      */
-    private function searchReturn($connection, $code)
+    private static function searchReturn($connection, $code)
     {
         $httpStatus = new PagSeguroHttpStatus($connection->getStatus());
         switch ($httpStatus->getType()) {
@@ -254,7 +254,7 @@ class PagSeguroAuthorizationSearchService
      * @return bool|mixed|string
      * @throws PagSeguroServiceException
      */
-    private function searchAuthorizationsReturn($connection)
+    private static function searchAuthorizationsReturn($connection)
     {
         $httpStatus = new PagSeguroHttpStatus($connection->getStatus());
         switch ($httpStatus->getType()) {
