@@ -61,6 +61,7 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **transações -> estorno**: esta pesquisa retornará todas as transações que estejam com status "paga", "disponível" e "em disputa", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o estorno dos valores pagos para seus compradores.
  - **transações -> estorno -> dias**: número de dias que devem ser considerados para a pesquisa.
  - **requisitos**: exibe se os pré-requisitos básicos para o correto funcionamento do módulo estão sendo atendidos
+ - **listar parcelamento**: Habilita a exibição de uma listagem de parcelas na tela de visualização do produto. (Irá exibir o maior parcelamento disponível para o produto na tela de exibição do mesmo)
 
 
 Dúvidas?
@@ -72,6 +73,9 @@ Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum].
 Changelog
 ---------
 ---
+2.8.0
+- Possibilidade de exibir uma lista com o maior parcelamento disponível de acordo com o preço do produto visualizado;
+
 2.7.0
  - Possibilidade de consultar e solicitar o cancelamento de transações;
  - Possibilidade de consultar e solicitar o estorno de transações;

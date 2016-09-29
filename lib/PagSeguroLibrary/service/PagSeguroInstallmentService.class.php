@@ -26,7 +26,6 @@
  */
 class PagSeguroInstallmentService
 {
-
     /***
      * Build URL for get installments.
      * @param PagSeguroConnectionData $connectionData
@@ -58,7 +57,7 @@ class PagSeguroInstallmentService
 
         $url = self::buildInstallmentURL($connectionData) . 
                 "?sessionId=" . $session .
-                "&amount=". $amount .
+                "&amount=". PagSeguroHelper::decimalFormat($amount) .
                 "&creditCardBrand=" . $cardBrand;
 
         LogPagSeguro::info(

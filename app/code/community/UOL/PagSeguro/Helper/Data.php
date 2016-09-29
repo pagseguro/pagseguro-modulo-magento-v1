@@ -649,6 +649,15 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
             $phone = substr($phone, 2);
         }
 
-        return ['areaCode' => $ddd, 'number' => $phone];
+        return array('areaCode' => $ddd, 'number' => $phone);
+    }
+
+    /**
+    * Request installments method
+    * @return UOL_PagSeguro_Model_InstallmentsMethod
+     */
+    public function installmentsModel()
+    {
+        return Mage::getSingleton('UOL_PagSeguro_Model_InstallmentsMethod');
     }
 }
