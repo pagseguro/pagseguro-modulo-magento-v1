@@ -185,9 +185,9 @@ Achou e corrigiu um bug ou tem alguma feature em mente e deseja contribuir?
 * Envie um pull request no [GitHub].
 
 
-  [API de Pagamentos]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-pagamentos.html
+  [API de Pagamentos]: https://dev.pagseguro.uol.com.br/documentacao/pagamentos
   [API de Notificações]: https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html
-  [fórum]: http://forum.pagseguro.uol.com.br/
+  [fórum]: https://comunidade.pagseguro.uol.com.br/hc/pt-br/community/topics
   [Pagamentos via API]: https://pagseguro.uol.com.br/integracao/pagamentos-via-api.jhtml
   [Notificação de Transações]: https://pagseguro.uol.com.br/integracao/notificacao-de-transacoes.jhtml
   [Magento]: https://www.magentocommerce.com/
