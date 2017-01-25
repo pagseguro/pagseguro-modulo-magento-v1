@@ -629,4 +629,35 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
         }
         return false;
     }
+    
+    /**
+     * Format string phone number
+     * @param string $phone
+     * @return array of area code and number
+     */
+    public function formatPhone($phone)
+    {
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+        $ddd = '';
+
+        if (strlen($phone) > 9) {
+            if (substr($phone, 0, 1) == 0) {
+                $phone = substr($phone, 1);
+            }
+
+            $ddd = substr($phone, 0, 2);
+            $phone = substr($phone, 2);
+        }
+
+        return array('areaCode' => $ddd, 'number' => $phone);
+    }
+
+    /**
+    * Request installments method
+    * @return UOL_PagSeguro_Model_InstallmentsMethod
+     */
+    public function installmentsModel()
+    {
+        return Mage::getSingleton('UOL_PagSeguro_Model_InstallmentsMethod');
+    }
 }

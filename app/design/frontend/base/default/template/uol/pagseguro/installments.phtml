@@ -1,0 +1,25 @@
+<?php
+$helper = Mage::helper('pagseguro');
+
+if ($helper->installmentsModel()->enabled()) {
+    $productPrice = Mage::registry('current_product')->getFinalPrice();
+    $installments = $helper->installmentsModel()->create($productPrice);
+
+    if ($installments) {
+        $countInstallment = count($installments);
+        $halfInstallment = ceil($countInstallment/2);
+
+        $totalAmount = str_replace('.', ',', $installments[$countInstallment-1]['totalAmount']);
+
+        echo "<table class=\"pagseguro-installments-table\"><caption>Ou pague em até {$installments[$countInstallment-1]['text']} (Total a prazo R\${$totalAmount})</caption><tbody>";
+
+        for($i = 0; $i < $halfInstallment; $i++) {
+            echo "<tr><td>{$installments[$i]['text']}</td>";
+            if (isset($installments[$i + $halfInstallment]['text'])) {
+                echo "<td>{$installments[$i + $halfInstallment]['text']}</td>";
+            }
+            echo "</tr>";
+        }
+        echo "</tbody></table>";
+    }
+}

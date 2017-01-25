@@ -1,0 +1,17 @@
+.pagseguro-installments-table {
+    max-width: 100%;
+    margin-bottom: 0.8rem;
+    margin-top: 1.6rem;
+    font-size: 90%;
+    position: relative;
+}
+
+.pagseguro-installments-table table, th, td {
+    border: 1px solid #DDD;
+    border-collapse: collapse;
+    padding: 2px 2px !important;
+}
+
+.pagseguro-installments-table tr:nth-child(even) {
+    background-color: #EEE;
+}

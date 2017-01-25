@@ -287,6 +287,16 @@ limitations under the License.
                                 <discount_balance>1</discount_balance>
                             </depends>
                         </discount_balance_value>
+                        <installments translate="label">
+                            <label>LISTAR PARCELAMENTO</label>
+                            <tooltip>Habilita a exibição da listagem de parcelas na tela de visualização do produto. (Irá exibir o maior parcelamento disponível para o produto no pagamento com cartão de crédito)</tooltip>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>190</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </installments>
                     </fields>
                 </pagseguro>
             </groups>

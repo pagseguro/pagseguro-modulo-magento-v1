@@ -26,14 +26,12 @@
  */
 class PagSeguroInstallmentParser extends PagSeguroServiceParser
 {
-
     /***
      * @param $installment HttpGet Installments
      * @return mixed
      */
     public static function readInstallments($str_json)
-    {
-    	
+    {	
     	if (self::decode(preg_replace('/[^a-z_\:\{}\ \"\.\,\-0-9]/i', '', $str_json))) {
     		$arr = self::decode(preg_replace('/[^a-z_\:\{}\ \"\.\,\-0-9]/i', '', $str_json));
     	} else {
@@ -41,15 +39,12 @@ class PagSeguroInstallmentParser extends PagSeguroServiceParser
     	}
 
     	if (!isset($arr->errors)) {
-	    	$brand = key($arr->installments);
-
-	    	foreach ($arr->installments->$brand as $key => $installment) {
-
-	    		$installment->cardBrand = $brand;	
-
-	    		$installments[] = new PagSeguroInstallments($installment);	
-	    	}
-	    	
+            foreach ($arr->installments as $brand => $installmentsBrand) {
+                foreach ($installmentsBrand as $installment) {
+                    $installment->cardBrand = $brand;
+                    $installments[] = new PagSeguroInstallments($installment);      
+                }
+            }
 	    	return $installments;
     	} else {
     		return self::readError($arr->errors);
@@ -77,5 +72,4 @@ class PagSeguroInstallmentParser extends PagSeguroServiceParser
     {	
     	return json_decode($installments);
     }
-
 }
