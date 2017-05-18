@@ -137,10 +137,6 @@ class PagSeguroPaymentMethodCode
          */
         'BANRISUL_ONLINE_TRANSFER' => 306,
         /***
-         * HSBC on-line transfer
-         */
-        'HSBC_ONLINE_TRANSFER' => 307,
-        /***
          * PagSeguro account balance
          */
         'PS_BALANCE' => 401,
