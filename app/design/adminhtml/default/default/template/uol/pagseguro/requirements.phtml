@@ -54,7 +54,7 @@ limitations under the License.
             var list = jQuery('.pagseguro-list');
 
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_requirements/doRequirements'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/pagseguro_requirements/doRequirements'); ?>",
                 type: "POST",
                 data: {
                         form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>"

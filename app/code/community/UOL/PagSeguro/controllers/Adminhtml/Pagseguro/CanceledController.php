@@ -18,26 +18,24 @@ limitations under the License.
 ************************************************************************
 */
 
-class UOL_PagSeguro_Adminhtml_AbandonedController extends Mage_Adminhtml_Controller_Action
+class UOL_PagSeguro_Adminhtml_Pagseguro_CanceledController extends Mage_Adminhtml_Controller_Action
 {
 
     /**
      * @var int
      */
     private $days;
-    
     /**
      * @var UOL_PagSeguro_Helper_Log
      */
     private $log;
-    
     /**
-     * @var UOL_PagSeguro_Helper_Abandoned
+     * @var UOL_PagSeguro_Helper_Canceled
      */
-    private $abandoned;
+    private $canceled;
 
     /**
-     * Render abandoned layout in administration interface
+     * Render canceled layout in administration interface
      */
     public function indexAction()
     {
@@ -50,27 +48,28 @@ class UOL_PagSeguro_Adminhtml_AbandonedController extends Mage_Adminhtml_Control
     }
 
     /**
-     * Get a list of abandoned PagSeguroTransaction from webservice.
+     * Get a list of PagSeguroTransaction from webservice.
      * @return JSON|null of PagSeguroTransaction list
      */
     public function doPostAction()
     {
         $this->builder();
         if ($this->days) {
-            $this->log->setSearchTransactionLog(get_class($this->abandoned), $this->days);
+            $this->log->setSearchTransactionLog(get_class($this->canceled), $this->days);
 
             try {
 
-                $this->abandoned->initialize($this->days);
+                $this->canceled->initialize($this->days);
 
-                if (!$this->abandoned->getPaymentsArray()) {
+                if (!$this->canceled->getPaymentsArray()) {
                     print json_encode(array("status" => false));
                     exit();
                 }
 
-                print $this->abandoned->getTransactionGrid($this->abandoned->getPaymentsArray());
+                print $this->canceled->getTransactionGrid($this->canceled->getPaymentsArray());
 
             } catch (Exception $e) {
+
                 print json_encode(array(
                         "status" => false,
                         "err" => trim($e->getMessage())
@@ -79,28 +78,44 @@ class UOL_PagSeguro_Adminhtml_AbandonedController extends Mage_Adminhtml_Control
             }
         }
     }
-
+    
     /**
-     * Call a helper to send an email with PagSeguroTransaction resume link
+     * Call a helper to request a cancellation of a PagSeguroTransaction and update the order status.
      */
-    public function doAbandonedAction()
+    public function doCanceledAction()
     {
         $this->builder();
         if ($this->getRequest()->getPost('data')) {
-            foreach ($this->getRequest()->getPost('data') as $data) {
-                $this->abandoned->sendAbandonedEmail($data['id'], $data['recovery']);
+            
+            $data = current($this->getRequest()->getPost('data'));
+            try {
+                $this->canceled->updateOrderStatusMagento(get_class($this->canceled), $data['id'], $data['code']);
+            } catch (Exception $pse) {
+                
+                print json_encode(array(
+                    "status" => false, 
+                    "err" => trim($pse->getMessage()))
+                );
+                exit();
             }
+
+            $this->doPostAction();
+            exit();
         }
 
-        $this->doPostAction();
+        print json_encode(array(
+            "status" => false, 
+            "err" => true)
+        );
+        exit();
     }
-
+    
     /**
      * Initializes helpers and instance vars.
      */
     private function builder()
     {
-        $this->abandoned = Mage::helper('pagseguro/abandoned');
+        $this->canceled = Mage::helper('pagseguro/canceled');
         $this->log = Mage::helper('pagseguro/log');
         if ($this->getRequest()->getPost('days')) {
             $this->days = $this->getRequest()->getPost('days');

@@ -18,8 +18,9 @@ limitations under the License.
 ************************************************************************
 */
 
-class UOL_PagSeguro_Adminhtml_ConciliationController extends Mage_Adminhtml_Controller_Action
+class UOL_PagSeguro_Adminhtml_Pagseguro_AbandonedController extends Mage_Adminhtml_Controller_Action
 {
+
     /**
      * @var int
      */
@@ -31,12 +32,12 @@ class UOL_PagSeguro_Adminhtml_ConciliationController extends Mage_Adminhtml_Cont
     private $log;
     
     /**
-     * @var UOL_PagSeguro_Helper_Conciliation
+     * @var UOL_PagSeguro_Helper_Abandoned
      */
-    private $conciliation;
+    private $abandoned;
 
     /**
-     * Render conciliation layout in administration interface
+     * Render abandoned layout in administration interface
      */
     public function indexAction()
     {
@@ -47,30 +48,29 @@ class UOL_PagSeguro_Adminhtml_ConciliationController extends Mage_Adminhtml_Cont
         $this->loadLayout();
         $this->_setActiveMenu('pagseguro_menu')->renderLayout();
     }
-    
+
     /**
-     * Get a PagSeguroTransaction list from webservice.
+     * Get a list of abandoned PagSeguroTransaction from webservice.
      * @return JSON|null of PagSeguroTransaction list
      */
     public function doPostAction()
     {
         $this->builder();
         if ($this->days) {
-            $this->log->setSearchTransactionLog(get_class($this->conciliation), $this->days);
+            $this->log->setSearchTransactionLog(get_class($this->abandoned), $this->days);
 
             try {
 
-                 $this->conciliation->initialize($this->days);
+                $this->abandoned->initialize($this->days);
 
-                if (!$this->conciliation->getPaymentsArray()) {
+                if (!$this->abandoned->getPaymentsArray()) {
                     print json_encode(array("status" => false));
                     exit();
                 }
 
-                print $this->conciliation->getTransactionGrid($this->conciliation->getPaymentsArray());
+                print $this->abandoned->getTransactionGrid($this->abandoned->getPaymentsArray());
 
             } catch (Exception $e) {
-
                 print json_encode(array(
                         "status" => false,
                         "err" => trim($e->getMessage())
@@ -79,35 +79,28 @@ class UOL_PagSeguro_Adminhtml_ConciliationController extends Mage_Adminhtml_Cont
             }
         }
     }
-    
+
     /**
-     * Call a helper to update the order status.
+     * Call a helper to send an email with PagSeguroTransaction resume link
      */
-    public function doConciliationAction()
+    public function doAbandonedAction()
     {
         $this->builder();
-
         if ($this->getRequest()->getPost('data')) {
             foreach ($this->getRequest()->getPost('data') as $data) {
-                $this->conciliation->updateOrderStatusMagento(
-                    get_class($this->conciliation),
-                    $data['id'],
-                    $data['code'],
-                    $data['status']
-                );
+                $this->abandoned->sendAbandonedEmail($data['id'], $data['recovery']);
             }
         }
-        
-        //Call this function for reload data in DataTables.
+
         $this->doPostAction();
     }
-    
+
     /**
      * Initializes helpers and instance vars.
      */
     private function builder()
     {
-        $this->conciliation = Mage::helper('pagseguro/conciliation');
+        $this->abandoned = Mage::helper('pagseguro/abandoned');
         $this->log = Mage::helper('pagseguro/log');
         if ($this->getRequest()->getPost('days')) {
             $this->days = $this->getRequest()->getPost('days');
