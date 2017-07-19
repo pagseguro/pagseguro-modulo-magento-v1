@@ -9,6 +9,9 @@
 .pagseguro-installments-table table, th, td {
     border: 1px solid #DDD;
     border-collapse: collapse;
+    /*text-align: center;*/
+    /*font-size: 0.9rem;*/
+    /*font-size: 90%;*/
     padding: 2px 2px !important;
 }
 

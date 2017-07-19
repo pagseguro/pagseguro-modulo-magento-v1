@@ -38,6 +38,16 @@ limitations under the License.
                 <class>UOL_PagSeguro_Helper</class>
             </pagseguro>
         </helpers>
+        <events>
+            <resource_get_tablename>
+                <observers>
+                    <uol_pagseguro>
+                        <class>UOL_PagSeguro_Model_Observer</class>
+                        <method>addAutoloader</method>
+                    </uol_pagseguro>
+                </observers>
+            </resource_get_tablename>
+        </events>
         <template>
             <email>
                 <payment_pagseguro_template translate="label" module="pagseguro">

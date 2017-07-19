@@ -1,329 +1,74 @@
 <?php
 
 /**
- * ***********************************************************************
- Copyright [2015] [PagSeguro Internet Ltda.]
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- * ***********************************************************************
+ * @property Mage_Sales_Model_Order order
  */
-
-use Mage_Payment_Model_Method_Abstract as MethodAbstract;
-
-/**
- * PagSeguro payment model
- */
-class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
+class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstract
 {
-    protected $_code = 'pagseguro';
-    protected $_isGateway = true;
     protected $_canAuthorize = true;
     protected $_canCapture = true;
     protected $_canCapturePartial = false;
     protected $_canRefund = false;
-    protected $_canVoid = true;
-    protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
-    private $order;
-    private $shippingData;
-
-    const REAL = 'REAL';
+    protected $_canUseInternal = true;
+    protected $_canVoid = true;
+    protected $_code = 'pagseguro';
+    protected $_isGateway = true;
+    /**
+     * @var Mage_Sales_Model_Order
+     */
+    protected $order;
+    /**
+     * @var UOL_PagSeguro_Helper_Data
+     */
+    private $helper;
+    /**
+     * @var UOL_PagSeguro_Model_Library
+     */
+    private $library;
 
     /**
-     * Construct
+     * UOL_PagSeguro_Model_PaymentMethod constructor.
      */
     public function __construct()
     {
-        include_once(Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        include_once(Mage::getBaseDir('code') . '/community/UOL/PagSeguro/Model/Defines.php');
+        $this->library = new UOL_PagSeguro_Model_Library();
+        $this->helper = new UOL_PagSeguro_Helper_Data();
     }
 
     /**
-     * Get the shipping Data of the Order
-     * @return object $orderParams - Return parameters, of shipping of order
+     * @param Mage_Sales_Model_Order $order
      */
-    private function getShippingData()
+    public function addPagseguroOrders(Mage_Sales_Model_Order $order)
     {
-        $isOrderVirtual = $this->order->getIsVirtual();
-        $orderParams = null;
-
-        if ($isOrderVirtual) {
-            $orderParams = $this->order->getBillingAddress();
-        } else {
-            $orderParams = $this->order->getShippingAddress();
-        }
-
-        return $orderParams->getData();
-    }
-
-    /**
-     * Set the Order of checkout session
-     * @param type $order
-     */
-    public function setOrder($order)
-    {
-        if ($order != null and !empty($order)) {
-                $this->order = $order;
-                $this->shippingData = $this->getShippingData();
-        } else {
-                $msg = "[PagSeguroModuleException] Message: ParÃ¢metro InvÃ¡lido para o mÃ©todo setOrder().";
-                throw new Exception(Mage::helper('pagseguro')->__($msg));
+        $orderId = $order->getEntityId();
+        $enviroment = $this->library->getEnvironment();
+        $table = Mage::getConfig()->getTablePrefix().'pagseguro_orders';
+        $read = Mage::getSingleton('core/resource')->getConnection('core_read');
+        $value = $read->query("SELECT `order_id` FROM `$table` WHERE `order_id` = $orderId");
+        if (!$value->fetch()) {
+            $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+            $sql = "INSERT INTO `$table` (`order_id`, `environment`) VALUES ('$orderId', '$enviroment')";
+            $connection->query($sql);
         }
     }
 
     /**
-     * Return the created payment request html with payment url and set the PagSeguroConfig's
-     * @param object $order
-     * @return PaymentRequestURL
+     * @param Mage_Sales_Model_Order $order
      */
-    public function getRedirectPaymentHtml($order)
+    public function clearCheckoutSession(Mage_Sales_Model_Order $order)
     {
-        $this->setPagSeguroConfig();
-        $paymentUrl =  $this->createPaymentRequest();
-
-        // empty the cart
         $cart = Mage::getSingleton('checkout/cart');
-
         foreach (Mage::getSingleton('checkout/session')->getQuote()->getItemsCollection() as $item) {
             $cart->removeItem($item->getId());
         }
-
         $cart->save();
         $order->save();
-        $checkout = $this->getRedirectCheckout();
-
-        if ($checkout == 'LIGHTBOX') {
-            $code = $this->base64UrlEncode($paymentUrl);
-            $array = array('_secure' => true, 'type' => 'geral', 'code' => $code);
-            $payment = Mage::getUrl('pagseguro/payment/payment', $array);
-
-            return $payment;
-        } else {
-            return $paymentUrl;
-        }
     }
 
     /**
-     * Encoding a data
-     * @param string $text
      * @return string
-     */
-    private function base64UrlEncode($text)
-    {
-        return strtr(base64_encode($text), '+/=', '-_,');
-    }
-
-    /**
-     * Set Config's to PagSeguro API
-     */
-    private function setPagSeguroConfig()
-    {
-        $activeLog = $this->getConfigData('log');
-        $charset = $this->getConfigData('charset');
-
-        //Module version
-        PagSeguroLibrary::setModuleVersion('magento' . ':' . Mage::helper('pagseguro')->getVersion());
-
-        //CMS version
-        PagSeguroLibrary::setCMSVersion('magento' . ':' . Mage::getVersion());
-
-        //Setup Charset
-        if ($charset != null and !empty($charset)) {
-                PagSeguroConfig::setApplicationCharset($charset);
-        }
-
-        //Setup Log
-        if ($activeLog == 1) {
-            $logFile = $this->getConfigData('log_file');
-
-            if (self::checkFile(Mage::getBaseDir() . '/' . $logFile)) {
-                PagSeguroConfig::activeLog(Mage::getBaseDir() . '/' . $logFile);
-            } else {
-                PagSeguroConfig::activeLog(); //Default Log
-            }
-        }
-    }
-
-    /**
-     * Create PagSeguro payment request html with payment url
-     * @return string
-     */
-    private function createPaymentRequest()
-    {
-        $helper = Mage::helper('pagseguro');
-
-        // Get references that stored in the database
-        $reference = $helper->getStoreReference();
-
-        $paymentRequest = new PagSeguroPaymentRequest();
-        $paymentRequest->setCurrency(PagSeguroCurrencies::getIsoCodeByName(self::REAL));
-        $paymentRequest->setReference($reference . $this->order->getId()); //Order ID
-        $paymentRequest->setShipping($this->getShippingInformation()); //Shipping
-        $paymentRequest->setSender($this->getSenderInformation()); //Sender
-        $paymentRequest->setItems($this->getItensInformation()); //Itens
-        $paymentRequest->setShippingType(SHIPPING_TYPE);
-        $paymentRequest->setShippingCost(number_format($this->order->getShippingAmount(), 2, '.', ''));
-        $paymentRequest->setNotificationURL($this->getNotificationURL());
-        $helper->getDiscount($paymentRequest);
-
-        //Define Redirect Url
-        $redirectUrl = $this->getRedirectUrl();
-
-        if (!empty($redirectUrl) and $redirectUrl != null) {
-                $paymentRequest->setRedirectURL($redirectUrl);
-        } else {
-                $paymentRequest->setRedirectURL(Mage::getUrl() . 'checkout/onepage/success/');
-        }
-
-        //Define Extra Amount Information
-        $paymentRequest->setExtraAmount($this->extraAmount());
-
-        try {
-            $paymentUrl = $paymentRequest->register($this->getCredentialsInformation());
-        } catch (PagSeguroServiceException $ex) {
-            Mage::log($ex->getMessage());
-            $this->redirectUrl(Mage::getUrl() . 'checkout/onepage');
-        }
-
-        return $paymentUrl;
-    }
-
-    /**
-     * Extra Amount
-     * @return extra amount
-     */
-    private function extraAmount()
-    {
-        $discountAmount = self::toFloat($this->order->getBaseDiscountAmount());
-        $taxAmount = self::toFloat($this->order->getTaxAmount());
-
-        return PagSeguroHelper::decimalFormat($discountAmount + $taxAmount);
-    }
-
-    /**
-     * Get the notification url
-     * @return Notification URL
-     */
-    private function getNotificationURL()
-    {
-        if ($this->getConfigData('notification')) {
-            $notificationUrl = $this->getConfigData('notification');
-        } else {
-            //default installation
-            $notificationUrl = Mage::app()->getStore(0)->getBaseUrl() . 'pagseguro/notification/send/';
-        }
-
-        return $notificationUrl;
-    }
-
-    /**
-     * Configure the address before sending
-     * @param string $fullAddress - Address complet
-     * @return array - Returns the treated address
-     */
-    private function addressConfig($fullAddress)
-    {
-        require_once(Mage::getBaseDir('code') . '/community/UOL/PagSeguro/Model/AddressConfig.php');
-        return AddressConfig::treatmentAddress($fullAddress);
-    }
-
-    /**
-     * Get the shipping information
-     * @return PagSeguroShipping
-     */
-    private function getShippingInformation()
-    {
-        $street = "";
-        $number = "";
-        $complement = "";
-        $district = "";
-
-        $fullAddress = $this->addressConfig($this->shippingData['street']);
-        $street = $fullAddress[0] != '' ? $fullAddress[0] : $this->addressConfig($this->shippingData['street']);
-        $number = is_null($fullAddress[1]) ? '' : $fullAddress[1];
-        $complement = is_null($fullAddress[2]) ? '' : $fullAddress[2];
-        $district = is_null($fullAddress[3]) ? '' : $fullAddress[3];
-
-        $PagSeguroShipping = new PagSeguroShipping();
-        $PagSeguroAddress = new PagSeguroAddress();
-        $PagSeguroAddress->setCity($this->shippingData['city']);
-        $PagSeguroAddress->setPostalCode(self::fixPostalCode($this->shippingData['postcode']));
-        $PagSeguroAddress->setState($this->shippingData['region']);
-        $PagSeguroAddress->setStreet($street);
-        $PagSeguroAddress->setNumber($number);
-        $PagSeguroAddress->setComplement($complement);
-        $PagSeguroAddress->setDistrict($district);
-        $PagSeguroShipping->setAddress($PagSeguroAddress);
-
-        return $PagSeguroShipping;
-    }
-
-    /**
-     * Get information of purchased items
-     * @return PagSeguroItem
-     */
-    private function getItensInformation()
-    {
-        $Itens = $this->order->getAllVisibleItems();
-        $PagSeguroItens = array();
-
-        //CarShop Items
-        foreach ($Itens as $item) {
-                $PagSeguroItem = new PagSeguroItem();
-                $PagSeguroItem->setId($item->getId());
-                $PagSeguroItem->setDescription(self::fixStringLength($item->getName(), 255));
-                $PagSeguroItem->setQuantity(self::toFloat($item->getQtyOrdered()));
-                $PagSeguroItem->setWeight(round($item->getWeight()));
-                $PagSeguroItem->setAmount(self::toFloat($item->getPrice()));
-
-                array_push($PagSeguroItens, $PagSeguroItem);
-        }
-
-        return $PagSeguroItens;
-    }
-
-    /**
-     * Get the access credential
-     * @return PagSeguroAccountCredentials
-     */
-    public function getCredentialsInformation()
-    {
-        $email = $this->getConfigData('email');
-        $token = $this->getConfigData('token');
-        $credentials = new PagSeguroAccountCredentials($email, $token);
-
-        return $credentials;
-    }
-
-    /**
-     * Customer information that are sent
-     * @return PagSeguroSender
-     */
-    private function getSenderInformation()
-    {
-        $phone = Mage::helper('pagseguro')->formatPhone($this->order->getBillingAddress()->getTelephone());
-        $PagSeguroSender = new PagSeguroSender();
-        $PagSeguroSender->setEmail($this->order['customer_email']);
-        $PagSeguroSender->setName($this->order['customer_firstname'] . ' ' . $this->order['customer_lastname']);
-        $PagSeguroSender->setPhone($phone['areaCode'], $phone['number']);
-
-        return $PagSeguroSender;
-    }
-
-    /**
-     * Redirect to pagseguro request controller after user click in 'PLACE ORDER'
-     * @return string - Returns the url of payment request
      */
     public function getOrderPlaceRedirectUrl()
     {
@@ -331,87 +76,178 @@ class UOL_PagSeguro_Model_PaymentMethod extends MethodAbstract
     }
 
     /**
-     * Get the redirect url configured by user
-     * @return string
+     * Retrieve checkout type from system.xml
+     *
+     * @return mixed
      */
-    private function getRedirectUrl()
+    public function getPaymentCheckoutType()
     {
-        return $this->getConfigData('url');
+        return $this->library->getPaymentCheckoutType();
     }
 
     /**
-     * Get the checkout configured by user default/lightbox
-     * @return string - Returns checkout selected by the user
+     * @return mixed
      */
-    private function getRedirectCheckout()
+    public function getPaymentSession()
     {
-        return $this->getConfigData('checkout');
+        return \PagSeguro\Services\Session::create($this->library->getAccountCredentials());
     }
 
     /**
-     * Concat char's in string.     *
-     * @param string $value
-     * @param int $_legth
-     * @param string $endChars
-     * @return string $value
+     * @return \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
      */
-    private static function fixStringLength($value, $length, $endChars = '...')
+    public function paymentDefault()
     {
-        if (!empty($value) and !empty($length)) {
-            $cutLen = (int) $length - (int) strlen($endChars);
-            if (strlen($value) > $length) {
-                $strCut = substr($value, 0, $cutLen);
-                $value = $strCut . $endChars;
-            }
+        $payment = new \PagSeguro\Domains\Requests\Payment();
+
+        return $this->payment($payment);
+    }
+
+    /**
+     * @param \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit|\PagSeguro\Domains\Requests\Payment $payment
+     *
+     * @return \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
+     */
+    private function payment($payment)
+    {
+        $payment->setReference(Mage::getStoreConfig('uol_pagseguro/store/reference').$this->order->getId());
+        $payment->setCurrency('BRL');
+        $this->setItems($payment);
+        $payment->setSender()->setName($this->order->getCustomerName());
+        $payment->setSender()->setEmail($this->order->getCustomerEmail());
+        $phone = $this->helper->formatPhone($this->order->getShippingAddress()->getTelephone());
+        $payment->setSender()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
+        $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
+        $payment->setShipping()->setAddress()->instance($orderAddress->getShippingAddress());
+        $payment->setShipping()->setType()->withParameters(SHIPPING_TYPE);
+        $payment->setShipping()->setCost()->withParameters(number_format($this->order->getShippingAmount(), 2, '.',
+            ''));
+        $payment->setExtraAmount($this->order->getBaseDiscountAmount() + $this->order->getTaxAmount());
+        $payment->setNotificationUrl($this->getNotificationURL());
+
+        return $payment;
+    }
+
+    /**
+     * @param \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
+     */
+    private function setItems($payment)
+    {
+        foreach ($this->order->getAllVisibleItems() as $product) {
+            $payment->addItems()->withParameters(
+                $product->getId(),
+                substr($product->getName(), 0, 254),
+                (float)$product->getQtyOrdered(),
+                number_format((float)$product->getPrice(), 2, '.', ''),
+                round($product->getWeight())
+            );
+        }
+    }
+
+    private function getNotificationURL()
+    {
+        if ($this->getConfigData('notification')) {
+            $notificationUrl = Mage::app()->getStore(0)->getBaseUrl().Mage::getStoreConfig('payment/pagseguro/notification');
+        } else {
+            $notificationUrl = Mage::app()->getStore(0)->getBaseUrl().'pagseguro/notification/send/';
         }
 
-        return $value;
+        return $notificationUrl;
     }
 
     /**
-     * Convert value to float.
-     * @param int $value
-     * @return float $value
+     * @param $params
+     *
+     * @return \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
      */
-    private static function toFloat($value)
+    public function paymentDirect($params)
     {
-        return (float) $value;
+        $payment = null;
+        switch ($params['method']) {
+            case 'boleto':
+                $payment = new \PagSeguro\Domains\Requests\DirectPayment\Boleto();
+                $payment->setSender()->setDocument()->withParameters(
+                    'CPF',
+                    $params['bilitDocument']
+                );
+                break;
+            case 'credit-card':
+                $payment = new \PagSeguro\Domains\Requests\DirectPayment\CreditCard();
+                $payment->setToken($params['token']);
+                $payment->setInstallment()->withParameters($params['cardInstallment'],
+                    number_format($params['cardInstallmentValue'], 2, '.', ''));
+                $payment->setHolder()->setBirthdate($params['cardHolderBirthdate']);
+                $payment->setHolder()->setName($params['cardHolderName']);
+                $payment->setHolder()->setPhone()->withArray($this->helper->formatPhone($this->order->getBillingAddress()->getTelephone()));
+                $payment->setHolder()->setDocument()->withParameters(
+                    'CPF',
+                    $params['cardHolderDocument']
+                );
+                $payment->setSender()->setDocument()->withParameters(
+                    'CPF',
+                    $params['cardHolderDocument']
+                );
+                $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
+                $payment->setBilling()->setAddress()->instance($orderAddress->getBillingAddress());
+                break;
+            case 'online-debit':
+                $payment = new \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit();
+                $payment->setBankName($params['debitBankName']);
+                $payment->setSender()->setDocument()->withParameters(
+                    'CPF',
+                    $params['debitDocument']
+                );
+                break;
+        }
+        $payment->setSender()->setHash($params['senderHash']);
+
+        /** @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment */
+        return $this->payment($payment);
     }
 
     /**
-     * If file not exist, try create.
-     * @param string $filename
-     * @return boolean $fileExist
+     * @return \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
      */
-    private static function checkFile($file)
+    public function paymentLightbox()
     {
+        $payment = new \PagSeguro\Domains\Requests\Payment();
+
+        return $this->payment($payment);
+    }
+
+    /**
+     * @param \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit|\PagSeguro\Domains\Requests\Payment $payment
+     *
+     * @param bool $code
+     *
+     * @return bool|\PagSeguro\Domains\Requests\DirectPayment\Boleto $response
+     */
+    public function paymentRegister($payment, $code = false)
+    {
+        $response = false;
         try {
-            $f = fopen($file, 'a');
-            $fileExist = true;
-            fclose($f);
-        } catch (Exception $ex) {
-            $fileExist = false;
-            Mage::logException($ex);
+            if ($code) {
+                /** @var \PagSeguro\Domains\Requests\Payment $response */
+                $response = $payment->register($this->library->getAccountCredentials(), true)->getCode();
+            } else {
+                /** @var \PagSeguro\Domains\Requests\DirectPayment\Boleto $payment */
+                $response = $payment->register($this->library->getAccountCredentials());
+            }
+        } catch (Exception $exception) {
+            \PagSeguro\Resources\Log\Logger::error($exception); //TODO add log function in helpers
+            Mage::logException($exception);
         }
 
-        return $fileExist;
+        return $response;
     }
 
     /**
-     * Remove all non-numeric characters from Postal Code.
-     * @return fixedPostalCode
+     * @param Mage_Sales_Model_Order $order
+     *
+     * @return Mage_Sales_Model_Order
      */
-    public static function fixPostalCode($postalCode)
+    public function setOrder(Mage_Sales_Model_Order $order)
     {
-        return preg_replace("/[^0-9]/", "", $postalCode);
-    }
-
-    /**
-     * Enables multi shipping
-     * @return bollean
-     */
-    public function canUseForMultishipping()
-    {
-        return $this->_canUseForMultishipping;
+        return $this->order = $order;
     }
 }
