@@ -17,39 +17,138 @@ limitations under the License.
 ************************************************************************
 -->
 <layout version="0.1.0">
+    <pagseguro_payment_direct>
+        <remove name="left"/>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <script>uol/pagseguro/css/pagseguro-module.css</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <script>uol/pagseguro/css/pagseguro-modal.css</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <script>uol/pagseguro/css/styles.css</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>uol/pagseguro/js/pagseguro-module.js</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>uol/pagseguro/js/jquery.colorbox-min.js</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+        </reference>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="page/html" name="direct" template="uol/pagseguro/direct/payment.phtml"/>
+        </reference>
+    </pagseguro_payment_direct>
+
+    <pagseguro_payment_success>
+        <remove name="left"/>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="page/html" name="direct" template="uol/pagseguro/direct/success.phtml"/>
+        </reference>
+    </pagseguro_payment_success>
+
+    <pagseguro_payment_default>
+        <remove name="left"/>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <script>uol/pagseguro/css/pagseguro-module.css</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <script>uol/pagseguro/css/pagseguro-modal.css</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <script>uol/pagseguro/css/styles.css</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>uol/pagseguro/js/pagseguro-module.js</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>uol/pagseguro/js/jquery.colorbox-min.js</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
+        </reference>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="uol_pagseguro/payment" name="payment"
+                   template="uol/pagseguro/default/payment.phtml"/>
+        </reference>
+    </pagseguro_payment_default>
+
+    <pagseguro_payment_lightbox>
+        <remove name="left"/>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="uol_pagseguro/payment" name="payment"
+                   template="uol/pagseguro/lightbox/payment.phtml"/>
+        </reference>
+    </pagseguro_payment_lightbox>
+
     <pagseguro_payment_payment>
         <remove name="left"/>
         <reference name="root">
-            <action method="setTemplate"><template>page/1column.phtml</template></action>
+            <action method="setTemplate">
+                <template>page/empty.phtml</template>
+            </action>
         </reference>
         <reference name="content">
-            <block type="uol_pagseguro/payment" name="payment" template="uol/pagseguro/payment.phtml" />
+            <block type="uol_pagseguro/return" name="return" template="uol/pagseguro/return.phtml"/>
         </reference>
     </pagseguro_payment_payment>
 
     <pagseguro_payment_payment>
         <remove name="left"/>
         <reference name="root">
-            <action method="setTemplate"><template>page/empty.phtml</template></action>
+            <action method="setTemplate">
+                <template>page/2columns-right.phtml</template>
+            </action>
         </reference>
         <reference name="content">
-            <block type="uol_pagseguro/return" name="return" template="uol/pagseguro/return.phtml" />
-        </reference>
-    </pagseguro_payment_payment>
-
-    <pagseguro_payment_payment>
-        <remove name="left"/>
-        <reference name="root">
-            <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
-        </reference>
-        <reference name="content">
-            <block type="uol_pagseguro/error" name="error" template="uol/pagseguro/error.phtml" />
+            <block type="uol_pagseguro/error" name="error" template="uol/pagseguro/error.phtml"/>
         </reference>
     </pagseguro_payment_payment>
 
     <checkout_onepage_index translate="label">
         <reference name="head">
-            <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml" />
+            <block type="uol_pagseguro/payment" name="loading"
+                   template="uol/pagseguro/loading.phtml"/>
         </reference>
     </checkout_onepage_index>
 
@@ -63,7 +162,9 @@ limitations under the License.
         </reference>
 
         <reference name="product.info.addtocart">
-            <block type="core/template" name="pagseguro.installments.table" template="uol/pagseguro/installments.phtml" after="-"/>
+            <block type="core/template" name="pagseguro.installments.table"
+                   template="uol/pagseguro/installments.phtml"
+                   after="-"/>
         </reference>
     </catalog_product_view>
 </layout>

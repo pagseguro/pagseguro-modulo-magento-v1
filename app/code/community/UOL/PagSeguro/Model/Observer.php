@@ -20,6 +20,24 @@ limitations under the License.
 
 class UOL_PagSeguro_Model_Observer
 {
+
+    protected $lib_path;
+
+    /**
+     * UOL_PagSeguro_Model_Observer constructor.
+     * @param string $lib_path
+     */
+    public function __construct($lib_path)
+    {
+        $this->lib_path = Mage::getBaseDir('lib'). '/PagseguroPhpSdk/vendor/autoload.php';
+    }
+
+    public function addAutoloader()
+    {
+        include_once($this->lib_path);
+        return $this;
+    }
+
     /**
      * Query the existing transaction codes with the id of the request and assembles an array with these codes.
      * @param object $observer - It is an object of Event of observe.

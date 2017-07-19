@@ -1,0 +1,224 @@
+/**
+************************************************************************
+Copyright [2015] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+*/
+
+/* Structure */
+#content { background: none repeat scroll 0 0 #E6E9Eb; overflow: hidden; }
+#pagseguro-module { background: none repeat scroll 0 0 #F2F2F2; box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.2); margin-bottom: 5em; color: #666; font-family: Arial!important; font-size: 12px; overflow: hidden; position: relative; }
+#pagseguro-module .wrapper { margin: 0 auto; max-width: 96%; position: relative; }
+#pagseguro-module-content { padding:1em 0 2em 0; position: relative; background: url("../images/background.png") no-repeat scroll center 0 #FFF; background-size: contain; overflow: hidden; clear: both; min-height: 500px; }
+#pagseguro-module p { margin: 1em 0; line-height: 1.4em; }
+
+/* Header */
+#pagseguro-module-header { border-bottom: 5px solid #90E265; overflow: hidden; padding: 1.5em 0; background: #FFF; }
+#pagseguro-logo { float: left; }
+#pagseguro-registration-button { float: right; margin-top: 0.4em; }
+
+/* Menu */
+#pagseguro-module-menu { width: 100%; max-width: 15%; position: absolute; top:0; left: 0; transition-property: top, width; transition-duration: 0.5s; }
+#pagseguro-module-menu ul { font-size: 1.2em; margin-top: 1em; padding: 0; width: 100%; }
+#pagseguro-module-menu ul ul { font-size: 1em; margin: 0 0 0 25px; }
+#pagseguro-module-menu li { list-style: none outside none; }
+#pagseguro-module-menu li span,
+#pagseguro-module-menu li a { text-decoration: none!important; border-radius: 3px; display: block; line-height: 2.1em; margin: 0.3em 0; padding: 0 0.4em 0 0.8em; }
+#pagseguro-module-menu li span { cursor: pointer; color: #025ec7; }
+#pagseguro-module-menu li span i.icon { background-image: url("../images/messages.png"); background-repeat: no-repeat; background-size: 16px; background-position: 0 -122px; width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin: -2px 5px 0 0; }
+#pagseguro-module-menu li.open span i.icon { background-position: 0 -142px; }
+#pagseguro-module-menu li span:hover,
+#pagseguro-module-menu li a:hover { text-decoration: none; background: none repeat scroll 0 0 #F3F3F3; }
+#pagseguro-module-menu li.selected a { background: none repeat scroll 0 0 #77bf52; color: #FFF; }
+#pagseguro-save-wrapper { font-size: 0.9em; margin: 5em 0 0 0; }
+#pagseguro-save-button { width: 100%; }
+
+/* Content */
+#pagseguro-module-contents { float: right; width: 76%; }
+@media screen and (max-width: 1000px) {
+    #pagseguro-module-contents { float: right; width: 75%; padding-right: 6%; }
+    #pagseguro-module-menu { width: 15%; max-width: 13%; position: absolute; top:0; left: 2%; transition-property: top, width; transition-duration: 0.5s; }
+    #pagseguro-registration-button { float: right; margin-top: 0.4em; margin-right: 7%; }
+    #pagseguro-logo { float: left; margin-left: 3%; }
+}
+.pagseguro-module-content { display: none; }
+.pagseguro-module-content.selected { display: block; }
+#pagseguro-module-content .tabela a { display: block; }
+
+/* Links */
+#pagseguro-module a,
+#pagseguro-module .link { color: #025ec7; cursor: pointer; outline: medium none; text-decoration: none; }
+
+/* Titles */
+#pagseguro-module .title { font-weight: normal; border-bottom: 1px solid #DEDEDE; color: #3B3B3B; font-weight: normal; padding: 0.3em 0; position: relative; margin: 0 0 1em; }
+#pagseguro-module .title:before { border-top: 4px solid rgba(0, 0, 0, 0.2); content: attr(title); display: inline-block; height: 0; overflow: hidden; position: absolute; top: 100%; left: 0; }
+#pagseguro-module h2.title { font-size: 1.8em; }
+#pagseguro-module h3.title { font-size: 1.4em; padding-bottom: 0.1em; }
+
+/* Forms & Fields */
+#pagseguro-module label { color:inherit; margin:0; padding: 0.2em 0.5em 0 0; width: auto; font-weight: bold; float:none; line-height: 1em; font-size:1em; }
+#pagseguro-module .config-area label { text-align: left; text-transform: uppercase; clear: both; display: block; }
+#pagseguro-module .pagseguro-field { font-size: 1.2em; padding: 8px 4px; width: auto; border-radius: 3px; box-shadow: 0 2px 2px #DDDDDD inset; color: #4F4F4F; border: none; margin: 0; border: 1px solid #BCC6D0; background-color: #FFF; }
+#pagseguro-module select.pagseguro-field { padding-right: 1em; }
+#pagseguro-module .pagseguro-field:focus { background-color: #F2F4F8; outline: none; border-color: #7E9DB9; }
+#pagseguro-module .pagseguro-field:disabled { background-color: #DDD; }
+#pagseguro-module .config-area { margin: 0 0 3em 0; }
+#pagseguro-module .config-sub-area { margin: 0 0 2em 0; }
+#pagseguro-module .config-field { margin: 0 0 1.5em 0; }
+#pagseguro-module .config-field .pagseguro-button { margin-left: 0.4em; }
+#pagseguro-module .config-area input[type='text'] { width: 50%; max-width: 600px; }
+#pagseguro-module .config-area select.pagseguro-field option { padding: 0.3em; }
+#pagseguro-module .pagseguro-select-hint { float: left; margin: 0 1em 0 0; max-width: 20%; }
+#pagseguro-module .pagseguro-option-hint { margin: 2.5em 0 4em 0; max-width: 100%; }
+
+/* Tables */
+.pagseguro-table { border: 1px solid #e5e5e5; border-bottom-width: 3px; border-collapse: collapse; color: #444; width: 100%; }
+.pagseguro-table th { background: #eee no-repeat center right; border: 1px solid #dbdbdb; color: #515151; font-size: 0.85em; font-weight: normal; padding: 10px 5px; text-transform: uppercase; text-align:center; }
+.pagseguro-table th:first-child + th { cursor: pointer; }
+.pagseguro-table tfoot td { text-align:center; padding: 5px; }
+.pagseguro-table tr.over:hover td, tbody.over tr:hover td { background: #e1f1d3 !important; cursor: pointer; }
+.pagseguro-table tbody tr td { font-size: 1em; text-align: center; padding: 0.8em 0.5em; border: 1px solid #DEDEDE; border-top-width: 0; cursor: pointer; }
+.pagseguro-table tbody tr td:first-child { cursor: default; }
+.pagseguro-adminhtml-canceled-index .pagseguro-table thead tr th:first-child,
+.pagseguro-adminhtml-refund-index .pagseguro-table thead tr th:first-child { cursor: pointer; }
+.pagseguro-adminhtml-canceled-index .pagseguro-table tbody tr td:first-child,
+.pagseguro-adminhtml-refund-index .pagseguro-table tbody tr td:first-child { cursor: pointer; }
+.pagseguro-table tbody tr td:first-child label { padding: 0 !important; }
+.pagseguro-table tbody tr:hover td { background: #F9F9F9; color: #222; }
+.pagseguro-table tbody tr.checked td { background: #F2FCEE; color: #000; }
+.pagseguro-table tbody tr.unread td { color: #000; font-weight: bold; }
+.pagseguro-table tbody td .link { display:block; padding: 0.5em 0.5em 0 0.5em; }
+.pagseguro-table tbody td i { margin: 0 0.4em; font-size: 0.9em; }
+
+/* DataTable Sorting */
+.dataTable .sorting { background-image: url("../images/dataTable/sort_both.png"); cursor:pointer; }
+.dataTable .sorting_asc { background-image: url("../images/dataTable/sort_asc.png"); }
+.dataTable .sorting_desc { background-image: url("../images/dataTable/sort_desc.png"); }
+.dataTable .sorting_asc_disabled { background-image: url("../images/dataTable/sort_asc_disabled.png"); }
+.dataTable .sorting_desc_disabled { background-image: url("../images/dataTable/sort_desc_disabled.png"); }
+
+/* DataTable Pagination */
+.dataTables_paginate { overflow: hidden; font-size: 1.1em; margin: 1em 0; float: right; text-align: center; }
+.dataTables_paginate span { margin: 0 1em; }
+.paginate_button { padding: 0.5em; margin-left: 0.5em; }
+.paginate_button:hover { text-decoration: underline; }
+.paginate_button.current { background: none repeat scroll 0 0 #EEF6EB; color: #222222; }
+.paginate_button.disabled { display: none !important; }
+
+/* Search */
+.pagseguro-search-tools { margin: 2em 0; }
+.pagseguro-search-tools .pagseguro-button,
+.pagseguro-search-tools .pagseguro-input { margin-right: 0.5em; }
+.pagseguro-search-tools .right-tools { float: right; }
+
+/* List */
+.pagseguro-list { margin: 0; padding: 0; list-style:none; }
+.pagseguro-list li { background-image: url("../images/messages.png"); background-position: 0 -127px; background-repeat: no-repeat; border-bottom: 0 none; font-size: 1.2em; margin-bottom: 1em; padding-left: 2em; background-size: 20px; }
+.pagseguro-list .pagseguro-list-item-error, .pagseguro-list .requirements-alert { background-image: url("../images/messages.png"); background-position: 0 -77px; }
+
+/* Buttons */
+.pagseguro-button { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; -o-box-sizing: border-box; box-sizing: border-box; }
+.pagseguro-button { font-family: 'Arial'; font-size: 1.4em !important; cursor: pointer; position: relative; display: inline-block; color: #FFF !important; height: auto !important; line-height: 1.1em !important; border:none; border-top: 0.1em solid rgba(0, 0, 0, 0.05); border-left: 0.1em solid rgba(0, 0, 0, 0.1); border-bottom: 0.1em solid rgba(0, 0, 0, 0.2); border-right: 0.1em solid rgba(0, 0, 0, 0.1); border-radius: 0.2em; padding: 0.3em 0.55em !important; background-image: -webkit-linear-gradient(transparent 20%, rgba(0, 0, 0, 0.1)); background-image: -moz-linear-gradient(transparent 20%, rgba(0, 0, 0, 0.1)); background-image: -o-linear-gradient(transparent 20%, rgba(0, 0, 0, 0.1)); background-image: linear-gradient(transparent 20%, rgba(0, 0, 0, 0.1)); -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; text-decoration:none !important; appearance:none; -moz-appearance:none; -webkit-appearance:none; font-weight: bold; -webkit-transition:box-shadow 200ms; -o-transition:box-shadow 200ms; transition:box-shadow 200ms; }
+.pagseguro-button:active { box-shadow: 0 0.1125em 0.4125em rgba(0, 0, 0, 0.3) inset !important; }
+.pagseguro-button:hover { box-shadow: 0 2em 2em rgba(255, 255, 255, 0.125) inset; }
+.pagseguro-button,
+.pagseguro-button.theme-green,
+.pagseguro-button.green-theme { background-color: #83CA6C; }
+.pagseguro-button.theme-gray,
+.pagseguro-button.gray-theme { background-color: #F6F6F6; color: #41B320 !important; text-shadow: none; }
+.pagseguro-button.theme-gray:hover,
+.pagseguro-button.gray-theme:hover { background-color: #F9F9F9; }
+.pagseguro-button[disabled] { background-color: #CCC !important; color: #FFF !important; }
+
+/* Messages */
+.pagseguro-msg h3 > a { color:#035EC7!important }
+.pagseguro-msg.pagseguro-msg-micro h3,
+.pagseguro-msg.pagseguro-msg-micro dt,
+.pagseguro-msg.pagseguro-msg-micro dd,
+.pagseguro-msg.pagseguro-msg-micro li,
+.pagseguro-msg.pagseguro-msg-micro p { font-size:1em !important; }
+.pagseguro-msg.pagseguro-msg-small h3,
+.pagseguro-msg.pagseguro-msg-small dt,
+.pagseguro-msg.pagseguro-msg-small dd,
+.pagseguro-msg.pagseguro-msg-small li,
+.pagseguro-msg.pagseguro-msg-small p { font-size:1.2em !important; }
+.pagseguro-msg.pagseguro-msg-medium h3,
+.pagseguro-msg.pagseguro-msg-medium dt { font-size:1.4em !important; }
+.pagseguro-msg.pagseguro-msg-medium dd,
+.pagseguro-msg.pagseguro-msg-medium li,
+.pagseguro-msg.pagseguro-msg-medium p { font-size:1.2em !important; }
+.pagseguro-msg { display: table; overflow: hidden; zoom: 1; font-size: 1em; width: 100%; font-family: Arial; padding: 0.5em; margin-bottom: 1em; /* IEs */ margin-bottom: 0.4rem; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; -o-box-sizing: border-box; box-sizing: border-box; text-align: left; }
+.pagseguro-msg h3,
+.pagseguro-msg p { display: table-cell; vertical-align: middle; width: 100%; }
+.pagseguro-msg span { display: normal; vertical-align: middle; float:right; width: 86%; font-size:1.4em !important; margin-top: 2%;}
+.pagseguro-msg dl,
+.pagseguro-msg ul { display: table-cell; vertical-align: top; width: 100%; }
+.pagseguro-msg h3,
+.pagseguro-msg p,
+.pagseguro-msg li,
+.pagseguro-msg dt,
+.pagseguro-msg dd { color: #4F4F4F !important; }
+.pagseguro-msg h3,
+.pagseguro-msg span,
+.pagseguro-msg dt { font-weight: bold; }
+.pagseguro-msg dd { margin: 0; padding: 0; }
+.pagseguro-msg li { padding: 0; list-style-type: none; }
+.pagseguro-msg dd,
+.pagseguro-msg li + li { margin-top: 0.4em; }
+.pagseguro-msg hr {  border: 0; height: 0; border-top: 1px solid rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+.pagseguro-msg button {float: right; margin: 1% 0 0 1%;}
+i.icon-pagseguro-msg,
+.pagseguro-msg:before { display: inline-block; vertical-align: middle; overflow: hidden; background-image: url('../images/messages.png'); background-repeat: no-repeat; background-size: cover; }
+i.icon-pagseguro-msg.icon-loading,
+.pagseguro-msg.pagseguro-msg-loading:before { background-image: url('../images/loading.gif'); background-position: 0 0; width: 63px !important; height: 62px !important; }
+.pagseguro-msg:before { content: ''; }
+.pagseguro-msg.no-icon:before { display: none !important; }
+i.icon-pagseguro-msg {}
+i.icon-pagseguro-msg.icon-alert,
+.pagseguro-msg.pagseguro-msg-alert:before { background-position: 0 0em; }
+i.icon-pagseguro-msg.icon-wait,
+.pagseguro-msg.pagseguro-msg-wait:before { background-position: 0 -1.28em; }
+i.icon-pagseguro-msg.icon-error,
+.pagseguro-msg.pagseguro-msg-error:before { background-position: 0 -2.56em; }
+i.icon-pagseguro-msg.icon-block,
+.pagseguro-msg.pagseguro-msg-block:before { background-position: 0 -3.84em; }
+i.icon-pagseguro-msg.icon-info,
+.pagseguro-msg.pagseguro-msg-info:before { background-position: 0 -5.12em; }
+i.icon-pagseguro-msg.icon-success,
+.pagseguro-msg.pagseguro-msg-success:before { background-position: 0 -6.35em; }
+i.icon-pagseguro-msg.icon-loading,
+.pagseguro-msg.pagseguro-msg-loading:before { -webkit-animation: pagseguro-fx-loading 1.5s linear infinite; -moz-animation: pagseguro-fx-loading 1.5s linear infinite; -ms-animation: pagseguro-fx-loading 1.5s linear infinite; -o-animation: pagseguro-fx-loading 1.5s linear infinite; animation: pagseguro-fx-loading 1.5s linear infinite; }
+i.icon-pagseguro-msg,
+.pagseguro-msg:before { width: 1em; height: 1em; }
+i.icon-pagseguro-msg.micro,
+.pagseguro-msg.pagseguro-msg-micro:before { font-size: 2em; margin: 0 0.3em 0 0; }
+i.icon-pagseguro-msg.small,
+.pagseguro-msg.pagseguro-msg-small:before { font-size: 3em; margin: 0 0.33em 0 0.053em; }
+i.icon-pagseguro-msg.medium,
+.pagseguro-msg.pagseguro-msg-medium:before { font-size: 5em; margin: 0 0.24em 0 0.072em; }
+i.icon-pagseguro-msg.large,
+.pagseguro-msg.pagseguro-msg-large:before { font-size: 7em; margin: 0 0.171em 0 0.0514em; }
+#pagseguro-module-contents .pagseguro-msg { background: #F3F3F3; border:solid 1px #E3E3E3; border-radius: 2px 2px 2px; }
+#pagseguro-module-contents .pagseguro-confirm { background: #999; border:solid 1px #E3E3E3; border-radius: 2px 2px 2px; }
+#pagseguro-module-contents #conciliation-info { margin-top: 40px; }
+#pagseguro-module-contents #refund-info { margin-top: 40px; }
+#pagseguro-module-contents #canceled-info { margin-top: 40px; }
+#pagseguro-module-contents #abandoned-info { margin-top: 40px; }
+#pagseguro-loading-message { width: 65px; }
+#pagseguro-module-menu ul ul li { display: none; }
+#pagseguro-module-menu ul li.open ul li,
+#pagseguro-module-menu ul ul li.selected { display: block; }
+.pagseguro-adminhtml-canceled-index table.pagseguro-table a.edit,
+.pagseguro-adminhtml-refund-index table.pagseguro-table a.edit { display: none !important; }
+.ps_msg_hidden { display: none !important; }
