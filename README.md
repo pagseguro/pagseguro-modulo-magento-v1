@@ -4,7 +4,7 @@
 
 Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como opção de pagamento em sua loja. O módulo utiliza as seguintes funcionalidades que o PagSeguro oferece na forma de APIs:
 
-- Integração com a [API de Pagamentos](https://dev.pagseguro.uol.com.br/documentacao/pagamento-online/pagamentos)
+- Integração com a [API de Pagamentos](https://dev.pagseguro.uol.com.br/documentacao/pagamentos)
 - Integração com a [API de Notificações](https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html#!rmcl)
 
 ## Requisitos
@@ -26,7 +26,7 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 
 ## Dúvidas
 
-Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum](https://comunidade.pagseguro.uol.com.br/hc/pt-br/community/topics).</p>
+Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum]([fórum]: https://comunidade.pagseguro.uol.com.br/hc/pt-br/community/topics).</p>
 
 ## Notas
 - A versão 2.x deste respositório está depreciada en encontra-se em [link no repo]
