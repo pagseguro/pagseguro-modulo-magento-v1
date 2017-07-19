@@ -1,0 +1,909 @@
+<?xml version="1.0"?>
+<package>
+    <name>UOL_PagSeguro</name>
+    <version>3.0.0</version>
+    <stability>stable</stability>
+    <license uri="http://opensource.org/licenses/apachepl.php">Apache Software License</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>M&#xF3;dulo de integra&#xE7;&#xE3;o com PagSeguro</summary>
+    <description>Aceite mais de 25 meios de pagamentos com apenas 1 contrato. Seus clientes podem parcelar no cart&#xE3;o
+        em at&#xE9; 18x e se preferir, voc&#xEA; tamb&#xE9;m pode oferecer parcelamento sem acr&#xE9;scimo.
+    </description>
+    <notes>Possibilidade de consultar transa&#xE7;&#xF5;es no PagSeguro para cancelar pagamentos.&#xD;
+        Possibilidade de consultar transa&#xE7;&#xF5;es no PagSeguro para estorno de pagamentos.&#xD;
+        Atualiza&#xE7;&#xE3;o do layout da tela de configura&#xE7;&#xE3;o.&#xD;
+        Integra&#xE7;&#xE3;o com Sandbox.&#xD;
+        Ajustes em geral.&#xD;
+        Atualiza&#xE7;&#xE3;o do layout da tela de configura&#xE7;&#xE3;o. Integra&#xE7;&#xE3;o com Sandbox.&#xD;
+        Ajustes em geral.&#xD;
+        Possibilidade de consultar transa&#xE7;&#xF5;es no PagSeguro para conciliar os status com a base local.&#xD;
+        Adicionado op&#xE7;&#xE3;o para visualiza&#xE7;&#xE3;o de transa&#xE7;&#xF5;es abandonadas, permitindo o envio
+        de email com um link para que o comprador possa continuar o processo de compra de onde ele parou.&#xD;
+        Compatibilidade com Magento 1.9.0.1.&#xD;
+        Cria&#xE7;&#xE3;o de pacote instal&#xE1;vel.&#xD;
+        Ajustes em geral.
+    </notes>
+    <authors>
+        <author>
+            <name>pagseguro</name>
+            <user>pagseguro</user>
+            <email>desenvolvedores@pagseguro.com.br</email>
+        </author>
+    </authors>
+    <date>2017-07-05</date>
+    <time>17:00:33</time>
+    <contents>
+        <target name="magecommunity">
+            <dir name="UOL">
+                <dir name="PagSeguro">
+                    <dir name="Block">
+                        <file name="Payment.php" hash="32746367ee4867e913060bb811a491c7"/>
+                    </dir>
+                    <dir name="Helper">
+                        <file name="Abandoned.php" hash="7625378814f86e2e034a2d9b53abd6b5"/>
+                        <file name="Canceled.php" hash="a5cdc6765e37b48c79d804633cf1b2c4"/>
+                        <file name="Conciliation.php" hash="12d4b9ca2941a903b95abc4aee11490b"/>
+                        <file name="Data.php" hash="a03b7421b1e6acc0a34ce91c35857768"/>
+                        <file name="Html.php" hash="c751b85c855fc1039054a3e6a413da1d"/>
+                        <file name="Log.php" hash="2cee326d0f39ca0d9c25dc50f6ebebc1"/>
+                        <file name="Refund.php" hash="1e761fd378dda6c69317c8ceaec2e523"/>
+                        <file name="Requirements.php" hash="d8e35395cb1ed1288a2ee2f39c9dcbaa"/>
+                        <file name="Webservice.php" hash="dc3425328ab1c82054d2af36a23e1c90"/>
+                    </dir>
+                    <dir name="Model">
+                        <dir name="Adminhtml">
+                            <file name="Config.php" hash="d888524272dde6ecee81ef91e6c9bde2"/>
+                        </dir>
+                        <file name="Checkout.php" hash="5831903dc1226e5890bf07fa40c21c9d"/>
+                        <file name="Conciliation.php" hash="fdabf7959e395707185d9278386e4096"/>
+                        <file name="Environment.php" hash="3cc3deea2df228169a07f6834cb01143"/>
+                        <file name="InstallmentsMethod.php" hash="83833b771f28056a0d74148d8e5fbe78"/>
+                        <file name="Library.php" hash="cdc13b530dbe58f8de45f4da01616d71"/>
+                        <file name="NotificationMethod.php" hash="3e2e01c14a528c3b8855f8d07e8e54ed"/>
+                        <file name="Observer.php" hash="de481d32a3aa0f1187822810ded3079c"/>
+                        <file name="OrderAddress.php" hash="6073c76f3240eec4d117ab260d6b8265"/>
+                        <file name="PaymentMethod.php" hash="07dca93767c7c774dff5683614aec649"/>
+                        <file name="Values.php" hash="5784d3076897a918fa9e982424e02351"/>
+                    </dir>
+                    <dir name="controllers">
+                        <dir name="Adminhtml">
+                            <file name="AbandonedController.php" hash="8a512eb1c4f96e577bb6aec121a9df9a"/>
+                            <file name="AjaxController.php" hash="fccce69851c0dc6a7f1db499bd843678"/>
+                            <file name="CanceledController.php" hash="7ce1ddae23221d44311031c88241c035"/>
+                            <file name="ConciliationController.php" hash="df3935cb56cbd6bdfc0f13583dc145c1"/>
+                            <file name="RefundController.php" hash="33fc3ee315e55be40d7156337273e6e2"/>
+                            <file name="RequirementsController.php" hash="a0df8752f2a900524497422a939fd529"/>
+                        </dir>
+                        <file name="NotificationController.php" hash="4b5de8cfe6aac239c3f99ec040d3093a"/>
+                        <file name="PaymentController.php" hash="9f88af7d73cbd9a6433353441327d5a5"/>
+                    </dir>
+                    <dir name="etc">
+                        <file name="config.xml" hash="a8268c48f19ce9d547c33cfb701d226f"/>
+                        <file name="system.xml" hash="152587b233ae5980e9bca5a7a5a23fb3"/>
+                    </dir>
+                    <dir name="sql">
+                        <dir name="uol_pagseguro_setup">
+                            <file name="mysql4-install-1.0.0.php" hash="0fb9bebd317957e4b06702ec6623767e"/>
+                            <file name="mysql4-upgrade-2.4.0-2.5.0.php" hash="d57a86b15ece70db7d44d8de888285f9"/>
+                            <file name="mysql4-upgrade-2.5.0-2.6.0.php" hash="2aa86627238f478ffdf67011654cbd55"/>
+                        </dir>
+                    </dir>
+                </dir>
+            </dir>
+        </target>
+        <target name="mageskin">
+            <dir name="adminhtml">
+                <dir name="default">
+                    <dir name="default">
+                        <dir name="uol">
+                            <dir name="pagseguro">
+                                <dir name="css">
+                                    <file name="jquery.dataTables.min.css" hash="be67bd9dc13aa5e086f2ab7e59a25650"/>
+                                    <file name="pagseguro-modal.css" hash="0b7315043459b09e49956ed9b46a1b02"/>
+                                    <file name="pagseguro-module-config.css" hash="559d10de1a3383be92e3184eb84078ec"/>
+                                    <file name="pagseguro-module.css" hash="0e801d0eb24584b48b8b64b78c6ced2f"/>
+                                </dir>
+                                <dir name="images">
+                                    <file name="background.png" hash="080c6a2a14bb64371208a5e25ff96428"/>
+                                    <dir name="dataTable">
+                                        <file name="sort_asc.png" hash="a039e6a344324cd10acd0356b2178c12"/>
+                                        <file name="sort_asc_disabled.png" hash="35e0dec0ab1dcee7d775047a7dba42ee"/>
+                                        <file name="sort_both.png" hash="94b34ff5224ba38210d67623bb1a1504"/>
+                                        <file name="sort_desc.png" hash="43aae919febcbff95f60c086a6408982"/>
+                                        <file name="sort_desc_disabled.png" hash="d48475e6c742940f44e62622e16865b9"/>
+                                    </dir>
+                                    <file name="help.png" hash="7e62689a93d0a23cbd1cf2dd754653e2"/>
+                                    <file name="loading.gif" hash="abc5aea3b4cfbaa8c7dbbb931877dc29"/>
+                                    <file name="logo.png" hash="531320f9ad8a9013aa156a9196aa0176"/>
+                                    <file name="messages.png" hash="bc9d774aac3454e44f05b5fb1165e73f"/>
+                                </dir>
+                                <dir name="js">
+                                    <file name="jquery-1.11.1.js" hash="4dc834d16a0d219d5c2b8a5b814569e4"/>
+                                    <file name="jquery.colorbox-min.js" hash="15aa2a339045faa83bbaf71976bc9a6d"/>
+                                    <file name="jquery.dataTables.js" hash="0a7592d60e3568f41dbad0fa16ad0e3f"/>
+                                    <file name="pagseguro-module.js" hash="158b09f4b18e402e9c42c37d442e42a3"/>
+                                </dir>
+                            </dir>
+                        </dir>
+                    </dir>
+                </dir>
+            </dir>
+            <dir name="frontend">
+                <dir name="base">
+                    <dir name="default">
+                        <dir name="uol">
+                            <dir name="pagseguro">
+                                <dir name="css">
+                                    <file name="installments.css" hash="11902993866c5b9be3b4fd8b7d3e7843"/>
+                                    <file name="styles.css" hash="406de342d1247d7c7e1f7fd55fa26199"/>
+                                </dir>
+                                <dir name="images">
+                                    <file name="flag-origin-country.png" hash="94b782830e5599519286d2f35f9f1414"/>
+                                </dir>
+                                <dir name="js">
+                                    <file name="bootstrap.min.js" hash="5869c96cc8f19086aee625d670d741f9"/>
+                                </dir>
+                            </dir>
+                        </dir>
+                    </dir>
+                </dir>
+            </dir>
+        </target>
+        <target name="magelocale">
+            <dir name="pt_BR">
+                <file name="UOL_PagSeguro.csv" hash="ebc153fd44c9159e9336f7ae0ec46fea"/>
+                <dir name="template">
+                    <dir name="email">
+                        <dir name="sales">
+                            <file name="pagseguro_abandoned.html" hash="729101088a56b71e52a5048fc82a5bb1"/>
+                        </dir>
+                    </dir>
+                </dir>
+            </dir>
+            <dir name="en_US">
+                <dir name="template">
+                    <dir name="email">
+                        <dir name="sales">
+                            <file name="pagseguro_abandoned.html" hash="97b867fc3afbfe93359d9b32e507f003"/>
+                        </dir>
+                    </dir>
+                </dir>
+            </dir>
+        </target>
+        <target name="magedesign">
+            <dir name="adminhtml">
+                <dir name="default">
+                    <dir name="default">
+                        <dir name="layout">
+                            <dir name="uol">
+                                <file name="pagseguro.xml" hash="2e4e0723c692c6249613ad86992e2bf0"/>
+                            </dir>
+                        </dir>
+                        <dir name="template">
+                            <dir name="uol">
+                                <dir name="pagseguro">
+                                    <file name="abandoned.phtml" hash="c98ce2e6371688bf9e749429467cc416"/>
+                                    <file name="canceled.phtml" hash="6e2f3699b219d62cfadc696b95ae004a"/>
+                                    <file name="conciliation.phtml" hash="78895b0947e6b3fd1dbd4ce6eaad5456"/>
+                                    <file name="refund.phtml" hash="748a64001cf608c874b6e41b08472d16"/>
+                                    <file name="requirements.phtml" hash="f84114faa22d320d9983f9c532cf6f3c"/>
+                                </dir>
+                            </dir>
+                        </dir>
+                    </dir>
+                </dir>
+            </dir>
+            <dir name="frontend">
+                <dir name="base">
+                    <dir name="default">
+                        <dir name="template">
+                            <dir name="uol">
+                                <dir name="pagseguro">
+                                    <dir name="default">
+                                        <file name="payment.phtml" hash="df965ab2581b317a883f5a0a7aa3395d"/>
+                                    </dir>
+                                    <dir name="direct">
+                                        <file name="payment.phtml" hash="d19bf18b356b79b8d39bdddfd11407a2"/>
+                                        <file name="success.phtml" hash="d19bf18b356b79b2s39bdddfd11407a2"/>
+                                    </dir>
+                                    <file name="error.phtml" hash="671999524c456ccfadce58d8798ff20b"/>
+                                    <file name="installments.phtml" hash="e0ccfba46a268934a569f3144a157a6d"/>
+                                    <dir name="lightbox">
+                                        <file name="payment.phtml" hash="9f6e538a75a4f7d388fda201f84f9927"/>
+                                    </dir>
+                                    <file name="loading.phtml" hash="9f1388bccdf2640cb2bf50addb06e177"/>
+                                    <file name="return.phtml" hash="4176f588b826011d47651b415c647a5d"/>
+                                </dir>
+                            </dir>
+                        </dir>
+                        <dir name="layout">
+                            <dir name="uol">
+                                <file name="pagseguro.xml" hash="2365ac909e070c16e9a615955551c964"/>
+                            </dir>
+                        </dir>
+                    </dir>
+                </dir>
+            </dir>
+        </target>
+        <target name="mageetc">
+            <dir name="modules">
+                <file name="UOL_PagSeguro.xml" hash="0a7e6f030c3099c48ebbb0248ee175ea"/>
+            </dir>
+        </target>
+        <target name="magelib">
+            <dir name="PagseguroPhpSdk">
+                <file name="README.md" hash="989d4053f85ad12a919a90e3c0166e36"/>
+                <file name="composer.json" hash="fc5eeda77ce6486a9f2a16a80aea3629"/>
+                <dir name="public">
+                    <dir name="Authorization">
+                        <dir name="Search">
+                            <file name="searchAuthorizationByCode.php" hash="9f3c0bb853cf9b4ea92dda251b93a8da"/>
+                            <file name="searchAuthorizationByDate.php" hash="d0f14e31e85716f4827a8bfab5a56cf0"/>
+                            <file name="searchAuthorizationByNotification.php" hash="7942a3428bc975fe337fdf9fc51c2b2a"/>
+                            <file name="searchAuthorizationByReference.php" hash="a87cb7f1e22dd0b43cd30053075535c6"/>
+                        </dir>
+                        <file name="createAuthorization.php" hash="3363f45039ed4477789bed14f45ae541"/>
+                    </dir>
+                    <dir name="Checkout">
+                        <file name="createPayment.php" hash="7ddedde9dd77ef7651b6ba3af54c64a6"/>
+                        <file name="createPaymentRequestLightbox.php" hash="9eff7a679843d751f3a810e0cfa0f98a"/>
+                        <file name="createPaymentWithPreApproval.php" hash="0757f5a1d66168e54158488900511059"/>
+                    </dir>
+                    <dir name="Configuration">
+                        <file name="README.md" hash="d72d6703ef5a61a5fbb02ae750b54a4c"/>
+                        <file name="dynamicConfiguration.php" hash="52a3025657cfeb8aca621d28873d3b8e"/>
+                    </dir>
+                    <dir name="DirectPayment">
+                        <file name="usingBoleto.php" hash="515bba4171f5ccf1ba93317bd5bb5f69"/>
+                        <file name="usingCreditCard.php" hash="a464b8da287f8a38ee86f925d5a0976b"/>
+                        <file name="usingInternationalCreditCard.php" hash="1f28414e1cd50f8437f871fe86196f9c"/>
+                        <file name="usingOnlineDebit.php" hash="0bec71c5d751b92d4bbc72ed8cfda11e"/>
+                    </dir>
+                    <dir name="Notifications">
+                        <file name="authorizationListener.php" hash="e8af0b835535f050ae852d9c07816687"/>
+                        <file name="preApprovalListener.php" hash="ddbbdf779c9350c2c9ff9f110d2be367"/>
+                        <file name="transactionListener.php" hash="e76c6144612acd27203149b4df50d176"/>
+                    </dir>
+                    <dir name="PreApproval">
+                        <dir name="Search">
+                            <file name="searchPreApprovalByCode.php" hash="52d22d76a1a14c87fff0b7a83eec5f8a"/>
+                            <file name="searchPreApprovalByDate.php" hash="ea7ba6602faf9ec8781d2c4d713376a5"/>
+                            <file name="searchPreApprovalByInterval.php" hash="d1abd3c3e5dd6169afe50900a12d1006"/>
+                            <file name="searchPreApprovalByNotification.php" hash="490e1d591be7c34e68861ea35496d891"/>
+                        </dir>
+                        <file name="cancelPreApproval.php" hash="7831c456782e14d07e99244707358120"/>
+                        <file name="chargePreApproval.php" hash="3562401de6c2fb0047ba33b2eaf865d2"/>
+                        <file name="createPreApproval.php" hash="f4bfc8cec497217a2dbdfaa6ca8e3898"/>
+                    </dir>
+                    <dir name="Split">
+                        <file name="usingBoleto.php" hash="50c20c3252830e4e56321fb65888976c"/>
+                        <file name="usingCreditCard.php" hash="b299d262c15a0b5b1ca957a616e6bcfb"/>
+                        <file name="usingInternationalCreditCard.php" hash="249b59d00746f802a3e7a65f425a8a01"/>
+                        <file name="usingOnlineDebit.php" hash="0b1e031b76516ce359ab73fa26354e76"/>
+                    </dir>
+                    <dir name="Transactions">
+                        <dir name="Search">
+                            <file name="searchTransactionByCode.php" hash="e7e14024eb2e6f62131ca8140b8d2611"/>
+                            <file name="searchTransactionByDate.php" hash="35a71c15d042ef3a88f01eeb70bd7835"/>
+                            <file name="searchTransactionByReference.php" hash="c0c67a281957a5a2f45fdb7a505aad12"/>
+                            <file name="searchTransactionsAbandoned.php" hash="b7fccb8c87ba6724c7fd0d9bc63bc33e"/>
+                        </dir>
+                        <file name="requestCancel.php" hash="423ecff4b6d94b75bdfd8e48e67380a7"/>
+                        <file name="requestRefund.php" hash="07a4f7e4e233a2d2d2e5c00c13ff0168"/>
+                    </dir>
+                    <file name="createSession.php" hash="e3e7d76c17157a1a0c85bb36024fffcf"/>
+                    <file name="getInstallments.php" hash="b547a366616acee222f07cb16ae78749"/>
+                </dir>
+                <dir name="source">
+                    <dir name="Configuration">
+                        <file name="Configure.php" hash="e9d0da475c12db326d425d51e7b4c178"/>
+                        <dir name="Properties">
+                            <file name="Conf.xml" hash="6e4879b81ea3e842d5f701ed973f8151"/>
+                            <file name="Resources.xml" hash="401b8c1e4c10858fdb8669b90b8ac3dd"/>
+                        </dir>
+                        <file name="Wrapper-example.php" hash="634bbe4b9aa5f725b8ebadae067610e4"/>
+                    </dir>
+                    <dir name="Domains">
+                        <dir name="Account">
+                            <file name="Credentials.php" hash="2a83a082dc467b79fc3485e24ed10645"/>
+                        </dir>
+                        <file name="Account.php" hash="7f80390c20d93b65baaf85333328569d"/>
+                        <file name="AccountCredentials.php" hash="43be1fdea60ca61d5be8acf099070d01"/>
+                        <file name="Address.php" hash="b3495080a4f04364dfc6c19da6956f60"/>
+                        <file name="ApplicationCredentials.php" hash="a5474158cb169504eec15dd13f1237b9"/>
+                        <file name="Charset.php" hash="7edf5f1a12c124eb78fd232e5f244c1c"/>
+                        <file name="Credentials.php" hash="f2ede26312637a5b0b6f5af362a82d3a"/>
+                        <file name="CreditorFees.php" hash="b980df8886a4de7424c18680b531f91c"/>
+                        <dir name="DirectPayment">
+                            <dir name="CreditCard">
+                                <file name="Billing.php" hash="a26ccd9238575c382773276524de979f"/>
+                                <file name="Holder.php" hash="5f400168af28520b00eb564bedc802d9"/>
+                                <file name="Installment.php" hash="dfc028c99f4921cd1e4e4bf00b7ff2d2"/>
+                            </dir>
+                            <file name="Sender.php" hash="af4f07b1f6c1256559035655e838f2fa"/>
+                        </dir>
+                        <file name="Document.php" hash="b74fe9326b66b7b5aca1c03ba86b877a"/>
+                        <file name="Environment.php" hash="3187ab6647a62c56438ea36200bf249d"/>
+                        <file name="Error.php" hash="c05dc645d66164c3b9816996bd850149"/>
+                        <dir name="Http">
+                            <file name="Status.php" hash="cd8d484c440ccae80a01435ab13467f5"/>
+                        </dir>
+                        <file name="Item.php" hash="fc68e5aeac36d5a7fc2a8a7dcb11134f"/>
+                        <file name="Log.php" hash="8fedf94ac6162f644dabcf8c607ed586"/>
+                        <file name="Metadata.php" hash="32582c231a0e72dd71ea8c450bdaa232"/>
+                        <file name="Notification.php" hash="a09aca810bbbbde03b9179a00abd6f17"/>
+                        <file name="Parameter.php" hash="28ede5a2ae461a2c3080be14121560aa"/>
+                        <dir name="PaymentMethod">
+                            <file name="Accepted.php" hash="805423ed886b175bcbf5e4ec80cb6dae"/>
+                        </dir>
+                        <file name="PaymentMethod.php" hash="5e1c994d2c0bc6f37765c5d9324dbcd7"/>
+                        <file name="Permission.php" hash="be9e5df79c51b2da0f81d52723117bcc"/>
+                        <file name="Phone.php" hash="3e96e365a43dfc18aa1d5d8647cd9c58"/>
+                        <dir name="PreApproval">
+                            <file name="Sender.php" hash="15cb2a3129c514c7b8bc91b2cb8213a5"/>
+                        </dir>
+                        <file name="PreApproval.php" hash="e49df9e04e82cf8fa9a4f1296ea4f2f4"/>
+                        <dir name="Requests">
+                            <dir name="Adapter">
+                                <dir name="DirectPayment">
+                                    <file name="Billing.php" hash="c425558f2105ffe71d1d3dfb15cc7a42"/>
+                                    <file name="Holder.php" hash="4018efdc9611cd958c97231a8d45eb6a"/>
+                                    <file name="Sender.php" hash="0f054edb9e64e16ad019a726ba6fff1a"/>
+                                </dir>
+                                <dir name="PreApproval">
+                                    <file name="Sender.php" hash="5ec2d5e4acce7027af9c1db75223b272"/>
+                                </dir>
+                                <file name="Sender.php" hash="9bc26e29009fc863c1a1f00d66cf0c74"/>
+                                <file name="Shipping.php" hash="1f3cd80f02ac28573601070c1de7914c"/>
+                                <file name="Split.php" hash="2ac989810dc601f4a7ed88b186fc2727"/>
+                            </dir>
+                            <dir name="Application">
+                                <dir name="Authorization">
+                                    <file name="Request.php" hash="ffa0fbb161a3e5e9bd690afc0564e053"/>
+                                </dir>
+                            </dir>
+                            <file name="Authorization.php" hash="3efcba2f6f1ae03d9ad4aa2667a0af30"/>
+                            <dir name="Checkout">
+                                <dir name="Payment">
+                                    <file name="Request.php" hash="4e238ba2f9929144b480dd24d3c4e087"/>
+                                </dir>
+                            </dir>
+                            <file name="Currency.php" hash="697ccf53b2e3a82519004af5ea5f144b"/>
+                            <dir name="DirectPayment">
+                                <dir name="Boleto">
+                                    <file name="Request.php" hash="70d5222c95205ff1a1a0a2a766449b94"/>
+                                </dir>
+                                <file name="Boleto.php" hash="80d105913b857f24862ca627a81bad38"/>
+                                <dir name="CreditCard">
+                                    <dir name="Billing">
+                                        <file name="Address.php" hash="cb82dd85518abdb3342fcdc91ab18484"/>
+                                    </dir>
+                                    <file name="Billing.php" hash="f7e49f2c5500df675e0ad710725f92ec"/>
+                                    <dir name="Holder">
+                                        <file name="Document.php" hash="3c28d1ce352ba94389de3749a881a0e9"/>
+                                        <file name="Phone.php" hash="3b22661eaec5cbaa39c4a0a681625fcb"/>
+                                    </dir>
+                                    <file name="Holder.php" hash="de534e8f6481e672b83614508b8746da"/>
+                                    <file name="Installment.php" hash="e93c426f71f9ec879a0a68c8c9293efa"/>
+                                    <file name="Request.php" hash="a10da0f269218153614ba5098e370304"/>
+                                    <file name="Token.php" hash="216a5e0d6348352042f448ba6f0b4cca"/>
+                                </dir>
+                                <file name="CreditCard.php" hash="1ed72b6fa49a1743c6a853b005268a28"/>
+                                <dir name="InternationalCreditCard">
+                                    <file name="Request.php" hash="e6abb223271e7212d898bb6171cc088b"/>
+                                </dir>
+                                <file name="InternationalCreditCard.php" hash="13999cbd84c28f7ebd9e6301c3a8af5e"/>
+                                <file name="Mode.php" hash="5861f991710830e98d56463fe7a6a96b"/>
+                                <dir name="OnlineDebit">
+                                    <file name="Request.php" hash="fe6c19b514b4cd1842bd80d18002bdbd"/>
+                                </dir>
+                                <file name="OnlineDebit.php" hash="f3a0b1fa4453c0d7cdc97cfa16a20058"/>
+                                <file name="Sender.php" hash="ed10a03ebbb42637adc6ad6d40f5100c"/>
+                            </dir>
+                            <file name="Item.php" hash="a280d3821e0ce27770fbd87ac9b3159b"/>
+                            <file name="Metadata.php" hash="98711e93db0adf5bafd82fe19d29c873"/>
+                            <file name="Notification.php" hash="2fc76ed2d33c8fd16eacb1dd8d8c6271"/>
+                            <file name="Parameter.php" hash="456219e42faab487743d0a7d28c12566"/>
+                            <file name="Payment.php" hash="571b0ce500e0b8756bc51b047b180619"/>
+                            <dir name="PaymentMethod">
+                                <file name="Accepted.php" hash="6f77fd6d353e30c8db6a151f0d9018d4"/>
+                            </dir>
+                            <file name="PaymentMethod.php" hash="a2daf4416dc530c3a4fd40465cf4d919"/>
+                            <file name="Permissions.php" hash="b6bb0d39db32c452f96a8e004687ef0f"/>
+                            <dir name="PreApproval">
+                                <dir name="Charge">
+                                    <file name="Request.php" hash="54b8e798d0bcba551e30b3f5f7152fad"/>
+                                </dir>
+                                <file name="Charge.php" hash="a3efcd9ea2dbedd4b05d26167bb599e6"/>
+                                <file name="PreApproval.php" hash="2910a52f217919ed4cdcaa69c6556a8a"/>
+                                <file name="Request.php" hash="a43164da22d0f54c2ca85233e55f75f1"/>
+                                <file name="Sender.php" hash="5243ab0fc8b9587b9b914aacfd9a84f9"/>
+                            </dir>
+                            <file name="PreApproval.php" hash="6415c2feb3626f6659a627a25f0fd6aa"/>
+                            <file name="ReceiverEmail.php" hash="f38c4a3bde54adf004ba714ce4e57dbe"/>
+                            <file name="Redirect.php" hash="d7d97b9dce426e655664b3cd5b88246c"/>
+                            <file name="Reference.php" hash="8a6ced155b81cae2002003d9629b8943"/>
+                            <file name="Requests.php" hash="389f194027057948804870c4167a5d65"/>
+                            <file name="Review.php" hash="0958f7618071c9a23cc237dda8907b75"/>
+                            <dir name="Sender">
+                                <file name="Address.php" hash="66b3033c72551e1dac4e5e5f8dd831e4"/>
+                                <file name="Customer.php" hash="5abeb9d32ab19e124803f081ab3ddb2a"/>
+                                <file name="Document.php" hash="305e7ef225df82f1bcd800ef4ad24c49"/>
+                                <file name="Hash.php" hash="56e3002d730666f3d87165ea978c5f3f"/>
+                                <file name="Ip.php" hash="52de06b9c105fdf01b76ba1ad7b251fb"/>
+                                <file name="Phone.php" hash="7a2e4fa2a8e0a63e07cbe5f42975cf86"/>
+                            </dir>
+                            <file name="Sender.php" hash="c495772b2644155695d2a2029f4a44c0"/>
+                            <dir name="Shipping">
+                                <file name="Address.php" hash="c9f2b4b0b003a1100a05867c6c3e848f"/>
+                                <file name="Cost.php" hash="18fb6f142b57cb5a1d27fe58cd98adef"/>
+                                <file name="Type.php" hash="793364cbc75e18d8fcff09a7ae5ca949"/>
+                            </dir>
+                            <file name="Shipping.php" hash="d7888134228657bd074db6acc8c756fd"/>
+                            <dir name="Split">
+                                <file name="Primary.php" hash="e647235506cebf56939f1395450655c7"/>
+                                <file name="Receiver.php" hash="5376047ffd0523d7debb0699ccab504b"/>
+                            </dir>
+                            <file name="Split.php" hash="d3475557c054bf6c58199c185773f53b"/>
+                        </dir>
+                        <dir name="Responses">
+                            <dir name="Applications">
+                                <file name="Application.php" hash="7a4684fc2956bd9b8c8c929d104ea05a"/>
+                            </dir>
+                            <file name="GatewaySystem.php" hash="037ce38f8d91e910e0bc05f1ae96fdf7"/>
+                            <file name="Installment.php" hash="c7aaf23bbdfa52b31164abfd69d0a8db"/>
+                            <file name="Installments.php" hash="6eaaf99c8ca672d5440ce8fbf25849ee"/>
+                            <file name="PaymentMethod.php" hash="31489dccd263fa0957472e788049a888"/>
+                        </dir>
+                        <file name="Sender.php" hash="dd8b9979e4cbe3f4b12b640a44b399eb"/>
+                        <file name="Shipping.php" hash="4f433d1413bfad6e136426c05df10559"/>
+                        <file name="ShippingCost.php" hash="dd21f3f0c11b2ee86e366e8135a70906"/>
+                        <file name="ShippingType.php" hash="bd5f95c819cd2c3b9f7a7c150c70ae7d"/>
+                        <dir name="Split">
+                            <file name="Receiver.php" hash="0e0cac1fca0f7ef6aad9c744f418f9c8"/>
+                        </dir>
+                        <file name="Split.php" hash="9740b1589d039a727b49cb2b60d810b4"/>
+                    </dir>
+                    <dir name="Enum">
+                        <file name="Address.php" hash="d18380345f42af45ef706747e64d0758"/>
+                        <dir name="Authorization">
+                            <file name="Permissions.php" hash="63ce47a5079efcd215e2fb1a81bf65dd"/>
+                        </dir>
+                        <file name="BaseEnum.php" hash="c7789ff0cc0e67bbfd1176b2e2991f15"/>
+                        <dir name="Configuration">
+                            <file name="Environment.php" hash="41c6fc71db5eb9c547a3d50b5ed56dfa"/>
+                        </dir>
+                        <dir name="DirectPayment">
+                            <file name="Method.php" hash="4e43ef687c7cfd49577f30628e2ef4c2"/>
+                        </dir>
+                        <file name="Enum.php" hash="480807f60d4fdfec6d2a1572315c9803"/>
+                        <dir name="Http">
+                            <file name="Status.php" hash="7b59ea5450eaf3a9f94910d78205b772"/>
+                        </dir>
+                        <dir name="Log">
+                            <file name="Level.php" hash="be0fb9680eba0beca33e0019f5cd9945"/>
+                        </dir>
+                        <file name="Mask.php" hash="c99a99b54afdde38f93f262724657cbd"/>
+                        <dir name="Metadata">
+                            <file name="Description.php" hash="d3654147542afa9d30825e903c7fcfb9"/>
+                            <file name="Format.php" hash="71ec08887c94720429c63bf680fa8dad"/>
+                        </dir>
+                        <file name="Notification.php" hash="56b81b299057d883d68df5a0943a5258"/>
+                        <dir name="PaymentMethod">
+                            <dir name="Config">
+                                <file name="Keys.php" hash="75bdff89db033656a195dc2ac457f354"/>
+                            </dir>
+                            <file name="Group.php" hash="26faa3858fd48c3667f4575e764de70d"/>
+                            <file name="Name.php" hash="e06f2817120bc6bd6ab32182a6e05410"/>
+                        </dir>
+                        <dir name="Properties">
+                            <file name="BackwardCompatibility.php" hash="bf956799b8c58a4d85849e3a20539885"/>
+                            <file name="Current.php" hash="0f1fea2639033893e2aaec09429a785d"/>
+                        </dir>
+                        <dir name="Shipping">
+                            <file name="Type.php" hash="f61943d976a28e7c41004ce664d3dcb9"/>
+                        </dir>
+                    </dir>
+                    <dir name="Helpers">
+                        <file name="Characters.php" hash="7f428c24d5db7e16a00b9d305ea69530"/>
+                        <file name="Crypto.php" hash="f89b5494cb111e7b8f4d195049393652"/>
+                        <file name="Currency.php" hash="b2e468208760887d0be54f74aa02001c"/>
+                        <file name="InitializeObject.php" hash="00185247c7c9705b12888b17b1b10601"/>
+                        <file name="Mask.php" hash="71a92348e907ba66208dc4472ffae40c"/>
+                        <file name="NotificationObject.php" hash="6637703e6a9199d61a4a59872dd1e581"/>
+                        <file name="StringFormat.php" hash="447f4031f112c0f62f21f22f2c59d7ce"/>
+                        <file name="Validate.php" hash="cca32d34b227d54c07f371593f97b120"/>
+                        <file name="Wrapper.php" hash="3fb1b4b1657d00a81405f6903deab8f8"/>
+                        <file name="Xhr.php" hash="e7419fafde5b3f2c6a4e253abcc4e7fa"/>
+                    </dir>
+                    <file name="Library.php" hash="e28689fa26dabaf73f806031e499e729"/>
+                    <dir name="Parsers">
+                        <file name="Accepted.php" hash="89bb8efb794c2d019c8a45208d3cfa49"/>
+                        <dir name="Authorization">
+                            <dir name="Notification">
+                                <file name="Request.php" hash="fc90924979638eb8f1861648bf319d7b"/>
+                            </dir>
+                            <file name="Request.php" hash="9715ad2b9f4f2cf545ee577f8e969d2c"/>
+                            <file name="Response.php" hash="851a3e99cfc72866830a2435fc8064cf"/>
+                            <dir name="Search">
+                                <dir name="Code">
+                                    <file name="Request.php" hash="cec0916fa8c64abc3c650262f944af55"/>
+                                </dir>
+                                <dir name="Date">
+                                    <file name="Request.php" hash="4d217f4b57d55a5ef980708d3dba7789"/>
+                                    <file name="Response.php" hash="3a8ed8b6d148a959aa363e69863fdd80"/>
+                                </dir>
+                                <file name="Response.php" hash="393ef00fc52cc625362823087449c834"/>
+                            </dir>
+                        </dir>
+                        <file name="Basic.php" hash="5329aa2d31dc23398f533e42dde86f29"/>
+                        <dir name="Cancel">
+                            <file name="Request.php" hash="b0a3ddbb7eed0c8092a42b6a94c45cc8"/>
+                            <file name="Response.php" hash="8558d4a3935493c4df4c9842c9352985"/>
+                        </dir>
+                        <dir name="Checkout">
+                            <file name="Request.php" hash="904e38f60cbe5ec0815d776d4a9f47bf"/>
+                            <file name="Response.php" hash="5c8b44f51aefc4c6666b1d1889c56ce2"/>
+                        </dir>
+                        <file name="Currency.php" hash="a34f095bf328bfe04e40201aceb64f16"/>
+                        <dir name="DirectPayment">
+                            <dir name="Boleto">
+                                <file name="Method.php" hash="28ecbc82dd3a544f8cecd6abd04f7f52"/>
+                                <file name="Request.php" hash="bfce265f478f91aa420cca36fb8d7136"/>
+                            </dir>
+                            <dir name="CreditCard">
+                                <file name="Billing.php" hash="f65ae306d18852585ce5ef51408e78c7"/>
+                                <file name="Holder.php" hash="df1b54d2e7994dab4377657126f1cab7"/>
+                                <file name="Installment.php" hash="a5ac448997f890c7f84886697f3b0e0f"/>
+                                <file name="Method.php" hash="f70e94d834a0368aeeba0c3b53e10161"/>
+                                <file name="Request.php" hash="ee104d648d6de1a5509e9193315ca5a9"/>
+                                <file name="Token.php" hash="d125b560541c02a911254420a3701af9"/>
+                            </dir>
+                            <dir name="InternationalCreditCard">
+                                <file name="Request.php" hash="1e7881061ee9809031fce92a903a2b09"/>
+                            </dir>
+                            <file name="Mode.php" hash="b99b77b040163924b02814997ab731ee"/>
+                            <dir name="OnlineDebit">
+                                <file name="BankName.php" hash="4e1685d3e01eef8f143364e35efdd81c"/>
+                                <file name="Method.php" hash="82a1d834053ccf31a5e1ed57dabb6ce7"/>
+                                <file name="Request.php" hash="19e4caa790229ce2910b41d7439b4621"/>
+                            </dir>
+                        </dir>
+                        <file name="Error.php" hash="535e886a9a4731630562d3d82e5b904c"/>
+                        <dir name="Installment">
+                            <file name="Request.php" hash="28430dc50754473da2f08f01c0864e5d"/>
+                        </dir>
+                        <file name="Item.php" hash="4dc8bb25b6d322dd5f3315a6c7075f6d"/>
+                        <file name="Metadata.php" hash="d6522072f1cecfb800defdeab859a557"/>
+                        <file name="Parameter.php" hash="68a536d3f78e3681727456cc7d39f6f8"/>
+                        <file name="Parser.php" hash="b7d7cd49d86a6d3cc79305084910120d"/>
+                        <file name="PaymentMethod.php" hash="2e34519743c940773f25a8bd5b8bf723"/>
+                        <dir name="PreApproval">
+                            <dir name="Charge">
+                                <file name="Request.php" hash="c22fc60e20eb798482b48614abddd271"/>
+                            </dir>
+                            <dir name="Notification">
+                                <file name="Request.php" hash="6a74107d718668a7816cc45448625528"/>
+                            </dir>
+                            <file name="Request.php" hash="737beb2492f1f1c9a2a6c3d072dc07d1"/>
+                            <file name="Response.php" hash="3f11a9d911b2170467135e4d89428696"/>
+                            <dir name="Search">
+                                <dir name="Code">
+                                    <file name="Request.php" hash="056b292fb0d96339d94dbdfd902b4e47"/>
+                                    <file name="Response.php" hash="626021b202a5c1beab44a1fdb6cf910c"/>
+                                </dir>
+                                <dir name="Date">
+                                    <file name="Request.php" hash="1c186ae61cfe8a9639702e315420bcb1"/>
+                                </dir>
+                                <file name="Response.php" hash="3db2411b8e42f7913e6a0089031093e6"/>
+                                <file name="Result.php" hash="d21dc321cf55f337cec091f16a1dad82"/>
+                            </dir>
+                        </dir>
+                        <file name="PreApproval.php" hash="21d24f26e32fa8f6ed94fd319e5b63c0"/>
+                        <file name="ReceiverEmail.php" hash="4288a72346ab38730727d4a0bfcdf659"/>
+                        <dir name="Response">
+                            <file name="Application.php" hash="f5db5d9723c658dff0353f99618a68f8"/>
+                            <file name="CreditorFees.php" hash="b2e97ea08322500d85b8610a1e8c579d"/>
+                            <file name="Currency.php" hash="78e7e002a6d51b27a034f2fafd372cab"/>
+                            <file name="GatewaySystem.php" hash="47b02ce642270bd048d2b075a55d5011"/>
+                            <file name="Item.php" hash="247fb3e2714cad518237c5dbc4818d49"/>
+                            <file name="PaymentLink.php" hash="04a0d6b9a6a4e05a65d5266cf73b27e2"/>
+                            <file name="PaymentMethod.php" hash="3084bb48c95cc8da094910f2fc50e776"/>
+                            <file name="RecoveryCode.php" hash="118317703a800a17ad483ae88ca1da89"/>
+                            <file name="Sender.php" hash="f3355469713158587be9581bbf00db18"/>
+                            <file name="Shipping.php" hash="2065236fb85df4a27ec4deee117ce8eb"/>
+                        </dir>
+                        <file name="Sender.php" hash="d7d193d90567a39be7b71dc5e6d8a3f9"/>
+                        <dir name="Session">
+                            <file name="Request.php" hash="690091a45aa7c2563b89451300ee0bf0"/>
+                            <file name="Response.php" hash="c86a330beaa2eeecdcb9cefe8d9cce46"/>
+                        </dir>
+                        <file name="Shipping.php" hash="c871064fe5b6313c2e4e70f5ae99d29a"/>
+                        <file name="Split.php" hash="f2323544484ab162e6321222bfe9f169"/>
+                        <dir name="Transaction">
+                            <dir name="Boleto">
+                                <file name="Response.php" hash="61688bba8e002e4d134ca63d17fbaa03"/>
+                            </dir>
+                            <dir name="CreditCard">
+                                <file name="Response.php" hash="0a050a7a6a3f9d5ea5eec9edc87b8a9b"/>
+                            </dir>
+                            <dir name="InternationalCreditCard">
+                                <file name="Response.php" hash="246b8958bf191c1328afc5db26cd5700"/>
+                            </dir>
+                            <dir name="Notification">
+                                <file name="Request.php" hash="3b87400061a575d787174d7f8fa0e2bf"/>
+                            </dir>
+                            <dir name="OnlineDebit">
+                                <file name="Response.php" hash="d7b7bb30db8ecb25fdbab11a694c441f"/>
+                            </dir>
+                            <dir name="Refund">
+                                <file name="Request.php" hash="72a1a02890e450278492fc808c3b688a"/>
+                                <file name="Response.php" hash="31027979347bca892e44c88cf7e41a07"/>
+                            </dir>
+                            <file name="Response.php" hash="ff79e1e546d8727ee736673aefddffc8"/>
+                            <dir name="Search">
+                                <dir name="Abandoned">
+                                    <file name="Request.php" hash="57fa7fe16b628f604e1fb54baa6a4348"/>
+                                    <file name="Response.php" hash="28552c8249f3dea7f3e5ce1c3c44170a"/>
+                                    <file name="Transaction.php" hash="781e1369c2115b9bdeb83ca8c35640cd"/>
+                                </dir>
+                                <dir name="Code">
+                                    <file name="Request.php" hash="7efdb6529c4eae1c8dee6b40812ecc63"/>
+                                </dir>
+                                <dir name="Date">
+                                    <file name="Request.php" hash="18be05b1d5ed47e54a855c94b5537993"/>
+                                    <file name="Response.php" hash="ee112239d6bc99e89017603622b7866a"/>
+                                    <file name="Transaction.php" hash="ead1a6c7868e2ed9032adfe1717fb554"/>
+                                </dir>
+                                <file name="Transactions.php" hash="036a30883b38c005a816a1dea3ad2892"/>
+                            </dir>
+                        </dir>
+                    </dir>
+                    <dir name="Resources">
+                        <dir name="Builder">
+                            <dir name="Application">
+                                <dir name="Authorization">
+                                    <file name="Search.php" hash="208aaaf278596ffa1ac9e5297b262c9c"/>
+                                </dir>
+                                <file name="Authorization.php" hash="3351f091caf8dce20a3d02ad63fb0e81"/>
+                            </dir>
+                            <dir name="Checkout">
+                                <file name="Payment.php" hash="22e7bfc90dab28e66d4179aca77a8fd0"/>
+                            </dir>
+                            <dir name="DirectPayment">
+                                <file name="Payment.php" hash="23a2c3d0a66a8fb32a4aa5f557bc7e7a"/>
+                            </dir>
+                            <file name="Installment.php" hash="4e6392ce89dcec48fee573402ab0f918"/>
+                            <file name="Notification.php" hash="98892b0fb05503627ea4f2ee8a9e0019"/>
+                            <dir name="PreApproval">
+                                <file name="Cancel.php" hash="d3c29954d75127790f63592683032079"/>
+                                <file name="Charge.php" hash="ef0976da24756e7e840ebb82c4b0179d"/>
+                                <file name="Payment.php" hash="f27230eed5a99ddf0fb5ae7d803b1f57"/>
+                                <file name="Search.php" hash="86bb2f005b21ec2be3e8c8b120258661"/>
+                            </dir>
+                            <file name="Refund.php" hash="bf85cc54828a5be1d79bc570aadceea3"/>
+                            <file name="Session.php" hash="3ed53e547090f248ee1d448bc1c725fb"/>
+                            <dir name="Transaction">
+                                <file name="Abandoned.php" hash="380ec5a3af31ffbd9a27358803c8af82"/>
+                                <file name="Cancel.php" hash="48bfe04a28d2aeac81e810206fb5838d"/>
+                                <file name="Search.php" hash="77bb578812754d16d4809df400137b24"/>
+                            </dir>
+                        </dir>
+                        <file name="Builder.php" hash="216724eef4f1e1700fbfc5435a0129af"/>
+                        <dir name="Connection">
+                            <dir name="Base">
+                                <dir name="Application">
+                                    <dir name="Authorization">
+                                        <file name="Search.php" hash="2510af11a2191ea611e0aa118405d734"/>
+                                    </dir>
+                                    <file name="Authorization.php" hash="ea3747d0dadfcf37749762b44e089166"/>
+                                </dir>
+                                <dir name="Checkout">
+                                    <file name="Payment.php" hash="e2a3253e1435eaae6897ef958de20fd5"/>
+                                </dir>
+                                <file name="Credentials.php" hash="2f5e39162d41f5d2fedbd26380ace618"/>
+                                <dir name="DirectPayment">
+                                    <file name="Payment.php" hash="64c6167f3ccb47ff5fd77416e1a78750"/>
+                                </dir>
+                                <file name="Installment.php" hash="49176bd09061b49597845d0df6f4d531"/>
+                                <file name="Notification.php" hash="2f47c28b2324fb1f6cb8de79b841a474"/>
+                                <dir name="PreApproval">
+                                    <file name="Cancel.php" hash="26079fdc9ffb857e7cdd49a2113c3047"/>
+                                    <file name="Charge.php" hash="c7c2095ac7cd00a6d5141381e036ce10"/>
+                                    <file name="Payment.php" hash="b18c8e81081dc0dd00441402c3520cfb"/>
+                                    <file name="Search.php" hash="52a5bbea87920e7e7c99b58a15c2fb97"/>
+                                </dir>
+                                <file name="Refund.php" hash="ffae0bbeef6600f37976be00c4d3024f"/>
+                                <file name="Session.php" hash="f18a8b09d45eb0276ea14da4c5d28eb1"/>
+                                <dir name="Transaction">
+                                    <file name="Abandoned.php" hash="1f4cdab3ce120120b18a7cad00c74730"/>
+                                    <file name="Cancel.php" hash="80aeeef69db3238ae27e5b967524526a"/>
+                                    <file name="Search.php" hash="4ac9fe671909d14624692ab21af5be62"/>
+                                </dir>
+                            </dir>
+                            <file name="Data.php" hash="79d174f3a8c79b560e3ce60e8fd67986"/>
+                        </dir>
+                        <dir name="Factory">
+                            <file name="Document.php" hash="d6c2918fa1fe3d05b48eeb2d07027d74"/>
+                            <file name="Item.php" hash="fd703fceaee627017175d375df6a6bef"/>
+                            <file name="Phone.php" hash="77ee00d815760b9a4295b4a9638df282"/>
+                            <dir name="Request">
+                                <file name="Accepted.php" hash="94c26c7fd625182da073501f57387824"/>
+                                <dir name="DirectPayment">
+                                    <dir name="CreditCard">
+                                        <dir name="Billing">
+                                            <file name="Address.php" hash="8019a59c80e596f6b59d5fa6b899a88f"/>
+                                        </dir>
+                                        <dir name="Holder">
+                                            <file name="Document.php" hash="eb44428dcdc78949dd580de33a756490"/>
+                                            <file name="Phone.php" hash="5780017243cf912ea972d356c1bdaca9"/>
+                                        </dir>
+                                        <file name="Installment.php" hash="5f730f974799444523b18a71935431a1"/>
+                                    </dir>
+                                    <file name="Sender.php" hash="bef76cf142350c8147c7b0c6ea9ace6b"/>
+                                </dir>
+                                <file name="Metadata.php" hash="50cb9ab65c14f62efebe556a58a26cfe"/>
+                                <file name="Parameter.php" hash="f3f2cc01ae6a7ba0a6ab83e8cf5dc129"/>
+                                <file name="PaymentMethod.php" hash="0fe781c9a74731c8d58909a2e03a150b"/>
+                            </dir>
+                            <dir name="Sender">
+                                <file name="Address.php" hash="e0ba9b5eced9da391624d25dcbb7a800"/>
+                                <file name="Document.php" hash="56acd56267b2ad4d59b984f5b8f1aca3"/>
+                                <file name="Phone.php" hash="aa896d2cb6157231a125ea192282529f"/>
+                            </dir>
+                            <file name="Sender.php" hash="76acf4a16553d3ce83532be8c4d25b1d"/>
+                            <dir name="Shipping">
+                                <file name="Address.php" hash="d097e69b37014d377e72369c033f20a1"/>
+                                <file name="Cost.php" hash="e877a22f23a1ba1fb7b070907577e56b"/>
+                                <file name="Type.php" hash="61d5e592fad0db931428c19d1727c3d1"/>
+                            </dir>
+                            <dir name="Split">
+                                <file name="Receiver.php" hash="8d844920a57439e02fc059c537fa3555"/>
+                            </dir>
+                        </dir>
+                        <dir name="Framework">
+                            <file name="ContentManagementSystems.php" hash="7fd23e9a9de0c4456f17269bf9c6b853"/>
+                            <file name="Language.php" hash="a3479ed68e80e440b9f0315e797a0086"/>
+                            <file name="Module.php" hash="bb72e8132a6f1630a7cf5721822a32e7"/>
+                            <dir name="Platform">
+                                <file name="Factory.php" hash="33a117d279521b2677ebe4e5642ce07f"/>
+                                <file name="Platform.php" hash="51098d94990455c96f58f0393d15220f"/>
+                            </dir>
+                        </dir>
+                        <file name="Http.php" hash="3ce02eff13762ae2cfa29abf8c4a6f2c"/>
+                        <dir name="Log">
+                            <file name="Logger.php" hash="781b7bc3afbc4413559510ed6333ead0"/>
+                            <file name="LoggerInterface.php" hash="468b1628d32040d9f8ec9231cfe02145"/>
+                        </dir>
+                        <dir name="Responsibility">
+                            <dir name="Configuration">
+                                <file name="Environment.php" hash="3dcf711c0cd0ef1ff8a109a09c0d0a4b"/>
+                                <file name="Extensible.php" hash="7f06cb226b5063a410df4092d7a4bb27"/>
+                                <file name="File.php" hash="f1406977e2f259349bb6053c9066804b"/>
+                                <file name="Wrapper.php" hash="66386bd7a4f8dcdfcfadad3d95272a6f"/>
+                            </dir>
+                            <dir name="Factory">
+                                <dir name="Request">
+                                    <file name="Instance.php" hash="3ac608b7170a35f3d58554c859e40fe7"/>
+                                </dir>
+                            </dir>
+                            <file name="Handler.php" hash="2910a2b3493a96e555e72a5555b98506"/>
+                            <dir name="Http">
+                                <dir name="Methods">
+                                    <file name="Generic.php" hash="f2ae926e0e05bc98d56a930d788975d7"/>
+                                    <file name="Request.php" hash="5938a5b0f33f99892870dcb9320e3e92"/>
+                                    <file name="Success.php" hash="94d002aa7c41a6fab8c83bc24bc4e21c"/>
+                                    <file name="Unauthorized.php" hash="b2b6ea197faf457dbc61a1593e0713aa"/>
+                                </dir>
+                            </dir>
+                            <dir name="Notifications">
+                                <file name="Application.php" hash="12043a46a2a81ab4acc01013bb38fb89"/>
+                                <file name="Handler.php" hash="7ac44349f4356771041b9f7bef7cc7b4"/>
+                                <file name="PreApproval.php" hash="e8aef4dbe991bd3d35d2b968fc3332fc"/>
+                                <file name="Transaction.php" hash="22a2bc2da8507512174152ed98e446fd"/>
+                            </dir>
+                        </dir>
+                        <file name="Responsibility.php" hash="1aac4c382eace2f54c32306adccf246d"/>
+                    </dir>
+                    <dir name="Services">
+                        <dir name="Application">
+                            <file name="Authorization.php" hash="91db3333f4f9994062a3ff27dc5249fb"/>
+                            <file name="Notification.php" hash="bb2a0adc2f333becbeff10ca05f00890"/>
+                            <dir name="Search">
+                                <file name="Code.php" hash="52ab71e3b8dcbdfcd185c5d9ae355585"/>
+                                <file name="Date.php" hash="70aa8d9c64d80978acb0f8f7c06a490c"/>
+                                <file name="Notification.php" hash="64cec4087a2a07690e67dbc6c76bfff0"/>
+                                <file name="Reference.php" hash="668f97f505a53e79768e83fda31d94d8"/>
+                            </dir>
+                        </dir>
+                        <dir name="Checkout">
+                            <file name="Payment.php" hash="3d40ffbe839b844c9253e2df127d9a4e"/>
+                        </dir>
+                        <dir name="DirectPayment">
+                            <file name="Boleto.php" hash="dce496200c5d9a5f7cd2c04f9178cf01"/>
+                            <file name="CreditCard.php" hash="7f2625037d21adc989eb345d76fe8ee8"/>
+                            <file name="InternationalCreditCard.php" hash="cde4f97169fe26ea8e5e1f74423f9b79"/>
+                            <file name="OnlineDebit.php" hash="b31c26d70f993c378e0b0a6e3ef754c0"/>
+                        </dir>
+                        <file name="Installment.php" hash="2b73f03e877521c67585175b3f95499b"/>
+                        <dir name="PreApproval">
+                            <file name="Cancel.php" hash="738cb4b413d5c2caea6ff9d71c498a50"/>
+                            <file name="Charge.php" hash="f0f526f952a7b35ee26f71768c86fdb9"/>
+                            <file name="Notification.php" hash="51428bddba06b3626460816101036127"/>
+                            <file name="Payment.php" hash="c15cf539d2e2ce6ce8472b6b4f8443ba"/>
+                            <dir name="Search">
+                                <file name="Code.php" hash="fd25ee9143b765896c5296ea361d09df"/>
+                                <file name="Date.php" hash="bbc789685b5642f4c95f07faa40206ce"/>
+                                <file name="Interval.php" hash="01c5fff85087ff5ffad694253bc30dd9"/>
+                                <file name="Notification.php" hash="ad9286e8974e9a5ce31b55e5c66ae0fb"/>
+                            </dir>
+                        </dir>
+                        <file name="Session.php" hash="b9a813a16766ab7440ddcc2681b8f7ca"/>
+                        <dir name="Transactions">
+                            <file name="Cancel.php" hash="1ee802b6a42a051804d69e5063a2ed9f"/>
+                            <file name="Notification.php" hash="cdbf5e889c98bac20ea60da741a3a366"/>
+                            <file name="Refund.php" hash="d788392d5c76d85a0fb205c11eca3ac1"/>
+                            <dir name="Search">
+                                <file name="Abandoned.php" hash="3848d14b4dfd9df5477893aace35a79a"/>
+                                <file name="Code.php" hash="0ec410fe38e94eb83b70b92b668111c2"/>
+                                <file name="Date.php" hash="82ecd4b0f11fb5da03dd0918d9b0113a"/>
+                                <file name="Reference.php" hash="484ea554032cee6ee10261f56e0df197"/>
+                            </dir>
+                        </dir>
+                    </dir>
+                </dir>
+                <dir name="vendor">
+                    <file name="autoload.php" hash="c5fa0b61a9513f818f5bbfd6a9f09722"/>
+                    <dir name="composer">
+                        <file name="ClassLoader.php" hash="292c079dbe63ba06bfbf37fd99fe4bf9"/>
+                        <file name="LICENSE" hash="955d5fe58c231244f6b49000f383b5e2"/>
+                        <file name="autoload_classmap.php" hash="8645d3a4e3ad87e7cf4d88a46717aab4"/>
+                        <file name="autoload_namespaces.php" hash="35e12c7d76c4a81633bcf547c0e229a9"/>
+                        <file name="autoload_psr4.php" hash="c7b61b7b095c953def787c077d781fb6"/>
+                        <file name="autoload_real.php" hash="7eddb922d8bcf9193532b405b80a7c6d"/>
+                        <file name="autoload_static.php" hash="76e7731ee947117d1c24c476f218a481"/>
+                        <file name="installed.json" hash="58e0494c51d30eb3494f7c9198986bb9"/>
+                    </dir>
+                </dir>
+                <file name=".gitignore" hash="2c913351ffc40d24e03cc5113eca168c"/>
+                <file name=".travis.yml" hash="52e45bb70865efae729f943d369b92b7"/>
+            </dir>
+        </target>
+    </contents>
+    <compatible/>
+    <dependencies>
+        <required>
+            <php>
+                <min>5.4.27</min>
+                <max>5.6.30</max>
+            </php>
+            <package>
+                <name/>
+                <channel>connect.magentocommerce.com/core</channel>
+                <min/>
+                <max/>
+            </package>
+            <extension>
+                <name>SPL</name>
+                <min/>
+                <max/>
+            </extension>
+            <extension>
+                <name>curl</name>
+                <min/>
+                <max/>
+            </extension>
+            <extension>
+                <name>Core</name>
+                <min/>
+                <max/>
+            </extension>
+            <extension>
+                <name>SimpleXML</name>
+                <min/>
+                <max/>
+            </extension>
+        </required>
+    </dependencies>
+</package>

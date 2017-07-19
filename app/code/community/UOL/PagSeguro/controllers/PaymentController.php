@@ -1,34 +1,33 @@
 <?php
 
 /**
-************************************************************************
-Copyright [2015] [PagSeguro Internet Ltda.]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-************************************************************************
-*/
-
-use Mage_Core_Controller_Front_Action as FrontAction;
-
-class UOL_PagSeguro_PaymentController extends FrontAction
+ * Class UOL_PagSeguro_PaymentController
+ */
+class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
 {
-    const CANCELADO = 7;
-    const MENSAGEM = 'Desculpe, infelizmente, houve um erro durante o checkout.
-                      Entre em contato com o administrador da loja, se o problema persistir.';
+    /**
+     * @var UOL_PagSeguro_Model_PaymentMethod
+     */
+    private $payment;
 
     /**
-     * Get Checkout Session
-     * @return object - Returns current session
+     * UOL_PagSeguro_PaymentController constructor.
+     */
+    public function _construct()
+    {
+        $this->payment = new UOL_PagSeguro_Model_PaymentMethod();
+    }
+
+    public function canceledAction()
+    {
+        $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
+        $this->canceledStatus($order);
+
+        return $this->loadAndRenderLayout();
+    }
+
+    /**
+     * @return Mage_Core_Model_Abstract
      */
     private function getCheckout()
     {
@@ -36,103 +35,191 @@ class UOL_PagSeguro_PaymentController extends FrontAction
     }
 
     /**
-     * Construct layout of payment
-     */
-    public function paymentAction()
-    {
-        $this->loadLayout();
-        $this->renderLayout();
-    }
-
-    /**
-     * Process the payment request and redirect to PagSeguro Gateway
-     */
-    public function requestAction()
-    {
-        $helper = Mage::helper('pagseguro');
-
-        $paymentMethod = $helper->paymentModel();
-        $feedback = 'checkout/onepage';
-
-        $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
-        $method = $order->getPayment()->getMethod();
-        $code = $paymentMethod->getCode();
-
-        if (($order->getState() == Mage_Sales_Model_Order::STATE_NEW) && ($method == $code) && ($order->getId())) {
-            $orderId = $order->getEntityId();
-            include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-            $environment = PagSeguroConfig::getEnvironment();
-
-            if ($environment == 'production') {
-                $environment = $helper->__("Produção");
-            } else {
-                $environment = $helper->__("Sandbox ");
-            }
-
-            $tp = (string) Mage::getConfig()->getTablePrefix();
-            $table = $tp . 'pagseguro_orders';
-            $read= Mage::getSingleton('core/resource')->getConnection('core_read');
-            $value = $read->query("SELECT `order_id` FROM `" . $table . "` WHERE `order_id` = " . $orderId);
-            $row = $value->fetch();
-
-            if ($row == false) {
-                $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-                $sql = "INSERT INTO `" . $table . "` (`order_id`, `environment`) VALUES ('$orderId','$environment')";
-                $connection->query($sql);
-            }
-
-            try {
-                $paymentMethod->setOrder($order);
-                $this->_redirectUrl($paymentMethod->getRedirectPaymentHtml($order));
-
-                //after verify if the order was created, instantiates the sendEmail() method
-                $this->sendEmail();
-
-            } catch (Exception $ex) {
-                Mage::log($ex->getMessage());
-                Mage::getSingleton('core/session')->addError($helper->__(self::MENSAGEM));
-                $this->_redirectUrl(Mage::getUrl('checkout/cart'));
-
-                if ($checkout == 'PADRAO') {
-                    $this->_redirectUrl(Mage::getUrl() . $feedback);
-                }
-
-                $this->canceledStatus($order);
-            }
-        } else {
-            Mage::getSingleton('core/session/canceled')->addError($helper->__(self::MENSAGEM));
-            $this->_redirectUrl(Mage::getUrl('checkout/cart'));
-
-            if ($checkout == 'PADRAO') {
-                $this->_redirectUrl(Mage::getUrl() . $feedback);
-            }
-
-            $this->canceledStatus($order);
-        }
-    }
-
-    /**
-     * Send a e-mail with shopping order.
-     */
-    private function sendEmail()
-    {
-        $order = new Mage_Sales_Model_Order();
-        $incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
-        $order->loadByIncrementId($incrementId);
-
-        try {
-            $order->sendNewOrderEmail();
-        } catch (Exception $ex) {
-            die($ex);
-        }
-    }
-
-    /**
-     * The order pass to the status canceled
+     * Cancel order
+     *
+     * @param $order
      */
     private function canceledStatus($order)
     {
         $order->cancel();
         $order->save();
+    }
+
+    /**
+     * @param array $items
+     *
+     * @param bool  $returnAaJson
+     *
+     * @return $this
+     */
+    private function loadAndRenderLayout(Array $items = [], $returnAaJson = false)
+    {
+        if ($returnAaJson) {
+            $this->getResponse()->clearHeaders()->setHeader('Content-type', 'application/json', true);
+            $this->getResponse()->setBody(json_encode($items));
+        } else {
+            $this->loadLayout();
+            foreach ($items as $k => $item) {
+                Mage::register($k, $item);
+            }
+            $this->renderLayout();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return UOL_PagSeguro_PaymentController
+     */
+    public function defaultAction()
+    {
+        $link = null;
+        try {
+            /** @var Mage_Sales_Model_Order $order */
+            $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
+            $this->payment->setOrder($order);
+            /**
+             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
+             */
+            $payment = $this->payment->paymentDefault();
+            $this->payment->addPagseguroOrders($order);
+            $this->payment->clearCheckoutSession($order);
+            /**
+             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $result
+             */
+            $link = $this->payment->paymentRegister($payment);
+            $order->sendNewOrderEmail();
+        } catch (Exception $exception) {
+            \PagSeguro\Resources\Log\Logger::error($exception);
+            Mage::logException($exception);
+            $this->canceledStatus($order);
+        }
+
+        return $this->loadAndRenderLayout([
+            'link' => $link,
+        ]);
+    }
+
+    /**
+     * @return UOL_PagSeguro_PaymentController
+     */
+    public function directAction()
+    {
+        $paymentSession = null;
+        $order          = null;
+        $link           = null;
+        $result         = null;
+        $json           = false;
+        $redirect       = null;
+        try {
+            /** @var Mage_Sales_Model_Order $order */
+            $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
+            if ($this->getRequest()->getMethod() === 'POST') {
+                $this->payment->setOrder($order);
+                /**
+                 * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
+                 */
+                $payment = $this->payment->paymentDirect($this->getRequest()->getParams());
+                $this->payment->addPagseguroOrders($order);
+                $this->payment->clearCheckoutSession($order);
+                /**
+                 * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $result
+                 */
+                $result = $this->payment->paymentRegister($payment);
+                if (method_exists($result, 'getPaymentLink') && $result->getPaymentLink()) {
+                    $link     = $result->getPaymentLink();
+                    $json     = true;
+                    $redirect = Mage::getUrl('pagseguro/payment/success').'?redirect='.$link;
+                } else {
+                    $json     = true;
+                    $redirect = Mage::getUrl('pagseguro/payment/success');
+                }
+                $order->sendNewOrderEmail();
+            } else {
+                /** @var string $paymentSession */
+                $paymentSession = $this->payment->getPaymentSession()->getResult();
+            }
+        } catch (Exception $exception) {
+            \PagSeguro\Resources\Log\Logger::error($exception);
+            Mage::logException($exception);
+            $this->canceledStatus($order);
+        }
+        if ($this->payment->getEnvironment() === 'production') {
+            $pagseguroJS = 'https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
+        } else {
+            $pagseguroJS = 'https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
+        }
+
+        return $this->loadAndRenderLayout([
+            'paymentSession' => $paymentSession,
+            'order'          => $order,
+            'result'         => $result,
+            'link'           => $link,
+            'redirect'       => $redirect,
+            'pagseguroJS'    => $pagseguroJS,
+        ], $json);
+    }
+
+    /**
+     * @return UOL_PagSeguro_PaymentController
+     */
+    public function lightboxAction()
+    {
+        $code = null;
+        try {
+            /** @var Mage_Sales_Model_Order $order */
+            $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
+            $this->payment->setOrder($order);
+            /**
+             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
+             */
+            $payment = $this->payment->paymentLightbox();
+            $this->payment->addPagseguroOrders($order);
+            $this->payment->clearCheckoutSession($order);
+            /**
+             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $result
+             */
+            $code = $this->payment->paymentRegister($payment, true);
+            $order->sendNewOrderEmail();
+        } catch (Exception $exception) {
+            \PagSeguro\Resources\Log\Logger::error($exception);
+            Mage::logException($exception);
+            $this->canceledStatus($order);
+        }
+        if ($this->payment->getEnvironment() === 'production') {
+            $lightboxJs  = 'https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.lightbox.js';
+            $lightboxUrl = 'https://pagseguro.uol.com.br/v2/checkout/payment.html?code=';
+        } else {
+            $lightboxJs  = 'https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.lightbox.js';
+            $lightboxUrl = 'https://sandbox.pagseguro.uol.com.br/v2/checkout/payment.html?code=';
+        }
+
+        return $this->loadAndRenderLayout([
+            'code'        => $code,
+            'lightboxUrl' => $lightboxUrl,
+            'lightboxJs'  => $lightboxJs,
+        ]);
+    }
+
+    /**
+     * Process the request by checkout type
+     */
+    public function requestAction()
+    {
+        if ($this->getRequest()->getMethod() === 'GET' && $this->payment->getPaymentCheckoutType() === 'TRANSPARENTE') {
+            $this->_redirectUrl(Mage::getUrl('pagseguro/payment/direct'));
+        } elseif ($this->payment->getPaymentCheckoutType() === 'PADRAO') {
+            $this->_redirectUrl(Mage::getUrl('pagseguro/payment/default'));
+        } elseif ($this->payment->getPaymentCheckoutType() === 'LIGHTBOX') {
+            $this->_redirectUrl(Mage::getUrl('pagseguro/payment/lightbox'));
+        }
+    }
+
+    /**
+     * @return UOL_PagSeguro_PaymentController
+     */
+    public function successAction()
+    {
+        return $this->loadAndRenderLayout();
     }
 }

@@ -1,92 +1,48 @@
 <?php
 
 /**
-************************************************************************
-Copyright [2015] [PagSeguro Internet Ltda.]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-************************************************************************
-*/
-
+ ************************************************************************
+ * Copyright [2015] [PagSeguro Internet Ltda.]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************
+ */
 class UOL_PagSeguro_Adminhtml_ConciliationController extends Mage_Adminhtml_Controller_Action
 {
-    /**
-     * @var int
-     */
-    private $days;
-    
-    /**
-     * @var UOL_PagSeguro_Helper_Log
-     */
-    private $log;
-    
     /**
      * @var UOL_PagSeguro_Helper_Conciliation
      */
     private $conciliation;
+    /**
+     * @var int
+     */
+    private $days;
+    /**
+     * @var UOL_PagSeguro_Helper_Log
+     */
+    private $log;
 
     /**
-     * Render conciliation layout in administration interface
+     * UOL_PagSeguro_Adminhtml_ConciliationController constructor.
      */
-    public function indexAction()
+    public function _construct()
     {
-        Mage::getSingleton('core/session')->setData(
-            'store_id',
-            Mage::app()->getRequest()->getParam('store')
-        );
-        $this->loadLayout();
-        $this->_setActiveMenu('pagseguro_menu')->renderLayout();
+        $this->log = new UOL_PagSeguro_Helper_Log();
     }
-    
-    /**
-     * Get a PagSeguroTransaction list from webservice.
-     * @return JSON|null of PagSeguroTransaction list
-     */
-    public function doPostAction()
-    {
-        $this->builder();
-        if ($this->days) {
-            $this->log->setSearchTransactionLog(get_class($this->conciliation), $this->days);
 
-            try {
-
-                 $this->conciliation->initialize($this->days);
-
-                if (!$this->conciliation->getPaymentsArray()) {
-                    print json_encode(array("status" => false));
-                    exit();
-                }
-
-                print $this->conciliation->getTransactionGrid($this->conciliation->getPaymentsArray());
-
-            } catch (Exception $e) {
-
-                print json_encode(array(
-                        "status" => false,
-                        "err" => trim($e->getMessage())
-                    )
-                );
-            }
-        }
-    }
-    
-    /**
-     * Call a helper to update the order status.
-     */
     public function doConciliationAction()
     {
         $this->builder();
-
         if ($this->getRequest()->getPost('data')) {
             foreach ($this->getRequest()->getPost('data') as $data) {
                 $this->conciliation->updateOrderStatusMagento(
@@ -97,20 +53,43 @@ class UOL_PagSeguro_Adminhtml_ConciliationController extends Mage_Adminhtml_Cont
                 );
             }
         }
-        
-        //Call this function for reload data in DataTables.
         $this->doPostAction();
     }
-    
-    /**
-     * Initializes helpers and instance vars.
-     */
+
     private function builder()
     {
         $this->conciliation = Mage::helper('pagseguro/conciliation');
-        $this->log = Mage::helper('pagseguro/log');
         if ($this->getRequest()->getPost('days')) {
             $this->days = $this->getRequest()->getPost('days');
         }
+    }
+
+    public function doPostAction()
+    {
+        $this->builder();
+        if ($this->days) {
+            $this->log->setSearchTransactionLog(get_class($this->conciliation), $this->days);
+            try {
+                $this->conciliation->initialize($this->days);
+                if (!$this->conciliation->getPaymentsArray()) {
+                    print json_encode(array("status" => false));
+                    exit();
+                }
+                print $this->conciliation->getTransactionGrid($this->conciliation->getPaymentsArray());
+            } catch (Exception $e) {
+                print json_encode(array(
+                        "status" => false,
+                        "err"    => trim($e->getMessage()),
+                    )
+                );
+            }
+        }
+    }
+
+    public function indexAction()
+    {
+        Mage::getSingleton('core/session')->setData('store_id', Mage::app()->getRequest()->getParam('store'));
+        $this->loadLayout();
+        $this->_setActiveMenu('pagseguro_menu')->renderLayout();
     }
 }
