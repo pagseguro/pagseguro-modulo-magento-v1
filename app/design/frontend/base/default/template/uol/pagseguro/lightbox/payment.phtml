@@ -1,0 +1,33 @@
+<script type="text/javascript"
+        src="<?= Mage::registry( 'lightboxJs' ) ?>">
+</script>
+
+<div class="page-head">
+    <h2 class="sub-title">Finalizando sua compra com PagSeguro</h2>
+</div>
+<script type="text/javascript">
+    window.onload = function () {
+        lightbox();
+    };
+    function lightbox() {
+        PagSeguroLightbox(
+            {code: '<?= Mage::registry( 'code' ) ?>'}, {
+                success: function () {
+                    window.location.href = '<?= Mage::getUrl( 'pagseguro/payment/success' ) ?>';
+                },
+                abort: function () {
+                    window.location.href = '<?= Mage::getUrl( 'pagseguro/payment/canceled' ) ?>';
+                }
+            });
+    }
+</script>
+
+<table style="width:100%;">
+    <tr>
+        <td style="width:100%">
+            Sa compra está em processo de finalização, aguarde um instante.<br>
+            Se a página de pagamento não abrir automaticamente
+            <a onclick="lightbox()">clique aqui</a>.
+        </td>
+    </tr>
+</table>

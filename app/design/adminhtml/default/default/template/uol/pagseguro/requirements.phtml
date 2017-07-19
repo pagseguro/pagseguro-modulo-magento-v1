@@ -1,35 +1,32 @@
 <?php
-
 /**
-************************************************************************
-Copyright [2015] [PagSeguro Internet Ltda.]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-************************************************************************
-*/
-
+ ************************************************************************
+ * Copyright [2015] [PagSeguro Internet Ltda.]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************
+ */
 ?>
 <?php
-    $helper = Mage::helper('pagseguro');
-    $html   = Mage::helper('pagseguro/html');
-
+$helper = Mage::helper('pagseguro');
+$html   = Mage::helper('pagseguro/html');
 ?>
 
 <div id="pagseguro-module">
     <?php echo $html->getHeader(); ?>
     <div id="pagseguro-module-content">
         <div class="wrapper">
-            <?php echo $html->getSideMenu();?>
+            <?php echo $html->getSideMenu(); ?>
             <div id="pagseguro-module-contents">
                 <h2 class="title" title="Requisitos do Sistema"><?php echo $helper->__('Requisitos do Sistema'); ?></h2>
                 <ul class="pagseguro-list">
@@ -44,52 +41,52 @@ limitations under the License.
     var i = 0;
     Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
-    jQuery(document).ready(function(){
+    jQuery(document).ready(function () {
         Menu.init();
         PageRequirements.init();
     });
 
-    var PageRequirements = new function(){
-        var requestRequirements = function() {
+    var PageRequirements = new function () {
+        var requestRequirements = function () {
             var list = jQuery('.pagseguro-list');
 
             jQuery.ajax({
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_requirements/doRequirements'); ?>",
                 type: "POST",
                 data: {
-                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>"
-                      },
-                success: function(result) {
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>"
+                },
+                success: function (result) {
                     result = JSON.parse(result);
 
                     if (result.version.status) {
-                        list.append('<li>'+result.version.text+'</li>');
+                        list.append('<li>' + result.version.text + '</li>');
                     } else {
-                        list.append('<li class="requirements-alert">'+result.version.text+'</li>');
+                        list.append('<li class="requirements-alert">' + result.version.text + '</li>');
                     }
 
                     if (result.spl.status) {
-                        list.append('<li>'+result.spl.text+'</li>');
+                        list.append('<li>' + result.spl.text + '</li>');
                     } else {
-                        list.append('<li class="requirements-alert">'+result.spl.text+'</li>');
+                        list.append('<li class="requirements-alert">' + result.spl.text + '</li>');
                     }
 
                     if (result.curl.status) {
-                        list.append('<li>'+result.curl.text+'</li>');
+                        list.append('<li>' + result.curl.text + '</li>');
                     } else {
-                        list.append('<li class="requirements-alert">'+result.curl.text+'</li>');
+                        list.append('<li class="requirements-alert">' + result.curl.text + '</li>');
                     }
 
                     if (result.dom.status) {
-                        list.append('<li>'+result.dom.text+'</li>');
+                        list.append('<li>' + result.dom.text + '</li>');
                     } else {
-                        list.append('<li class="requirements-alert">'+result.dom.text+'</li>');
+                        list.append('<li class="requirements-alert">' + result.dom.text + '</li>');
                     }
 
                     if (result.currency.status) {
-                        list.append('<li>'+result.currency.text+'</li>');
+                        list.append('<li>' + result.currency.text + '</li>');
                     } else {
-                        list.append('<li class="requirements-alert">'+result.currency.text+'</li>');
+                        list.append('<li class="requirements-alert">' + result.currency.text + '</li>');
                     }
 
                     Modal.hideLoading();
@@ -97,9 +94,9 @@ limitations under the License.
             });
         }
 
-        this.init = function() {
+        this.init = function () {
             requestRequirements();
         };
     }
 </script>
-<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js'); ?>"></script>
