@@ -8,8 +8,8 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 - Integração com a [API de Notificações](https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html#!rmcl)
 
 ## Requisitos
-- [Magento](https://www.magentocommerce.com/) Community 1.6, 1.7, 1.8, 1.9
-- [PHP](http://www.php.net/) 5.4.0+
+- [Magento](https://www.magentocommerce.com/) Community 1.9.0 até 1.9.3.3 (ainda em fase de testes nas versões 1.6.x, 1.7.x, 1.8.x)
+- [PHP](http://www.php.net/) 5.4.x+, 5.5.x+, 5.6.x+ (ainda em fase de testes nas versões 7.x)
 - [SPL](http://php.net/manual/en/book.spl.php)
 - [cURL](http://php.net/manual/en/book.curl.php)
 - [SimpleXML](http://php.net/manual/en/book.simplexml.php)
