@@ -36,7 +36,7 @@
   }
 
   function formDebit () {
-    if (validateCpf(document.getElementById('debitDocument')) && validateDebitBankName(document.getElementById('debitbankName'))) {
+    if (validateDocument(document.getElementById('debitDocument')) && validateDebitBankName(document.getElementById('debitbankName'))) {
       activeLoading();
       var data = {
         'debitDocument': document.getElementById('debitDocument').value,
@@ -49,7 +49,7 @@
   }
 
   function formBilit () {
-    if (validateCpf(document.getElementById('bilitDocument'))) {
+    if (validateDocument(document.getElementById('bilitDocument'))) {
       activeLoading();
       var data = {
         'bilitDocument': document.getElementById('bilitDocument').value,
@@ -227,6 +227,79 @@
       return false;
     }
   }
+
+  function validateDocument(self){
+    if(self.value.length === 11){
+      validateCpf(self);
+    } else if(self.value.length === 14){
+      validateCnpj(self);
+    } else {
+      displayError(self);
+      return false;
+    }
+  }
+
+  function validateCnpj(self) {
+    var cnpj = self.value;
+    var numbersVal;
+    var digits;
+    var sum;
+    var i;
+    var result;
+    var pos;
+    var size;
+    var equal_digits;
+    equal_digits = 1;
+    if (cnpj.length < 14 && cnpj.length < 15) {
+      displayError(self)
+      return false;
+    }
+    for (i = 0; i < cnpj.length - 1; i++) {
+      if (cnpj.charAt(i) != cnpj.charAt(i + 1))
+      {
+        equal_digits = 0;
+        break;
+      }
+    }
+    if (!equal_digits) {
+      size = cnpj.length - 2
+      numbersVal = cnpj.substring(0,size);
+      digits = cnpj.substring(size);
+      sum = 0;
+      pos = size - 7;
+      for (i = size; i >= 1; i--) {
+        sum += numbersVal.charAt(size - i) * pos--;
+        if (pos < 2) {
+          pos = 9;
+        }
+      }
+      result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+      if (result != digits.charAt(0)) {
+        displayError(self);
+        return false;
+      }
+      size = size + 1;
+      numbersVal = cnpj.substring(0,size);
+      sum = 0;
+      pos = size - 7;
+      for (i = size; i >= 1; i--) {
+        sum += numbersVal.charAt(size - i) * pos--;
+        if (pos < 2) {
+          pos = 9;
+        }
+      }
+      result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+      if (result != digits.charAt(1)) {
+        displayError(self);
+        return false;
+      }
+      displayError(self, false);
+      return true;
+    } else {
+      displayError(self);
+      return false;
+    }
+  };
 </script>
 <script>
   function validateCreditCard (self) {
@@ -320,7 +393,7 @@
                            for="creditCardDocument">CPF/CNPJ</label>
                     <div class="col-xs-12 col-sm-6">
                         <input class="form-control" id="creditCardDocument" minlength="12"
-                               maxlength="14" onblur="validateCpf(this)">
+                               maxlength="14" onblur="validateDocument(this)">
                         <span class="display-none help-block creditCardDocument-error-message">Insira um CPF ou CNPJ válido</span>
                     </div>
                 </div>
@@ -438,7 +511,7 @@
                     <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label" for="debitDocument">CPF/CNPJ</label>
                     <div class="col-xs-12 col-sm-6">
                         <input class="form-control" id="debitDocument" minlength="12"
-                               maxlength="14" onblur="validateCpf(this)">
+                               maxlength="14" onblur="validateDocument(this)">
                         <span class="display-none help-block debitDocument-error-message">Insira um CPF ou CNPJ válido</span>
                     </div>
                 </div><!-- /.form-group -->
@@ -505,7 +578,7 @@
                     <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label" for="bilitDocument">CPF/CNPJ</label>
                     <div class="col-xs-12 col-sm-6">
                         <input class="form-control" id="bilitDocument" minlength="12"
-                               maxlength="14" onblur="validateCpf(this)">
+                               maxlength="14" onblur="validateDocument(this)">
                         <span class="display-none help-block bilitDocument-error-message">Insira um CPF ou CNPJ válido</span>
                     </div>
                 </div>
