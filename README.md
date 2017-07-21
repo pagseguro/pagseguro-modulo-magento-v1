@@ -17,7 +17,7 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 ## Instalação
 
 - Certifique-se de que não há instalação de outros módulos para o PagSeguro em seu sistema;
-- Baixe o repositório como arquivo zip ou [clique aqui];
+- Baixe o repositório como arquivo zip ou [clique aqui](https://github.com/pagseguro/magento/raw/master/UOL_PagSeguro-3.0.0.tgz);
 - Antes de seguir com a instalação você deve desativar e limpar a compilação do Magento;
 - Na área administrativa do seu Magento, acesse o menu System -> Magento Connect -> Magento Connect Manager. Caso tenha uma versão anterior instalada faça a remoção agora;
 - Clique em "choose file", aponte para o arquivo UOL_PagSeguro-x.x.x.tgz e faça upload;
