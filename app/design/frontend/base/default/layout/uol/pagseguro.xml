@@ -45,6 +45,11 @@ limitations under the License.
                 <script>uol/pagseguro/js/jquery.colorbox-min.js</script>
                 <params><![CDATA[media="all"]]></params>
             </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>uol/pagseguro/js/vanilla-masker.min.js</script>
+                <params><![CDATA[media="all"]]></params>
+            </action>
         </reference>
         <reference name="root">
             <action method="setTemplate">
