@@ -147,7 +147,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     private function getNotificationURL()
     {
         if ($this->getConfigData('notification')) {
-            $notificationUrl = Mage::app()->getStore(0)->getBaseUrl().Mage::getStoreConfig('payment/pagseguro/notification');
+            $notificationUrl = $this->getConfigData('notification');
         } else {
             $notificationUrl = Mage::app()->getStore(0)->getBaseUrl().'pagseguro/notification/send/';
         }

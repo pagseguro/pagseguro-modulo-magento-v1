@@ -563,7 +563,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-2 col-sm-offset-8">
                         <small> Esta compra está sendo feita no Brasil
-                            <img src="<?php echo $this->getViewFileUrl('UOL_PagSeguro::images/flag-origin-country.png'); ?>">
+                              <img src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
                         </small>
                     </div>
                 </div>
@@ -637,7 +637,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-2 col-sm-offset-8">
                         <small> Esta compra está sendo feita no Brasil
-                            <img src="<?php echo $this->getViewFileUrl('UOL_PagSeguro::images/flag-origin-country.png'); ?>">
+                            <img src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
                         </small>
                     </div>
                 </div>
@@ -652,6 +652,15 @@
                         <span class="display-none help-block bilitDocument-error-message">Insira um CPF ou CNPJ válido</span>
                     </div>
                 </div>
+                <div class="col-xs-12 col-sm-6 col-sm-offset-4">
+                  <ul>
+                    <small>
+                      <li>Imprima o boleto e pague no banco</li>
+                      <li>Ou pague pela internet utilizando o código de barras do boleto</li>
+                      <li>O prazo de validade do boleto é de 1 dia útil</li>
+                    </small>
+                  </ul>
+                </div>
                 <div class="row">
                     <div class="col-xs-12 col-sm-2 col-sm-offset-8">
                         <button class="full-width btn-pagseguro --align-right" onclick="formBilit()" type="button">
@@ -660,15 +669,12 @@
                     </div>
                     <div class="col-xs-12 col-sm-2 col-sm-offset-8">
                         <small> Esta compra está sendo feita no Brasil
-                            <img src="<?php echo $this->getViewFileUrl('UOL_PagSeguro::images/flag-origin-country.png'); ?>">
+                            <img src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
                         </small>
                     </div>
                 </div>
             </form>
-            <small>Imprima o boleto e pague no banco<br>
-                ou pague pela internet utilizando o código de barras do boleto<br>
-                O prazo de validade do boleto é de 1 dia útil
-            </small>
+            
         </div>
     </div>
 </section>
