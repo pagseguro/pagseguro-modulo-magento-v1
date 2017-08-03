@@ -8,8 +8,8 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 - Integração com a [API de Notificações](https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html#!rmcl)
 
 ## Requisitos
-- [Magento](https://www.magentocommerce.com/) Community 1.9.0 até 1.9.3.3 (ainda em fase de testes nas versões 1.6.x, 1.7.x, 1.8.x)
-- [PHP](http://www.php.net/) 5.4.x+, 5.5.x+, 5.6.x+ (ainda em fase de testes nas versões 7.x)
+- [Magento](https://www.magentocommerce.com/) Community 1.9.0 até 1.9.3.4 (ainda em fase de testes nas versões 1.6.x, 1.7.x, 1.8.x)
+- [PHP](http://www.php.net/) 5.4.27+, 5.5.x+, 5.6.x+ (ainda em fase de testes nas versões 7.x)
 - [SPL](http://php.net/manual/en/book.spl.php)
 - [cURL](http://php.net/manual/en/book.curl.php)
 - [SimpleXML](http://php.net/manual/en/book.simplexml.php)
@@ -17,7 +17,7 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 ## Instalação
 
 - Certifique-se de que não há instalação de outros módulos para o PagSeguro em seu sistema;
-- Baixe o repositório como arquivo zip ou [clique aqui](https://github.com/pagseguro/magento/raw/master/UOL_PagSeguro-3.0.0.tgz);
+- Baixe o repositório como arquivo zip ou [clique aqui](https://github.com/pagseguro/magento/raw/master/UOL_PagSeguro-3.1.0.tgz);
 - Antes de seguir com a instalação você deve desativar e limpar a compilação do Magento;
 - Na área administrativa do seu Magento, acesse o menu System -> Magento Connect -> Magento Connect Manager. Caso tenha uma versão anterior instalada faça a remoção agora;
 - Clique em "choose file", aponte para o arquivo UOL_PagSeguro-x.x.x.tgz e faça upload;

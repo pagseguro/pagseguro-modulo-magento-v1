@@ -56,7 +56,10 @@ class UOL_PagSeguro_Helper_Webservice extends UOL_PagSeguro_Helper_Data
      */
     public function cancelRequest($transactionCode)
     {
-        return new \PagSeguro\Services\Transactions\Cancel($this->library->getAccountCredentials(), $transactionCode);
+        return \PagSeguro\Services\Transactions\Cancel::create(
+            $this->library->getAccountCredentials(),
+            $transactionCode
+        );
     }
 
     /**
@@ -64,10 +67,11 @@ class UOL_PagSeguro_Helper_Webservice extends UOL_PagSeguro_Helper_Data
      *
      * @return \PagSeguro\Services\Transactions\Notification
      */
-    public function getNotification($transactionCode)
+    public function getNotification()
     {
-        return new \PagSeguro\Services\Transactions\Notification($this->library->getAccountCredentials(),
-            $transactionCode);
+        return \PagSeguro\Services\Transactions\Notification::check(
+            $this->library->getAccountCredentials()
+        );
     }
 
     /**
@@ -123,9 +127,13 @@ class UOL_PagSeguro_Helper_Webservice extends UOL_PagSeguro_Helper_Data
      *
      * @return \PagSeguro\Services\Transactions\Refund
      */
-    public function refundRequest($transactionCode)
+    public function refundRequest($transactionCode, $refundValue = null)
     {
-        return new \PagSeguro\Services\Transactions\Refund($this->library->getAccountCredentials(), $transactionCode);
+        return \PagSeguro\Services\Transactions\Refund::create(
+            $this->library->getAccountCredentials(),
+            $transactionCode,
+            $refundValue
+        );
     }
 
     /**

@@ -14,8 +14,8 @@ class UOL_PagSeguro_Model_Library
         define("SHIPPING_COST", 0.00);
         define("CURRENCY", "BRL");
         \PagSeguro\Library::initialize();
-        \PagSeguro\Library::cmsVersion()->setName('PagSeguro')->setRelease(Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version);
-        \PagSeguro\Library::moduleVersion()->setName('Magento')->setRelease(Mage::getVersion());
+        \PagSeguro\Library::cmsVersion()->setName('Magento')->setRelease(Mage::getVersion());
+        \PagSeguro\Library::moduleVersion()->setName('PagSeguro')->setRelease(Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version);
         \PagSeguro\Configuration\Configure::setCharset(Mage::getStoreConfig('payment/pagseguro/charset'));
         $this->setCharset();
         $this->setEnvironment();

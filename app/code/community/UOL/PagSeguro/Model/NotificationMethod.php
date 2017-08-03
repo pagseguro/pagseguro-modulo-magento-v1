@@ -44,18 +44,18 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
 
     private function getNotificationPost()
     {
-        $type = $this->post['notificationType'];
-        $code = $this->post['notificationCode'];
+        $type = filter_var($this->post['notificationType'], FILTER_SANITIZE_STRING);
+        $code = filter_var($this->post['notificationCode'], FILTER_SANITIZE_STRING);
         $this->notificationType = (isset($type) && trim($type) != "") ? $type : null;
         $this->notificationCode = (isset($code) && trim($code) != "") ? $code : null;
     }
 
     private function setNotificationUpdateOrder()
     {
-        $transaction = $this->helper->webserviceHelper()->getNotification($this->notificationCode);
+        $transaction = $this->helper->webserviceHelper()->getNotification();
         $orderId = $this->helper->getReferenceDecryptOrderID($transaction->getReference());
         $transactionCode = $transaction->getCode();
-        $orderStatus = $this->helper->getPaymentStatusFromKey($transaction->getStatus()->getValue());
+        $orderStatus = $this->helper->getPaymentStatusFromKey($transaction->getStatus());
         $this->helper->updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus);
     }
 }

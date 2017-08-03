@@ -96,7 +96,7 @@ class UOL_PagSeguro_Helper_Refund extends UOL_PagSeguro_Helper_Data
                     )
                 );
             }
-            if ($this->PagSeguroPaymentList->getTotalPages() > $page) {
+            if (!is_null($this->PagSeguroPaymentList) && $this->PagSeguroPaymentList->getTotalPages() > $page) {
                 $this->getPagSeguroPayments(++$page);
             }
         } catch (Exception $pse) {

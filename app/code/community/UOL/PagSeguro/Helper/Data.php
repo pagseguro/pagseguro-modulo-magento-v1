@@ -463,14 +463,18 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     public function updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus)
     {
         try {
-            if ($this->getLastStatusOrder($orderId) != $orderStatus) {
+            if (
+                $this->getLastStatusOrder($orderId) != $orderStatus
+                || $class == self::CANCELED_CLASS
+                || $class == self::REFUND_CLASS
+            ) {
                 if ($class == self::CANCELED_CLASS) {
-                    if ($this->webserviceHelper()->cancelRequest($transactionCode) == 'OK') {
+                    if ($this->webserviceHelper()->cancelRequest($transactionCode)->getResult() == 'OK') {
                         $orderStatus = 'cancelada_ps';
                     }
                 }
                 if ($class == self::REFUND_CLASS) {
-                    if ($this->webserviceHelper()->refundRequest($transactionCode) == 'OK') {
+                    if ($this->webserviceHelper()->refundRequest($transactionCode)->getResult() == 'OK') {
                         $orderStatus = 'devolvida_ps';
                     }
                 }
