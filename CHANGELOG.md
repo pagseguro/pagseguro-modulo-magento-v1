@@ -1,5 +1,12 @@
 Changelog
 ---------
+3.1.0
+- Adicionada biblioteca de máscaras (Vannila-Masker)
+- Corrigidos bugs no checkout transparente
+- Corrigidos bugs nas transações do admin (Conciliação, Cancelamento e Estorno)
+- Adicionada bandeira do Brasil no checkout transparente
+- Correções e melhorias gerais
+
 
 3.0.0
 - Adicionado checkout transparente (pagamento via boleto, debito online e cartão de crédito)
