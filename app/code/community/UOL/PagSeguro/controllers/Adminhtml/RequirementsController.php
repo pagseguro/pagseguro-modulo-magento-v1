@@ -43,7 +43,8 @@ class UOL_PagSeguro_Adminhtml_RequirementsController extends Mage_Adminhtml_Cont
     {
         $this->builder();
         $this->log->setRequirementsLog();
-        return json_encode($this->requirements->validateRequirements());
+        print json_encode($this->requirements->validateRequirements());
+        exit;
     }
 
     /**
