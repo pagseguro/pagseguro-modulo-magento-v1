@@ -14,7 +14,6 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 **[Transações](#transações)**<br>
 **[Dúvidas](#dúvidas)**<br>
 **[Changelog](#changelog)**<br>
-**[Transações](#transações)**<br>
 **[Notas](#notas)**<br>
 **[Contribuições](#contribuições)**<br>
 **[Licença](#licença)**<br>
