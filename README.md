@@ -13,7 +13,6 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 **[Configuração](#configuração)**<br>
 **[Transações](#transações)**<br>
 **[Dúvidas](#dúvidas)**<br>
-**[Requisitos](#requisitos)**<br>
 **[Changelog](#changelog)**<br>
 **[Transações](#transações)**<br>
 **[Notas](#notas)**<br>
