@@ -33,29 +33,35 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
 
  - **ativar módulo**: ativa/desativa o módulo.
  - **nome de exibição**: define o nome que será utilizado para o meio de pagamento na tela de checkout.
- - **ambiente**: especifica em que ambiente as transações serão feitas.
+ - **ambiente**: especifica em que ambiente as transações serão feitas *(produção/sandbox)*.
  - **e-mail**: e-mail cadastrado no PagSeguro.
  - **token**: token cadastrado no PagSeguro.
  - **url de redirecionamento**: ao final do fluxo de pagamento no PagSeguro, seu cliente será redirecionado automaticamente para a página de confirmação em sua loja ou então para a URL que você informar neste campo. Para ativar o redirecionamento ao final do pagamento é preciso ativar o serviço de [Pagamentos via API]. Obs.: Esta URL é informada automaticamente e você só deve alterá-la caso deseje que seus clientes sejam redirecionados para outro local.
- - **url de notificação**: sempre que uma transação mudar de status, o PagSeguro envia uma notificação para sua loja ou para a URL que você informar neste campo. Por padrão deve-se utilizar a seguinte URL, substituindo `minhaloja` pelo endereço da sua loja: http://minhaloja/index.php/pagseguro/notification/send/  Obs.: Esta URL só deve ser alterada caso você deseje receber as notificações em outro local.
+ - **url de notificação**: sempre que uma transação mudar de status, o PagSeguro envia uma notificação para sua loja. 
+     - *Observação: Esta URL só deve ser alterada caso você deseje receber as notificações em outro local.*
  - **charset**: codificação do seu sistema (ISO-8859-1 ou UTF-8).
  - **ativar log**: ativa/desativa a geração de logs.
  - **diretório**: informe o local e nome do arquivo a partir da raíz de instalação do Magento onde se deseja criar o arquivo de log. Ex.: /pagseguro.log. 
+     - *Por padrão o módulo virá configurado para salvar o arquivo de log em /var/pagseguro.log*.
  - **checkout**: especifica o modelo de checkout que será utilizado. É possível escolher entre checkout padrão, checkout lightbox e checkout transparente.
  - **listar transações abandonadas?**: ativa/desativa a pesquisa de transações que foram abandonadas no checkout do PagSeguro.
  - **template de e-mail**: define qual o template de email sua loja usuará para o envio do email de recuperação de venda.
  - **oferecer desconto para ...**: ativa/desativa desconto para checkouts utilizando este meio de pagamento
  - **percentual de desconto**: define o percentual de desconto a ser concedido para o meio de pagamento escolhido
- - **transações -> abandonadas**: permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar email-s de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
- - **transações -> abandonadas -> dias**: defina a quantidade máxima de dias em que a transação foi abandonada. Ex.: se você definir 8, então somente as transações abandonadas nos últimos 8 dias serão exibidas.
- - **transações -> cancelamento**: esta pesquisa retornará todas as transações que estejam com status "em análise" e "aguardando pagamento", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o cancelamento destas transações.
- - **transações -> cancelamento -> dias**: número de dias que devem ser considerados para a pesquisa.
- - **transações -> conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30 dias. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
- - **transações -> conciliação -> dias**: número de dias que devem ser considerados para a pesquisa.
- - **transações -> estorno**: esta pesquisa retornará todas as transações que estejam com status "paga", "disponível" e "em disputa", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o estorno dos valores pagos para seus compradores.
- - **transações -> estorno -> dias**: número de dias que devem ser considerados para a pesquisa.
- - **requisitos**: exibe se os pré-requisitos básicos para o correto funcionamento do módulo estão sendo atendidos
+ - **transações -> abandonadas**: permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar emails de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
  - **listar parcelamento**: Habilita a exibição de uma listagem de parcelas na tela de visualização do produto. (Irá exibir o maior parcelamento disponível para o produto na tela de exibição do mesmo)
+ 
+ Transações
+------------
+---
+ Para realizar consultas e outras operações acesse o menu PagSeguro -> Transações. . As opções disponíveis estão descritas abaixo:
+ 
+ - **transações -> abandonadas**: permite pesquisar as transações que foram abandonadas dentro da quantidade de dias definidos para a pesquisa.
+ - **transações -> cancelamento**: esta pesquisa retornará todas as transações que estejam com status "em análise" e "aguardando pagamento", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o cancelamento destas transações.
+ - **transações -> conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30 dias. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
+ - **transações -> estorno**: esta pesquisa retornará todas as transações que estejam com status "paga", "disponível" e "em disputa", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o estorno dos valores pagos para seus compradores.
+ - **requisitos**: exibe se os pré-requisitos básicos para o correto funcionamento do módulo estão sendo atendidos
+ >  É aconselhável que antes de usar as funcionalidades de **estorno** ou **cancelamento** você faça a **conciliação** de suas transações para obter os status mais atuais.
 
 ## Dúvidas
 
@@ -65,14 +71,14 @@ Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum](https://comunid
 Para consultar o log de alterações acesse o arquivo [CHANGELOG.md](CHANGELOG.md).
 
 ## Notas
-- A versão 2.x deste respositório está depreciada en encontra-se [na branch 2.8](https://github.com/pagseguro/magento/tree/2.8) ou através da sua [última release](https://github.com/pagseguro/magento/releases/tag/2.8.0).
+- A versão 2.x deste respositório está depreciada en encontra-se [na branch 2.8](https://github.com/pagseguro/magento/tree/2.8) ou através da sua [release](https://github.com/pagseguro/magento/releases/tag/2.8.0).
 - O PagSeguro somente aceita pagamento utilizando a moeda Real brasileiro (BRL).
 - Certifique-se que o email e o token informados estejam relacionados a uma conta que possua o perfil de vendedor ou empresarial.
 - Certifique-se que tenha definido corretamente o charset de acordo com a codificação (ISO-8859-1 ou UTF-8) do seu sistema. Isso irá prevenir que as transações gerem possíveis erros ou quebras ou ainda que caracteres especiais possam ser apresentados de maneira diferente do habitual.
 - Para que ocorra normalmente a geração de logs, certifique-se que o diretório e o arquivo de log tenham permissões de leitura e escrita.
 
 ## Contribuições
-Todas as contribuições devem ser feitas via Pull Request na [branch de desenvolvimento](https://github.com/pagseguro/magento/tree/desenvolvimento), seguindo os passos:
+Todas as contribuições devem ser feitas via Pull Request na **[branch de desenvolvimento](https://github.com/pagseguro/magento/tree/desenvolvimento)**, seguindo os passos:
 - Faça um fork
 - Adicione sua feature ou correção de bug
 - Envie um pull request no [GitHub](https://github.com/pagseguro/magento/tree/desenvolvimento)
