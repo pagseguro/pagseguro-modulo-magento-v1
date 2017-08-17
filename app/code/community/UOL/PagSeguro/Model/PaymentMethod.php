@@ -37,6 +37,14 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         $this->helper = new UOL_PagSeguro_Helper_Data();
     }
 
+
+    /**
+     * @return string
+     */
+    public function getEnvironment(){
+        return $this->library->getEnvironment();
+    }
+
     /**
      * @param Mage_Sales_Model_Order $order
      */
