@@ -47,8 +47,7 @@ class UOL_PagSeguro_Model_OrderAddress
     {
         if(empty($address)){
 			$address = $this->billingAddress;
-		}
-        
+		}        
         $response = new \PagSeguro\Domains\Address();
         $parse = $this->parseStreet($address->getStreet1());
         $response->setStreet($parse['street']);
