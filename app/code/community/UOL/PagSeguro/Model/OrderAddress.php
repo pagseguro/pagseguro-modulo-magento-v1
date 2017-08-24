@@ -58,6 +58,7 @@ class UOL_PagSeguro_Model_OrderAddress
         $response->setState($this->getRegionAbbreviation($address));
         $response->setCountry($address->getCountry());
         $response->setComplement($address->getStreet3());
+        $response->setTelephone($address->getTelephone());
 
         return $response;
     }
