@@ -62,7 +62,10 @@ class Address
      * @var
      */
     private $country;
-
+    /**
+     * @var
+     */
+    private $telephone;
     /**
      * @return string
      */
@@ -204,6 +207,16 @@ class Address
     public function setStreet($street)
     {
         $this->street = $street;
+        return $this;
+    }
+    
+    /**
+     * @param $telephone
+     * @return $this
+     */
+    public function setTelephone($telephone)
+    {
+        $this->telephone = $telephone;
         return $this;
     }
 }
