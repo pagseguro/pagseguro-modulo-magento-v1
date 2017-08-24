@@ -113,12 +113,16 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         $payment->setReference(Mage::getStoreConfig('uol_pagseguro/store/reference').$this->order->getId());
         $payment->setCurrency('BRL');
         $this->setItems($payment);
+        $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
+        $address = $orderAddress->getShippingAddress();
+        if(empty($address)){
+			$address = $orderAddress->getBillingAddress();	
+		}
         $payment->setSender()->setName($this->order->getCustomerName());
         $payment->setSender()->setEmail($this->order->getCustomerEmail());
-        $phone = $this->helper->formatPhone($this->order->getShippingAddress()->getTelephone());
+        $phone = $this->helper->formatPhone($address->getTelephone());
         $payment->setSender()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
-        $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
-        $payment->setShipping()->setAddress()->instance($orderAddress->getShippingAddress());
+        $payment->setShipping()->setAddress()->instance($address);
         $payment->setShipping()->setType()->withParameters(SHIPPING_TYPE);
         $payment->setShipping()->setCost()->withParameters(number_format($this->order->getShippingAmount(), 2, '.',
             ''));
