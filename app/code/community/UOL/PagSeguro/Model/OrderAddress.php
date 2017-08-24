@@ -45,6 +45,9 @@ class UOL_PagSeguro_Model_OrderAddress
      */
     private function setAddress(Mage_Sales_Model_Order_Address $address)
     {
+        if(empty($address)){
+			$address = $this->billingAddress;
+		}        
         $response = new \PagSeguro\Domains\Address();
         $parse = $this->parseStreet($address->getStreet1());
         $response->setStreet($parse['street']);
