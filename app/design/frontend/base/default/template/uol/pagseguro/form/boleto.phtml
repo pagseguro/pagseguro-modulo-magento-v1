@@ -1,0 +1,36 @@
+<div>
+    <?php //$this->getMethod()->getConfigData('message');
+       //var_dump(Mage::registry('psjs'));exit;
+        //var_dump($this->getBoletoSession());exit;
+    ?>
+</div>
+<script type="text/javascript">
+  setSessionId("<?= $this->getBoletoSession();?>");
+  assignSenderHash();
+</script>
+ 
+<div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
+    <input type="hidden" id="boletoHash" value="" name="payment[boleto_hash]">
+    <div>
+    <label><?php echo $this->__('CPF ou CNPJ') ?>*</label>
+    <span>
+        <input onblur="validateDocument(this)" type="number" title="<?php echo $this->__('CPF ou CNPJ') ?>" name="payment[boleto_cpf]" value="" />
+        <span style="display:none;" class="display-none help-block bilitDocument-error-message">Insira um CPF ou CNPJ válido</span>
+    </span>
+    
+    <ul style="padding: 0.9em 1em 0.1em; font-size: smaller;">
+        <li>&#9679; Imprima o boleto e pague no banco ou na internet utilizando o seu c&oacute;digo de barras</li>
+        <li>&#9679; O prazo de validade do boleto &eacute; de 1 dia &uacute;til</li>
+    </ul>
+    
+    <!--<img src="https://stc.pagseguro.uol.com.br/public/img/payment-methods-flags/68x30/booklet.png?>">-->
+  </div>
+    <div>
+        <ul style="padding: 0.9em 0em 0.1em; font-size: smaller; font-style: italic">
+            <li>Esta compra está sendo feita no Brasil 
+                <img style="position: absolute; padding-left: 0.5em; display: inline" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+            </li>
+        </ul>
+    </div>
+</div>
+

@@ -574,4 +574,13 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     {
         return date("d/m/Y H:i:s", Mage::getModel("core/date")->timestamp($date));
     }
+    
+    public function getPagSeguroDirectPaymentJs()
+    {
+         if (Mage::getStoreConfig('payment/pagseguro/environment') === 'production') {
+            return 'https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
+        }
+
+        return 'https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
+    }
 }

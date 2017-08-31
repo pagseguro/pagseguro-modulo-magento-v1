@@ -111,53 +111,50 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
         $result         = null;
         $json           = false;
         $redirect       = null;
+
         try {
             /** @var Mage_Sales_Model_Order $order */
             $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
-            if ($this->getRequest()->getMethod() === 'POST') {
-                $this->payment->setOrder($order);
-                /**
-                 * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
-                 */
-                $payment = $this->payment->paymentDirect($this->getRequest()->getParams());
-                $this->payment->addPagseguroOrders($order);
-                $this->payment->clearCheckoutSession($order);
-                /**
-                 * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $result
-                 */
-                $result = $this->payment->paymentRegister($payment);
-                if (method_exists($result, 'getPaymentLink') && $result->getPaymentLink()) {
-                    $link     = $result->getPaymentLink();
-                    $json     = true;
-                    $redirect = Mage::getUrl('pagseguro/payment/success').'?redirect='.$link;
-                } else {
-                    $json     = true;
-                    $redirect = Mage::getUrl('pagseguro/payment/success');
-                }
-                $order->sendNewOrderEmail();
+
+            $customerPaymentData = Mage::getSingleton('customer/session')->getData();
+
+            $this->payment->setOrder($order);
+            /**
+             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
+             */
+            $payment = $this->payment->paymentDirect($order->getPayment()->getMethod(), $customerPaymentData);
+            $this->payment->addPagseguroOrders($order);
+            $this->payment->clearCheckoutSession($order);
+            /**
+             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $result
+             */
+            $result = $this->payment->paymentRegister($payment);
+            
+            /** controy redirect url according with payment return link **/
+            if (method_exists($result, 'getPaymentLink') && $result->getPaymentLink()) {
+                $link     = $result->getPaymentLink();
+                $json     = true;
+                //$redirect = Mage::getUrl('pagseguro/payment/success').'?redirect='.$link;
+                $redirect = 'pagseguro/payment/success';//?redirect='.$link;
+                $redirectParams = array('_secure'=> false, '_query'=> array('redirect' => $link));
             } else {
-                /** @var string $paymentSession */
-                $paymentSession = $this->payment->getPaymentSession()->getResult();
+                $json     = true;
+                //$redirect = Mage::getUrl('pagseguro/payment/success');
+                $redirect = 'pagseguro/payment/success';
+                $redirectParams = array();
             }
+            $order->sendNewOrderEmail();
+
         } catch (Exception $exception) {
             \PagSeguro\Resources\Log\Logger::error($exception);
             Mage::logException($exception);
             $this->canceledStatus($order);
         }
-        if ($this->payment->getEnvironment() === 'production') {
-            $pagseguroJS = 'https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
-        } else {
-            $pagseguroJS = 'https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
-        }
 
-        return $this->loadAndRenderLayout([
-            'paymentSession' => $paymentSession,
-            'order'          => $order,
-            'result'         => $result,
-            'link'           => $link,
-            'redirect'       => $redirect,
-            'pagseguroJS'    => $pagseguroJS,
-        ], $json);
+        return  Mage_Core_Controller_Varien_Action::_redirect(
+            $redirect,
+            $redirectParams
+        );
     }
 
     /**
@@ -206,7 +203,7 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
      */
     public function requestAction()
     {
-        if ($this->getRequest()->getMethod() === 'GET' && $this->payment->getPaymentCheckoutType() === 'TRANSPARENTE') {
+        if ($this->payment->getPaymentCheckoutType() === 'TRANSPARENTE') {
             $this->_redirectUrl(Mage::getUrl('pagseguro/payment/direct'));
         } elseif ($this->payment->getPaymentCheckoutType() === 'PADRAO') {
             $this->_redirectUrl(Mage::getUrl('pagseguro/payment/default'));

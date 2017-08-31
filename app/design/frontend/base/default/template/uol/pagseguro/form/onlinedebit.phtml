@@ -1,0 +1,69 @@
+<script type="text/javascript">
+  setSessionId("<?= $this->getOnlineDebitSession();?>");
+  assignSenderHash();
+</script>
+ 
+<div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
+    <input type="hidden" id="onlineDebitHash" value="" name="payment[online_debit_hash]">
+    <input type="hidden" id="onlineDebitBankName" value="" name="payment[online_debit_bank_name]">
+    <div>
+    <label><?php echo $this->__('CPF ou CNPJ') ?>*</label>
+    <span>
+        <input onblur="validateDocument(this)" type="number" title="<?php echo $this->__('CPF ou CNPJ') ?>" name="payment[online_debit_cpf]" value="" />
+        <span style="display:none;" class="display-none help-block bilitDocument-error-message">Insira um CPF ou CNPJ válido</span>
+    </span>
+    
+    <label style="padding: 0.9em 0em 0em;"><?php echo $this->__('Selecione abaixo seu banco') ?>*</label>
+    <div style="padding: 0em 1em;">
+        <div>
+            <div>
+                <label>
+                    <input type="radio" id="debitbankName" name="debitbankName" value="itau"
+                           required onclick="validateDebitBankName(this)">
+                    Itaú
+                </label>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label>
+                    <input type="radio" id="debitbankName" name="debitbankName" value="bradesco"
+                           required onclick="validateDebitBankName(this)">
+                    Bradesco
+                </label>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label>
+                    <input type="radio" id="debitbankName" name="debitbankName" value="banrisul"
+                           required onclick="validateDebitBankName(this)">
+                    Banrisul
+                </label>
+            </div>
+        </div>
+        <div>
+            <div>
+                <label class="radio">
+                    <input type="radio" id="debitbankName" name="debitbankName"
+                           value="bancodobrasil" onclick="validateDebitBankName(this)">
+                    Banco do Brasil
+                </label>
+            </div>
+        </div>
+    </div>
+    <div>
+        <span style="display:none;" class="display-none help-block debitbankName-error-message">Escolha um banco</span>
+    </div>
+    
+    
+    <!--<img src="https://stc.pagseguro.uol.com.br/public/img/payment-methods-flags/68x30/booklet.png?>">-->
+  </div>
+    <div>
+        <ul style="padding: 0.9em 0em 0.1em; font-size: smaller; font-style: italic">
+            <li>Esta compra está sendo feita no Brasil 
+                <img style="position: absolute; padding-left: 0.5em; display: inline" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+            </li>
+        </ul>
+    </div>
+</div>

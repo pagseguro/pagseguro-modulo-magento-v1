@@ -3,7 +3,7 @@
 /**
  * @property Mage_Sales_Model_Order order
  */
-class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstract
+class UOL_PagSeguro_Model_CreditCard extends Mage_Payment_Model_Method_Abstract
 {
     protected $_canAuthorize = true;
     protected $_canCapture = true;
@@ -13,8 +13,10 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     protected $_canUseForMultishipping = true;
     protected $_canUseInternal = true;
     protected $_canVoid = true;
-    protected $_code = 'pagseguro';
+    protected $_code = 'pagseguro_credit_card';
     protected $_isGateway = true;
+    
+    protected $_formBlockType = 'uol_pagseguro/form_pagseguro';
     /**
      * @var Mage_Sales_Model_Order
      */
@@ -35,6 +37,50 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     {
         $this->library = new UOL_PagSeguro_Model_Library();
         $this->helper = new UOL_PagSeguro_Helper_Data();
+    }
+    
+  public function assignData($data)
+  {
+//    var_dump($this->getInfoInstance(), $data);
+//    die();
+    $info = $this->getInfoInstance();
+     
+    if ($data->getCustomFieldOne())
+    {
+      $info->setCustomFieldOne($data->getCustomFieldOne());
+    }
+     
+    if ($data->getCustomFieldTwo())
+    {
+      $info->setCustomFieldTwo($data->getCustomFieldTwo());
+    }
+ 
+    return $this;
+  }
+ 
+  public function validate()
+  {
+    parent::validate();
+    $info = $this->getInfoInstance();
+     
+    if (!$info->getCustomFieldOne())
+    {
+      $errorCode = 'invalid_data';
+      $errorMsg = $this->_getHelper()->__("CustomFieldOne is a required field.\n");
+    }
+     
+    if (!$info->getCustomFieldTwo())
+    {
+      $errorCode = 'invalid_data';
+      $errorMsg .= $this->_getHelper()->__('CustomFieldTwo is a required field.');
+    }
+ 
+    if ($errorMsg) 
+    {
+      Mage::throwException($errorMsg);
+    }
+ 
+    return $this;
     }
 
     /**
@@ -155,27 +201,23 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         return $notificationUrl;
     }
 
-   /**
-    * Get the direct payment method (boleto, onlibe debit or credit card) 
-    * and instantiate the respective payment object
-    * @param string $paymentMethod
-    * @param array $paymentData
-    * @return \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
-    * @TODO refactor credit card payment
-    */
-    public function paymentDirect($paymentMethod, $paymentData)
-    {   
+    /**
+     * @param $params
+     *
+     * @return \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
+     */
+    public function paymentDirect($params)
+    {
         $payment = null;
-        switch ($paymentMethod) {
-            case 'pagseguro_boleto':
+        switch ($params['method']) {
+            case 'boleto':
                 $payment = new \PagSeguro\Domains\Requests\DirectPayment\Boleto();
                 $payment->setSender()->setDocument()->withParameters(
                     'CPF',
-                    $paymentData['boletoDocument']
+                    $params['bilitDocument']
                 );
-                $payment->setSender()->setHash($paymentData['boletoHash']);
                 break;
-            case 'pagseguro_credit_card':
+            case 'credit-card':
                 $payment = new \PagSeguro\Domains\Requests\DirectPayment\CreditCard();
                 $payment->setToken($params['token']);
                 $payment->setInstallment()->withParameters($params['cardInstallment'],
@@ -194,17 +236,16 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
                 $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
                 $payment->setBilling()->setAddress()->instance($orderAddress->getBillingAddress());
                 break;
-            case 'pagseguro_online_debit':
+            case 'online-debit':
                 $payment = new \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit();
-                $payment->setBankName($paymentData['onlineDebitBankName']);
+                $payment->setBankName($params['debitBankName']);
                 $payment->setSender()->setDocument()->withParameters(
                     'CPF',
-                    $paymentData['onlineDebitDocument']
+                    $params['debitDocument']
                 );
-                $payment->setSender()->setHash($paymentData['onlineDebitHash']);
                 break;
         }
-        //$payment->setSender()->setHash($paymentData['hash']);
+        $payment->setSender()->setHash($params['senderHash']);
 
         /** @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment */
         return $this->payment($payment);
