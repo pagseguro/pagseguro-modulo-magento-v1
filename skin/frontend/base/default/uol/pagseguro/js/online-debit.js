@@ -9,7 +9,7 @@ function validateDebitBankName(self) {
     document.getElementById('onlineDebitBankName').value = self.value;
 }
 
-function setSessionId (session) {
+function setOnlineDebitSessionId (session) {
    return PagSeguroDirectPayment.setSessionId(session)
 }
 
@@ -17,7 +17,7 @@ function getSenderHash () {
     return PagSeguroDirectPayment.getSenderHash()
 }
 
-function assignSenderHash () {
+function assignOnlineDebitHash () {
     setTimeout(function () {
         document.getElementById('onlineDebitHash').value = getSenderHash()
     }, 500)

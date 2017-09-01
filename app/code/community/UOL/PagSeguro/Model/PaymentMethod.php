@@ -27,6 +27,8 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
      * @var UOL_PagSeguro_Model_Library
      */
     private $library;
+    
+    protected $_session;
 
     /**
      * UOL_PagSeguro_Model_PaymentMethod constructor.
@@ -175,24 +177,26 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
                 );
                 $payment->setSender()->setHash($paymentData['boletoHash']);
                 break;
+
             case 'pagseguro_credit_card':
                 $payment = new \PagSeguro\Domains\Requests\DirectPayment\CreditCard();
-                $payment->setToken($params['token']);
-                $payment->setInstallment()->withParameters($params['cardInstallment'],
-                    number_format($params['cardInstallmentValue'], 2, '.', ''));
-                $payment->setHolder()->setBirthdate($params['cardHolderBirthdate']);
-                $payment->setHolder()->setName($params['cardHolderName']);
+                $payment->setToken($paymentData['creditCardToken']);
+                $payment->setInstallment()->withParameters($paymentData['creditCardInstallment'],
+                    number_format($paymentData['creditCardInstallmentValue'], 2, '.', ''));
+                $payment->setHolder()->setBirthdate($paymentData['creditCardBirthdate']);
+                $payment->setHolder()->setName($paymentData['creditCardHolder']);
                 $payment->setHolder()->setPhone()->withArray($this->helper->formatPhone($this->order->getBillingAddress()->getTelephone()));
                 $payment->setHolder()->setDocument()->withParameters(
                     'CPF',
-                    $params['cardHolderDocument']
+                    $paymentData['creditCardDocument']
                 );
                 $payment->setSender()->setDocument()->withParameters(
                     'CPF',
-                    $params['cardHolderDocument']
+                    $paymentData['creditCardDocument']
                 );
                 $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
                 $payment->setBilling()->setAddress()->instance($orderAddress->getBillingAddress());
+                $payment->setSender()->setHash($paymentData['creditCardHash']);
                 break;
             case 'pagseguro_online_debit':
                 $payment = new \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit();
@@ -254,5 +258,17 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     public function setOrder(Mage_Sales_Model_Order $order)
     {
         return $this->order = $order;
+    }
+    
+    /**
+     * getter for $_session (must be public to be instatiated in blocks)
+     * @return type
+     */
+    public function getSession()
+    {
+        if (is_null($this->_session) || empty($this->_session)) {
+            $this->_session = $this->getPaymentSession()->getResult();
+        }
+        return $this->_session;
     }
 }

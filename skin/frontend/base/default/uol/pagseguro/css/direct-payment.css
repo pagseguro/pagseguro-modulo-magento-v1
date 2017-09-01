@@ -1,0 +1,23 @@
+.pagseguro-display-none {
+    display: none;
+}
+
+.pagseguro-label-spacing {
+    padding: 0.5em 0em;
+}
+
+.pagseguro-label-width {
+    width: 30%;
+}
+
+.pagseguro-input-width {
+    width: 50%;
+}
+
+span > input {
+    width: 50%;
+}
+
+.pagseguro-label-spacing > label {
+    width: 30%;
+}
