@@ -1,16 +1,68 @@
+<div>
+    <?php //var_dump(Mage::getSingleton('checkout/session')->getMessage()); 
+        //var_dump(Mage::getSingleton('checkout/session')->getQuote()->getPayment()->getMethod());
+    ?>
+</div>
 <script type="text/javascript">
-  setBoletoSessionId("<?= $this->getBoletoSession();?>");
-  assignBoletoHash();
+//<![CDATA[
+    setBoletoSessionId("<?= $this->getBoletoSession();?>");
+    assignBoletoHash();
+//]]>
 </script>
- 
+    
+<script type="text/javascript">
+//<![CDATA[
+//    Payment.prototype.save = Payment.prototype.save.wrap(function(save) {
+//        var validator = new Validation(this.form);
+//        if (this.validate() && validator.validate()) {
+//            setBoletoSessionId("<?= $this->getBoletoSession();?>");
+//            assignBoletoHash();
+//            console.log('validando boleto...');
+//            if (formBilit()) {
+//              console.log('antes de chamar o save do magento');
+//              save(); // THIS WILL CALL CORE SAVE THAT WAS WRAPPED
+//            }
+//        }
+//    }); 
+//]]>
+//<![CDATA[
+var x = document.getElementsByTagName("script");
+  var header_already_added = false;
+  for (var i=0; i< x.length; i++){
+      if (x[i].src == "<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>"){
+             header_already_added = true;
+      }
+  }
+
+  if (header_already_added == false){
+    // add header if not already added
+    var head = document.getElementsByTagName("head")[0];
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.src = '<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>';
+    head.appendChild(s);
+  }
+//]]>
+</script>
+
 <div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
     <input type="hidden" id="boletoHash" value="" name="payment[boleto_hash]">
-    <div>
-    <label><?php echo $this->__('CPF ou CNPJ') ?>*</label>
-    <span>
-        <input required onblur="validateDocument(this)" type="number" title="<?php echo $this->__('CPF ou CNPJ') ?>" name="payment[boleto_cpf]" value="" />
-        <span style="display:none;" class="display-none help-block bilitDocument-error-message">Insira um CPF ou CNPJ válido</span>
-    </span>
+    <div class="input-box">
+        <label class="required" ><?php echo $this->__('CPF ou CNPJ') ?></label>
+        <!--<span>-->
+            <input 
+                class="input-text" 
+                id="bilitDocument"  
+                onblur="validateDocument(this)" 
+                onkeyup="documentMask(this)"
+                type="text" 
+                title="<?php echo $this->__('CPF ou CNPJ') ?>" 
+                name="payment[boleto_cpf]" 
+                value="" 
+                maxlength="18"
+            />
+            <div class="display-none validation-advice bilitDocument-error-message">Insira um CPF ou CNPJ válido</div>
+        <!--</span>-->
     
     <ul style="padding: 0.9em 1em 0.1em; font-size: smaller;">
         <li>&#9679; Imprima o boleto e pague no banco ou na internet utilizando o seu c&oacute;digo de barras</li>

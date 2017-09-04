@@ -1,5 +1,14 @@
-.pagseguro-display-none {
-    display: none;
+/*.pagseguro-display-none {
+  display: none;
+}*/
+
+.display-none {
+  display: none;
+}
+
+.help-block {
+    color: #df280a;
+    font-size: small;
 }
 
 .pagseguro-label-spacing {
@@ -20,4 +29,9 @@ span > input {
 
 .pagseguro-label-spacing > label {
     width: 30%;
+    text-align: right;
+}
+
+/*.display-none .validation-advice {
+ padding-left: 30%;   */
 }
