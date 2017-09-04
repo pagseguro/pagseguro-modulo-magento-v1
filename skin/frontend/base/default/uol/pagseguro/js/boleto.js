@@ -1,7 +1,3 @@
-//function validateDocument(self) {
-//    console.log(self);
-//}
-
 function setBoletoSessionId (session) {
    return PagSeguroDirectPayment.setSessionId(session)
 }
@@ -17,12 +13,9 @@ function assignBoletoHash () {
 }
 
 function validateBoletoForm () {
-  console.log('dentro do form bilit');
-  //activeLoading();
-    if (validateDocument(document.querySelector('#bilitDocument'))) {
-      return true;
-    }
-      //displayError(document.querySelector('#bilitDocument'),);
-    return false;
-    //}
+  if (validateDocument(document.querySelector('#bilitDocument'))) {
+    return true;
   }
+
+  return false;
+}

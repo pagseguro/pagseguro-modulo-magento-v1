@@ -36,25 +36,18 @@
 
     <div class="pagseguro-label-spacing">
         <label class="required" for="creditCardNum">Número do cartão</label>
-        <!--<span>-->
         <input type="text" id="creditCardNum" onkeyup="creditCardMask(this)" onblur="getBrand(this)" maxlength="19">
         <div style="padding-left: 25%" class="display-none validation-advice creditCardNum-error-message">Insira um número de cartão válido</span>
-        <!--</span>-->
     </div>
 
-    <!--<div class="pagseguro-label-spacing">-->
     <div class="pagseguro-label-spacing">
         <label class="required" for="creditCardHolder">Nome impresso no cartão</label>
-        <!--<span>-->
         <input type="text" name="payment[credit_card_holder]" id="creditCardHolder" required onblur="validateCardHolder(this)" minlength="3">
             <div style="padding-left: 25%" class="display-none validation-advice creditCardHolder-error-message">Insira um nome</div>
-        <!--</span>-->
     </div>
-    
-    <!--<div class="pagseguro-label-spacing">-->
+
     <div class="pagseguro-label-spacing">
         <label class="required" for="creditCardExpirationMonth">Validade</label>
-        <!--<span>-->
             <select style="width: 24%" id="creditCardExpirationMonth" title="Cartão válido até" required>
                 <option value="" disabled selected>Mês</option>
                 <option value="01">01</option>
@@ -70,9 +63,7 @@
                 <option value="11">11</option>
                 <option value="12">12</option>
             </select>
-            
-        <!--</span>-->
-        <!--<span>-->
+
             <select style="width: 24%" id="creditCardExpirationYear" title="Cartão válido até" required>
                 <option value="" disabled selected>Ano</option>
                 <?php
@@ -82,8 +73,6 @@
                     <option value="<?= $i; ?>"><?= $i; ?></option>
                 <?php endfor; ?>
             </select>
-            
-        <!--</span>-->
         <div>
         <span style="padding-left: 25%" class="display-none validation-advice creditCardExpirationYear-error-message">Escolha um ano</span>
         <span style="padding-left: 2%" class="display-none validation-advice creditCardExpirationMonth-error-message">Escolha um mês</span>
@@ -92,12 +81,10 @@
 
     <div class="pagseguro-label-spacing">
         <label class="required" for="creditCardCode">Código de segurança</label>
-        <!--<span>-->
             <input class="form-control code-card-mask" id="creditCardCode" type="number" minlength="3"
                    maxlength="4"
                    onblur="validateCreditCardCode(this, true)" required>
             <div style="padding-left: 25%" class="display-none validation-advice creditCardCode-error-message">Insira um código segurança válido</div>
-        <!--</span>-->
     </div>
     
     <div class="pagseguro-label-spacing">
@@ -115,29 +102,22 @@
                 maxlength="18"
             />
             <div style="padding-left: 25%" class="display-none validation-advice creditCardDocument-error-message">Insira um CPF ou CNPJ válido</div>
-        <!--</span>-->
     </div>
 
     <div class="pagseguro-label-spacing">
         <label class="required" for="creditCardHolderBirthdate">Data de nascimento</label>
-        <!--<span>-->
-        <!--<div>-->
             <input maxlength="10" type="text" name="payment[credit_card_holder_birthdate]" class="form-control date-mask" id="creditCardHolderBirthdate" required
                    placeholder="dd/mm/aaaa" onblur="validateCreditCardHolderBirthdate(this)" onkeyup="MascaraData(this)">
             <div style="padding-left: 25%" class="display-none validation-advice creditCardHolderBirthdate-error-message">Insira uma data de nascimento válida</div>
-        <!--</div>-->
-        <!--</span>-->
     </div>
 
     <div class="pagseguro-label-spacing">
         <label class="required" for="card_installments">Parcelas</label>
-        <!--<span>-->
             <select id="card_installment_option" title="Nº de parcelas" required
                     disabled onchange="cardInstallmentOnChange(this.value)">
                 <option value="null" disabled selected>Escolha o N° de parcelas</option>
             </select>
             <div style="padding-left: 25%" class="display-none validation-advice card_installment_option-error-message">Escolha uma opção de parcelamento</div>
-        <!--</span>-->
     </div>
 
     <div class="credit-total pagseguro-label-spacing">
@@ -148,9 +128,9 @@
     </div>
     
     <div>
-        <ul style="padding: 0.9em 0em 0.1em; font-size: smaller; font-style: italic">
+        <ul class="pagseguro-direct-payment-ul">
             <li>Esta compra está sendo feita no Brasil 
-                <img style="position: absolute; padding-left: 0.5em; display: inline" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+                <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
             </li>
         </ul>
     </div>

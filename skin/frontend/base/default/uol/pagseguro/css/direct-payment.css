@@ -32,6 +32,14 @@ span > input {
     text-align: right;
 }
 
-/*.display-none .validation-advice {
- padding-left: 30%;   */
+.pagseguro-direct-payment-ul {
+    padding: 0.9em 0em 0.1em;
+    font-size: smaller;
+    font-style: italic;
+}
+
+.flag-origin-country-img {
+    position: absolute; 
+    padding-left: 0.5em;
+    display: inline;
 }

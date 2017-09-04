@@ -7,22 +7,22 @@
 
 <script>
 //<![CDATA[
-        var x = document.getElementsByTagName("script");
-          var header_already_added = false;
-        for (var i=0; i< x.length; i++){
-          if (x[i].src == "<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>"){
-                 header_already_added = true;
-          }
+    var x = document.getElementsByTagName("script");
+      var header_already_added = false;
+    for (var i=0; i< x.length; i++){
+      if (x[i].src == "<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>"){
+             header_already_added = true;
       }
+  }
 
-      if (header_already_added == false){
-        // add header if not already added
-        var head = document.getElementsByTagName("head")[0];
-        var s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.src = '<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>';
-        head.appendChild(s);
-      }
+  if (header_already_added == false){
+    // add header if not already added
+    var head = document.getElementsByTagName("head")[0];
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.src = '<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>';
+    head.appendChild(s);
+  }
 //]]>
 </script>
  
@@ -31,7 +31,6 @@
     <input type="hidden" id="onlineDebitBankName" value="" name="payment[online_debit_bank_name]">
     <div class="input-box">
         <label class="required"><?php echo $this->__('CPF ou CNPJ') ?>*</label>
-    <!--<span>-->
         <input 
             id="debitDocument"
             class="input-text"
@@ -44,7 +43,6 @@
             maxlength="18"
         />
         <div class="display-none validation-advice debitDocument-error-message">Insira um CPF ou CNPJ válido</div>
-    <!--</span>-->
     <div class="input-box">
         <label class="required" style="padding: 0.9em 0em 0em;"><?php echo $this->__('Selecione abaixo seu banco') ?></label>
         <div style="padding: 0em 1em;">
@@ -86,20 +84,12 @@
             </div>
         </div>
     </div>
-    <!--<div>-->
-        <!--<span--> 
-            <!--style="display:none;" class="display-none help-block debitbankName-error-message">Escolha um banco-->
-            <div class="display-none validation-advice debitbankName-error-message">Escolha um banco</div>
-        <!--</span>-->
-    <!--</div>-->
-    
-    
-    <!--<img src="https://stc.pagseguro.uol.com.br/public/img/payment-methods-flags/68x30/booklet.png?>">-->
+    <div class="display-none validation-advice debitbankName-error-message">Escolha um banco</div>
   </div>
     <div>
-        <ul style="padding: 0.9em 0em 0.1em; font-size: smaller; font-style: italic">
+        <ul class="pagseguro-direct-payment-ul">
             <li>Esta compra está sendo feita no Brasil 
-                <img style="position: absolute; padding-left: 0.5em; display: inline" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+                <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
             </li>
         </ul>
     </div>

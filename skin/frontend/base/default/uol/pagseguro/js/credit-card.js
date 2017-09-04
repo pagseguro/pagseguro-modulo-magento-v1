@@ -12,13 +12,6 @@ function assignCreditCardHash() {
   }, 500)
 }
 
-//function validateCreditCard(self) {
-//    console.log(self.value);
-//    //set block value to be used in transaction later
-//    //document.getElementById('onlineDebitBankName').value = self.value;
-//}
-//
-
 function validateCreditCard(self) {
   if (self.validity.valid && (self.value.length >= 14 && self.value.length <= 22)) {
     displayError(self, false)
@@ -140,7 +133,9 @@ function createCardToken() {
         success: function (response) {
           document.getElementById('creditCardToken').value = response.card.token;
         },
-        error: function (error) {},
+        error: function (error) {
+          console.log(error);
+        },
     }
 
     PagSeguroDirectPayment.createCardToken(param)
@@ -161,24 +156,22 @@ function validateCreditCardCode(self, createToken) {
 }
 
 function validateCreditCardForm() {
-  setTimeout(function (){
-     if (
-      validateCreditCard(document.querySelector('#creditCardNum')) &&
-      validateDocument(document.querySelector('#creditCardDocument')) &&
-      validateCardHolder(document.querySelector('#creditCardHolder')) &&
-      validateCreditCardHolderBirthdate(document.querySelector('#creditCardHolderBirthdate')) &&
-      validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
-      validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
-      validateCreditCardCode(document.querySelector('#creditCardCode'), false) &&
-      validateCreditCardInstallment(document.querySelector('#card_installment_option'))
-    ) {
-      
-      if (document.getElementById('creditCardToken').value === "") {
-        createCardToken();
-      }
-      return true;
-    }
-  }, 200)
+  if (
+   validateCreditCard(document.querySelector('#creditCardNum')) &&
+   validateDocument(document.querySelector('#creditCardDocument')) &&
+   validateCardHolder(document.querySelector('#creditCardHolder')) &&
+   validateCreditCardHolderBirthdate(document.querySelector('#creditCardHolderBirthdate')) &&
+   validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
+   validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
+   validateCreditCardCode(document.querySelector('#creditCardCode'), false) &&
+   validateCreditCardInstallment(document.querySelector('#card_installment_option'))
+  ) {
+
+   if (document.getElementById('creditCardToken').value === "") {
+     createCardToken();
+   }
+   return true;
+  }
   
   validateCreditCard(document.querySelector('#creditCardNum'))
   validateDocument(document.querySelector('#creditCardDocument'))
@@ -193,10 +186,10 @@ function validateCreditCardForm() {
 
 function validateCreateToken() {
   if(validateCreditCard(document.querySelector('#creditCardNum')) 
-      && validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
-      && validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
-      && validateCreditCardCode(document.querySelector('#creditCardCode'), false)
-      && document.getElementById('creditCardBrand').value !== ""
+    && validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
+    && validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
+    && validateCreditCardCode(document.querySelector('#creditCardCode'), false)
+    && document.getElementById('creditCardBrand').value !== ""
     ) {
       return true
   }

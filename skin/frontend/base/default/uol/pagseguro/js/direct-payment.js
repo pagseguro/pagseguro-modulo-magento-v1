@@ -1,16 +1,14 @@
 /**
- * 
+ * Validate document (cpf or cnpj)
  * @param {type} self
  * @returns {Boolean}
  */
 function validateDocument(self) {
-  console.log('validando documento');
-  console.log(self.value);
   var value = unmask(self.value)
   if (value.length === 11) {
     return validateCpf(self)
   } else if (value.length === 14) {
-    validateCnpj(self)
+    return validateCnpj(self)
   } else {
     displayError(self)
     return false
@@ -155,42 +153,6 @@ function displayError(target, error = true) {
 }
 }
 
-//function validateDocument(self) {
-//    console.log(self.value);
-//    //document.getElementById('onlineDebitBankName').value = self.value;
-//}
-//
-//function validateCreditCard(self) {
-//    console.log(self.value);
-//    //set block value to be used in transaction later
-//    //document.getElementById('onlineDebitBankName').value = self.value;
-//}
-//
-//function setSessionId (session) {
-//   return PagSeguroDirectPayment.setSessionId(session)
-//}
-//
-//function getSenderHash () {
-//    return PagSeguroDirectPayment.getSenderHash()
-//}
-//
-//function assignSenderHash () {
-//    if (document.getElementById('creditCardHash').value === ""
-//        || document.getElementById('boletoHash').value === ""
-//        || document.getElementById('onlieDebitHash').value === "") 
-//    {
-//        setTimeout(function () {
-//            var hash = getSenderHash();
-//            document.getElementById('creditCardHash').value = hash;
-//            document.getElementById('onlieDebitHash').value = hash;
-//            document.getElementById('onlieDebitHash').value = hash;
-//        }, 500)
-//    }
-//}
-
-
-
-
 /**
  * Add mask for document (cpf or cnpj)
  * Important: Called on keyup event
@@ -198,13 +160,17 @@ function displayError(target, error = true) {
  * @returns {bool}
  */
 function documentMask(document) {
-  if(document.value.length < 15) {
+  if (document.value.length < 15) {
     MascaraCPF(document);
   } else {
     MascaraCNPJ(document);
   }
 }
 
+/**
+ * Mask functions below adapted from
+ * http://www.fabiobmed.com.br/excelente-codigo-para-mascara-e-validacao-de-cnpj-cpf-cep-data-e-telefone/
+ */
 //adiciona mascara de cnpj
 function MascaraCNPJ(cnpj) {
   if (mascaraInteiro(cnpj) == false) {
@@ -238,29 +204,24 @@ function creditCardMask(cc) {
 }
 
 //valida data
-function ValidaData(data) {
-  exp = /\d{2}\/\d{2}\/\d{4}/
-  if (!exp.test(data.value))
-    alert('Data Invalida!');
-}
+//function ValidaData(data) {
+//  exp = /\d{2}\/\d{2}\/\d{4}/
+//  if (!exp.test(data.value))
+//    alert('Data Invalida!');
+//}
 
 //valida numero inteiro com mascara
 function mascaraInteiro() {
 //  [8]     [46]      [48..57] [96..105]
-  if (event.keyCode == 8 
-      || event.keyCode == 46 
-      || (event.keyCode > 47 && event.keyCode < 58) 
-      || (event.keyCode > 95 && event.keyCode < 106)) {
+  if (event.keyCode == 8
+          || event.keyCode == 46
+          || (event.keyCode > 47 && event.keyCode < 58)
+          || (event.keyCode > 95 && event.keyCode < 106)) {
 
-      return true;
+    return true;
   }
   event.returnValue = false;
   return false;
-  //if (event.keyCode < 48 || event.keyCode > 57 ) {
-//    event.returnValue = false;
-//    return false;
-//  }
-//  return true;
 }
 
 //formata de forma generica os campos
@@ -295,12 +256,4 @@ function formataCampo(campo, Mascara, evento) {
   } else {
     return true;
   }
-
-
-function activeLoading () {
-    jQuery('#review-please-wait.please-wait').addClass('ps_msg_hidden')
-    jQuery('.btn-checkout').remove()
-    Modal.showLoading('Aguarde...')
-    jQuery('#pagseguro-loading-message h3').attr('style', 'min-width:210px; font-size: 16px !important;')
-    jQuery('#cboxContent').css('height', '104px')
-  }}
+}

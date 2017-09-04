@@ -1,8 +1,3 @@
-<div>
-    <?php //var_dump(Mage::getSingleton('checkout/session')->getMessage()); 
-        //var_dump(Mage::getSingleton('checkout/session')->getQuote()->getPayment()->getMethod());
-    ?>
-</div>
 <script type="text/javascript">
 //<![CDATA[
     setBoletoSessionId("<?= $this->getBoletoSession();?>");
@@ -11,20 +6,6 @@
 </script>
     
 <script type="text/javascript">
-//<![CDATA[
-//    Payment.prototype.save = Payment.prototype.save.wrap(function(save) {
-//        var validator = new Validation(this.form);
-//        if (this.validate() && validator.validate()) {
-//            setBoletoSessionId("<?= $this->getBoletoSession();?>");
-//            assignBoletoHash();
-//            console.log('validando boleto...');
-//            if (formBilit()) {
-//              console.log('antes de chamar o save do magento');
-//              save(); // THIS WILL CALL CORE SAVE THAT WAS WRAPPED
-//            }
-//        }
-//    }); 
-//]]>
 //<![CDATA[
 var x = document.getElementsByTagName("script");
   var header_already_added = false;
@@ -49,7 +30,6 @@ var x = document.getElementsByTagName("script");
     <input type="hidden" id="boletoHash" value="" name="payment[boleto_hash]">
     <div class="input-box">
         <label class="required" ><?php echo $this->__('CPF ou CNPJ') ?></label>
-        <!--<span>-->
             <input 
                 class="input-text" 
                 id="bilitDocument"  
@@ -62,19 +42,17 @@ var x = document.getElementsByTagName("script");
                 maxlength="18"
             />
             <div class="display-none validation-advice bilitDocument-error-message">Insira um CPF ou CNPJ válido</div>
-        <!--</span>-->
     
-    <ul style="padding: 0.9em 1em 0.1em; font-size: smaller;">
+    <ul class="pagseguro-direct-payment-ul">
         <li>&#9679; Imprima o boleto e pague no banco ou na internet utilizando o seu c&oacute;digo de barras</li>
         <li>&#9679; O prazo de validade do boleto &eacute; de 1 dia &uacute;til</li>
     </ul>
-    
-    <!--<img src="https://stc.pagseguro.uol.com.br/public/img/payment-methods-flags/68x30/booklet.png?>">-->
+
   </div>
     <div>
-        <ul style="padding: 0.9em 0em 0.1em; font-size: smaller; font-style: italic">
+        <ul class="pagseguro-direct-payment-ul">
             <li>Esta compra está sendo feita no Brasil 
-                <img style="position: absolute; padding-left: 0.5em; display: inline" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+                <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
             </li>
         </ul>
     </div>
