@@ -34,6 +34,7 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 - Na área administrativa do seu Magento, acesse o menu *Sistema/System -> Magento Connect -> Magento Connect Manager*. Caso tenha uma versão anterior do módulo instalada faça a remoção agora;
 - No Magento Connect Manger, dentro da seção Direct package file upload, clique em **Escolher arquivo/Choose file**, selecione o arquivo UOL_PagSeguro-x.x.x.tgz (baixado anteriormente), clique no botão de upload e acompanhe a instalação do módulo no console da página;
 - Caso utilize a compilação, volte para a área administrativa do Magento, ative-a e execute-a novamente;
+- Pronto, ao finalizar o processo o módulo do PagSeguro estará instalando no seu Magento! Siga para a [próxima seção](#configuração) para configurar e começar a usar o módulo.
 
 > Caso tenha uma versão do módulo do PagSeguro anterior à 2.3 instalada, copie o arquivo *remove-module-2.2.php* para a raíz de instalação do seu Magento e execute o arquivo no browser, ex.: www.meusite.com.br/magento/remove-module-2.2.php. Siga as instruções na tela para a remoção dos arquivos.
 
