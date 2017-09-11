@@ -93,8 +93,9 @@
             <label class="pagseguro-required" for="creditCardCode">Código de segurança</label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <input class="pagseguro-cc-input form-control code-card-mask" id="creditCardCode" type="number" minlength="3"
+            <input class="pagseguro-cc-input form-control code-card-mask" id="creditCardCode" type="text" minlength="3"
                    maxlength="4"
+                   onkeydown="creditCardCodeMask(this)"
                    onblur="validateCreditCardCode(this, true)" required>
             <div class="display-none validation-advice creditCardCode-error-message">Insira um código segurança válido</div>
         </div>

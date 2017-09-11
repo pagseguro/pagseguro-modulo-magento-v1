@@ -165,7 +165,8 @@ function displayError(target, error = true) {
  * @returns {bool}
  */
 function documentMask(document) {
-  if (document.value.length < 14) {
+  if (document.value.length < 14 
+          || (document.value.length == 14 && (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46))) {
     MascaraCPF(document);
   } else {
     MascaraCNPJ(document);
@@ -311,4 +312,16 @@ function formataCampo(campo, Mascara, evento) {
   } else {
     return true;
   }
+}
+
+/**
+ * Add credit card code mask to input
+ * @param {type} cnpj
+ * @returns {Boolean}
+ */
+function creditCardCodeMask(code) {
+  if (mascaraInteiro(code) == false) {
+    event.returnValue = false;
+  }
+  return true;
 }
