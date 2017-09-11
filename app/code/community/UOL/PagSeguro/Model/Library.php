@@ -69,7 +69,7 @@ class UOL_PagSeguro_Model_Library
      */
     public function getCharset()
     {
-        return Mage::getStoreConfig('payment/pagseguro/environment');
+        return Mage::getStoreConfig('payment/pagseguro/charset');
     }
 
     /**
@@ -93,6 +93,6 @@ class UOL_PagSeguro_Model_Library
      */
     public function getPaymentCheckoutType()
     {
-        return Mage::getStoreConfig('payment/pagseguro/checkout');
+        return Mage::getStoreConfig('payment/pagseguro_default_lightbox/checkout');
     }
 }

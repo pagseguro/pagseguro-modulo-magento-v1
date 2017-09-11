@@ -18,17 +18,17 @@ function validatePagSeguroActiveMethod() {
     case "pagseguro_credit_card":
       return validateCreditCardForm();
       break;
-    
     case "pagseguro_boleto":
       return validateBoletoForm();
       break;
-    
     case "pagseguro_online_debit":
       return validateDebitForm();
       break;
-
+    case "pagseguro_default_lightbox":
+      return true;
+      break;
     default:
-      return false;
+      return true;
       break;
   }
 }

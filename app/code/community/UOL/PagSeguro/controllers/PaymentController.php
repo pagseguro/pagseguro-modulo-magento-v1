@@ -74,6 +74,7 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
     public function defaultAction()
     {
         $link = null;
+        
         try {
             /** @var Mage_Sales_Model_Order $order */
             $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
@@ -81,7 +82,9 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
             /**
              * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
              */
+            
             $payment = $this->payment->paymentDefault();
+
             $this->payment->addPagseguroOrders($order);
             $this->payment->clearCheckoutSession($order);
             /**
@@ -130,6 +133,11 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
              */
             $result = $this->payment->paymentRegister($payment);
             
+            if ($result === false) {
+                //\PagSeguro\Resources\Log\Logger::error('');
+                $this->canceledStatus($order);
+                return Mage_Core_Controller_Varien_Action::_redirect('pagseguro/payment/error', array('_secure'=> false));
+            };
             /** controy redirect url according with payment return link **/
             if (method_exists($result, 'getPaymentLink') && $result->getPaymentLink()) {
                 $link     = $result->getPaymentLink();
@@ -145,10 +153,9 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
             }
             $order->sendNewOrderEmail();
 
-        } catch (Exception $exception) {
-            \PagSeguro\Resources\Log\Logger::error($exception);
-            Mage::logException($exception);
+        } catch (\Exception $exception) {
             $this->canceledStatus($order);
+            return Mage_Core_Controller_Varien_Action::_redirect('pagseguro/payment/error', array('_secure'=> false));
         }
 
         return  Mage_Core_Controller_Varien_Action::_redirect(
@@ -203,12 +210,18 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
      */
     public function requestAction()
     {
-        if ($this->payment->getPaymentCheckoutType() === 'TRANSPARENTE') {
+        $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
+        $orderPaymentMethod = $order->getPayment()->getMethod();
+
+        if ($orderPaymentMethod === 'pagseguro_online_debit' || $orderPaymentMethod === 'pagseguro_boleto' ||$orderPaymentMethod === 'pagseguro_credit_card') {
             $this->_redirectUrl(Mage::getUrl('pagseguro/payment/direct'));
-        } elseif ($this->payment->getPaymentCheckoutType() === 'PADRAO') {
+        } elseif ($orderPaymentMethod === 'pagseguro_default_lightbox' && $this->payment->getPaymentCheckoutType() === 'PADRAO') {
             $this->_redirectUrl(Mage::getUrl('pagseguro/payment/default'));
-        } elseif ($this->payment->getPaymentCheckoutType() === 'LIGHTBOX') {
+        } elseif ($orderPaymentMethod === 'pagseguro_default_lightbox' && $this->payment->getPaymentCheckoutType() === 'LIGHTBOX') {
             $this->_redirectUrl(Mage::getUrl('pagseguro/payment/lightbox'));
+        } else {
+            \PagSeguro\Resources\Log\Logger::error('Método de pagamento inválido para o PagSeguro');
+            return Mage_Core_Controller_Varien_Action::_redirect('pagseguro/payment/error', array('_secure'=> false));
         }
     }
 
@@ -219,4 +232,14 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
     {
         return $this->loadAndRenderLayout();
     }
+    
+    /**
+     * Default payment error screen
+     * @return UOL_PagSeguro_PaymentController
+     */
+    public function errorAction()
+    {
+        return $this->loadAndRenderLayout();
+    }
+            
 }

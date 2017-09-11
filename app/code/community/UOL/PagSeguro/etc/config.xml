@@ -28,19 +28,6 @@ limitations under the License.
                 <pagseguro>PagSeguro</pagseguro>
             </groups>
         </payment>
-<!--        <fieldsets>
-            <sales_convert_quote_payment>
-              <custom_field_one>
-                <to_order_payment>*</to_order_payment>
-              </custom_field_one>
-              <custom_field_two>
-                <to_order_payment>*</to_order_payment>
-              </custom_field_two>
-              <boleto_cpf>
-                <to_order_payment>*</to_order_payment>
-              </boleto_cpf>
-            </sales_convert_quote_payment>
-        </fieldsets>-->
         <blocks>
             <uol_pagseguro>
                 <class>UOL_PagSeguro_Block</class>
@@ -222,30 +209,29 @@ limitations under the License.
     </frontend>
     <default>
         <payment>
-            <pagseguro>
+            <pagseguro_default_lightbox>
                 <active>0</active>
-                <model>UOL_PagSeguro_Model_PaymentMethod</model>
+                <model>UOL_PagSeguro_Model_Pagseguro</model>
                 <title>PagSeguro</title>
-                <log_file>/var/pagseguro.log</log_file>
-                 <sort_order>1</sort_order>
-                <allowspecific>0</allowspecific>
-            </pagseguro>
+                <group>pagseguro</group>
+                <sort_order>1</sort_order>
+            </pagseguro_default_lightbox>
             <pagseguro_credit_card>
-                <active>1</active>
+                <active>0</active>
                 <model>UOL_PagSeguro_Model_CreditCard</model>
                 <title>Cartão de Crédito</title>
                 <group>pagseguro</group>
                  <sort_order>2</sort_order>
             </pagseguro_credit_card>
             <pagseguro_boleto>
-                <active>1</active>
+                <active>0</active>
                 <model>UOL_PagSeguro_Model_Boleto</model>
                 <title>Boleto Bancário</title>
                 <group>pagseguro</group>
                  <sort_order>3</sort_order>
             </pagseguro_boleto>
             <pagseguro_online_debit>
-                <active>1</active>
+                <active>0</active>
                 <model>UOL_PagSeguro_Model_OnlineDebit</model>
                 <title>Débito Online</title>
                 <group>pagseguro</group>

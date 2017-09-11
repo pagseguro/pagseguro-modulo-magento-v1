@@ -29,20 +29,26 @@
 <div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
     <input type="hidden" id="onlineDebitHash" value="" name="payment[online_debit_hash]">
     <input type="hidden" id="onlineDebitBankName" value="" name="payment[online_debit_bank_name]">
-    <div class="input-box">
-        <label class="required"><?php echo $this->__('CPF ou CNPJ') ?>*</label>
-        <input 
-            id="debitDocument"
-            class="input-text"
-            onblur="validateDocument(this)"
-            onkeyup="documentMask(this)"
-            type="text"
-            title="<?php echo $this->__('CPF ou CNPJ') ?>"
-            name="payment[online_debit_cpf]"
-            value=""
-            maxlength="18"
-        />
-        <div class="display-none validation-advice debitDocument-error-message">Insira um CPF ou CNPJ válido</div>
+    
+    
+    <div style="float: left">
+        <div class="pagseguro-boleto-label-div">
+            <label class="pagseguro-required"><?php echo $this->__('CPF ou CNPJ') ?>*</label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <input 
+                id="debitDocument"
+                class="input-text"
+                onblur="validateDocument(this)"
+                onkeydown="documentMask(this)"
+                type="text"
+                title="<?php echo $this->__('CPF ou CNPJ') ?>"
+                name="payment[online_debit_cpf]"
+                value=""
+                maxlength="18"
+            />
+            <div class="display-none validation-advice debitDocument-error-message">Insira um CPF ou CNPJ válido</div>
+        </div>
     <div class="input-box">
         <label class="required" style="padding: 0.9em 0em 0em;"><?php echo $this->__('Selecione abaixo seu banco') ?></label>
         <div style="padding: 0em 1em;">
@@ -85,12 +91,13 @@
         </div>
     </div>
     <div class="display-none validation-advice debitbankName-error-message">Escolha um banco</div>
-  </div>
-    <div>
+    <div style="display: inline-block; "class="pagseguro-label-spacing pagseguro-cc-group-div">
         <ul class="pagseguro-direct-payment-ul">
-            <li>Esta compra está sendo feita no Brasil 
-                <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
-            </li>
+            <div class="pagseguro-cc-input-div">
+                <li>Esta compra está sendo feita no Brasil 
+                    <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+                </li>
+            </div>
         </ul>
     </div>
 </div>

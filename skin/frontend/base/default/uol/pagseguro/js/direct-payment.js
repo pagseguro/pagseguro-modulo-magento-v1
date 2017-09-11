@@ -1,5 +1,10 @@
+/*
+ * This file have all the pagseguro direct payment common functions, like
+ * form input masks and  validations and calls to the pagseguro js api
+ */
+
 /**
- * Validate document (cpf or cnpj)
+ * Validate document (cpf or cnpj) according with it's length
  * @param {type} self
  * @returns {Boolean}
  */
@@ -16,7 +21,7 @@ function validateDocument(self) {
 }
 
 /**
- * 
+ * Remove special characters, spaces
  * @param {type} el
  * @returns {unresolved}
  */
@@ -25,8 +30,8 @@ function unmask(el) {
 }
 
 /**
- * 
- * @param {type} self
+ * Validate CPF
+ * @param {object} self
  * @returns {Boolean}
  */
 function validateCpf(self) {
@@ -73,8 +78,8 @@ function validateCpf(self) {
 }
 
 /**
- * 
- * @param {type} self
+ * Validates CNPJ
+ * @param {object} self
  * @returns {Boolean}
  */
 function validateCnpj(self) {
@@ -139,7 +144,7 @@ function validateCnpj(self) {
 }
 
 /**
- * 
+ * Show input error
  * @param {type} target
  * @param {type} error
  * @returns {undefined}
@@ -160,18 +165,23 @@ function displayError(target, error = true) {
  * @returns {bool}
  */
 function documentMask(document) {
-  if (document.value.length < 15) {
+  if (document.value.length < 14) {
     MascaraCPF(document);
   } else {
     MascaraCNPJ(document);
   }
 }
 
-/**
+/*
  * Mask functions below adapted from
  * http://www.fabiobmed.com.br/excelente-codigo-para-mascara-e-validacao-de-cnpj-cpf-cep-data-e-telefone/
  */
-//adiciona mascara de cnpj
+
+/**
+ * Add CNPJ mask to input
+ * @param {type} cnpj
+ * @returns {Boolean}
+ */
 function MascaraCNPJ(cnpj) {
   if (mascaraInteiro(cnpj) == false) {
     event.returnValue = false;
@@ -179,7 +189,11 @@ function MascaraCNPJ(cnpj) {
   return formataCampo(cnpj, '00.000.000/0000-00', event);
 }
 
-//adiciona mascara de data
+/**
+ * Add date mask to input
+ * @param {type} cnpj
+ * @returns {Boolean}
+ */
 function MascaraData(data) {
   if (mascaraInteiro(data) == false) {
     event.returnValue = false;
@@ -187,7 +201,11 @@ function MascaraData(data) {
   return formataCampo(data, '00/00/0000', event);
 }
 
-//adiciona mascara ao CPF
+/**
+ * Add CPF mask to input
+ * @param {type} cnpj
+ * @returns {Boolean}
+ */
 function MascaraCPF(cpf) {
   if (mascaraInteiro(cpf) == false) {
     event.returnValue = false;
@@ -195,7 +213,11 @@ function MascaraCPF(cpf) {
   return formataCampo(cpf, '000.000.000-00', event);
 }
 
-//adiciona mascara ao CPF
+/**
+ * Add credit card mask to input
+ * @param {type} cnpj
+ * @returns {Boolean}
+ */
 function creditCardMask(cc) {
   if (mascaraInteiro(cc) == false) {
     event.returnValue = false;
@@ -203,17 +225,44 @@ function creditCardMask(cc) {
   return formataCampo(cc, '0000 0000 0000 0000', event);
 }
 
-//valida data
-//function ValidaData(data) {
-//  exp = /\d{2}\/\d{2}\/\d{4}/
-//  if (!exp.test(data.value))
-//    alert('Data Invalida!');
-//}
+/**
+ * Add not number mask to input
+ * @param {type} cnpj
+ * @returns {Boolean}
+ */
+function notNumberMask(someString) {
+  if (maskNotNumber(someString) == false) {
+    event.returnValue = false;
+  }
+  return true;
+}
 
-//valida numero inteiro com mascara
-function mascaraInteiro() {
-//  [8]     [46]      [48..57] [96..105]
+/**
+ * Validate and prevent key typed event if it is a numbers
+ * @returns {Boolean}
+ */
+function maskNotNumber() {
   if (event.keyCode == 8
+          || event.keyCode == 9
+          || event.keyCode == 46
+          || event.keyCode < 48
+          || (event.keyCode > 57 && event.keyCode < 96)
+          || (event.keyCode > 105)) {
+
+    return true;
+  }
+  event.returnValue = false;
+  return false;
+}
+
+/**
+ * Validate and prevent key typed event if it is not an integer([48,57] || [96, 105]), 
+ * backspace(8), tab(9), or del(46)
+ * @returns {Boolean}
+ */
+function mascaraInteiro() {
+  if (event.keyCode == 8
+          || event.keyCode == 9
           || event.keyCode == 46
           || (event.keyCode > 47 && event.keyCode < 58)
           || (event.keyCode > 95 && event.keyCode < 106)) {
@@ -224,7 +273,13 @@ function mascaraInteiro() {
   return false;
 }
 
-//formata de forma generica os campos
+/**
+ * Format fields, according with the mask pattern
+ * @param {type} campo
+ * @param {type} Mascara
+ * @param {type} evento
+ * @returns {Boolean}
+ */
 function formataCampo(campo, Mascara, evento) {
   var boleanoMascara;
 
