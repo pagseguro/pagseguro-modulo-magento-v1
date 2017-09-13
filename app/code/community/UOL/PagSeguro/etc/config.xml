@@ -237,6 +237,13 @@ limitations under the License.
                 <group>pagseguro</group>
                  <sort_order>4</sort_order>
             </pagseguro_online_debit>
+            <!-- The <pagseguro> node is deprecated and not more used, it is here only to backward compatibility -->
+            <pagseguro>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_PagSeguroDeprecated</model>
+                <group>pagseguro</group>
+            </pagseguro>
+            <!-- End  (backward compatibility pagseguro node) -->
         </payment>
     </default>
 </config>

@@ -13,7 +13,8 @@ function assignCreditCardHash() {
 }
 
 function validateCreditCard(self) {
-  if (self.validity.valid && (self.value.length >= 14 && self.value.length <= 22)) {
+  selfNumbers = removeLetters(unmask(self.value));
+  if (self.validity.valid && selfNumbers !== "" && (self.value.length >= 14 && self.value.length <= 22)) {
     displayError(self, false)
     return true
   } else {
@@ -23,7 +24,8 @@ function validateCreditCard(self) {
 }
 
 function validateCardHolder (self) {
-    if (self.validity.tooShort || !self.validity.valid) {
+    selfLetters = removeNumbers(unmask(self.value));
+    if (self.validity.tooShort || !self.validity.valid || selfLetters === "") {
       displayError(self)
       return false
     } else {
@@ -200,4 +202,23 @@ function validateCreateToken() {
   validateCreditCardCode(document.querySelector('#creditCardCode'), false);
 
   return false;
+}
+
+/**
+ * Return the value of 'el' without letters
+ * @param {string} el
+ * @returns {string}
+ */
+function removeLetters(el) {
+  return el.replace(/[a-zA-Z]+/, '');
+
+}
+
+/**
+ * Return the value of 'el' without numbers
+ * @param {string} el
+ * @returns {string}
+ */
+function removeNumbers(el) {
+  return el.replace(/[0-9]+/, '');
 }
