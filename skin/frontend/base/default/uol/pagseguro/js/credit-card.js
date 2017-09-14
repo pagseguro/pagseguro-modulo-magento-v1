@@ -13,8 +13,7 @@ function assignCreditCardHash() {
 }
 
 function validateCreditCard(self) {
-  selfNumbers = removeLetters(unmask(self.value));
-  if (self.validity.valid && selfNumbers !== "" && (self.value.length >= 14 && self.value.length <= 22)) {
+  if (self.validity.valid && removeNumbers(unmask(self.value)) === "" && (self.value.length >= 14 && self.value.length <= 22)) {
     displayError(self, false)
     return true
   } else {
@@ -24,8 +23,7 @@ function validateCreditCard(self) {
 }
 
 function validateCardHolder (self) {
-    selfLetters = removeNumbers(unmask(self.value));
-    if (self.validity.tooShort || !self.validity.valid || selfLetters === "") {
+    if (self.validity.tooShort || !self.validity.valid || removeLetters(unmask(self.value)) !== "") {
       displayError(self)
       return false
     } else {
@@ -210,7 +208,7 @@ function validateCreateToken() {
  * @returns {string}
  */
 function removeLetters(el) {
-  return el.replace(/[a-zA-Z]+/, '');
+  return el.replace(/[a-zA-Z]/g, '');
 
 }
 
@@ -220,5 +218,5 @@ function removeLetters(el) {
  * @returns {string}
  */
 function removeNumbers(el) {
-  return el.replace(/[0-9]+/, '');
+  return el.replace(/[0-9]/g, '');
 }
