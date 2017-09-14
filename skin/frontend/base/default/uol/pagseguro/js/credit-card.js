@@ -84,7 +84,7 @@ function cardInstallment(data) {
 }
 
 function validateCreditCardInstallment (self) {
-    if (self.validity.valid) {
+    if (self.validity.valid && self.value != "null") {
       displayError(self, false)
       return true
     } else {
