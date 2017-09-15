@@ -574,4 +574,36 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
     {
         return date("d/m/Y H:i:s", Mage::getModel("core/date")->timestamp($date));
     }
+    
+    public function getPagSeguroDirectPaymentJs()
+    {
+         if (Mage::getStoreConfig('payment/pagseguro/environment') === 'production') {
+            return 'https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
+        }
+
+        return 'https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
+    }
+
+    /**
+     * Format original document and return it as an array, with it "washed" value
+     * and type
+     * @param string $document
+     * @return array
+     * @throws Exception
+     */
+    public function formatDocument($document)
+    {
+       $documentNumbers = preg_replace('/[^0-9]/', '', $document);
+       switch (strlen($documentNumbers)) {
+            case 14:
+                return ['number' => $documentNumbers, 'type' => 'CNPJ'];
+                break;
+            case 11:
+                return ['number' => $documentNumbers, 'type' => 'CPF'];
+                break;
+            default:
+                throw new Exception('Invalid document');
+                break;
+        }
+    }
 }

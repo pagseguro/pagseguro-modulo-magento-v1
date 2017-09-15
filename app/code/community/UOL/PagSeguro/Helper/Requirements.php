@@ -33,11 +33,11 @@ class UOL_PagSeguro_Helper_Requirements extends HelperData
         $version = str_replace('.', '', phpversion());
 
         if ($version < 540) {
-            $msg = $this->__('PagSeguroLibrary: É necessária a versão 5.4.0 do PHP ou maior.');
+            $msg = $this->__('PagSeguroLibrary: É necessária a versão 5.4.27 do PHP ou maior.');
             $req['version']['text'] = $msg;
             $req['version']['status'] = false;
         } else {
-            $req['version']['text'] = $this->__('Versão do PHP superior à 5.4.0.');
+            $req['version']['text'] = $this->__('Versão do PHP superior à 5.4.27.');
             $req['version']['status'] = true;
         }
 

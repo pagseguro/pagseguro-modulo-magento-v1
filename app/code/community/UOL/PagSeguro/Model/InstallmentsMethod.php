@@ -180,8 +180,7 @@ class UOL_PagSeguro_Model_InstallmentsMethod extends MethodAbstract
      */
     public function enabled()
     {
-        return (Mage::getStoreConfig('payment/pagseguro/active') == 1 &&
-            Mage::getStoreConfig('payment/pagseguro/installments') == 1) ?
+        return (Mage::getStoreConfig('payment/pagseguro/installments') == 1) ?
             true :
             false;
     }

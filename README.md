@@ -30,10 +30,11 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 
 - Certifique-se de que não há instalação de outros módulos para o PagSeguro em seu sistema;
 - Caso utilize a compilação do Magento, desative-a e limpe-a *(Sistema -> Ferramentas -> Compilação)*;
-- Baixe a última versão do módulo **[nesse link](https://github.com/pagseguro/magento/raw/master/UOL_PagSeguro-3.1.0.tgz)** ou então baixe o repositório como arquivo zip através do botão do GitHub;
+- Baixe a última versão do módulo **[nesse link](https://github.com/pagseguro/magento/raw/master/UOL_PagSeguro-3.2.0.tgz)** ou então baixe o repositório como arquivo zip através do botão do GitHub;
 - Na área administrativa do seu Magento, acesse o menu *Sistema/System -> Magento Connect -> Magento Connect Manager*. Caso tenha uma versão anterior do módulo instalada faça a remoção agora;
 - No Magento Connect Manger, dentro da seção Direct package file upload, clique em **Escolher arquivo/Choose file**, selecione o arquivo UOL_PagSeguro-x.x.x.tgz (baixado anteriormente), clique no botão de upload e acompanhe a instalação do módulo no console da página;
 - Caso utilize a compilação, volte para a área administrativa do Magento, ative-a e execute-a novamente;
+- Pronto, ao finalizar o processo o módulo do PagSeguro estará instalando no seu Magento! Siga para a [próxima seção](#configuração) para configurar e começar a usar o módulo.
 
 > Caso tenha uma versão do módulo do PagSeguro anterior à 2.3 instalada, copie o arquivo *remove-module-2.2.php* para a raíz de instalação do seu Magento e execute o arquivo no browser, ex.: www.meusite.com.br/magento/remove-module-2.2.php. Siga as instruções na tela para a remoção dos arquivos.
 
@@ -42,8 +43,9 @@ Configuração
 ---
 Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. As opções disponíveis estão descritas abaixo.
 
- - **ativar módulo**: ativa/desativa o módulo.
- - **nome de exibição**: define o nome que será utilizado para o meio de pagamento na tela de checkout.
+ -------------------------
+ **Configurações Gerais**
+ 
  - **ambiente**: especifica em que ambiente as transações serão feitas *(produção/sandbox)*.
  - **e-mail**: e-mail cadastrado no PagSeguro.
  - **token**: token cadastrado no PagSeguro.
@@ -54,13 +56,36 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **ativar log**: ativa/desativa a geração de logs.
  - **diretório**: informe o local e nome do arquivo a partir da raíz de instalação do Magento onde se deseja criar o arquivo de log. Ex.: /pagseguro.log. 
      - *Por padrão o módulo virá configurado para salvar o arquivo de log em /var/pagseguro.log*.
- - **checkout**: especifica o modelo de checkout que será utilizado. É possível escolher entre checkout padrão, checkout lightbox e checkout transparente.
  - **listar transações abandonadas?**: ativa/desativa a pesquisa de transações que foram abandonadas no checkout do PagSeguro.
  - **template de e-mail**: define qual o template de email sua loja usuará para o envio do email de recuperação de venda.
  - **oferecer desconto para ...**: ativa/desativa desconto para checkouts utilizando este meio de pagamento
  - **percentual de desconto**: define o percentual de desconto a ser concedido para o meio de pagamento escolhido
  - **transações -> abandonadas**: permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar emails de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
  - **listar parcelamento**: Habilita a exibição de uma listagem de parcelas na tela de visualização do produto. (Irá exibir o maior parcelamento disponível para o produto na tela de exibição do mesmo)
+ 
+ -------------------------
+ **Configurar Tipos de Checkout**
+ 
+ - *PagSeguro (Padrão ou Lightbox)*
+   - **ativar**: ativa/desativa o meio de pagamento PagSeguro (padrão ou lightbox).
+   - **nome de exibição**: define o nome que será utilizado para o meio de pagamento na tela de checkout.
+   - **checkout**: especifica o modelo de checkout que será utilizado. É possível escolher entre checkout padrão ou checkout lightbox.
+ 
+ 
+ - *Checkout Transparente - Cartão de Crédito*
+   - **ativar**: ativa/desativa o meio de pagamento Checkout Transparente - Cartão de Crédito.
+   - **nome de exibição**: define o nome que será utilizado para esse meio de pagamento na tela de checkout.
+ 
+ 
+ - *Checkout Transparente - Boleto Bancário*
+   - **ativar**: ativa/desativa o meio de pagamento Checkout Transparente - Boleto Bancário.
+   - **nome de exibição**: define o nome que será utilizado para esse meio de pagamento na tela de checkout.
+ 
+ 
+ - *Checkout Transparente - Débito Online*
+   - **ativar**: ativa/desativa o meio de pagamento Checkout Transparente - Débito Online.
+   - **nome de exibição**: define o nome que será utilizado para esse meio de pagamento na tela de checkout.
+ 
  
  Transações
 ------------

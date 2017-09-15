@@ -10,9 +10,9 @@ class UOL_PagSeguro_Model_Library
      */
     public function __construct()
     {
-        define("SHIPPING_TYPE", 3);
-        define("SHIPPING_COST", 0.00);
-        define("CURRENCY", "BRL");
+        defined("SHIPPING_TYPE") or define("SHIPPING_TYPE", 3);
+        defined("SHIPPING_COST") or define("SHIPPING_COST", 0.00);
+        defined("CURRENCY") or define("CURRENCY", "BRL");
         \PagSeguro\Library::initialize();
         \PagSeguro\Library::cmsVersion()->setName('Magento')->setRelease(Mage::getVersion());
         \PagSeguro\Library::moduleVersion()->setName('PagSeguro')->setRelease(Mage::getConfig()->getModuleConfig("UOL_PagSeguro")->version);
@@ -69,7 +69,7 @@ class UOL_PagSeguro_Model_Library
      */
     public function getCharset()
     {
-        return Mage::getStoreConfig('payment/pagseguro/environment');
+        return Mage::getStoreConfig('payment/pagseguro/charset');
     }
 
     /**
@@ -93,6 +93,6 @@ class UOL_PagSeguro_Model_Library
      */
     public function getPaymentCheckoutType()
     {
-        return Mage::getStoreConfig('payment/pagseguro/checkout');
+        return Mage::getStoreConfig('payment/pagseguro_default_lightbox/checkout');
     }
 }
