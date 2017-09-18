@@ -1,5 +1,9 @@
 Changelog
 ---------
+3.2.0
+- Alterado fluxo do checkout transparente para o fluxo padrão do Magento (onepage)
+- Atualizada tela de cofiguração do módulo (admin), adicionando categorias e possibilitando habilitar métodos transparentes (boleto, débito online e cartão de crédito) individualmente
+
 3.1.0
 - Adicionada biblioteca de máscaras (Vannila-Masker)
 - Corrigidos bugs no checkout transparente

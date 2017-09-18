@@ -19,10 +19,15 @@ limitations under the License.
 <config>
     <modules>
         <UOL_PagSeguro>
-            <version>3.1.0</version>
+            <version>3.2.0</version>
         </UOL_PagSeguro>
     </modules>
     <global>
+        <payment>
+            <groups>
+                <pagseguro>PagSeguro</pagseguro>
+            </groups>
+        </payment>
         <blocks>
             <uol_pagseguro>
                 <class>UOL_PagSeguro_Block</class>
@@ -204,13 +209,41 @@ limitations under the License.
     </frontend>
     <default>
         <payment>
+            <pagseguro_default_lightbox>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_Pagseguro</model>
+                <title>PagSeguro</title>
+                <group>pagseguro</group>
+                <sort_order>1</sort_order>
+            </pagseguro_default_lightbox>
+            <pagseguro_credit_card>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_CreditCard</model>
+                <title>Cartão de Crédito</title>
+                <group>pagseguro</group>
+                 <sort_order>2</sort_order>
+            </pagseguro_credit_card>
+            <pagseguro_boleto>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_Boleto</model>
+                <title>Boleto Bancário</title>
+                <group>pagseguro</group>
+                 <sort_order>3</sort_order>
+            </pagseguro_boleto>
+            <pagseguro_online_debit>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_OnlineDebit</model>
+                <title>Débito Online</title>
+                <group>pagseguro</group>
+                 <sort_order>4</sort_order>
+            </pagseguro_online_debit>
+            <!-- The <pagseguro> node is deprecated and not more used, it is here only to backward compatibility -->
             <pagseguro>
                 <active>0</active>
-                <model>UOL_PagSeguro_Model_PaymentMethod</model>
-                <title>PagSeguro</title>
-                <log_file>/var/pagseguro.log</log_file>
-                <allowspecific>0</allowspecific>
+                <model>UOL_PagSeguro_Model_PagSeguroDeprecated</model>
+                <group>pagseguro</group>
             </pagseguro>
+            <!-- End  (backward compatibility pagseguro node) -->
         </payment>
     </default>
 </config>

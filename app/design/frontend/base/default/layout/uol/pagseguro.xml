@@ -72,6 +72,18 @@ limitations under the License.
             <block type="page/html" name="direct" template="uol/pagseguro/direct/success.phtml"/>
         </reference>
     </pagseguro_payment_success>
+    
+     <pagseguro_payment_error>
+        <remove name="left"/>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="page/html" name="direct" template="uol/pagseguro/payment-error.phtml"/>
+        </reference>
+    </pagseguro_payment_error>
 
     <pagseguro_payment_default>
         <remove name="left"/>
