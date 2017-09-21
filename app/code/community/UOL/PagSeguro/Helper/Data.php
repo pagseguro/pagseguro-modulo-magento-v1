@@ -137,17 +137,13 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
      */
     final public function checkCredentials()
     {
-        $date = new DateTime ("now");
-        $date->setTimezone(new DateTimeZone ("America/Sao_Paulo"));
-        $date->sub(new DateInterval ('P1D'));
-        $date->setTime(00, 00, 00);
-        $date = $date->format("Y-m-d\TH:i:s");
+        $yesterday = new DateTime('yesterday'); 
         $useCache = Mage::app()->useCache();
         if ($useCache['config']) {
             Mage::app()->getCacheInstance()->flush();
         }
         try {
-            $this->webserviceHelper()->getTransactionsByDate(1, 1, $date);
+            $this->webserviceHelper()->getTransactionsByDate(1, 1, $yesterday->format('Y-m-d\TH:i'));
             Mage::getConfig()->saveConfig('uol_pagseguro/store/credentials', 1);
         } catch (Exception $e) {
             Mage::getConfig()->saveConfig('uol_pagseguro/store/credentials', 0);

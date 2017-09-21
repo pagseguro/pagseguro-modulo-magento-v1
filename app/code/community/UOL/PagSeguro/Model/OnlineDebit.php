@@ -66,4 +66,14 @@ class UOL_PagSeguro_Model_OnlineDebit extends Mage_Payment_Model_Method_Abstract
         return Mage::getUrl('pagseguro/payment/request');
     }
 
+    /**
+     * If pagseguro credentials are invalid, disable payment method
+     * @param Mage_Sales_Model_Quote $quote
+     * @return bool
+     */
+    public function isAvailable($quote = null) 
+    {
+        $enablePaymentMethod = (Mage::getStoreConfig("uol_pagseguro/store/credentials") == 1) ? true : false;
+        return parent::isAvailable($quote) && $enablePaymentMethod;
+    }
 }
