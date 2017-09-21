@@ -1,5 +1,9 @@
 Changelog
 ---------
+3.2.1
+- Corrigido bug ao exibir o formulário de checkout quando as credencias do PagSeguro eram inválidas.
+  - Adicionada mensagem de credenciais inválidas ao salvar as configurações no admin e ocultando os meios de pagamento do PagSeguro na tela de pagamento caso as credenciais salvas sejam inválidas.
+
 3.2.0
 - Alterado fluxo do checkout transparente para o fluxo padrão do Magento (onepage)
 - Atualizada tela de cofiguração do módulo (admin), adicionando categorias e possibilitando habilitar métodos transparentes (boleto, débito online e cartão de crédito) individualmente

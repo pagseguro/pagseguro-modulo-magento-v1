@@ -65,7 +65,15 @@ class UOL_PagSeguro_Model_Observer
         }
 
         if (Mage::getStoreConfig("payment/pagseguro/email") && Mage::getStoreConfig("payment/pagseguro/token")) {
-            Mage::helper('pagseguro')->checkCredentials();
+            try {
+                Mage::helper('pagseguro')->checkCredentials();
+            } catch (Exception $exc) {
+                Mage::getSingleton('core/session')->addError(
+                    'PagSeguro: Credenciais (EMAIL ou TOKEN) inválidas para o AMBIENTE selecionado.'
+                        . 'Não será possível utilizar nenhum tipo de checkout enquanto não '
+                        . 'forem salvas credenciais válidas.'
+                );
+            }
         } else {
             throw new Exception("Certifique-se de que o e-mail e token foram preenchidos.");
         }

@@ -114,7 +114,7 @@ class UOL_PagSeguro_Helper_Webservice extends UOL_PagSeguro_Helper_Data
                 array('initial_date' => $initialDate, 'page' => $page, 'max_per_page' => $maxPageResults)
             );
         } catch (Exception $e) {
-            if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
+            if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED' || $e->getCode() == 401) {
                 throw new Exception($e->getMessage());
             }
         }

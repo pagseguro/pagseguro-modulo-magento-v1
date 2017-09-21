@@ -274,7 +274,11 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     public function getSession()
     {
         if (is_null($this->_session) || empty($this->_session)) {
-            $this->_session = $this->getPaymentSession()->getResult();
+            try {
+                $this->_session = $this->getPaymentSession()->getResult();
+            } catch (Exception $exc) {
+                // the error will be in the pagseguro log set in admin configuration
+            }
         }
         return $this->_session;
     }
