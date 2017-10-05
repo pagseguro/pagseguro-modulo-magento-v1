@@ -3,7 +3,7 @@
 /**
  * @property Mage_Sales_Model_Order order
  */
-class UOL_PagSeguro_Model_Pagseguro extends Mage_Payment_Model_Method_Abstract
+class UOL_PagSeguro_Model_DefaultLightbox extends Mage_Payment_Model_Method_Abstract
 {
 
     protected $_canAuthorize = true;

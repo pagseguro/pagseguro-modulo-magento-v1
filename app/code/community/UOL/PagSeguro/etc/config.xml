@@ -19,7 +19,7 @@ limitations under the License.
 <config>
     <modules>
         <UOL_PagSeguro>
-            <version>3.2.1</version>
+            <version>3.2.2</version>
         </UOL_PagSeguro>
     </modules>
     <global>
@@ -211,7 +211,7 @@ limitations under the License.
         <payment>
             <pagseguro_default_lightbox>
                 <active>0</active>
-                <model>UOL_PagSeguro_Model_Pagseguro</model>
+                <model>UOL_PagSeguro_Model_DefaultLightbox</model>
                 <title>PagSeguro</title>
                 <group>pagseguro</group>
                 <sort_order>1</sort_order>

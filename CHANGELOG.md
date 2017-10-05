@@ -1,5 +1,8 @@
 Changelog
 ---------
+3.2.2
+- Corrigido bug que não deixava visível o uso do checkout padrão/lightbox em alguns ambientes linux.
+
 3.2.1
 - Corrigido bug ao exibir o formulário de checkout quando as credencias do PagSeguro eram inválidas.
   - Adicionada mensagem de credenciais inválidas ao salvar as configurações no admin e ocultando os meios de pagamento do PagSeguro na tela de pagamento caso as credenciais salvas sejam inválidas.
