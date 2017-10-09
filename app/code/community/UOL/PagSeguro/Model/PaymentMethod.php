@@ -282,4 +282,13 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         }
         return $this->_session;
     }
+    
+    /**
+     * Return status (enabled or disabled) from the Inovarti One Step Checkout module
+     * @return boolean
+     */
+    public function getOneStepCheckoutIsEnabled()
+    {
+        return (Mage::getStoreConfig("onestepcheckout/general/is_enabled") == 1) ? true : false;
+    }
 }

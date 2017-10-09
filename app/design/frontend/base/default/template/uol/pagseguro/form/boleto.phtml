@@ -1,16 +1,24 @@
 <script type="text/javascript">
 //<![CDATA[
+    // get value fromm one step checkout guest document to be used in pagseguro direct payment
+    if(document.getElementById('billing:taxvat') !== null) {
+        document.getElementById('billing:taxvat').onchange = function (){
+            document.getElementById('bilitDocument').value = document.getElementById('billing:taxvat').value;
+        }
+    }
+
+    //set pagseguro session
     setBoletoSessionId("<?= $this->getBoletoSession();?>");
-    assignBoletoHash();
 //]]>
 </script>
     
 <script type="text/javascript">
 //<![CDATA[
+var beforeSaveJsUrl = "<?php echo $this->getPagSeguroBeforeSaveJsSkinUrl() ?>";
 var x = document.getElementsByTagName("script");
   var header_already_added = false;
   for (var i=0; i< x.length; i++){
-      if (x[i].src == "<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>"){
+      if (x[i].src == beforeSaveJsUrl){
              header_already_added = true;
       }
   }
@@ -20,7 +28,7 @@ var x = document.getElementsByTagName("script");
     var head = document.getElementsByTagName("head")[0];
     var s = document.createElement('script');
     s.type = 'text/javascript';
-    s.src = '<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>';
+    s.src = beforeSaveJsUrl;
     head.appendChild(s);
   }
 //]]>
@@ -30,7 +38,7 @@ var x = document.getElementsByTagName("script");
     <input type="hidden" id="boletoHash" value="" name="payment[boleto_hash]">
     <div style="float: left">
         <div class="pagseguro-boleto-label-div">
-            <label class="pagseguro-required" ><?php echo $this->__('CPF ou CNPJ') ?></label>
+            <label class="pagseguro-required required-entry" ><?php echo $this->__('CPF ou CNPJ') ?></label>
         </div>
         <div class="pagseguro-cc-input-div">
             <input 
@@ -41,7 +49,7 @@ var x = document.getElementsByTagName("script");
                 type="text" 
                 title="<?php echo $this->__('CPF ou CNPJ') ?>" 
                 name="payment[boleto_cpf]" 
-                value="" 
+                value="<?= $this->getBoletoDocument() ?>" 
                 maxlength="18"
             />
             <div class="display-none validation-advice bilitDocument-error-message">Insira um CPF ou CNPJ válido</div>
