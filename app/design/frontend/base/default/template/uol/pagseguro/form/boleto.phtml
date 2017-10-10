@@ -1,9 +1,14 @@
 <script type="text/javascript">
 //<![CDATA[
     // get value fromm one step checkout guest document to be used in pagseguro direct payment
-    if(document.getElementById('billing:taxvat') !== null) {
+    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange !== null) {
         document.getElementById('billing:taxvat').onchange = function (){
-            document.getElementById('bilitDocument').value = document.getElementById('billing:taxvat').value;
+            var documents =  document.querySelectorAll('.pagseguro-document');
+            var i;
+            for (i=0; i < documents.length; i++) {
+                console.log(documents[i]);
+                documents[i].value = document.getElementById('billing:taxvat').value;
+            }
         }
     }
 
@@ -14,23 +19,23 @@
     
 <script type="text/javascript">
 //<![CDATA[
-var beforeSaveJsUrl = "<?php echo $this->getPagSeguroBeforeSaveJsSkinUrl() ?>";
-var x = document.getElementsByTagName("script");
-  var header_already_added = false;
-  for (var i=0; i< x.length; i++){
-      if (x[i].src == beforeSaveJsUrl){
-             header_already_added = true;
-      }
-  }
+    var beforeSaveJsUrl = "<?php echo $this->getPagSeguroBeforeSaveJsSkinUrl() ?>";
+    var x = document.getElementsByTagName("script");
+    var header_already_added = false;
+    for (var i=0; i< x.length; i++){
+        if (x[i].src == beforeSaveJsUrl){
+            header_already_added = true;
+        }
+    }
 
-  if (header_already_added == false){
-    // add header if not already added
-    var head = document.getElementsByTagName("head")[0];
-    var s = document.createElement('script');
-    s.type = 'text/javascript';
-    s.src = beforeSaveJsUrl;
-    head.appendChild(s);
-  }
+    if (header_already_added == false){
+      // add header if not already added
+      var head = document.getElementsByTagName("head")[0];
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.src = beforeSaveJsUrl;
+      head.appendChild(s);
+    }
 //]]>
 </script>
 
@@ -42,7 +47,7 @@ var x = document.getElementsByTagName("script");
         </div>
         <div class="pagseguro-cc-input-div">
             <input 
-                class="pagseguro-cc-input" 
+                class="pagseguro-cc-input pagseguro-document" 
                 id="bilitDocument"  
                 onblur="validateDocument(this)" 
                 onkeydown="documentMask(this)"

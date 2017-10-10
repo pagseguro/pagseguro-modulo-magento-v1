@@ -25,7 +25,9 @@ function assignOnlineDebitHash() {
 
 function validateDebitForm() {
   if (validateDocument(document.getElementById('debitDocument')) &&
-          validateDebitBankName(document.getElementById('debitbankName'))) {
+    validateDebitBankName(document.getElementById('debitbankName'))
+  ) {
+    document.getElementById('onlineDebitHash').value = getSenderHash()
     return true;
   }
 
