@@ -117,13 +117,21 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         $this->setItems($payment);
         $payment->setSender()->setName($this->order->getCustomerName());
         $payment->setSender()->setEmail($this->order->getCustomerEmail());
-        $phone = $this->helper->formatPhone($this->order->getShippingAddress()->getTelephone());
-        $payment->setSender()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
-        $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
-        $payment->setShipping()->setAddress()->instance($orderAddress->getShippingAddress());
-        $payment->setShipping()->setType()->withParameters(SHIPPING_TYPE);
-        $payment->setShipping()->setCost()->withParameters(number_format($this->order->getShippingAmount(), 2, '.',
-            ''));
+
+        if ($this->order->getShippingAddress() !== false) {
+            $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
+            $payment->setShipping()->setAddress()->instance($orderAddress->getShippingAddress());
+            $payment->setShipping()->setType()->withParameters(SHIPPING_TYPE);
+            $payment->setShipping()->setCost()->withParameters(number_format($this->order->getShippingAmount(), 2, '.',
+                ''));
+            //set phone
+            if ($this->order->getShippingAddress()->getTelephone()) {
+                $phone = $this->helper->formatPhone($this->order->getShippingAddress()->getTelephone());
+                $payment->setSender()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
+            }
+
+        }
+        
         $payment->setExtraAmount($this->order->getBaseDiscountAmount() + $this->order->getTaxAmount());
         $payment->setNotificationUrl($this->getNotificationURL());
 
