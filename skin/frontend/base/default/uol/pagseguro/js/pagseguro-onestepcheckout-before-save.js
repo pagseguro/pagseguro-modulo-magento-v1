@@ -1,26 +1,27 @@
-/** 
- * @TODO: ver de usar essa pra não salvar em cada campo do cartão de crédito 
+/**
+ * Observer for checkout price modifications, like changes in shipment price or taxes
+ * to call the installments value with the updated value
+ * @object OnestepcheckoutForm.hidePriceChangeProcess
+ * 
  */
-//call events before magento OneSstepChekouPayment forcePayment.save() event
-//OnestepcheckoutPayment.prototype.forcesavePayment = OnestepcheckoutPayment.prototype.forcesavePayment.wrap(function(forcesavePayment){
-//  var validator = new Validation(this.form);
-//  if (validator.validate()) {
-//    // Do form validations
-//    if (validatePagSeguroActiveMethod()) {
-//      //posso usar isso aqui pra gerar o hash, ver se é chamado mesmo quando vem por padrão um pagamento selecionado
-//      forcesavePayment();
-//    }
-//  }
-//});
+OnestepcheckoutForm.prototype.hidePriceChangeProcess = OnestepcheckoutForm.prototype.hidePriceChangeProcess.wrap(function(hidePriceChangeProcess){
+    var granTotalAmountUpdated = convertPriceStringToFloat(this.granTotalAmount.textContent);
+    
+    if (document.getElementById('grand_total') !== null && parseFloat(document.getElementById('grand_total').value) !== granTotalAmountUpdated) {
+      document.getElementById('grand_total').value = granTotalAmountUpdated;
+      if (document.getElementById('creditCardNum') !== null && document.getElementById('creditCardNum').value.length > 6) {
+        getInstallments(document.getElementById('creditCardBrand').value);
+      }
+    }
+ 
+    return hidePriceChangeProcess();
+});
+
 //call pagseguro validation events before magento OneStepChekouPayment validate event, before finish checkout
 OnestepcheckoutForm.prototype.validate = OnestepcheckoutForm.prototype.validate.wrap(function(validate){
-  //var validator = new Validation(this.form);
-  //if (validator.validate()) {
-    // Do form validations
     if (validatePagSeguroActiveMethod()) {
       return validate();
     }
-  //}
 });
 
 /**
@@ -46,4 +47,21 @@ function validatePagSeguroActiveMethod() {
       return true;
       break;
   }
+}
+
+/**
+ * Converts an brazilian real price string, like R$9,99, or 9,99, to float (9.99)
+ * @param {string} priceString
+ * @returns {float}
+ */
+function convertPriceStringToFloat(priceString){    
+  if(priceString === ""){
+    priceString =  0;
+  }else{
+    priceString = priceString.replace("R$","");
+    priceString = priceString.replace(".","");
+    priceString = priceString.replace(",",".");
+    priceString = parseFloat(priceString);
+  }
+  return priceString;
 }

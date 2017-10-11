@@ -1,12 +1,11 @@
 <script type="text/javascript">
 //<![CDATA[
     // get value from one step checkout guest (if it is enabled) document to be used in pagseguro direct payment
-    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange !== null) {
+    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange === null) {
         document.getElementById('billing:taxvat').onchange = function (){
             var documents =  document.querySelectorAll('.pagseguro-document');
             var i;
             for (i=0; i < documents.length; i++) {
-                console.log(documents[i]);
                 documents[i].value = document.getElementById('billing:taxvat').value;
             }
         }
@@ -57,7 +56,7 @@
                 type="text"
                 title="<?php echo $this->__('CPF ou CNPJ') ?>"
                 name="payment[online_debit_cpf]"
-                value="<?= $this->getOnlineDebitDocument() ?>" 
+                value="<?= $this->getOnlineDebitDocument() ?>"
                 maxlength="18"
             />
             <div class="display-none validation-advice debitDocument-error-message">Insira um CPF ou CNPJ válido</div>

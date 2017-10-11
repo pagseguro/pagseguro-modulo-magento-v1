@@ -1,12 +1,11 @@
 <script type="text/javascript">
 //<![CDATA[
     // get value fromm one step checkout guest document to be used in pagseguro direct payment
-    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange !== null) {
+    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange === null) {
         document.getElementById('billing:taxvat').onchange = function (){
             var documents =  document.querySelectorAll('.pagseguro-document');
             var i;
             for (i=0; i < documents.length; i++) {
-                console.log(documents[i]);
                 documents[i].value = document.getElementById('billing:taxvat').value;
             }
         }

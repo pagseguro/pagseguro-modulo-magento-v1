@@ -157,19 +157,19 @@ function validateCreditCardCode(self, createToken) {
 
 function validateCreditCardForm() {
   if (
-   validateCreditCard(document.querySelector('#creditCardNum')) &&
-   validateDocument(document.querySelector('#creditCardDocument')) &&
-   validateCardHolder(document.querySelector('#creditCardHolder')) &&
-   validateCreditCardHolderBirthdate(document.querySelector('#creditCardHolderBirthdate')) &&
-   validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
-   validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
-   validateCreditCardCode(document.querySelector('#creditCardCode'), false) &&
-   validateCreditCardInstallment(document.querySelector('#card_installment_option'))
+    validateCreditCard(document.querySelector('#creditCardNum')) &&
+    validateDocument(document.querySelector('#creditCardDocument')) &&
+    validateCardHolder(document.querySelector('#creditCardHolder')) &&
+    validateCreditCardHolderBirthdate(document.querySelector('#creditCardHolderBirthdate')) &&
+    validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
+    validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
+    validateCreditCardCode(document.querySelector('#creditCardCode'), false) &&
+    validateCreditCardInstallment(document.querySelector('#card_installment_option'))
   ) {
-
-   if (document.getElementById('creditCardToken').value === "") {
-     createCardToken();
-   }
+    document.getElementById('creditCardHash').value = getSenderHash();
+    if (document.getElementById('creditCardToken').value === "" || document.getElementById('creditCardToken').value == "undefined") {
+      createCardToken();
+    }
    return true;
   }
   

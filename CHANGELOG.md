@@ -1,5 +1,8 @@
 Changelog
 ---------
+3.3.0
+- Adicionada compatibilidade com One Step Checkout Brasil 6 Pro (Inovarti)
+
 3.2.2
 - Corrigido bug que não deixava visível o uso do checkout padrão/lightbox em alguns ambientes linux.
 
