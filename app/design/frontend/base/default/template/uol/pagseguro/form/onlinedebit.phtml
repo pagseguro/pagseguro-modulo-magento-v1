@@ -50,7 +50,7 @@
         <div class="pagseguro-cc-input-div">
             <input 
                 id="debitDocument"
-                class="input-text pagseguro-document"
+                class="input-text pagseguro-document required-entry"
                 onblur="validateDocument(this)"
                 onkeydown="documentMask(this)"
                 type="text"
@@ -67,7 +67,7 @@
             <div>
                 <div>
                     <label>
-                        <input class="input-radio" type="radio" id="debitbankName" name="debitbankName" value="itau"
+                        <input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="itau"
                                required onclick="validateDebitBankName(this)">
                         Itaú
                     </label>
@@ -76,7 +76,7 @@
             <div>
                 <div>
                     <label>
-                        <input class="input-radio" type="radio" id="debitbankName" name="debitbankName" value="bradesco"
+                        <input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="bradesco"
                                required onclick="validateDebitBankName(this)">
                         Bradesco
                     </label>
@@ -85,7 +85,7 @@
             <div>
                 <div>
                     <label>
-                        <input class="input-radio" type="radio" id="debitbankName" name="debitbankName" value="banrisul"
+                        <input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="banrisul"
                                required onclick="validateDebitBankName(this)">
                         Banrisul
                     </label>
@@ -94,7 +94,7 @@
             <div>
                 <div>
                     <label>
-                        <input class="input-radio" type="radio" id="debitbankName" name="debitbankName"
+                        <input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName"
                                value="bancodobrasil" onclick="validateDebitBankName(this)">
                         Banco do Brasil
                     </label>

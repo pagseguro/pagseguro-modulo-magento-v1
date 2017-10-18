@@ -83,3 +83,11 @@ span > input {
     text-align: right;
     padding-right: 4px;
 }
+
+label.required:after {
+    content: '*';
+    color: #df280a;
+    font-weight: normal;
+    font-family: "Helvetica Neue", Verdana, Arial, sans-serif;
+    font-size: 11px;
+}

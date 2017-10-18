@@ -1,4 +1,20 @@
 /**
+ * Call events before magento OneSstepChekouPayment switchToMethod event - only call
+ * when the type of payment selected is relative to PagSeguro methods, preventing to
+ * save all the time a PagSeguro Method is selected
+ * @type OnestepcheckoutShipment
+ */
+OnestepcheckoutShipment.prototype.switchToMethod = OnestepcheckoutShipment.prototype.switchToMethod.wrap(
+  function(switchToMethod, methodCode, forced){
+    if (isPagSeguroCurrentPaymentMethod() && forced === true) {
+      return false; //do nothing
+    }
+
+    // normal flow
+    return switchToMethod(methodCode, forced);
+  });
+
+/**
  * Observer for checkout price modifications, like changes in shipment price or taxes
  * to call the installments value with the updated value
  * @object OnestepcheckoutForm.hidePriceChangeProcess
@@ -64,4 +80,17 @@ function convertPriceStringToFloat(priceString){
     priceString = parseFloat(priceString);
   }
   return priceString;
+}
+
+/**
+ * Return if is selected an PagSeguro Payment Method as a current payment method
+ * in the checkout payment section
+ * @returns {bolean}
+ */
+function isPagSeguroCurrentPaymentMethod() {
+  currentPaymentMethod = document.querySelector('input[name="payment[method]"]:checked').value;
+  return (currentPaymentMethod === 'pagseguro_credit_card'
+    || currentPaymentMethod === 'pagseguro_boleto'
+    || currentPaymentMethod === 'pagseguro_online_debit'
+    || currentPaymentMethod === 'pagseguro_default_lightbox');
 }
