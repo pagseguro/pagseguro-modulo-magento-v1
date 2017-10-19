@@ -1,16 +1,28 @@
 <script type="text/javascript">
 //<![CDATA[
+    // get value from one step checkout guest (if it is enabled) document to be used in pagseguro direct payment
+    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange === null) {
+        document.getElementById('billing:taxvat').onchange = function (){
+            var documents =  document.querySelectorAll('.pagseguro-document');
+            var i;
+            for (i=0; i < documents.length; i++) {
+                documents[i].value = document.getElementById('billing:taxvat').value;
+            }
+        }
+    }
+
+    //set pagseguro session
     setOnlineDebitSessionId("<?= $this->getOnlineDebitSession();?>");
-    assignOnlineDebitHash();
 //]]>
 </script>
 
 <script>
 //<![CDATA[
+    var beforeSaveJsUrl = "<?php echo $this->getPagSeguroBeforeSaveJsSkinUrl() ?>";
     var x = document.getElementsByTagName("script");
       var header_already_added = false;
     for (var i=0; i< x.length; i++){
-      if (x[i].src == "<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>"){
+      if (x[i].src == beforeSaveJsUrl){
              header_already_added = true;
       }
   }
@@ -20,7 +32,7 @@
     var head = document.getElementsByTagName("head")[0];
     var s = document.createElement('script');
     s.type = 'text/javascript';
-    s.src = '<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>';
+    s.src = beforeSaveJsUrl;
     head.appendChild(s);
   }
 //]]>
@@ -38,13 +50,13 @@
         <div class="pagseguro-cc-input-div">
             <input 
                 id="debitDocument"
-                class="input-text"
+                class="input-text pagseguro-document required-entry"
                 onblur="validateDocument(this)"
                 onkeydown="documentMask(this)"
                 type="text"
                 title="<?php echo $this->__('CPF ou CNPJ') ?>"
                 name="payment[online_debit_cpf]"
-                value=""
+                value="<?= $this->getOnlineDebitDocument() ?>"
                 maxlength="18"
             />
             <div class="display-none validation-advice debitDocument-error-message">Insira um CPF ou CNPJ válido</div>
@@ -55,7 +67,7 @@
             <div>
                 <div>
                     <label>
-                        <input class="input-radio" type="radio" id="debitbankName" name="debitbankName" value="itau"
+                        <input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="itau"
                                required onclick="validateDebitBankName(this)">
                         Itaú
                     </label>
@@ -64,7 +76,7 @@
             <div>
                 <div>
                     <label>
-                        <input class="input-radio" type="radio" id="debitbankName" name="debitbankName" value="bradesco"
+                        <input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="bradesco"
                                required onclick="validateDebitBankName(this)">
                         Bradesco
                     </label>
@@ -73,7 +85,7 @@
             <div>
                 <div>
                     <label>
-                        <input class="input-radio" type="radio" id="debitbankName" name="debitbankName" value="banrisul"
+                        <input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="banrisul"
                                required onclick="validateDebitBankName(this)">
                         Banrisul
                     </label>
@@ -82,7 +94,7 @@
             <div>
                 <div>
                     <label>
-                        <input class="input-radio" type="radio" id="debitbankName" name="debitbankName"
+                        <input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName"
                                value="bancodobrasil" onclick="validateDebitBankName(this)">
                         Banco do Brasil
                     </label>

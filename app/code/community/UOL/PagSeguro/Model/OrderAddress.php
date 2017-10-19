@@ -46,15 +46,26 @@ class UOL_PagSeguro_Model_OrderAddress
     private function setAddress(Mage_Sales_Model_Order_Address $address)
     {
         $response = new \PagSeguro\Domains\Address();
-        $parse = $this->parseStreet($address->getStreet1());
-        $response->setStreet($parse['street']);
-        $response->setNumber($parse['number']);
-        $response->setDistrict($address->getStreet2());
+        
+        if (count($address->getStreet()) === 4) {
+            //one step checkout default values
+            $response->setStreet($address->getStreet1());
+            $response->setNumber($address->getStreet2());
+            $response->setComplement($address->getStreet3());
+            $response->setDistrict($address->getStreet4());
+        } else {
+            //default configuration
+            $parse = $this->parseStreet($address->getStreet1());
+            $response->setStreet($parse['street']);
+            $response->setNumber($parse['number']);
+            $response->setDistrict($address->getStreet2());
+            $response->setComplement($address->getStreet3());
+        }
+
         $response->setCity($address->getCity());
         $response->setPostalCode($address->getPostcode());
         $response->setState($this->getRegionAbbreviation($address));
         $response->setCountry($address->getCountry());
-        $response->setComplement($address->getStreet3());
 
         return $response;
     }

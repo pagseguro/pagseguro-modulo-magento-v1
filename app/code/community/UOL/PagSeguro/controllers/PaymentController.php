@@ -78,6 +78,12 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
         try {
             /** @var Mage_Sales_Model_Order $order */
             $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
+            
+            if(empty($order->getData())) {
+                $this->norouteAction();
+                return;
+            }
+            
             $this->payment->setOrder($order);
             /**
              * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
@@ -118,6 +124,11 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
         try {
             /** @var Mage_Sales_Model_Order $order */
             $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
+
+            if(empty($order->getData())) {
+                $this->norouteAction();
+                return;
+            }
 
             $customerPaymentData = Mage::getSingleton('customer/session')->getData();
 
@@ -173,6 +184,12 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
         try {
             /** @var Mage_Sales_Model_Order $order */
             $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
+
+            if(empty($order->getData())) {
+                $this->norouteAction();
+                return;
+            }
+
             $this->payment->setOrder($order);
             /**
              * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment

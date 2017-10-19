@@ -4,7 +4,7 @@ Payment.prototype.save = Payment.prototype.save.wrap(function(save) {
   if (this.validate() && validator.validate()) {
     // Do form validations
     if (validatePagSeguroActiveMethod()) {
-      save();
+      return save();
     }
   }
 });
@@ -14,7 +14,8 @@ Payment.prototype.save = Payment.prototype.save.wrap(function(save) {
  * @returns {Boolean}
  */
 function validatePagSeguroActiveMethod() {
-  switch (payment.currentMethod) {
+  //payment.currentMethod
+  switch (document.querySelector('#checkout-payment-method-load .radio:checked').value) {
     case "pagseguro_credit_card":
       return validateCreditCardForm();
       break;

@@ -1,16 +1,28 @@
 <script type="text/javascript">
 //<![CDATA[
+    // get value from one step checkout guest (if it is enabled) document to be used in pagseguro direct payment
+    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange === null) {
+        document.getElementById('billing:taxvat').onchange = function (){
+            var documents =  document.querySelectorAll('.pagseguro-document');
+            var i;
+            for (i=0; i < documents.length; i++) {
+                documents[i].value = document.getElementById('billing:taxvat').value;
+            }
+        }
+    }
+
+    //set pagseguro credit card session
     setCreditCardSessionId("<?= $this->getCreditCardSession(); ?>");
-    assignCreditCardHash();
 //]]>
 </script>
 
 <script>
 //<![CDATA[
+    var beforeSaveJsUrl = "<?php echo $this->getPagSeguroBeforeSaveJsSkinUrl() ?>";
     var x = document.getElementsByTagName("script");
     var header_already_added = false;
     for (var i=0; i< x.length; i++){
-      if (x[i].src == "<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>"){
+      if (x[i].src == beforeSaveJsUrl){
              header_already_added = true;
     }
   }
@@ -20,7 +32,7 @@
     var head = document.getElementsByTagName("head")[0];
     var s = document.createElement('script');
     s.type = 'text/javascript';
-    s.src = '<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-before-save.js') ?>';
+    s.src = beforeSaveJsUrl;
     head.appendChild(s);
   }
 //]]>
@@ -39,7 +51,7 @@
             <label class="pagseguro-required" for="creditCardNum">Número do cartão</label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <input class="pagseguro-cc-input" type="text" id="creditCardNum" onkeydown="creditCardMask(this)" onblur="getBrand(this)" maxlength="19">
+            <input class="pagseguro-cc-input required-entry" type="text" id="creditCardNum" onkeydown="creditCardMask(this)" onblur="getBrand(this)" maxlength="19">
             <div class="display-none validation-advice creditCardNum-error-message">Insira um número de cartão válido</div>
         </div>
     </div>
@@ -49,7 +61,7 @@
             <label class="pagseguro-required" for="creditCardHolder">Nome impresso no cartão</label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <input class="pagseguro-cc-input" type="text" name="payment[credit_card_holder]" id="creditCardHolder" required onblur="validateCardHolder(this)" onkeydown="notNumberMask(this)" minlength="3">
+            <input class="pagseguro-cc-input required-entry" type="text" name="payment[credit_card_holder]" id="creditCardHolder" required onblur="validateCardHolder(this)" onkeydown="notNumberMask(this)" minlength="3">
             <div class="display-none validation-advice creditCardHolder-error-message">Insira um nome</div>
         </div>
     </div>
@@ -59,7 +71,7 @@
         <label class="pagseguro-required" for="creditCardExpirationMonth">Validade</label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <select onclick="validateCreditCardMonth(this)" id="creditCardExpirationMonth" title="Cartão válido até" class="pagseguro-cc-select" required>
+            <select onclick="validateCreditCardMonth(this)" id="creditCardExpirationMonth" title="Cartão válido até" class="pagseguro-cc-select required-entry" required>
                 <option value="" disabled selected>Mês</option>
                 <option value="01">01</option>
                 <option value="02">02</option>
@@ -75,7 +87,7 @@
                 <option value="12">12</option>
             </select>
             <div class="display-none validation-advice creditCardExpirationMonth-error-message">Escolha um mês</div>
-            <select onclick="validateCreditCardYear(this)" id="creditCardExpirationYear" title="Cartão válido até" class="pagseguro-cc-select" required>
+            <select onclick="validateCreditCardYear(this)" id="creditCardExpirationYear" title="Cartão válido até" class="pagseguro-cc-select required-entry" required>
                 <option value="" disabled selected>Ano</option>
                 <?php
                 $year = idate("Y");
@@ -93,7 +105,7 @@
             <label class="pagseguro-required" for="creditCardCode">Código de segurança</label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <input class="pagseguro-cc-input form-control code-card-mask" id="creditCardCode" type="text" minlength="3"
+            <input class="pagseguro-cc-input form-control code-card-mask required-entry" id="creditCardCode" type="text" minlength="3"
                    maxlength="4"
                    onkeydown="creditCardCodeMask(this)"
                    onblur="validateCreditCardCode(this, true)" required>
@@ -108,13 +120,13 @@
         <div class="pagseguro-cc-input-div">
             <input
                 id="creditCardDocument"
-                class="pagseguro-cc-input"
+                class="pagseguro-cc-input pagseguro-document required-entry"
                 onblur="validateDocument(this)"
                 onkeydown="documentMask(this)"
                 type="text"
                 title="<?php echo $this->__('CPF ou CNPJ') ?>"
                 name="payment[credit_card_cpf]"
-                value=""
+                value="<?= $this->getCreditCardDocument() ?>" 
                 maxlength="18"
             />
             <div class="display-none validation-advice creditCardDocument-error-message">Insira um CPF ou CNPJ válido</div>
@@ -126,7 +138,7 @@
         <label class="pagseguro-required" for="creditCardHolderBirthdate">Data de nascimento</label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <input maxlength="10" type="text" name="payment[credit_card_holder_birthdate]" class="form-control date-mask pagseguro-cc-input" id="creditCardHolderBirthdate" required
+            <input maxlength="10" type="text" name="payment[credit_card_holder_birthdate]" class="form-control date-mask pagseguro-cc-input required-entry" id="creditCardHolderBirthdate" required
                    placeholder="dd/mm/aaaa" onblur="validateCreditCardHolderBirthdate(this)" onkeydown="MascaraData(this)">
             <div class="display-none validation-advice creditCardHolderBirthdate-error-message">Insira uma data de nascimento válida</div>
         </div>
@@ -137,7 +149,7 @@
             <label class="pagseguro-required" for="card_installments">Parcelas</label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <select class="pagseguro-cc-select" id="card_installment_option" title="Nº de parcelas" required
+            <select class="pagseguro-cc-select required-entry" id="card_installment_option" title="Nº de parcelas" required
                     disabled onchange="cardInstallmentOnChange(this.value)" onclick="validateCreditCardInstallment(this)">
                 <option value="null" disabled selected>Escolha o N° de parcelas</option>
             </select>
