@@ -1,5 +1,8 @@
 Changelog
 ---------
+3.4.0
+- Atualizada biblioteca PHP do PagSeguro para versão 3.3.0
+
 3.3.0
 - Adicionada compatibilidade com One Step Checkout Brasil 6 Pro (Inovarti)
 
