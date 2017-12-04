@@ -200,7 +200,10 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
                     number_format($paymentData['creditCardInstallmentValue'], 2, '.', ''));
                 $payment->setHolder()->setBirthdate($paymentData['creditCardBirthdate']);
                 $payment->setHolder()->setName($paymentData['creditCardHolder']);
-                $payment->setHolder()->setPhone()->withArray($this->helper->formatPhone($this->order->getBillingAddress()->getTelephone()));
+
+                $phone = $this->helper->formatPhone($this->order->getBillingAddress()->getTelephone());
+                $payment->setHolder()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
+
                 $payment->setHolder()->setDocument()->withParameters(
                     $formatedDocument['type'],
                     $formatedDocument['number']
