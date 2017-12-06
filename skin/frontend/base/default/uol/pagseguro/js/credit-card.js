@@ -105,6 +105,11 @@ function getInstallments(brand) {
 }
 
 function getBrand(self) {
+  var select = document.getElementById('card_installment_option');
+  select.options.length = 0;
+  select.options[0] = new Option('Escolha o N° de parcelas', null, true, true);
+  select.options[0].disabled = true
+  document.getElementById('card_total').innerHTML = 'selecione o número de parcelas';
   if (validateCreditCard(self)) {
     PagSeguroDirectPayment.getBrand({
       cardBin: unmask(document.getElementById('creditCardNum').value),
@@ -122,35 +127,12 @@ function getBrand(self) {
   }
 }
 
-function createCardToken() {
-    if (validateCreateToken()) {
-      var param = {
-        cardNumber: unmask(document.getElementById('creditCardNum').value),
-        brand: document.getElementById('creditCardBrand').value,
-        cvv: document.getElementById('creditCardCode').value,
-        expirationMonth: document.getElementById('creditCardExpirationMonth').value,
-        expirationYear: document.getElementById('creditCardExpirationYear').value,
-        success: function (response) {
-          document.getElementById('creditCardToken').value = response.card.token;
-        },
-        error: function (error) {
-          console.log(error);
-        },
-    }
-
-    PagSeguroDirectPayment.createCardToken(param)
-  }
-}
-
-function validateCreditCardCode(self, createToken) {
+function validateCreditCardCode(self) {
   if (self.validity.tooLong || self.validity.tooShort || !self.validity.valid) {
     displayError(self)
     return false
   } else {
     displayError(self, false)
-    if (createToken === true && validateCreateToken()) {
-      createCardToken();
-    }
     return true
   }
 }
@@ -163,14 +145,11 @@ function validateCreditCardForm() {
     validateCreditCardHolderBirthdate(document.querySelector('#creditCardHolderBirthdate')) &&
     validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
     validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
-    validateCreditCardCode(document.querySelector('#creditCardCode'), false) &&
+    validateCreditCardCode(document.querySelector('#creditCardCode')) &&
     validateCreditCardInstallment(document.querySelector('#card_installment_option'))
   ) {
     document.getElementById('creditCardHash').value = getSenderHash();
-    if (document.getElementById('creditCardToken').value === "" || document.getElementById('creditCardToken').value == "undefined") {
-      createCardToken();
-    }
-   return true;
+    return true;
   }
   
   validateCreditCard(document.querySelector('#creditCardNum'))
@@ -179,7 +158,7 @@ function validateCreditCardForm() {
   validateCreditCardHolderBirthdate(document.querySelector('#creditCardHolderBirthdate'))
   validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
   validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
-  validateCreditCardCode(document.querySelector('#creditCardCode'), false)
+  validateCreditCardCode(document.querySelector('#creditCardCode'))
   validateCreditCardInstallment(document.querySelector('#card_installment_option'))
   return false;
 }
@@ -188,7 +167,7 @@ function validateCreateToken() {
   if(validateCreditCard(document.querySelector('#creditCardNum')) 
     && validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
     && validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
-    && validateCreditCardCode(document.querySelector('#creditCardCode'), false)
+    && validateCreditCardCode(document.querySelector('#creditCardCode'))
     && document.getElementById('creditCardBrand').value !== ""
     ) {
       return true
@@ -197,7 +176,7 @@ function validateCreateToken() {
   validateCreditCard(document.querySelector('#creditCardNum'));
   validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'));
   validateCreditCardYear(document.querySelector('#creditCardExpirationYear'));
-  validateCreditCardCode(document.querySelector('#creditCardCode'), false);
+  validateCreditCardCode(document.querySelector('#creditCardCode'));
 
   return false;
 }
