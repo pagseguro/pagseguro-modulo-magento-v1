@@ -138,6 +138,7 @@ function validateCreditCardCode(self) {
 }
 
 function validateCreditCardForm() {
+  displayError(document.getElementById('creditCardToken'), false);
   if (
     validateCreditCard(document.querySelector('#creditCardNum')) &&
     validateDocument(document.querySelector('#creditCardDocument')) &&

@@ -16,7 +16,6 @@ Payment.prototype.save = Payment.prototype.save.wrap(function(save) {
             return save();
           },
           error: function (error) {
-            console.log(error);
             displayError(document.getElementById('creditCardToken'));
           },
         }
