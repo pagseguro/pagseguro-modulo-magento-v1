@@ -4,7 +4,25 @@ Payment.prototype.save = Payment.prototype.save.wrap(function(save) {
   if (this.validate() && validator.validate()) {
     // Do form validations
     if (validatePagSeguroActiveMethod()) {
-      return save();
+      if (document.querySelector('#checkout-payment-method-load .radio:checked').value == 'pagseguro_credit_card') {
+        var param = {
+          cardNumber: unmask(document.getElementById('creditCardNum').value),
+          brand: document.getElementById('creditCardBrand').value,
+          cvv: document.getElementById('creditCardCode').value,
+          expirationMonth: document.getElementById('creditCardExpirationMonth').value,
+          expirationYear: document.getElementById('creditCardExpirationYear').value,
+          success: function (response) {
+            document.getElementById('creditCardToken').value = response.card.token;
+            return save();
+          },
+          error: function (error) {
+            displayError(document.getElementById('creditCardToken'));
+          },
+        }
+        PagSeguroDirectPayment.createCardToken(param);
+      } else {
+        return save();
+      }
     }
   }
 });
