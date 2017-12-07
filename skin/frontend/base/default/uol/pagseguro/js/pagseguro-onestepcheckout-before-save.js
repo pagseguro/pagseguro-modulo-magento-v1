@@ -35,9 +35,7 @@ OnestepcheckoutForm.prototype.hidePriceChangeProcess = OnestepcheckoutForm.proto
 
 //call pagseguro validation events before magento OneStepChekouPayment validate event, before finish checkout
 OnestepcheckoutForm.prototype.validate = OnestepcheckoutForm.prototype.validate.wrap(function(validate){
-    if (validatePagSeguroActiveMethod()) {
       return validate();
-    }
 });
 
 /**
