@@ -27,6 +27,8 @@ class UOL_PagSeguro_Model_Adminhtml_Config
     private $logo;
     private $skin;
     private $version;
+    private $session;
+    private $stc;
 
     public function __construct()
     {
@@ -46,6 +48,14 @@ class UOL_PagSeguro_Model_Adminhtml_Config
         $this->background = $skinUrl.'images/background.png';
         //Set version
         $this->version = Mage::helper('pagseguro')->getVersion();
+        if (Mage::getStoreConfig('payment/pagseguro/token') && Mage::getStoreConfig('payment/pagseguro/email')) {
+            $this->session = \PagSeguro\Services\Session::create($this->library->getAccountCredentials())->getResult();
+        }
+        if (Mage::getStoreConfig('payment/pagseguro/environment') === 'production') {
+            $this->stc = 'https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
+        } else {
+            $this->stc = 'https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js?';
+        }
     }
 
     /**
@@ -82,6 +92,10 @@ class UOL_PagSeguro_Model_Adminhtml_Config
         //TODO javascript na model!?
         $comment = '<script src="'.$this->jquery.'"></script>';
         $comment .= '<script src="'.$this->js.'"></script>';
+        $comment .= '<script src="'.$this->stc.'"></script>';
+        if ($this->session) {
+            $comment .= '<script>PagSeguroDirectPayment.setSessionId("' . $this->session . '")</script>';
+        }
         $comment .= '<script src="'.$this->jsColorbox.'"></script>';
         $comment .= '<script type="text/javascript">
                         var jQuery = jQuery.noConflict();

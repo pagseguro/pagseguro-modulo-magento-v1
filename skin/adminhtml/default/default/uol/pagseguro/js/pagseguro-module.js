@@ -388,3 +388,50 @@ function maskDiscount(v) {
 
     return v;
 }
+
+/**
+ * List payments methods enabled for account
+ */
+jQuery(document).ready(function () {
+  var open = false
+  jQuery('#payment_pagseguro_payments_enabled-head').click(function () {
+    open = true
+    if (open) {
+      var body = jQuery('#payment_pagseguro_payments_enabled')
+      var loading = '<p>carregando...</p>'
+      body.append(loading)
+      PagSeguroDirectPayment.getPaymentMethods({
+        success: function (res) {
+          if (!res['error']) {
+            body.empty()
+            jQuery.each(res['paymentMethods'], function (i, items) {
+              if (i !== 'BALANCE' && i !== 'DEPOSIT') {
+                if (i === 'ONLINE_DEBIT') {
+                  body.append('<ul id="' + i + '"><li style="display: inline-block; font-weight: bold; width: 100%;">Débito On-Line:</li></ul>')
+                } else if (i === 'CREDIT_CARD') {
+                  body.append('<ul id="' + i + '"><li style="display: inline-block; font-weight: bold; width: 100%;">Cartão de Crédito:</li></ul>')
+                } else if (i === 'BOLETO') {
+                  body.append('<ul id="' + i + '"><li style="display: inline-block; font-weight: bold; width: 100%;">Boleto:</li></ul>')
+                } else {
+                  body.append('<ul id="' + i + '"><li style="display: inline-block; font-weight: bold; width: 100%;">' + i + ':</li></ul>')
+                }
+                jQuery.each(items['options'], function (k, item) {
+                  if (item['status'] === 'AVAILABLE') {
+                    body.find('ul#' + i).append('<li style="display: inline-block; padding: 5px 15px;">' + item['displayName'] + '</li>')
+                  }
+                })
+              }
+            })
+          } else {
+            body.empty()
+            body.append('<p>Erro</p>')
+          }
+        },
+        error: function () {
+          body.empty()
+          body.append('<p>Erro</p>')
+        }
+      })
+    }
+  })
+})
