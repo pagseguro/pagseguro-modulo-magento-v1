@@ -52,9 +52,11 @@
               var pagseguro_online_debit_options = jQuery('#pagseguro-online-debit-options')
               pagseguro_online_debit_options.empty()
               jQuery.each(res['paymentMethods']['ONLINE_DEBIT']['options'], function (i, item) {
-                pagseguro_online_debit_options.append('<div><label>' +
-                  '<input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="' + i + '" required onclick="validateDebitBankName(this)">'
-                  + item['displayName'] + '</label></div>')
+                if (item['status'] === 'AVAILABLE') {
+                  pagseguro_online_debit_options.append('<div><label>' +
+                    '<input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="' + i + '" required onclick="validateDebitBankName(this)">'
+                    + item['displayName'] + '</label></div>')
+                }
               })
             }
           }
