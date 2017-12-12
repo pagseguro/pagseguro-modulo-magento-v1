@@ -40,25 +40,23 @@
 
 <script>
   //<![CDATA[
-  jQuery('#p_method_pagseguro_boleto').on('click', function () {
-    PagSeguroDirectPayment.getPaymentMethods({
-      success: function (res) {
-        if (!res['error']) {
-          if (res['paymentMethods']) {
-            if (!res['paymentMethods']['BOLETO']) {
-              jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').find('input').prop('disabled', true)
-            } else if (res['paymentMethods'] && res['paymentMethods']['BOLETO'] && res['paymentMethods']['BOLETO']['options']['BOLETO']['status'] !== 'AVAILABLE') {
-              jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').find('input').prop('disabled', true)
-            }
+  PagSeguroDirectPayment.getPaymentMethods({
+    success: function (res) {
+      if (!res['error']) {
+        if (res['paymentMethods']) {
+          if (!res['paymentMethods']['BOLETO']) {
+            jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').find('input').prop('disabled', true)
+          } else if (res['paymentMethods'] && res['paymentMethods']['BOLETO'] && res['paymentMethods']['BOLETO']['options']['BOLETO']['status'] !== 'AVAILABLE') {
+            jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').find('input').prop('disabled', true)
           }
-        } else {
-          console.log(res['error'])
         }
-      },
-      error: function (res) {
+      } else {
         console.log(res['error'])
       }
-    })
+    },
+    error: function (res) {
+      console.log(res['error'])
+    }
   })
   //]]>
 </script>
