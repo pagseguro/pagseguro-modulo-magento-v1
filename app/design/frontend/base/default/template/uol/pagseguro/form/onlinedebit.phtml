@@ -51,11 +51,13 @@
             } else if (res['paymentMethods'] && res['paymentMethods']['ONLINE_DEBIT'] && res['paymentMethods']['ONLINE_DEBIT']['options']) {
               var pagseguro_online_debit_options = jQuery('#pagseguro-online-debit-options')
               pagseguro_online_debit_options.empty()
+              jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').find('input').prop('disabled', true)
               jQuery.each(res['paymentMethods']['ONLINE_DEBIT']['options'], function (i, item) {
                 if (item['status'] === 'AVAILABLE') {
                   pagseguro_online_debit_options.append('<div><label>' +
                     '<input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="' + i + '" required onclick="validateDebitBankName(this)">'
                     + item['displayName'] + '</label></div>')
+                  jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').find('input').prop('disabled', false)
                 }
               })
             }
