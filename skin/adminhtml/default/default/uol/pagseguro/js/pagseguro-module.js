@@ -407,18 +407,29 @@ jQuery(document).ready(function () {
             jQuery.each(res['paymentMethods'], function (i, items) {
               if (i !== 'BALANCE' && i !== 'DEPOSIT') {
                 if (i === 'ONLINE_DEBIT') {
-                  body.append('<ul id="' + i + '"><li style="display: inline-block; font-weight: bold; width: 100%;">Débito On-Line:</li></ul>')
+                  body.append('<ul id="' + i + '">' +
+                    '<li style="display: inline-block; font-weight: bold; width: 100%;">Débito On-Line:</li>' +
+                    '<li style="display: inline-block; padding: 5px 15px;" class="none">nenhuma opção disponível</li>' +
+                    '</ul>')
                 } else if (i === 'CREDIT_CARD') {
-                  body.append('<ul id="' + i + '"><li style="display: inline-block; font-weight: bold; width: 100%;">Cartão de Crédito:</li></ul>')
+                  body.append('<ul id="' + i + '">' +
+                    '<li style="display: inline-block; font-weight: bold; width: 100%;">Cartão de Crédito:</li>' +
+                    '<li style="display: inline-block; padding: 5px 15px;" class="none">nenhuma opção disponível</li>' +
+                    '</ul>')
                 } else if (i === 'BOLETO') {
-                  body.append('<ul id="' + i + '"><li style="display: inline-block; font-weight: bold; width: 100%;">Boleto:</li></ul>')
+                  body.append('<ul id="' + i + '">' +
+                    '<li style="display: inline-block; font-weight: bold; width: 100%;">Boleto:</li>' +
+                    '<li style="display: inline-block; padding: 5px 15px;" class="none">nenhuma opção disponível</li>' +
+                    '</ul>')
                 } else {
-                  body.append('<ul id="' + i + '"><li style="display: inline-block; font-weight: bold; width: 100%;">' + i + ':</li></ul>')
+                  body.append('<ul id="' + i + '">' +
+                    '<li style="display: inline-block; font-weight: bold; width: 100%;">' + i + ':</li>' +
+                    '<li style="display: inline-block; padding: 5px 15px;" class="none">nenhuma opção disponível</li>' +
+                    '</ul>')
                 }
                 jQuery.each(items['options'], function (k, item) {
-                  if (item['status'] === 'AVAILABLE') {
-                    body.find('ul#' + i).append('<li style="display: inline-block; padding: 5px 15px;">' + item['displayName'] + '</li>')
-                  }
+                  body.find('ul#' + i).find('.none').hide()
+                  body.find('ul#' + i).append('<li style="display: inline-block; padding: 5px 15px;">' + item['displayName'] + '</li>')
                 })
               }
             })
