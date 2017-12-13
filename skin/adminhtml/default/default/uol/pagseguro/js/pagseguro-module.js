@@ -428,8 +428,10 @@ jQuery(document).ready(function () {
                     '</ul>')
                 }
                 jQuery.each(items['options'], function (k, item) {
-                  body.find('ul#' + i).find('.none').hide()
-                  body.find('ul#' + i).append('<li style="display: inline-block; padding: 5px 15px;">' + item['displayName'] + '</li>')
+                  if (item['status'] === 'AVAILABLE') {
+                    body.find('ul#' + i).find('.none').hide()
+                    body.find('ul#' + i).append('<li style="display: inline-block; padding: 5px 15px;">' + item['displayName'] + '</li>')
+                  }
                 })
               }
             })
