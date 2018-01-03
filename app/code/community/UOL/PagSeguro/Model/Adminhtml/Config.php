@@ -49,7 +49,12 @@ class UOL_PagSeguro_Model_Adminhtml_Config
         //Set version
         $this->version = Mage::helper('pagseguro')->getVersion();
         if (Mage::getStoreConfig('payment/pagseguro/token') && Mage::getStoreConfig('payment/pagseguro/email')) {
-            $this->session = \PagSeguro\Services\Session::create($this->library->getAccountCredentials())->getResult();
+            try {
+                $this->session = \PagSeguro\Services\Session::create($this->library->getAccountCredentials())->getResult();
+            } catch (Exception $exception){
+                $this->session = null;
+                Mage::log($exception);
+            }
         }
         if (Mage::getStoreConfig('payment/pagseguro/environment') === 'production') {
             $this->stc = 'https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js';
