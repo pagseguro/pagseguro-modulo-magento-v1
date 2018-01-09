@@ -53,7 +53,8 @@ class UOL_PagSeguro_Model_Adminhtml_Config
                 $this->session = \PagSeguro\Services\Session::create($this->library->getAccountCredentials())->getResult();
             } catch (Exception $exception){
                 $this->session = null;
-                Mage::log($exception);
+                // TODO make a default format of exception
+                Mage::log('[PAGSEGURO] Error: ' . $exception->getCode() . ' - ' . $exception->getMessage());
             }
         }
         if (Mage::getStoreConfig('payment/pagseguro/environment') === 'production') {
