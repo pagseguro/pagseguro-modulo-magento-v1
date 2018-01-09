@@ -88,7 +88,7 @@ trait Holder
     {
         $data = [];
         $document = $payment->getHolder()->getDocuments();
-        
+
         if (!is_null($document)) {
             $data[$properties::CREDIT_CARD_HOLDER_CPF] = Characters::hasSpecialChars($document->getIdentifier());
         }

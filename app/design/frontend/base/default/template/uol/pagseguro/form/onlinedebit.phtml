@@ -83,16 +83,17 @@
 <div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
     <input type="hidden" id="onlineDebitHash" value="" name="payment[online_debit_hash]">
     <input type="hidden" id="onlineDebitBankName" value="" name="payment[online_debit_bank_name]">
-    
-    
-    <div style="float: left">
-        <div class="pagseguro-boleto-label-div">
+
+
+    <div>
+        <div class="pagseguro-boleto-label-div hidden">
             <label class="pagseguro-required"><?php echo $this->__('CPF ou CNPJ') ?>*</label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <input 
+            <input
                 id="debitDocument"
-                class="input-text pagseguro-document required-entry"
+                class="input-text pagseguro-document required-entry form-control"
+                placeholder="<?php echo $this->__('CPF ou CNPJ') ?>"
                 onblur="validateDocument(this)"
                 onkeydown="documentMask(this)"
                 type="text"
@@ -111,7 +112,7 @@
     <div style="display: inline-block; "class="pagseguro-label-spacing pagseguro-cc-group-div">
         <ul class="pagseguro-direct-payment-ul">
             <div class="pagseguro-cc-input-div">
-                <li>Esta compra está sendo feita no Brasil 
+                <li>Esta compra está sendo feita no Brasil
                     <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
                 </li>
             </div>

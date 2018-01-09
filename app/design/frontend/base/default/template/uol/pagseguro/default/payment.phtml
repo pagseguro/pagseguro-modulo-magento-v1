@@ -2,14 +2,16 @@
     <h2 class="sub-title">Finalizando sua compra com PagSeguro</h2>
 </div>
 <script type="text/javascript">
-    window.onload = function () {
+    /*window.onload = function () {
         window.open('<?= Mage::registry('link') ?>', '_blank');
-    };
+    };*/
 </script>
+<?php if(isset(Mage::registry('link'))):?>
+<iframe src="<?= Mage::registry('link') ?>" width="100%" frameborder="0" style="overflow:hidden;height:1600px;width:100%" height="1600px"/>
+<?php endif;?>
 <table style="width:100%;">
     <tr>
         <td style="width:100%">
-            Sua compra está em processo de finalização, aguarde um instante.<br>
             Se a página de pagamento não abrir automaticamente
             <a href="<?= Mage::registry('link') ?>" target="_blank">clique aqui</a>.
         </td>
