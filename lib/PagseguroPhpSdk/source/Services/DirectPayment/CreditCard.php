@@ -63,7 +63,9 @@ class CreditCard
             );
             $http->post(
                 self::request($connection),
-                Request::getData($payment)
+                Request::getData($payment),
+                20,
+                \PagSeguro\Configuration\Configure::getCharset()->getEncoding()
             );
 
             $response = Responsibility::http(
@@ -82,7 +84,7 @@ class CreditCard
             throw $exception;
         }
     }
-
+    
     /**
      * @param Connection\Data $connection
      * @return string

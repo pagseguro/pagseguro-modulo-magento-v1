@@ -4,7 +4,7 @@ require_once "../../../vendor/autoload.php";
 
 \PagSeguro\Library::initialize();
 
-$code = 'FD3AF1B214EC40F0B0A6745D041BF50D';
+$code = '2ED002E234444A0D9469EF14F0D5A9C1';
 
 try {
     $response = \PagSeguro\Services\Application\Search\Code::search(
