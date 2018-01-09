@@ -1,5 +1,10 @@
 Changelog
 ---------
+3.5.0
+- Não exibe meio de pagamento transparente na tela de checkout caso o mesmo não esteja habilitado ou configurado corretamente na conta do vendedor ou aplicação do PagSeguro configurada no módulo
+- Exibe na interface administrativa o estado (ativo, inativo) dos meios de pagamento do checkout transparente da conta do PagSeguro configurada no módulo
+
+
 3.4.0
 - Atualizada biblioteca PHP do PagSeguro para versão 3.3.0
 - Fix: erro no "credit card holder phone" (não estava sendo enviado o telefone do usuário)
