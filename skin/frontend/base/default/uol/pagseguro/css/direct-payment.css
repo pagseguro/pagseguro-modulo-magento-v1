@@ -58,6 +58,10 @@ span > input {
     width: 70%;
 }
 
+.pagseguro-cc-input-div > ul {
+    width: 365px;
+}
+
 .pagseguro-required:after {
     content: '*';
     color: #df280a;

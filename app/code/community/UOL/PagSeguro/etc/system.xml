@@ -413,6 +413,13 @@ limitations under the License.
                                 </pagseguro_online_debit>
                             </fields>
                         </pagseguro_payment>
+
+                        <pagseguro_payments_enabled type="group" translate="label">
+                            <label>Consultar meios de pagamentos ativos na conta PagSeguro</label>
+                            <sort_order>900</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <expanded>0</expanded>
+                        </pagseguro_payments_enabled>
                     </fields>
                 </pagseguro_settings>
             </groups>

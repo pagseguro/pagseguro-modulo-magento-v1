@@ -50,13 +50,11 @@ class UOL_PagSeguro_Model_InstallmentsMethod extends MethodAbstract
     {
         $this->helper = Mage::helper('pagseguro');
         try {
-            $session = PagSeguro\Services\Session::create($this->library->getAccountCredentials());
             $installments = PagSeguro\Services\Installment::create(
                 $this->library->getAccountCredentials(),
                 [
-                    $session,
-                    $amount,
-                    $brand,
+                    'amount' => $amount,
+                    'card_brand' => $brand
                 ]
             );
             $format = $this->output($installments, true);
@@ -80,7 +78,7 @@ class UOL_PagSeguro_Model_InstallmentsMethod extends MethodAbstract
     private function output($installments, $maxInstallment)
     {
         return ($maxInstallment) ?
-            $this->formatOutput($this->getMaxInstallment($installments)) :
+            $this->formatOutput($this->getMaxInstallment($installments->getInstallments())) :
             $this->formatOutput($installments);
     }
 
@@ -112,7 +110,7 @@ class UOL_PagSeguro_Model_InstallmentsMethod extends MethodAbstract
     {
         return array(
             'quantity'    => $installment->getQuantity(),
-            'amount'      => $installment->getInstallmentAmount(),
+            'amount'      => $installment->getAmount(),
             'totalAmount' => PagSeguro\Helpers\Currency::toDecimal($installment->getTotalAmount()),
             'text'        => str_replace('.', ',', $this->getInstallmentText($installment)),
         );
@@ -130,7 +128,7 @@ class UOL_PagSeguro_Model_InstallmentsMethod extends MethodAbstract
         return sprintf(
             "%s x de R$ %.2f %s juros",
             $installment->getQuantity(),
-            $installment->getInstallmentAmount(),
+            $installment->getAmount(),
             $this->getInterestFreeText($installment->getInterestFree()));
     }
 
