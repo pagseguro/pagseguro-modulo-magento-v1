@@ -1,3 +1,55 @@
+<style>
+  #dt_method_<?php echo $this->getMethodCode() ?> {
+    display: none;
+  }
+</style>
+
+<script>
+  //<![CDATA[
+  var pagseguro_creditcard_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>')
+  var pagseguro_credit_card_options = jQuery('#pagseguro-credit-card-options')
+  paymentMethods()
+  var CreditcardOptions = false
+
+  pagseguroCreditcardOptions = function (res) {
+    if (!CreditcardOptions) {
+      pagseguro_credit_card_options.on('click', 'a', function () {
+        pagseguro_credit_card_options.find('li').css('display', 'inline-flex')
+        pagseguro_credit_card_options.find('li.more_cc').css('display', 'none')
+      })
+      if (!res['error']) {
+        if (res['paymentMethods'] && res['paymentMethods']['CREDIT_CARD'] && res['paymentMethods']['CREDIT_CARD']['options']) {
+          var k = 0
+          pagseguro_credit_card_options.empty()
+          jQuery.each(res['paymentMethods']['CREDIT_CARD']['options'], function (i, item) {
+            if (item['status'] === 'AVAILABLE') {
+              ++k
+              if (k > 0) {
+                pagseguro_creditcard_dt.show()
+              }
+              if (k <= 6) {
+                pagseguro_credit_card_options.append('<li style="display: inline-flex; padding: 0 3px 3px 0; margin: 0;"><img src="https://stc.pagseguro.uol.com.br' + item['images']['SMALL']['path'] + '"></li>')
+                if (k === 6) {
+                  pagseguro_credit_card_options.append('<li style="display: inline-flex; padding: 0 3px 3px 0; margin: 0;" class="more_cc"><a >mais</a></li>')
+                }
+              }
+              if (k > 6) {
+                pagseguro_credit_card_options.append('<li style="display: none; padding: 0 3px 3px 0; margin: 0;"><img src="https://stc.pagseguro.uol.com.br' + item['images']['SMALL']['path'] + '"></li>')
+              }
+            }
+          })
+          if (k === 0) {
+            pagseguro_onlinedebit_dt.find('input').prop('disabled', true)
+          }
+        }
+      } else {
+        console.log(res['error'])
+      }
+    }
+  }
+  //]]>
+</script>
+
 <script type="text/javascript">
 //<![CDATA[
     // get value from one step checkout guest (if it is enabled) document to be used in pagseguro direct payment
@@ -53,6 +105,7 @@
         <div class="pagseguro-cc-input-div">
             <input class="pagseguro-cc-input required-entry" type="text" id="creditCardNum" onkeydown="creditCardMask(this)" onblur="getBrand(this)" maxlength="19">
             <div class="display-none validation-advice creditCardNum-error-message">Insira um número de cartão válido</div>
+            <ul id="pagseguro-credit-card-options" style="padding: 4px 0;"></ul>
         </div>
     </div>
 
