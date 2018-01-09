@@ -1,3 +1,34 @@
+<style>
+  #dt_method_<?php echo $this->getMethodCode() ?> {
+    display: none;
+  }
+</style>
+
+<script>
+  //<![CDATA[
+  var pagseguro_boleto_options = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>')
+  paymentMethods()
+  var BoletoOptions = false
+
+  pagseguroBoletoOptions = function (res) {
+    if (!BoletoOptions) {
+      BoletoOptions = true
+      if (!res['error']) {
+        if (res['paymentMethods']) {
+          if (res['paymentMethods'] && res['paymentMethods']['BOLETO'] && res['paymentMethods']['BOLETO']['options']['BOLETO']['status'] === 'AVAILABLE') {
+            pagseguro_boleto_options.show()
+          } else {
+            pagseguro_creditcard_dt.find('input').prop('disabled', true)
+          }
+        }
+      } else {
+        console.log(res['error'])
+      }
+    }
+  }
+  //]]>
+</script>
+
 <script type="text/javascript">
 //<![CDATA[
     // get value fromm one step checkout guest document to be used in pagseguro direct payment

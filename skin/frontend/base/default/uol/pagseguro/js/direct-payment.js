@@ -325,3 +325,24 @@ function creditCardCodeMask(code) {
   }
   return true;
 }
+
+/**
+ * @type {boolean}
+ */
+var alreadyGetPaymentMethods = false
+
+/**
+ *
+ *
+ */
+function paymentMethods () {
+  if (!alreadyGetPaymentMethods) {
+    PagSeguroDirectPayment.getPaymentMethods({
+      success: function (res) {
+        pagseguroBoletoOptions(res)
+        pagseguroCreditcardOptions(res)
+        pagseguroOnlinedebitOptions(res)
+      }
+    })
+  }
+}
