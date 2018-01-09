@@ -38,7 +38,7 @@
 //]]>
 </script>
 
-<div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
+<div class="form-list nopadding" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
     <input type="hidden" id="creditCardHash" value="" name="payment[credit_card_hash]">
     <input type="hidden" id="creditCardToken" value="" name="payment[credit_card_token]">
     <input type="hidden" id="creditCardBrand">
@@ -47,86 +47,94 @@
     <input type="hidden" id="grand_total" value="<?= $this->getGrandTotal() ?>">
 
     <div class="pagseguro-label-spacing pagseguro-cc-group-div">
-        <div class="pagseguro-cc-label-div">
-            <label class="pagseguro-required" for="creditCardNum">Número do cartão</label>
+        <div class="pagseguro-cc-label-div hidden">
+            <label class="pagseguro-required" for="creditCardNum"><?php echo $this->__('Número do cartão')?></label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <input class="pagseguro-cc-input required-entry" type="text" id="creditCardNum" onkeydown="creditCardMask(this)" onblur="getBrand(this)" maxlength="19">
-            <div class="display-none validation-advice creditCardNum-error-message">Insira um número de cartão válido</div>
+            <input  placeholder="<?php echo $this->__('Número do cartão...') ?>" class="pagseguro-cc-input form-control required-entry" type="text" id="creditCardNum" onkeydown="creditCardMask(this)" onblur="getBrand(this)" maxlength="19">
+            <div class="display-none validation-advice creditCardNum-error-message"><?php echo $this->__('Insira um número de cartão válido') ?></div>
+        </div>
+    </div>
+
+    <div class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <div class="pagseguro-cc-label-div hidden">
+            <label class="pagseguro-required" for="creditCardHolder"><?php echo $this->__('Nome impresso no cartão') ?></label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <input placeholder="<?php echo $this->__('Nome do titular...') ?>" class="pagseguro-cc-input form-control required-entry" type="text" name="payment[credit_card_holder]" id="creditCardHolder" required onblur="validateCardHolder(this)" onkeydown="notNumberMask(this)" minlength="3">
+            <div class="display-none validation-advice creditCardHolder-error-message"><?php echo $this->__('Insira um nome') ?></div>
         </div>
     </div>
 
     <div class="pagseguro-label-spacing pagseguro-cc-group-div">
         <div class="pagseguro-cc-label-div">
-            <label class="pagseguro-required" for="creditCardHolder">Nome impresso no cartão</label>
+        <label class="pagseguro-required" for="creditCardExpirationMonth"><?php echo $this->__('Data de validade') ?></label>
         </div>
-        <div class="pagseguro-cc-input-div">
-            <input class="pagseguro-cc-input required-entry" type="text" name="payment[credit_card_holder]" id="creditCardHolder" required onblur="validateCardHolder(this)" onkeydown="notNumberMask(this)" minlength="3">
-            <div class="display-none validation-advice creditCardHolder-error-message">Insira um nome</div>
-        </div>
-    </div>
-
-    <div class="pagseguro-label-spacing pagseguro-cc-group-div">
-        <div class="pagseguro-cc-label-div">
-        <label class="pagseguro-required" for="creditCardExpirationMonth">Validade</label>
-        </div>
-        <div class="pagseguro-cc-input-div">
-            <select onclick="validateCreditCardMonth(this)" id="creditCardExpirationMonth" title="Cartão válido até" class="pagseguro-cc-select required-entry" required>
-                <option value="" disabled selected>Mês</option>
-                <option value="01">01</option>
-                <option value="02">02</option>
-                <option value="03">03</option>
-                <option value="04">04</option>
-                <option value="05">05</option>
-                <option value="06">06</option>
-                <option value="07">07</option>
-                <option value="08">08</option>
-                <option value="09">09</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-            </select>
+        <div class="fields">
+          <div class="pagseguro-cc-input-div">
+            <div class="field">
+                <select onclick="validateCreditCardMonth(this)" id="creditCardExpirationMonth" title="Cartão válido até" class="pagseguro-cc-select form-control required-entry" required>
+                    <option value="" disabled selected><?php echo $this->__('Mês')?></option>
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+            <div class="field">
+                <select onclick="validateCreditCardYear(this)" id="creditCardExpirationYear" title="Cartão válido até" class="pagseguro-cc-select form-control required-entry" required>
+                    <option value="" disabled selected>Ano</option>
+                    <?php
+                    $year = idate("Y");
+                    $maxYear = $year + 20;
+                    for ($i = $year; $i < $maxYear; $i++): ?>
+                        <option value="<?= $i; ?>"><?= $i; ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
             <div class="display-none validation-advice creditCardExpirationMonth-error-message">Escolha um mês</div>
-            <select onclick="validateCreditCardYear(this)" id="creditCardExpirationYear" title="Cartão válido até" class="pagseguro-cc-select required-entry" required>
-                <option value="" disabled selected>Ano</option>
-                <?php
-                $year = idate("Y");
-                $maxYear = $year + 20;
-                for ($i = $year; $i < $maxYear; $i++): ?>
-                    <option value="<?= $i; ?>"><?= $i; ?></option>
-                <?php endfor; ?>
-            </select>
-            <div class="display-none validation-advice creditCardExpirationYear-error-message">Escolha um ano</div>
+
+              <div class="display-none validation-advice creditCardExpirationYear-error-message">Escolha um ano</div>
+          </div>
         </div>
     </div>
 
     <div class="pagseguro-label-spacing pagseguro-cc-group-div">
-        <div class="pagseguro-cc-label-div">
-            <label class="pagseguro-required" for="creditCardCode">Código de segurança</label>
+        <div class="pagseguro-cc-label-div hidden">
+            <label class="pagseguro-required" for="creditCardCode"><?php echo $this->__('Código de segurança') ?></label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <input class="pagseguro-cc-input form-control code-card-mask required-entry" id="creditCardCode" type="text" minlength="3"
+            <input placeholder="<?php echo $this->__('Código de segurança...') ?>" class="pagseguro-cc-input form-control code-card-mask required-entry" id="creditCardCode" type="text" minlength="3"
                    maxlength="4"
                    onkeydown="creditCardCodeMask(this)"
                    onblur="validateCreditCardCode(this, true)" required>
             <div class="display-none validation-advice creditCardCode-error-message">Insira um código segurança válido</div>
         </div>
     </div>
-    
+
     <div class="pagseguro-label-spacing pagseguro-cc-group-div">
-        <div class="pagseguro-cc-label-div">
+        <div class="pagseguro-cc-label-div hidden">
             <label class="pagseguro-required"><?php echo $this->__('CPF ou CNPJ') ?></label>
         </div>
         <div class="pagseguro-cc-input-div">
             <input
                 id="creditCardDocument"
-                class="pagseguro-cc-input pagseguro-document required-entry"
+                class="pagseguro-cc-input form-control pagseguro-document required-entry"
+                placeholder="<?php echo $this->__('CPF ou CNPJ') ?>"
                 onblur="validateDocument(this)"
                 onkeydown="documentMask(this)"
                 type="text"
                 title="<?php echo $this->__('CPF ou CNPJ') ?>"
                 name="payment[credit_card_cpf]"
-                value="<?= $this->getCreditCardDocument() ?>" 
+                value="<?= $this->getCreditCardDocument() ?>"
                 maxlength="18"
             />
             <div class="display-none validation-advice creditCardDocument-error-message">Insira um CPF ou CNPJ válido</div>
@@ -134,51 +142,47 @@
     </div>
 
     <div class="pagseguro-label-spacing pagseguro-cc-group-div">
-        <div class="pagseguro-cc-label-div">
-        <label class="pagseguro-required" for="creditCardHolderBirthdate">Data de nascimento</label>
+        <div class="pagseguro-cc-label-div hidden">
+        <label class="pagseguro-required" for="creditCardHolderBirthdate"><?php echo $this->__('Data de nascimento') ?></label>
         </div>
         <div class="pagseguro-cc-input-div">
             <input maxlength="10" type="text" name="payment[credit_card_holder_birthdate]" class="form-control date-mask pagseguro-cc-input required-entry" id="creditCardHolderBirthdate" required
-                   placeholder="dd/mm/aaaa" onblur="validateCreditCardHolderBirthdate(this)" onkeydown="MascaraData(this)">
-            <div class="display-none validation-advice creditCardHolderBirthdate-error-message">Insira uma data de nascimento válida</div>
+                   placeholder="<?php echo $this->__('Data de nascimento...') ?>" onblur="validateCreditCardHolderBirthdate(this)" onkeydown="MascaraData(this)">
+            <div class="display-none validation-advice creditCardHolderBirthdate-error-message"><?php echo $this->__('Insira uma data de nascimento válida')?></div>
         </div>
     </div>
 
     <div class="pagseguro-label-spacing pagseguro-cc-group-div">
         <div class="pagseguro-cc-label-div">
-            <label class="pagseguro-required" for="card_installments">Parcelas</label>
+            <label class="pagseguro-required" for="card_installments"><?php echo $this->__('Parcelas')?></label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <select class="pagseguro-cc-select required-entry" id="card_installment_option" title="Nº de parcelas" required
+            <select class="pagseguro-cc-select form-control required-entry" id="card_installment_option" title="Nº de parcelas" required
                     disabled onchange="cardInstallmentOnChange(this.value)" onclick="validateCreditCardInstallment(this)">
-                <option value="null" disabled selected>Escolha o N° de parcelas</option>
+                <option value="null" disabled selected><?php echo $this->__('Escolha o N° de parcelas')?></option>
             </select>
-            <div class="display-none validation-advice card_installment_option-error-message">Escolha uma opção de parcelamento</div>
+            <div class="display-none validation-advice card_installment_option-error-message"><?php echo $this->__('Escolha uma opção de parcelamento')?></div>
         </div>
     </div>
 
     <div class="credit-total pagseguro-label-spacing pagseguro-cc-group-div">
         <div class="pagseguro-cc-label-div">
-        <label class="pagseguro-required" for="card_installments">Total</label>
+        <label class="pagseguro-required" for="card_installments"><?php echo $this->__('Total')?></label>
         </div>
         <div class="pagseguro-cc-input-div">
             <span>
-                <span id="card_total">selecione o número de parcelas</span>
+                <span id="card_total"><?php echo $this->__('selecione o número de parcelas')?></span>
             </span>
         </div>
     </div>
-    
+
     <div style="display: inline-block; "class="pagseguro-label-spacing pagseguro-cc-group-div">
         <ul class="pagseguro-direct-payment-ul">
             <div class="pagseguro-cc-input-div">
-                <li>Esta compra está sendo feita no Brasil 
+                <li><?php echo $this->__('Esta compra está sendo feita no Brasil')?>
                     <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
                 </li>
             </div>
         </ul>
     </div>
 </div>
-
-        
-    
-    

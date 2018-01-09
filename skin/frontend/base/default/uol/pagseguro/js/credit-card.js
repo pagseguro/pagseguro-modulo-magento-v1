@@ -31,7 +31,7 @@ function validateCardHolder (self) {
       return true
     }
   }
-  
+
   function validateCreditCardHolderBirthdate (self) {
     var val = self.value
     var date_regex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/
@@ -43,7 +43,7 @@ function validateCardHolder (self) {
       return true
     }
   }
-  
+
   function validateCreditCardMonth (self) {
     if (self.validity.valid) {
       displayError(self, false)
@@ -53,7 +53,7 @@ function validateCardHolder (self) {
       return false
     }
   }
-  
+
   function validateCreditCardYear (self) {
     if (self.validity.valid) {
       displayError(self, false)
@@ -172,7 +172,7 @@ function validateCreditCardForm() {
     }
    return true;
   }
-  
+
   validateCreditCard(document.querySelector('#creditCardNum'))
   validateDocument(document.querySelector('#creditCardDocument'))
   validateCardHolder(document.querySelector('#creditCardHolder'))
@@ -185,7 +185,7 @@ function validateCreditCardForm() {
 }
 
 function validateCreateToken() {
-  if(validateCreditCard(document.querySelector('#creditCardNum')) 
+  if(validateCreditCard(document.querySelector('#creditCardNum'))
     && validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
     && validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
     && validateCreditCardCode(document.querySelector('#creditCardCode'), false)

@@ -1,17 +1,52 @@
 <script type="">
-    <?php if ($_GET['redirect']): ?>
+    /*<?php if ($_GET['redirect']): ?>
         window.open('<?= $_GET['redirect']; ?>', '_blank');
-    <?php endif ?>
+    <?php endif ?>*/
 </script>
 
+
+<?php 
+$orderId = Mage::getSingleton('checkout/session')->getLastOrderId();
+$order = Mage::getModel('sales/order')->load($orderId);
+$orderCurrency      = $order->getBaseCurrencyCode();
+$orderGrandTotal    = $order->getBaseGrandTotal();
+$orderShippingTotal = $order->getBaseShippingAmount();
+$orderTax           = $order->getBaseTaxAmount();
+$orderItems = $order->getAllVisibleItems();
+?>
+
+<script type="text/javascript">
+	ga('require', 'ecommerce')
+	ga('ecommerce:addTransaction', {
+		'id': '<?php echo $order->getIncrementId()?>',
+		'affiliation': '<?php echo $order->getAffiliation() ?>',
+		'revenue': '<?php echo $orderGrandTotal?>',
+		'tax': '<?php echo $orderTax?>',
+		'shipping': '<?php echo $orderShippingTotal?>',
+		'coupon': '<?php echo $order->getCouponCode() ?>'
+	});
+	<?php foreach($orderItems as $item): ?>
+	ga('ecommerce:addItem', {
+		'id': '<?php echo $order->getIncrementId()?>',
+		'sku': '<?php echo $this->jsQuoteEscape($item->getSku()) ?>',
+		'name': '<?php echo $this->jsQuoteEscape($item->getName()) ?>',
+		'category': '',
+		'price': '<?php echo $item->getBasePrice()?>',
+		'quantity': '<?php echo $item->getQtyOrdered()?>'
+	});
+	<?php endforeach;?>
+	ga('ecommerce:send');
+</script>
 <div class="page-head">
-    <h2 class="sub-title">Pedido efetuado</h2>
+    <h2 class="sub-title">Pedido efetuado
+</h2>
 </div>
 <table style="width:100%;">
     <tr>
+
 		<?php if ($_GET['redirect']) { ?>
             <td style="width:100%">
-                Se a página de pagamento não abrir automaticamente
+                Se o pagamento não abrir automaticamente
                 <a href="<?= $_GET['redirect'] ?>" target="_blank">clique aqui</a>.
             </td>
 		<?php } else { ?>
@@ -21,3 +56,6 @@
 		<?php } ?>
     </tr>
 </table>
+<?php if(isset($_GET['redirect'])):?>
+  <iframe src="<?= $_GET['redirect'] ?>" width="100%" frameborder="0" style="overflow:hidden;height:1600px;width:100%" height="1600px"></iframe>
+<?php endif; ?>

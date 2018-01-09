@@ -15,7 +15,7 @@
     setBoletoSessionId("<?= $this->getBoletoSession();?>");
 //]]>
 </script>
-    
+
 <script type="text/javascript">
 //<![CDATA[
     var beforeSaveJsUrl = "<?php echo $this->getPagSeguroBeforeSaveJsSkinUrl() ?>";
@@ -38,37 +38,39 @@
 //]]>
 </script>
 
-<div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
+<div class="form-list nopadding" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
     <input type="hidden" id="boletoHash" value="" name="payment[boleto_hash]">
     <div style="float: left">
-        <div class="pagseguro-boleto-label-div">
+        <div class="pagseguro-boleto-label-div hidden">
             <label class="pagseguro-required required-entry" ><?php echo $this->__('CPF ou CNPJ') ?></label>
         </div>
         <div class="pagseguro-cc-input-div">
-            <input 
-                class="pagseguro-cc-input pagseguro-document required-entry" 
-                id="bilitDocument"  
-                onblur="validateDocument(this)" 
+            <input
+                class="pagseguro-cc-input pagseguro-document required-entry  input-text form-control"
+                id="bilitDocument"
+                onblur="validateDocument(this)"
                 onkeydown="documentMask(this)"
-                type="text" 
-                title="<?php echo $this->__('CPF ou CNPJ') ?>" 
-                name="payment[boleto_cpf]" 
-                value="<?= $this->getBoletoDocument() ?>" 
+                type="text"
+                placeholder="<?php echo $this->__('CPF ou CNPJ*') ?>"
+                title="<?php echo $this->__('CPF ou CNPJ') ?>"
+                name="payment[boleto_cpf]"
+                value="<?= $this->getBoletoDocument() ?>"
                 maxlength="18"
             />
             <div class="display-none validation-advice bilitDocument-error-message">Insira um CPF ou CNPJ válido</div>
         </div>
-    
+
     <ul style="float: left;" class="pagseguro-direct-payment-ul">
-        <li>&#9679; Imprima o boleto e pague no banco ou na internet utilizando o seu c&oacute;digo de barras</li>
-        <li>&#9679; O prazo de validade do boleto &eacute; de 1 dia &uacute;til</li>
+      <li>&#9679; Imprima o boleto e pague em qualquer instituição bancária ou na internet utilizando o seu c&oacute;digo de barras até o vencimento</li>
+      <li>&#9679; O prazo de validade do boleto &eacute; de 3 dias &uacute;teis</li>
+      <li>&#9679; Tarifa de emissão: R$1,00</li>
     </ul>
 
   </div>
     <div style="display: inline-block; "class="pagseguro-label-spacing pagseguro-cc-group-div">
         <ul class="pagseguro-direct-payment-ul">
             <div class="pagseguro-cc-input-div">
-                <li>Esta compra está sendo feita no Brasil 
+                <li>Esta compra está sendo feita no Brasil
                     <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
                 </li>
             </div>

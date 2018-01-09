@@ -36,7 +36,25 @@ OnestepcheckoutForm.prototype.hidePriceChangeProcess = OnestepcheckoutForm.proto
 //call pagseguro validation events before magento OneStepChekouPayment validate event, before finish checkout
 OnestepcheckoutForm.prototype.validate = OnestepcheckoutForm.prototype.validate.wrap(function(validate){
     if (validatePagSeguroActiveMethod()) {
-      return validate();
+      if (document.querySelector('#checkout-payment-method-load .radio:checked').value == 'pagseguro_credit_card') {
+			var param = {
+			  cardNumber: unmask(document.getElementById('creditCardNum').value),
+			  brand: document.getElementById('creditCardBrand').value,
+			  cvv: document.getElementById('creditCardCode').value,
+			  expirationMonth: document.getElementById('creditCardExpirationMonth').value,
+			  expirationYear: document.getElementById('creditCardExpirationYear').value,
+			  success: function (response) {
+				document.getElementById('creditCardToken').value = response.card.token;
+				return validate();
+			  },
+			  error: function (error) {
+				displayError(document.getElementById('creditCardToken'));
+			  },
+			}
+			PagSeguroDirectPayment.createCardToken(param);
+	    } else {
+			return validate();
+		}
     }
 });
 
