@@ -165,20 +165,14 @@ function validateCreditCardForm() {
 }
 
 function validateCreateToken() {
-  if(validateCreditCard(document.querySelector('#creditCardNum')) 
-    && validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
-    && validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
-    && validateCreditCardCode(document.querySelector('#creditCardCode'))
+  if(document.getElementById('creditCardNum').value !== ""
+    && document.getElementById('creditCardExpirationMonth').value !== ""
+    && document.getElementById('creditCardExpirationYear').value !== ""
+    && document.getElementById('creditCardCode').value !== ""
     && document.getElementById('creditCardBrand').value !== ""
     ) {
       return true
   }
-
-  validateCreditCard(document.querySelector('#creditCardNum'));
-  validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'));
-  validateCreditCardYear(document.querySelector('#creditCardExpirationYear'));
-  validateCreditCardCode(document.querySelector('#creditCardCode'));
-
   return false;
 }
 
