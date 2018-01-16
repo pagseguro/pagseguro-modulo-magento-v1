@@ -17,7 +17,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ************************************************************************
 */
-
+$_customer = Mage::getSingleton('customer/session')->getCustomer();
+$orders = Mage::getResourceModel('sales/order_collection')
+->addFieldToSelect('*')
+->addFieldToFilter('customer_id', $_customer->getId())
+->addAttributeToSort('created_at', 'DESC')
+->setPageSize(1);
 ?>
 
 <div class="page-head">
@@ -28,6 +33,11 @@ limitations under the License.
     <tr>
         <td style="width:100%">
             Ocorreu um erro ao realizar a transação com o PagSeguro.<br /><br />
+            <?php if($orders->getFirstItem()->getId()):?>
+              <a href="<?php echo Mage::getUrl(''); ?>sales/order/reorder/order_id/<?php echo $orders->getFirstItem()->getId() ?>/" class="link-reorder button btn btn-success">
+                  <span><span>Tentar novamente</span></span>
+              </a>
+            <?php endif;?>
         </td>
     </tr>
 </table>
