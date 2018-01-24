@@ -78,8 +78,8 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
         try {
             /** @var Mage_Sales_Model_Order $order */
             $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
-            
-            if(empty($order->getData())) {
+            $orderData = $order->getData();
+            if(empty($orderData)) {
                 $this->norouteAction();
                 return;
             }
@@ -125,7 +125,8 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
             /** @var Mage_Sales_Model_Order $order */
             $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
 
-            if(empty($order->getData())) {
+            $orderData = $order->getData();
+            if(empty($orderData)) {
                 $this->norouteAction();
                 return;
             }
@@ -185,7 +186,8 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
             /** @var Mage_Sales_Model_Order $order */
             $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
 
-            if(empty($order->getData())) {
+            $orderData = $order->getData();
+            if(empty($orderData)) {
                 $this->norouteAction();
                 return;
             }
