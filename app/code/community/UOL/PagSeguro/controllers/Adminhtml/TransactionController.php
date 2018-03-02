@@ -86,14 +86,14 @@ class UOL_PagSeguro_Adminhtml_TransactionController extends Mage_Adminhtml_Contr
 
         $this->paramsFilter = array();
 
-        if($this->getRequest()->getPost('data_inicio'))
+        if($this->getRequest()->getPost('date_begin'))
         {
-            $this->paramsFilter['startDate'] = $this->getRequest()->getPost('data_inicio');
+            $this->paramsFilter['startDate'] = $this->getRequest()->getPost('date_begin');
         }
 
-        if($this->getRequest()->getPost('data_fim'))
+        if($this->getRequest()->getPost('date_end'))
         {
-            $this->paramsFilter['endDate'] = $this->getRequest()->getPost('data_fim');
+            $this->paramsFilter['endDate'] = $this->getRequest()->getPost('date_end');
         }
 
         if($this->getRequest()->getPost('id_magento'))
@@ -108,7 +108,7 @@ class UOL_PagSeguro_Adminhtml_TransactionController extends Mage_Adminhtml_Contr
 
         if($this->getRequest()->getPost('ambiente'))
         {
-            $this->paramsFilter['environment'] = $this->getRequest()->getPost('ambiente');
+            $this->paramsFilter['environment'] = $this->getRequest()->getPost('enviroment');
         }
 
         if($this->getRequest()->getPost('status'))

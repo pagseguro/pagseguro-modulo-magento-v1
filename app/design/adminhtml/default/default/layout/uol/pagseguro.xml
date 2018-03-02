@@ -181,6 +181,20 @@ limitations under the License.
             <block type="adminhtml/template" name="refund" template="uol/pagseguro/refund.phtml"/>
         </reference>
     </pagseguro_adminhtml_refund_index>
+    <pagseguro_adminhtml_transaction_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/pagseguro-module.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.colorbox-min.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
+        </reference>
+        <reference name="content">
+            <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="transaction" template="uol/pagseguro/transaction.phtml"/>
+        </reference>
+    </pagseguro_adminhtml_transaction_index>
     <pagseguro_adminhtml_requirements_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>

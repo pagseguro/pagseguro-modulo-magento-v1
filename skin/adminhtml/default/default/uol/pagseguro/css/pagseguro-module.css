@@ -70,6 +70,7 @@ limitations under the License.
 #pagseguro-module label { color:inherit; margin:0; padding: 0.2em 0.5em 0 0; width: auto; font-weight: bold; float:none; line-height: 1em; font-size:1em; }
 #pagseguro-module .config-area label { text-align: left; text-transform: uppercase; clear: both; display: block; }
 #pagseguro-module .pagseguro-field { font-size: 1.2em; padding: 8px 4px; width: auto; border-radius: 3px; box-shadow: 0 2px 2px #DDDDDD inset; color: #4F4F4F; border: none; margin: 0; border: 1px solid #BCC6D0; background-color: #FFF; }
+#pagseguro-module .pagseguro-field-error { border-color: #dc3545; }
 #pagseguro-module select.pagseguro-field { padding-right: 1em; }
 #pagseguro-module .pagseguro-field:focus { background-color: #F2F4F8; outline: none; border-color: #7E9DB9; }
 #pagseguro-module .pagseguro-field:disabled { background-color: #DDD; }
@@ -100,6 +101,8 @@ limitations under the License.
 .pagseguro-table tbody tr.unread td { color: #000; font-weight: bold; }
 .pagseguro-table tbody td .link { display:block; padding: 0.5em 0.5em 0 0.5em; }
 .pagseguro-table tbody td i { margin: 0 0.4em; font-size: 0.9em; }
+.pagseguro-table thead .input-search { vertical-align: middle; }
+.pagseguro-table thead tr th .input-date { margin-top: 5px !important; }
 
 /* DataTable Sorting */
 .dataTable .sorting { background-image: url("../images/dataTable/sort_both.png"); cursor:pointer; }
@@ -140,6 +143,22 @@ limitations under the License.
 .pagseguro-button.theme-gray:hover,
 .pagseguro-button.gray-theme:hover { background-color: #F9F9F9; }
 .pagseguro-button[disabled] { background-color: #CCC !important; color: #FFF !important; }
+
+/*List Details*/
+.list-datails .group { border-bottom: solid 1px #F5F5F5; margin: 0 40px; padding: 10px 0; overflow: hidden; }
+.list-datails .group dl dt{ float: left; padding: 0 .2em 0 0; }
+.list-datails .group dl dd{ font-weight: 700; }
+
+/*Modal Details*/
+#modal-details { display: none; position: fixed; z-index: 101; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4); }
+#modal-details .modal-content { background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: 60%; border-radius: 10px; }
+#modal-details .close { color: #aaaaaa; float: right; font-size: 28px; font-weight: bold; }
+#modal-details .close:hover, .close:focus { color: #000; text-decoration: none; cursor: pointer; }
+#modal-close { padding: 12px; cursor: pointer; border: 0; border-radius: 50%; z-index: 10; background: center no-repeat #FFF url(data:image/gif;base64,R0lGODlhCgAKALMAANXV1dTU1O/v7/Dw8Ovr6+zs7Lu7u8DAwPX19QAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAKAAoAAAQqEKEhJZXgFFkOQMJhaN0oIIR4qESVGmNblePGqeo2sO9BBQdZKlC5WCQRADs=); box-shadow: -1px 1px 13px rgba(0, 0, 0, 0.4); float: right; margin-top: -30px; margin-right: -30px; }
+.group-side { float: left; width: 48%; padding: 0 2% 0 0; }
+.group-full { float: none; width: auto; clear: both; }
+.hidden-groups { display: none; }
+.hidden-itens { text-align: right; width: auto; float: right; margin-right: 90px; margin-inline-start: auto; margin-top: -18px; }
 
 /* Messages */
 .pagseguro-msg h3 > a { color:#035EC7!important }
@@ -215,6 +234,7 @@ i.icon-pagseguro-msg.large,
 #pagseguro-module-contents #refund-info { margin-top: 40px; }
 #pagseguro-module-contents #canceled-info { margin-top: 40px; }
 #pagseguro-module-contents #abandoned-info { margin-top: 40px; }
+#pagseguro-module-contents #list-info { margin-top: 40px; }
 #pagseguro-loading-message { width: 65px; }
 #pagseguro-module-menu ul ul li { display: none; }
 #pagseguro-module-menu ul li.open ul li,

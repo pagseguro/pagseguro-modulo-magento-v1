@@ -138,6 +138,11 @@ limitations under the License.
                                 <action>pagseguro/adminhtml_refund</action>
                                 <sort_order>2140</sort_order>
                             </pagseguro_refund>
+                            <pagseguro_transaction translate="title" module="pagseguro">
+                                <title>Listar transações</title>
+                                <action>pagseguro/adminhtml_transaction</action>
+                                <sort_order>2150</sort_order>
+                            </pagseguro_transaction>
                         </children>
                     </pagseguro_transaction>
                     <pagseguro_requirements translate="title" module="pagseguro">
