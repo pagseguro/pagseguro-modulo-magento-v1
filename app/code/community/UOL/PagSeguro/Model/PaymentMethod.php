@@ -143,7 +143,12 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
      */
     private function setItems($payment)
     {
+        $payment->setShipping()->setAddressRequired()->withParameters('false');
+
         foreach ($this->order->getAllVisibleItems() as $product) {
+            // check shipping necessity according with each product in the cart
+            $this->setShippingIsRequired($payment, $product->getData()['product_type']);
+
             $payment->addItems()->withParameters(
                 $product->getId(),
                 substr($product->getName(), 0, 254),
@@ -301,5 +306,34 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     public function getOneStepCheckoutIsEnabled()
     {
         return (Mage::getStoreConfig("onestepcheckout/general/is_enabled") == 1) ? true : false;
+    }
+
+    /**
+     * Checks if the product type requires shipping and, if it is required, set
+     * the 'addressRequired' pagseguro api parameter to true
+     *
+     * @param \PagSeguro\Domains\Requests\DirectPayment\Boleto
+     *      | \PagSeguro\Domains\Requests\DirectPayment\CreditCard
+     *      | \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
+     *      | \PagSeguro\Domains\Requests\Payment
+     *      $payment
+     * @param string $productType
+     * @return void
+     */
+    private function setShippingIsRequired($payment, $productType)
+    {
+        if (! in_array($productType, $this->productTypesWithoutShipping())) {
+            $payment->setShipping()->setAddressRequired()->withParameters('true');
+        }
+    }
+
+    /**
+     * Return an array of magento product types that do not require shipping
+     *
+     * @return array
+     */
+    private function productTypesWithoutShipping()
+    {
+        return array('virtual', 'downloadable');
     }
 }
