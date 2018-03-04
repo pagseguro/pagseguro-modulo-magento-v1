@@ -8,7 +8,7 @@ require_once "../../vendor/autoload.php";
  *  Para usa o ambiente de testes (sandbox) descomentar a linha abaixo
  */
 //\PagSeguro\Configuration\Configure::setEnvironment('sandbox');
-//\PagSeguro\Configuration\Configure::setLog(true, '/var/www/git/pagseguro/pagseguro-php-sdk/Log.log');
+\PagSeguro\Configuration\Configure::setLog(true, '/var/www/git/pagseguro/pagseguro-php-sdk/Log.log');
 
 $preApproval = new \PagSeguro\Domains\Requests\DirectPreApproval\Accession();
 $preApproval->setPlan('código do plano');
