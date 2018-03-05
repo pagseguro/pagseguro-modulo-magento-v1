@@ -122,48 +122,44 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
     jQuery(document).ready(function () {
         Menu.init();
         PageList.init();
+        PageList.requestTransactions();
     });
 
     var PageList = new function () {
-        var requestTransactions = function () {
+        this.requestTransactions = function () {
 
-            // calls the modal of loading
-            Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
-
+        Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_conciliation/doPost'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transaction/doPost'); ?>",
                 type: "POST",
                 data: {
                     form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                    days: jQuery('#pagseguro-list-days-input').find(":selected").text()
+                    date_begin: document.getElementById('date_begin').value,
+                    date_end: document.getElementById('date_end').value,
+                    id_magento: document.getElementById('id_magento').value,
+                    id_pagseguro: document.getElementById('id_pagseguro').value,
+                    enviroment: document.getElementById('enviroment').value,
+                    status: document.getElementById('status').value
                 },
                 success: function (xhrResult) {
-
                     xhrResult = JSON.parse(xhrResult);
-
                     if (xhrResult.status == false && xhrResult.err == "[HTTP 401] - UNAUTHORIZED") {
-
                         Modal.message('error', "Não foi possível realizar a consulta.");
                     } else {
-                        // handle the return of ajax and dates back to table
                         if (xhrResult.status == false) {
-
                             jQuery('#transaction-table').dataTable().fnClearTable(true);
-                            Modal.message('alert', "Sem resultados para o período solicitado.");
-
+                            Modal.message('alert', "Sem resultados para o filtro informado.");
                         } else {
-
                             jQuery('#transaction-table').dataTable().fnClearTable(true);
                             jQuery('#transaction-table').dataTable().fnAddData(xhrResult);
                             jQuery('#transaction-table').dataTable()._fnInitComplete();
-                            // After reassembling the table removes the modal of loading
+
                             Modal.hideLoading();
                         }
                     }
                 },
-                error: function (err) {
-                    // Remove the modal of loading
-                    Modal.hideLoading();
+                error: function (xhrErr) {
+                    Modal.message('error', xhrErr);
                 }
             });
         }
@@ -306,65 +302,76 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
         }
 
         
-        var requestTransactionDetails = function () {
+        var requestTransactionDetails = function (transaction_code) {
             Modal.showLoading('Aguarde...');
             var listTransaction = jQuery('#transaction-group');
             var listPayment = jQuery('#payment-group');
             var listItens = jQuery('#itens');
             var listData = jQuery('#cost-data');
             jQuery.ajax({
-                url: "https://ws.sandbox.pagseguro.uol.com.br/v3/transactions/E7249933FDFA4BBDBD6DD8E9A90BC15B/?email=aluis02@hotmail.com&token=609EBD10D5A54308904A48A847662118",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transaction/getTransaction');?>",
                 type: "GET",
-                //data: {
-                //    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>"
-                //},
+                data: {
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                    transaction_code: transaction_code
+                },
                 success: function (result) {
-                    //result = JSON.parse(result);
-
-                    listTransaction.append('<h4>Transação</h4>');
-                    listTransaction.append('<dl class="group-side"><dt>Data: </dt><dd>Em análise</dd></dl>');
-                    listTransaction.append('<dl class="group-side"><dt>Tipo: </dt><dd>Em análise</dd></dl>');
-                    listTransaction.append('<dl><dt>Status: </dt><dd>Em análise</dd></dl>');
-                    listTransaction.append('<dl><dt>Link para pagamento: </dt><dd>Em análise</dd></dl>');
-                    listTransaction.append('<dl><dt>Código da transação: </dt><dd>Em análise</dd></dl>');
-                    listTransaction.append('<dl><dt>Código de referência: </dt><dd>Em análise</dd></dl>');
-                    listTransaction.append('<dl><dt>Último evento: </dt><dd>Em análise</dd></dl>');
-                    listTransaction.append('<dl><dt>Origem do cancelamento: </dt><dd>Em análise</dd></dl>');
-                    listTransaction.append('<dl><dt>Total de itens: </dt><dd>Em análise</dd></dl>');
-                    listTransaction.append('<span id="btn-hidden-itens" class="link group-side">Exibir todos os itens &#9660</span>');
-
-                    listPayment.append('<h4>Pagamento</h4>');
-                    listPayment.append('<dl><dt>Tipo de pagamento: </dt><dd>Em análise</dd></dl>');
-                    listPayment.append('<dl><dt>Meio de pagamento: </dt><dd>Em análise</dd></dl>');
-                    listPayment.append('<dl><dt>Número de parcelas: </dt><dd>Em análise</dd></dl>');
-                    listPayment.append('<dl class="group-side"><dt>Valor extra: </dt><dd>Em análise</dd></dl>');
-                    listPayment.append('<dl class="group-side"><dt>Desconto: </dt><dd>Em análise</dd></dl>');
-                    listPayment.append('<dl class="group-side"><dt>Valor bruto: </dt><dd>Em análise</dd></dl>');
-                    listPayment.append('<dl class="group-side"><dt>Valor líquido: </dt><dd>Em análise</dd></dl>');
-                    listPayment.append('<dl><dt>Código de promoção: </dt><dd>Em análise</dd></dl>');
-                    listPayment.append('<dl><dt>Data de crédito: </dt><dd>Em análise</dd></dl>');
-                    listPayment.append('<span id="btn-hidden-data" class="link">Exibir todos os dados de custos cobrados &#9660</span>');
-
-                    listItens.append('<h4>Itens do carrinho</h4>');
-                    listItens.append('<div>');
-                    listItens.append('<dl><dt>ID: </dt><dd>Em análise</dd></dl>');
-                    listItens.append('<dl><dt>Produto: </dt><dd>Em análise</dd></dl>');
-                    listItens.append('<dl><dt>Quantidade: </dt><dd>Em análise</dd></dl>');
-                    listItens.append('<dl><dt>Valor(R$): </dt><dd>Em análise</dd></dl>');
-                    listItens.append('<dl><dt>Total(R$): </dt><dd>Em análise</dd></dl>');
-                    listItens.append('</div>');
-
-                    listData.append('<h4>Dados dos custos cobrados</h4>');
-                    listData.append('<div>');
-                    listData.append('<dl><dt>Taxa de parcelamento: </dt><dd>Em análise</dd></dl>');
-                    listData.append('<dl><dt>Taxa de operação: </dt><dd>Em análise</dd></dl>');
-                    listData.append('<dl><dt>Tarifa de intermediação: </dt><dd>Em análise</dd></dl>');
-                    listData.append('<dl><dt>Taxa de intermediação: </dt><dd>Em análise</dd></dl>');
-                    listData.append('<dl><dt>Taxa de comissão: </dt><dd>Em análise</dd></dl>');
-                    listData.append('</div>');
-
-                    Modal.hideLoading();
-                    jQuery('#modal-details').css('display', 'block');  
+                    result = JSON.parse(result);
+                    console.log(result);
+                    if (result.status == false && result.err == "conciliate") {
+                        Modal.message('error', 'É necessário utilizar a conciliação de transações primeiro.');
+                    } else if (result.status == false) {
+                        Modal.message('error', result.err);
+                    } else {
+                        listTransaction.append('<h4>Transação</h4>');
+                        listTransaction.append('<dl class="group-side"><dt>Data: </dt><dd>' + result.date + '</dd></dl>');
+                        listTransaction.append('<dl class="group-side"><dt>Tipo: </dt><dd>' + result.type + '</dd></dl>');
+                        listTransaction.append('<dl><dt>Status: </dt><dd>' + result.status + '</dd></dl>');
+                        listTransaction.append('<dl><dt>Link para pagamento: </dt><dd>' + 'result.' + '</dd></dl>');
+                        listTransaction.append('<dl><dt>Código da transação: </dt><dd>' + result.code + '</dd></dl>');
+                        listTransaction.append('<dl><dt>Código de referência: </dt><dd>' + result.reference + '</dd></dl>');
+                        listTransaction.append('<dl><dt>Último evento: </dt><dd>' + result.lastEventDate + '</dd></dl>');
+                        listTransaction.append('<dl><dt>Origem do cancelamento: </dt><dd>' + result.cancelationSource + '</dd></dl>');
+                        listTransaction.append('<dl><dt>Total de itens: </dt><dd>' + result.itemCount + '</dd></dl>');
+                        listTransaction.append('<span id="btn-hidden-itens" class="link group-side">Exibir todos os itens &#9660</span>');
+    
+                        listPayment.append('<h4>Pagamento</h4>');
+                        listPayment.append('<dl><dt>Tipo de pagamento: </dt><dd>' + result.paymentMethod.type + '</dd></dl>');
+                        listPayment.append('<dl><dt>Meio de pagamento: </dt><dd>' + result.paymentMethod.code +'</dd></dl>');
+                        listPayment.append('<dl><dt>Número de parcelas: </dt><dd>' + result.installmentCount + '</dd></dl>');
+                        listPayment.append('<dl class="group-side"><dt>Valor extra: </dt><dd>' + result.extraAmount + '</dd></dl>');
+                        listPayment.append('<dl class="group-side"><dt>Desconto: </dt><dd>' + result.discountAmount + '</dd></dl>');
+                        listPayment.append('<dl class="group-side"><dt>Valor bruto: </dt><dd>' + result.grossAmount +'</dd></dl>');
+                        listPayment.append('<dl class="group-side"><dt>Valor líquido: </dt><dd>' + result.netAmount + '</dd></dl>');
+                        listPayment.append('<dl><dt>Código de promoção: </dt><dd>' + 'result.promoCode' + '</dd></dl>');
+                        listPayment.append('<dl><dt>Data de crédito: </dt><dd>' + result.escrowEndDate +'</dd></dl>');
+                        listPayment.append('<span id="btn-hidden-data" class="link">Exibir todos os dados de custos cobrados &#9660</span>');
+    
+                        listItens.append('<h4>Itens do carrinho</h4>');
+                        listItens.append('<div>');
+                        if(result.itemCount > 0){
+                            for(var i = 0; i<result.itemCount; i++){
+                                listItens.append('<dl><dt>ID: </dt><dd>' + result.items[i].id +'</dd></dl>');
+                                listItens.append('<dl><dt>Produto: </dt><dd>' + result.items[i].description +'</dd></dl>');
+                                listItens.append('<dl><dt>Quantidade: </dt><dd>' + result.items[i].quantity + '</dd></dl>');
+                                listItens.append('<dl><dt>Valor(R$): </dt><dd>' + result.items[i].amount + '</dd></dl>');
+                                listItens.append('<dl><dt>Total(R$): </dt><dd>' + result.items[i].quantity * result.items[i].amount +'</dd></dl>');
+                            }
+                        }
+                        listItens.append('</div>');
+    
+                        listData.append('<h4>Dados dos custos cobrados</h4>');
+                        listData.append('<div>');
+                        listData.append('<dl><dt>Taxa de parcelamento: </dt><dd>' + 'result.creditorFees.installmentFeeAmount' + '</dd></dl>');
+                        listData.append('<dl><dt>Taxa de operação: </dt><dd>'+ 'result.creditorFees.operationalFeeAmount' +'</dd></dl>');
+                        listData.append('<dl><dt>Tarifa de intermediação: </dt><dd>' + result.creditorFees.intermediationRateAmount + '</dd></dl>');
+                        listData.append('<dl><dt>Taxa de intermediação: </dt><dd>' + result.creditorFees.intermediationFeeAmount + '</dd></dl>');
+                        listData.append('<dl><dt>Taxa de comissão: </dt><dd>' + 'result.creditorFees.comissionFeeAmount' + '</dd></dl>');
+                        listData.append('</div>');
+    
+                        Modal.hideLoading();
+                        jQuery('#modal-details').css('display', 'block');  
+                    }  
                 }
         });
         }
@@ -380,40 +387,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
             if (document.querySelectorAll('.pagseguro-field-error').length > 0){
                 Modal.message('alert', 'Data inválida!');
             } else if (validateSearchByDate() == true) {
-                Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
-                jQuery.ajax({
-                    url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transaction/doPost'); ?>",
-                    type: "POST",
-                    data: {
-                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        date_begin: document.getElementById('date_begin').value,
-                        date_end: document.getElementById('date_end').value,
-                        id_magento: document.getElementById('id_magento').value,
-                        id_pagseguro: document.getElementById('id_pagseguro').value,
-                        enviroment: document.getElementById('enviroment').value,
-                        status: document.getElementById('status').value
-                    },
-                    success: function (xhrResult) {
-                        xhrResult = JSON.parse(xhrResult);
-                        if (xhrResult.status == false && xhrResult.err == "[HTTP 401] - UNAUTHORIZED") {
-                            Modal.message('error', "Não foi possível realizar a consulta.");
-                        } else {
-                            if (xhrResult.status == false) {
-                                jQuery('#transaction-table').dataTable().fnClearTable(true);
-                                Modal.message('alert', "Sem resultados para o filtro informado.");
-                            } else {
-                                jQuery('#transaction-table').dataTable().fnClearTable(true);
-                                jQuery('#transaction-table').dataTable().fnAddData(xhrResult);
-                                jQuery('#transaction-table').dataTable()._fnInitComplete();
-
-                                Modal.hideLoading();
-                            }
-                        }
-                    },
-                    error: function (xhrErr) {
-                        Modal.message('error', xhrErr);
-                    }
-                });
+                
             }
         });
 
@@ -462,6 +436,11 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
 
             jQuery('#list-button').click(function () {
                 doConciliation();
+            });
+
+            jQuery('#transaction-table').on('click', 'a.action', function (e) {
+                var transaction = jQuery(this);
+                requestTransactionDetails(transaction.data('config'));
             });
         };
     }
