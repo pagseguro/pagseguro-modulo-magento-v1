@@ -172,19 +172,21 @@ class UOL_PagSeguro_Helper_Transaction extends HelperData
             'status'            => $this->getPaymentStatusToString($this->pagSeguroTransaction->getStatus()),
             'lastEventDate'     => $this->getOrderMagetoDateConvert($this->pagSeguroTransaction->getLastEventDate()),
             'installmentCount'  => $this->pagSeguroTransaction->getInstallmentCount(),
-            'cancelationSource' => $this->pagSeguroTransaction->getCancelationSource(),
-            'discountAmount'    => $this->pagSeguroTransaction->getDiscountAmount(),
+            'cancelationSource' => $this->getTitleCancellationSourceTransaction($this->pagSeguroTransaction->getCancelationSource()),
+            'discountAmount'    => str_replace(".", ",", $this->pagSeguroTransaction->getDiscountAmount()),
             'escrowEndDate'     => $this->getOrderMagetoDateConvert($this->pagSeguroTransaction->getEscrowEndDate()),
-            'extraAmount'       => $this->pagSeguroTransaction->getExtraAmount(),
+            'extraAmount'       => str_replace(".", ",", $this->pagSeguroTransaction->getExtraAmount()),
             'feeAmount'         => $this->pagSeguroTransaction->getFeeAmount(),
-            'grossAmount'       => $this->pagSeguroTransaction->getGrossAmount(),
-            'netAmount'         => $this->pagSeguroTransaction->getNetAmount(),
+            'grossAmount'       => str_replace(".", ",", $this->pagSeguroTransaction->getGrossAmount()),
+            'netAmount'         => str_replace(".", ",", $this->pagSeguroTransaction->getNetAmount()),
             'creditorFees'      => $this->prepareCreditorFees(),
             'itemCount'         => $this->pagSeguroTransaction->getItemCount(),
             'items'             => $this->prepareItems(),
             'paymentMethod'     => $this->preparePaymentMethod(),
             'sender'            => $this->prepareSender(),
-            'shipping'          => $this->prepareShipping()
+            'shipping'          => $this->prepareShipping(),
+            'paymentLink'       => $this->pagSeguroTransaction->getPaymentLink(),
+            'promoCode'         => $this->pagSeguroTransaction->getPromoCode()
         );
     }
 
@@ -194,8 +196,11 @@ class UOL_PagSeguro_Helper_Transaction extends HelperData
         if(!empty($this->pagSeguroTransaction->getCreditorFees()))
         {
             $creditorFees = array(
-                'intermediationRateAmount' => $this->pagSeguroTransaction->getCreditorFees()->getIntermediationRateAmount(),
-                'intermediationFeeAmount' => $this->pagSeguroTransaction->getCreditorFees()->getIntermediationFeeAmount()
+                'intermediationRateAmount'  => str_replace(".", ",", $this->pagSeguroTransaction->getCreditorFees()->getIntermediationRateAmount()),
+                'intermediationFeeAmount'   => str_replace(".", ",", $this->pagSeguroTransaction->getCreditorFees()->getIntermediationFeeAmount()),
+                'installmentFeeAmount'      => str_replace(".", ",", $this->pagSeguroTransaction->getCreditorFees()->getInstallmentFeeAmount()),
+                'operationalFeeAmount'      => str_replace(".", ",", $this->pagSeguroTransaction->getCreditorFees()->getOperationalFeeAmount()),
+                'commissionFeeAmount'       => str_replace(".", ",", $this->pagSeguroTransaction->getCreditorFees()->getCommissionFeeAmount())
             );
         }
         return $creditorFees;
@@ -212,7 +217,7 @@ class UOL_PagSeguro_Helper_Transaction extends HelperData
                     'id'            => $item->getId(),
                     'description'   => $item->getDescription(),
                     'quantity'      => $item->getQuantity(),
-                    'amount'        => $item->getAmount(),
+                    'amount'        => str_replace(".", ",", $item->getAmount()),
                     'weight'        => $item->getWeight(),
                     'shippingCost'  => $item->getShippingCost()
                 );
@@ -228,7 +233,9 @@ class UOL_PagSeguro_Helper_Transaction extends HelperData
         {
             $paymentMethod = array(
                 'code' => $this->pagSeguroTransaction->getPaymentMethod()->getCode(),
-                'type' => $this->pagSeguroTransaction->getPaymentMethod()->getType()
+                'type' => $this->pagSeguroTransaction->getPaymentMethod()->getType(),
+                'titleType' => $this->getTitleTypePaymentMethod($this->pagSeguroTransaction->getPaymentMethod()->getType()),
+                'titleCode' => $this->getTitleCodePaymentMethod($this->pagSeguroTransaction->getPaymentMethod()->getCode())
             );
         }
         return $paymentMethod;
