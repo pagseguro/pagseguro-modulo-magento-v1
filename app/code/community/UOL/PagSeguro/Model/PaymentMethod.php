@@ -112,6 +112,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
      */
     private function payment($payment)
     {
+        $this->setShoppingCartRecovery($payment);
         $payment->setReference(Mage::getStoreConfig('uol_pagseguro/store/reference').$this->order->getId());
         $payment->setCurrency('BRL');
         $this->setItems($payment);
@@ -335,5 +336,25 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     private function productTypesWithoutShipping()
     {
         return array('virtual', 'downloadable');
+    }
+
+    /**
+     * Set PagSeguro recovery shopping cart value
+     *
+     * @param mixed \PagSeguro\Domains\Requests\DirectPayment\Boleto
+     *      | \PagSeguro\Domains\Requests\DirectPayment\CreditCard
+     *      | \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
+     *      | \PagSeguro\Domains\Requests\Payment
+     *      $payment
+     * @return void
+     */
+    private function setShoppingCartRecovery($payment)
+    {
+        $recoveryValue = Mage::getStoreConfig('payment/pagseguro/shopping_cart_recovery');
+        if (Mage::getStoreConfig('payment/pagseguro/shopping_cart_recovery') == true) {
+            $payment->addParameter()->withParameters('enableRecovery', 'true');
+        } else {
+            $payment->addParameter()->withParameters('enableRecovery', 'false');
+        }
     }
 }
