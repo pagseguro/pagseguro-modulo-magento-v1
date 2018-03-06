@@ -314,7 +314,10 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                     } else if (result.status == false) {
                         Modal.message('error', result.err);
                     } else {
-                        jQuery('#group-father').append('<dl><dt>Link para pagamento: </dt><dd>' + '<a href=' + 'www.google.com.br' + '>' + 'www.google.com.br' +'</a>' + '</dd></dl>');
+                        console.log(result)
+                        if(result.paymentLink != false){
+                            jQuery('#group-father').append('<dl><dt>Link para pagamento: </dt><dd>' + '<a href=' + result.paymentLink + '>' + result.paymentLink +'</a>' + '</dd></dl>');
+                        }
                         jQuery('#group-father').append('<div id="transaction-group" class="group-side"></div>');
                         jQuery('#group-father').append('<div id="payment-group" class="group-side"></div>')
                         
@@ -400,7 +403,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                         listItens.append('<div class="group-title"></div>');
                         listItens.append('<div class="group-table-itens"></div>');
                         var listItensTitle = jQuery('.group-title');
-                        
+
                         if(result.itemCount > 0){
                             listItensTitle.append('<div class="itens-cell">ID</div>');
                             listItensTitle.append('<div class="description-cell">Produto</div>');
