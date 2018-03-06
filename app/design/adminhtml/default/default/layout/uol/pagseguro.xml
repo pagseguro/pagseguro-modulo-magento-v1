@@ -181,7 +181,7 @@ limitations under the License.
             <block type="adminhtml/template" name="refund" template="uol/pagseguro/refund.phtml"/>
         </reference>
     </pagseguro_adminhtml_refund_index>
-    <pagseguro_adminhtml_transaction_index>
+    <pagseguro_adminhtml_transactions_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
@@ -192,9 +192,9 @@ limitations under the License.
         </reference>
         <reference name="content">
             <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
-            <block type="adminhtml/template" name="transaction" template="uol/pagseguro/transaction.phtml"/>
+            <block type="adminhtml/template" name="transactions" template="uol/pagseguro/transactions.phtml"/>
         </reference>
-    </pagseguro_adminhtml_transaction_index>
+    </pagseguro_adminhtml_transactions_index>
     <pagseguro_adminhtml_requirements_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>

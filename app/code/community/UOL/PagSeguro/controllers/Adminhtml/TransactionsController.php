@@ -17,10 +17,10 @@
  * limitations under the License.
  ************************************************************************
  */
-class UOL_PagSeguro_Adminhtml_TransactionController extends Mage_Adminhtml_Controller_Action
+class UOL_PagSeguro_Adminhtml_TransactionsController extends Mage_Adminhtml_Controller_Action
 {
     /**
-     * @var UOL_PagSeguro_Helper_Transaction
+     * @var UOL_PagSeguro_Helper_Transactions
      */
     private $transaction;
 
@@ -35,7 +35,7 @@ class UOL_PagSeguro_Adminhtml_TransactionController extends Mage_Adminhtml_Contr
     private $paramsFilter;
 
     /**
-     * UOL_PagSeguro_Adminhtml_TransactionController constructor.
+     * UOL_PagSeguro_Adminhtml_TransactionsController constructor.
      */
     public function _construct()
     {
@@ -81,7 +81,7 @@ class UOL_PagSeguro_Adminhtml_TransactionController extends Mage_Adminhtml_Contr
 
     public function builder()
     {
-        $this->transaction = Mage::helper('pagseguro/transaction');
+        $this->transaction = Mage::helper('pagseguro/transactions');
         $this->log = Mage::helper('pagseguro/log');
 
         $this->paramsFilter = array();

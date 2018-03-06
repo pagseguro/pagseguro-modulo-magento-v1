@@ -18,7 +18,7 @@
  */
 use UOL_PagSeguro_Helper_Data as HelperData;
 
-class UOL_PagSeguro_Helper_Transaction extends HelperData
+class UOL_PagSeguro_Helper_Transactions extends HelperData
 {
     private $pagSeguroOrders;
     private $arrayPagSeguroOrders;
@@ -55,7 +55,7 @@ class UOL_PagSeguro_Helper_Transaction extends HelperData
             foreach ($pagseguroOrders as $key => $psOrder)
             {
                 $order = $this->getOrderMagento($psOrder['order_id'], $paramsFilter);
-
+                
                 if(Mage::getStoreConfig('payment/pagseguro/environment') == strtolower(trim($this->getOrderEnvironment($psOrder)))) {
                     if(!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
                         if (Mage::getSingleton('core/session')->getData("store_id") == $order['store_id']) {

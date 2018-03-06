@@ -18,7 +18,7 @@
  */
 ?>
 <?php
-$helper = Mage::helper('pagseguro/transaction');
+$helper = Mage::helper('pagseguro/transactions');
 $html   = Mage::helper('pagseguro/html');
 $obj = Mage::getSingleton('adminhtml/url');
 $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
@@ -123,7 +123,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
 
         Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transaction/doPost'); ?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transactions/doPost'); ?>",
                 type: "POST",
                 data: {
                     form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
@@ -219,23 +219,6 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                     var table = jQuery('#transaction-table').DataTable();
                     var info = table.page.info();
 
-                    //trClick
-                    if (totalRows >= 1) {
-                        var href;
-                        jQuery('#transaction-table tbody tr').unbind('click');
-
-                        jQuery('#transaction-table tbody tr').bind('click', function () {
-                            href = jQuery(table.row(this).data()[6])[0].href;
-                            jQuery('#transaction-table tbody').off();
-                            jQuery('#transaction-table tbody').on('click', 'td', function () {
-                                if (jQuery(this).index() != 0 && jQuery(this).index() != 6) {
-                                    window.open(href, '_blank');
-                                }
-                            });
-                        });
-
-                    }
-
                     //Checkbox enable | disable
                     jQuery('.checkbox').change(function () {
                         var isChecked = jQuery(".checkbox:checked").length;
@@ -301,7 +284,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
             var listData = jQuery('#cost-data');
             var listItensBody;
             jQuery.ajax({
-                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transaction/getTransaction');?>",
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transactions/getTransaction');?>",
                 type: "GET",
                 data: {
                     form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
@@ -460,7 +443,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
             if (document.querySelectorAll('.pagseguro-field-error').length > 0){
                 Modal.message('alert', 'Data inválida!');
             } else if (validateSearchByDate() == true) {
-                
+                PageList.requestTransactions();
             }
         });
 
