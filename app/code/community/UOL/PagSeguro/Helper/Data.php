@@ -602,4 +602,154 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
                 break;
         }
     }
+
+    /**
+     * @param $type
+     *
+     * @return bool|string
+     */
+    public function getTitleTypePaymentMethod($type)
+    {
+        if (!is_null($type)) {
+            switch ($type) {
+                case 1:
+                    return $this->__('Cartão de crédito');
+                    break;
+                case 2:
+                    return $this->__('Boleto');
+                    break;
+                case 3:
+                    return $this->__('Débito online(TEF)');
+                    break;
+                case 4:
+                    return $this->__('Saldo PagSeguro');
+                    break;
+                case 7:
+                    return $this->__('Depósito em conta');
+                    break;
+                default:
+                    return $type;
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $code
+     *
+     * @return bool|string
+     */
+    public function getTitleCodePaymentMethod($code)
+    {
+        if (!is_null($code)) {
+            switch ($code) {
+                case 101:
+                    return $this->__('Cartão de crédito Visa');
+                    break;
+                case 102:
+                    return $this->__('Cartão de crédito MasterCard');
+                    break;
+                case 103:
+                    return $this->__('Cartão de crédito American Express');
+                    break;
+                case 104:
+                    return $this->__('Cartão de crédito Diners');
+                    break;
+                case 105:
+                    return $this->__('Cartão de crédito Hipercard');
+                    break;
+                case 106:
+                    return $this->__('Cartão de crédito Aura');
+                    break;
+                case 107:
+                    return $this->__('Cartão de crédito Elo');
+                    break;
+                case 109:
+                    return $this->__('Cartão de crédito PersonalCard');
+                    break;
+                case 112:
+                    return $this->__('Cartão de crédito BrasilCard');
+                    break;
+                case 113:
+                    return $this->__('Cartão de crédito FORTBRASIL');
+                    break;
+                case 115:
+                    return $this->__('Cartão de crédito VALECARD');
+                    break;
+                case 116:
+                    return $this->__('Cartão de crédito Cabal');
+                    break;
+                case 117:
+                    return $this->__('Cartão de crédito Mais!');
+                    break;
+                case 119:
+                    return $this->__('Cartão de crédito GRANDCARD');
+                    break;
+                case 120:
+                    return $this->__('Cartão de crédito Sorocred');
+                    break;
+                case 122:
+                    return $this->__('Cartão de crédito Up Policard');
+                    break;
+                case 123:
+                    return $this->__('Cartão de crédito Banese Card');
+                    break;
+                case 201:
+                    return $this->__('Boleto Bradesco');
+                    break;
+                case 202:
+                    return $this->__('Boleto Santander');
+                    break;
+                case 301:
+                    return $this->__('Débito online Bradesco');
+                    break;
+                case 302:
+                    return $this->__('Débito online Itaú');
+                    break;
+                case 304:
+                    return $this->__('Débito online Banco do Brasil');
+                    break;
+                case 306:
+                    return $this->__('Débito online Banrisul');
+                    break;
+                case 401:
+                    return $this->__('Saldo PagSeguro');
+                    break;
+                case 701:
+                    return $this->__('Depósito em conta - Banco do Brasil');
+                    break;
+                default:
+                    return $code;
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $type
+     *
+     * @return bool|string
+     */
+    public function getTitleCancellationSourceTransaction($cancellationSource)
+    {
+        if (!is_null($cancellationSource)) {
+            switch ($cancellationSource) {
+                case "INTERNAL":
+                    return $this->__('PagSeguro');
+                    break;
+                case "EXTERNAL":
+                    return $this->__('Instituições Financeiras');
+                    break;
+                default:
+                    return $cancellationSource;
+                    break;
+            }
+        }
+
+        return false;
+    }
 }
