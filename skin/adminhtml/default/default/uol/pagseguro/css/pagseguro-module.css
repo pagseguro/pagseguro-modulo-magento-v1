@@ -159,6 +159,7 @@ limitations under the License.
 #modal-details .close { color: #aaaaaa; float: right; font-size: 28px; font-weight: bold; }
 #modal-details .close:hover, .close:focus { color: #000; text-decoration: none; cursor: pointer; }
 #modal-close { padding: 12px; cursor: pointer; border: 0; border-radius: 50%; z-index: 10; background: center no-repeat #FFF url(data:image/gif;base64,R0lGODlhCgAKALMAANXV1dTU1O/v7/Dw8Ovr6+zs7Lu7u8DAwPX19QAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAKAAoAAAQqEKEhJZXgFFkOQMJhaN0oIIR4qESVGmNblePGqeo2sO9BBQdZKlC5WCQRADs=); box-shadow: -1px 1px 13px rgba(0, 0, 0, 0.4); float: right; margin-top: -30px; margin-right: -30px; }
+#modal-details .group-itens { max-height: 150px; overflow: auto; }
 .group-side { float: left; width: 48%; padding: 0 2% 0 0; }
 .group-full { float: none; width: auto; clear: both; }
 .hidden-groups { display: none; }
