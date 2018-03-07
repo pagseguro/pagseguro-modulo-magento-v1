@@ -146,7 +146,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                             jQuery('#transaction-table').dataTable().fnClearTable(true);
                             jQuery('#transaction-table').dataTable().fnAddData(xhrResult);
                             jQuery('#transaction-table').dataTable()._fnInitComplete();
-
+                            jQuery('td').css('cursor', 'auto');
                             Modal.hideLoading();
                         }
                     }
