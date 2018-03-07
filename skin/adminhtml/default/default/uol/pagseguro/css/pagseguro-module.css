@@ -82,7 +82,8 @@ limitations under the License.
 #pagseguro-module .config-area select.pagseguro-field option { padding: 0.3em; }
 #pagseguro-module .pagseguro-select-hint { float: left; margin: 0 1em 0 0; max-width: 20%; }
 #pagseguro-module .pagseguro-option-hint { margin: 2.5em 0 4em 0; max-width: 100%; }
-#pagseguro-module .money { font-size: 16px; font-weight: 700; color: #333; }
+#pagseguro-module .money { font-size: 16px; font-weight: 700; color: #333; display: inline-block; vertical-align: middle;
+}
 
 /* Tables */
 .pagseguro-table { border: 1px solid #e5e5e5; border-bottom-width: 3px; border-collapse: collapse; color: #444; width: 100%; }

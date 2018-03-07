@@ -82,9 +82,11 @@ $html   = Mage::helper('pagseguro/html');
                         <h2>Estorno parcial</h2>
                         <h4 id="value_transaction"></h4>
                         <form>
-                            <p>Valor a ser estornado:</p>
-                            <label for="value_refund" class="money">R$</label>
-                            <input type="text" class="pagseguro-field" onkeyup="formatReal(value_refund.value)" name="value_refund" id="value_refund" placeholder="0,00"/>
+                            <p>Informe o valor a ser estornado:</p>
+                            <div>
+                                <label for="value_refund" class="money">R$</label>
+                                <input type="text" class="pagseguro-field" onkeyup="formatReal(value_refund.value)" name="value_refund" id="value_refund" placeholder="0,00"/>
+                            </div>
                             <p>Obs: O valor do estorno deve ser menor que o valor total da venda.</p>
                             <input type="button" class="pagseguro-button align-right" id="list-filter-button" value="<?php echo $helper->__('Estornar'); ?>">
                         </form>
