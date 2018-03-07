@@ -35,7 +35,7 @@ $html   = Mage::helper('pagseguro/html');
                     echo $helper->__($string);
                     ?>
                 </p>
-
+                <a id="teste">Teste</a>
                 <div class="pagseguro-search-tools">
                     <form action="javascript:void(0)" method="post">
                         <input type="hidden" name="form_key"
@@ -74,6 +74,21 @@ $html   = Mage::helper('pagseguro/html');
 
                 <div id="refund-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
                     <p><?php echo $helper->__('Somente transações geradas a partir da versão 2.3 do módulo serão listadas.'); ?></p>
+                </div>
+
+                <div id="modal-partial-reversal" class="modal">
+                    <div class="modal-content-refund">
+                        <button id="modal-close"></button>
+                        <h2>Estorno parcial</h2>
+                        <h4 id="value_transaction"></h4>
+                        <form>
+                            <p>Valor a ser estornado:</p>
+                            <label for="value_refund" class="money">R$</label>
+                            <input type="text" class="pagseguro-field" onkeyup="formatReal(value_refund.value)" name="value_refund" id="value_refund" placeholder="0,00"/>
+                            <p>Obs: O valor do estorno deve ser menor que o valor total da venda.</p>
+                            <input type="button" class="pagseguro-button align-right" id="list-filter-button" value="<?php echo $helper->__('Estornar'); ?>">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,14 +156,18 @@ $html   = Mage::helper('pagseguro/html');
             var id = '';
             var code = '';
             var status = '';
+            var value = '';
             var jsonArr = [];
-
+            console.log(config)
             config = config.split('/');
             jsonArr.push({
                 id: config[0],
                 code: config[1],
-                status: config[2]
+                status: config[2],
+                value: config[3]
             });
+
+            console.log(jsonArr)
 
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
             jQuery.ajax({
@@ -156,7 +175,7 @@ $html   = Mage::helper('pagseguro/html');
                 type: "POST",
                 data: {
                     form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                    data: jsonArr,
+                    //data: jsonArr,
                     days: jQuery('#pagseguro-refund-days-input').find(":selected").text()
                 },
                 success: function (xhrResult) {
@@ -328,19 +347,41 @@ $html   = Mage::helper('pagseguro/html');
                 requestTransactions();
             });
 
+            jQuery('#teste').click(function(){
+                jQuery('#modal-partial-reversal').css('display', 'block');
+            });
+
+            jQuery('#modal-close').click(function () {
+                jQuery('#modal-partial-reversal').css('display', 'none');
+            });
+
+            window.onclick = function (event) {
+                var modal = document.getElementById('modal-partial-reversal');
+                if (event.target == modal) {
+                    jQuery('#modal-partial-reversal').css('display', 'none');
+                }
+            }
+
             jQuery('#refund-table').on('click', 'a.action', function () {
 
                 var refund = jQuery(this);
-
-                Modal.confirm('Não será possível reverter esta ação. Deseja continuar?');
-
-                jQuery('.pagseguro-confirm-button').on('click', function (target) {
-                    if (target.currentTarget.id == 'accept') {
-                        doRefund(refund.data('config'));
-                    } else {
-                        Modal.hideLoading();
-                    }
-                });
+                console.log(refund)
+                if(refund.context.innerText == "Estornar"){
+                    Modal.confirm('Não será possível reverter esta ação. Deseja continuar?');
+                    jQuery('.pagseguro-confirm-button').on('click', function (target) {
+                        if (target.currentTarget.id == 'accept') {
+                            doRefund(refund.data('config'));
+                        } else {
+                            Modal.hideLoading();
+                        }
+                    });
+                }else{
+                    
+                    refund = refund.data('config');
+                    refund = refund.split('/');
+                    jQuery('#value_transaction').text('Valor total da venda: R$ ' + formatReal(refund[3]));
+                    jQuery('#modal-partial-reversal').css('display', 'block');
+                }
             });
         };
     }

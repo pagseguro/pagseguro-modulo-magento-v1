@@ -211,10 +211,14 @@ class UOL_PagSeguro_Helper_Refund extends UOL_PagSeguro_Helper_Data
             $config = " onclick='Modal.alertConciliation(&#34;"
                 .$this->alertConciliation($this->__('estornar'))."&#34;)'";
         }
+        //echo '<pre>';print_r($PagSeguroSummaryItem);exit;
         $actionOrder = "<a class='edit' target='_blank' href='".$this->getEditOrderUrl($order->getId())."'>";
         $actionOrder .= $this->__('Ver detalhes')."</a>";
         $actionOrder .= "<a ".$config." href='javascript:void(0)'>";
         $actionOrder .= $this->__('Estornar')."</a>";
+        $config = "class='action' data-config='".$order->getId().'/'.$PagSeguroSummaryItem->getCode().'/'.$this->getPaymentStatusFromKey($PagSeguroSummaryItem->getStatus()).'/'.$PagSeguroSummaryItem->getGrossAmount()."'";
+        $actionOrder .= "<a ".$config." href='javascript:void(0)'>";
+        $actionOrder .= $this->__('Estorno parcial')."</a>";
 
         return array(
             'date'           => $this->getOrderMagetoDateConvert($order->getCreatedAt()),
