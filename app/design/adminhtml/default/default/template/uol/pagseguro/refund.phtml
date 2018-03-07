@@ -35,7 +35,6 @@ $html   = Mage::helper('pagseguro/html');
                     echo $helper->__($string);
                     ?>
                 </p>
-                <a id="teste">Teste</a>
                 <div class="pagseguro-search-tools">
                     <form action="javascript:void(0)" method="post">
                         <input type="hidden" name="form_key"
@@ -84,11 +83,12 @@ $html   = Mage::helper('pagseguro/html');
                         <form>
                             <p>Informe o valor a ser estornado:</p>
                             <div>
-                                <label for="value_refund" class="money">R$</label>
-                                <input type="text" class="pagseguro-field" onkeyup="formatReal(value_refund.value)" name="value_refund" id="value_refund" placeholder="0,00"/>
+                                <label for="value_refund" >R$</label>
+                                <input type="text" class="pagseguro-field" onkeyup="formatRealInput(this)" onblur="formatRealInput(this)" name="value_refund" id="value_refund" placeholder="0,00"/>
+                                <p class="error"></p>
                             </div>
                             <p>Obs: O valor do estorno deve ser menor que o valor total da venda.</p>
-                            <input type="button" class="pagseguro-button align-right" id="list-filter-button" value="<?php echo $helper->__('Estornar'); ?>">
+                            <input type="button" class="pagseguro-button align-right" id="partial_refund" value="<?php echo $helper->__('Estornar'); ?>">
                         </form>
                     </div>
                 </div>
@@ -340,17 +340,50 @@ $html   = Mage::helper('pagseguro/html');
                     }
                 }
             });
-        }
+        }7.000,00
+
+        jQuery('#refund-table').on('click', 'a.action', function () {
+
+            var refund = jQuery(this);
+
+            if(refund.context.innerText == "Estornar"){
+                Modal.confirm('Não será possível reverter esta ação. Deseja continuar?');
+                jQuery('.pagseguro-confirm-button').on('click', function (target) {
+                    if (target.currentTarget.id == 'accept') {
+                        doRefund(refund.data('config'));
+                    } else {
+                        Modal.hideLoading();
+                    }
+                });
+            }else{
+                
+                refund = refund.data('config');
+                refund = refund.split('/');
+                var valueTotal = formatReal(refund[3])
+                jQuery('#value_transaction').text('Valor total da venda: R$ ' + valueTotal);
+                jQuery('#modal-partial-reversal').css('display', 'block');
+
+                jQuery('#partial_refund').click(function(){
+                    var valueInput = document.getElementById('value_refund').value;
+                    if(getMoney(valueInput) > getMoney(valueTotal)){
+                        jQuery('#value_refund').addClass('pagseguro-field-error');
+                        jQuery('.error').text('Valor inserido é maior que o valor da venda.');
+                    } else if (valueInput == 0) {
+                        jQuery('#value_refund').addClass('pagseguro-field-error');
+                        jQuery('.error').text('Valor inserido não pode ser zero.');
+                    } else {
+                        jQuery('.error').text('');
+                        jQuery('#value_refund').removeClass('pagseguro-field-error');
+                    }
+                });
+            }
+        });
 
         this.init = function () {
             prepareTable();
 
             jQuery('#refund-search-button').click(function () {
                 requestTransactions();
-            });
-
-            jQuery('#teste').click(function(){
-                jQuery('#modal-partial-reversal').css('display', 'block');
             });
 
             jQuery('#modal-close').click(function () {
@@ -363,28 +396,6 @@ $html   = Mage::helper('pagseguro/html');
                     jQuery('#modal-partial-reversal').css('display', 'none');
                 }
             }
-
-            jQuery('#refund-table').on('click', 'a.action', function () {
-
-                var refund = jQuery(this);
-                console.log(refund)
-                if(refund.context.innerText == "Estornar"){
-                    Modal.confirm('Não será possível reverter esta ação. Deseja continuar?');
-                    jQuery('.pagseguro-confirm-button').on('click', function (target) {
-                        if (target.currentTarget.id == 'accept') {
-                            doRefund(refund.data('config'));
-                        } else {
-                            Modal.hideLoading();
-                        }
-                    });
-                }else{
-                    
-                    refund = refund.data('config');
-                    refund = refund.split('/');
-                    jQuery('#value_transaction').text('Valor total da venda: R$ ' + formatReal(refund[3]));
-                    jQuery('#modal-partial-reversal').css('display', 'block');
-                }
-            });
         };
     }
 </script>
