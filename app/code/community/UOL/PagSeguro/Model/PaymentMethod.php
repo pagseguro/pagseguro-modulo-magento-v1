@@ -346,8 +346,8 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         $phone = null;
         if ($this->order->getBillingAddress() && $this->order->getBillingAddress()->getTelephone()) {
             $phone = $this->helper->formatPhone($this->order->getBillingAddress()->getTelephone());
-        } else if ($this->order->getBillingAddress() && $this->order->getBillingAddress()->getTelephone()) {
-            $phone = $this->helper->formatPhone($this->order->getBillingAddress()->getTelephone());
+        } else if ($this->order->getShippingAddress() && $this->order->getShippingAddress()->getTelephone()) {
+            $phone = $this->helper->formatPhone($this->order->getShippingAddress()->getTelephone());
         }
         if ($phone) {
             $payment->setSender()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
