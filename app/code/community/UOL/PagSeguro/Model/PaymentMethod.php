@@ -117,21 +117,15 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         $this->setItems($payment);
         $payment->setSender()->setName($this->order->getCustomerName());
         $payment->setSender()->setEmail($this->order->getCustomerEmail());
+        $this->setSenderPhone($payment);
 
         if ($this->order->getShippingAddress() !== false) {
             $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
             $payment->setShipping()->setAddress()->instance($orderAddress->getShippingAddress());
             $payment->setShipping()->setType()->withParameters(SHIPPING_TYPE);
-            $payment->setShipping()->setCost()->withParameters(number_format($this->order->getShippingAmount(), 2, '.',
-                ''));
-            //set phone
-            if ($this->order->getShippingAddress()->getTelephone()) {
-                $phone = $this->helper->formatPhone($this->order->getShippingAddress()->getTelephone());
-                $payment->setSender()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
-            }
-
+            $payment->setShipping()->setCost()->withParameters(number_format($this->order->getShippingAmount(), 2, '.', ''));
         }
-        
+
         $payment->setExtraAmount($this->order->getBaseDiscountAmount() + $this->order->getTaxAmount());
         $payment->setNotificationUrl($this->getNotificationURL());
 
@@ -335,5 +329,28 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     private function productTypesWithoutShipping()
     {
         return array('virtual', 'downloadable');
+    }
+
+    /**
+     * Set sender phone with magento phone from billing address or, in second case, from shipping address
+     *
+     * @param \PagSeguro\Domains\Requests\DirectPayment\Boleto
+     *      | \PagSeguro\Domains\Requests\DirectPayment\CreditCard
+     *      | \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
+     *      | \PagSeguro\Domains\Requests\Payment
+     *      $payment
+     * @return void
+     */
+    private function setSenderPhone($payment)
+    {
+        $phone = null;
+        if ($this->order->getBillingAddress() && $this->order->getBillingAddress()->getTelephone()) {
+            $phone = $this->helper->formatPhone($this->order->getBillingAddress()->getTelephone());
+        } else if ($this->order->getBillingAddress() && $this->order->getBillingAddress()->getTelephone()) {
+            $phone = $this->helper->formatPhone($this->order->getBillingAddress()->getTelephone());
+        }
+        if ($phone) {
+            $payment->setSender()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
+        }
     }
 }
