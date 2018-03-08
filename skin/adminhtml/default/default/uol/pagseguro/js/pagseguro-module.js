@@ -547,20 +547,40 @@ function formatReal( int )
 
 function formatRealInput( field )
 {
-    if(event.keyCode != 8 && event.keyCode != 46){
-        var tmp = field.value;
-        tmp = tmp.replace(",", "");
-        tmp = tmp.replace(".", "");
-        tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+    var tmp = field.value;
+    tmp = tmp.replace(",", "");
+    tmp = tmp.replace(".", "");
 
-        if ( tmp.length > 6 ) {
-            tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
-        }
-        field.value = tmp;
+    valueIsNumber(tmp);
+
+    tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+
+    if ( tmp.length > 6 ) {
+        tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+    }
+    field.value = tmp;
+}
+
+function valueIsNumber(tmp){
+    tmp = tmp.replace(",", "");
+    tmp = tmp.replace(".", "");
+
+    if(isNaN(tmp)) {
+        jQuery('#value_refund').addClass('pagseguro-field-error');
+        jQuery('.error').text('Valor inválido.');
+        return false;
+    } else if(tmp.indexOf('-') != -1) {
+        jQuery('#value_refund').addClass('pagseguro-field-error');
+        jQuery('.error').text('Valor não pode ser negativo.');
+        return false;
+    } else {
+        jQuery('.error').text('');
+        jQuery('#value_refund').removeClass('pagseguro-field-error');
+        return true;
     }
 }
 
 function getMoney( strMoney )
 {
-        return parseInt( strMoney.replace(/[\D]+/g,'') );
+        return parseInt( strMoney.replace(/.[\D]+/g,'') );
 }

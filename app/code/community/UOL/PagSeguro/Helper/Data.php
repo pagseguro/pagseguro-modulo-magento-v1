@@ -456,7 +456,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
      *
      * @throws Exception
      */
-    public function updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus)
+    public function updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus, $refundValue = null)
     {
         try {
             if (
@@ -470,7 +470,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
                     }
                 }
                 if ($class == self::REFUND_CLASS) {
-                    if ($this->webserviceHelper()->refundRequest($transactionCode)->getResult() == 'OK') {
+                    if ($this->webserviceHelper()->refundRequest($transactionCode, $refundValue)->getResult() == 'OK') {
                         $orderStatus = 'devolvida_ps';
                     }
                 }

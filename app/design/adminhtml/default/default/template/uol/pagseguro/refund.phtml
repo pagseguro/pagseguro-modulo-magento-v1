@@ -79,7 +79,8 @@ $html   = Mage::helper('pagseguro/html');
                     <div class="modal-content-refund">
                         <button id="modal-close"></button>
                         <h2>Estorno parcial</h2>
-                        <h4 id="value_transaction"></h4>
+                        <h4 id="id-magento"></h4>
+                        <h4 id="transaction-value"></h4>
                         <form>
                             <p>Informe o valor a ser estornado:</p>
                             <div>
@@ -158,18 +159,24 @@ $html   = Mage::helper('pagseguro/html');
             var id = '';
             var code = '';
             var status = '';
-            var value = '';
+            var refundValue = '';
             var jsonArr = [];
-            console.log(config)
-            config = config.split('/');
-            jsonArr.push({
-                id: config[0],
-                code: config[1],
-                status: config[2],
-                value: config[3]
-            });
 
-            console.log(jsonArr)
+            if (config[3] == undefined && config[3] == false) {
+                config = config.split('/');
+                jsonArr.push({
+                    id: config[0],
+                    code: config[1],
+                    status: config[2]
+                });
+            } else {
+                jsonArr.push({
+                    id: config[0],
+                    code: config[1],
+                    status: config[2],
+                    refundValue: jQuery('#value_refund').val()
+                });
+            }
 
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
             jQuery.ajax({
@@ -183,8 +190,7 @@ $html   = Mage::helper('pagseguro/html');
                 success: function (xhrResult) {
 
                     xhrResult = JSON.parse(xhrResult);
-
-                    if (xhrResult.status == false && xhrResult.err == true) {
+                    if (xhrResult.status == false) {
 
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
@@ -340,7 +346,7 @@ $html   = Mage::helper('pagseguro/html');
                     }
                 }
             });
-        }7.000,00
+        }
 
         jQuery('#refund-table').on('click', 'a.action', function () {
 
@@ -355,29 +361,47 @@ $html   = Mage::helper('pagseguro/html');
                         Modal.hideLoading();
                     }
                 });
-            }else{
-                
+            } else {
                 refund = refund.data('config');
                 refund = refund.split('/');
-                var valueTotal = formatReal(refund[3])
-                jQuery('#value_transaction').text('Valor total da venda: R$ ' + valueTotal);
+                var idMagento = refund[0];
+                var valueTotal = formatReal(refund[3]);
+                jQuery('#id-magento').text('ID magento: ' + idMagento);
+                jQuery('#transaction-value').text('Valor total da venda: R$ ' + valueTotal);
                 jQuery('#modal-partial-reversal').css('display', 'block');
 
                 jQuery('#partial_refund').click(function(){
-                    var valueInput = document.getElementById('value_refund').value;
+                    var valueInput = jQuery('#value_refund').val();
+                    console.log(getMoney(valueInput))
                     if(getMoney(valueInput) > getMoney(valueTotal)){
                         jQuery('#value_refund').addClass('pagseguro-field-error');
                         jQuery('.error').text('Valor inserido é maior que o valor da venda.');
                     } else if (valueInput == 0) {
                         jQuery('#value_refund').addClass('pagseguro-field-error');
-                        jQuery('.error').text('Valor inserido não pode ser zero.');
+                        jQuery('.error').text('Valor de estorno não pode ser zero.');
+                    } else if (valueInput <= 0) {
+                        jQuery('#value_refund').addClass('pagseguro-field-error');
+                        jQuery('.error').text('Valor de estorno não pode ser negativo.');
                     } else {
-                        jQuery('.error').text('');
-                        jQuery('#value_refund').removeClass('pagseguro-field-error');
+                        if(valueIsNumber(valueInput)){
+                            clearModal();
+                            doRefund(refund);
+                        }
                     }
                 });
             }
         });
+
+        function clearValueError(){
+            jQuery('.error').text('');
+            jQuery('#value_refund').removeClass('pagseguro-field-error');
+        }
+
+        function clearModal(){
+            jQuery('#value_refund').val('');
+            clearValueError();                
+            jQuery('#modal-partial-reversal').css('display', 'none');
+        }
 
         this.init = function () {
             prepareTable();
@@ -387,13 +411,13 @@ $html   = Mage::helper('pagseguro/html');
             });
 
             jQuery('#modal-close').click(function () {
-                jQuery('#modal-partial-reversal').css('display', 'none');
+                clearModal();
             });
 
             window.onclick = function (event) {
                 var modal = document.getElementById('modal-partial-reversal');
                 if (event.target == modal) {
-                    jQuery('#modal-partial-reversal').css('display', 'none');
+                    clearModal();
                 }
             }
         };

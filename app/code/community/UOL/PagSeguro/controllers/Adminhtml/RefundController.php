@@ -42,12 +42,13 @@ class UOL_PagSeguro_Adminhtml_RefundController extends Mage_Adminhtml_Controller
 
     public function doRefundAction()
     {
+        
         $this->builder();
         if ($this->getRequest()->getPost('data')) {
             $data = current($this->getRequest()->getPost('data'));
             try {
                 $this->refund->updateOrderStatusMagento(get_class($this->refund), $data['id'], $data['code'],
-                    $data['status']);
+                    $data['status'], number_format(floatval($data['refundValue']), 2, '.', ''));
             } catch (Exception $pse) {
                 print json_encode(array(
                         "status" => false,
