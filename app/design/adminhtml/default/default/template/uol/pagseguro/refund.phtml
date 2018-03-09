@@ -194,7 +194,7 @@ $html   = Mage::helper('pagseguro/html');
                     if (xhrResult.status == false && xhrResult.err == 14002) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('error', 'Valor do estorno está em um formato inválido!.');
-                    }   else if (xhrResult.status == false && xhrResult.err == 14003) {
+                    } else if (xhrResult.status == false && xhrResult.err == 14003) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('error', 'Valor do estorno inválido! O valor não pode ser negativo.');
                     } else if (xhrResult.status == false && xhrResult.err == 14004) {
@@ -215,9 +215,12 @@ $html   = Mage::helper('pagseguro/html');
                     } else if (xhrResult.status == false && xhrResult.err == 14009) {
                         Modal.message('error', "Sua conta PagSeguro não tem permissão para realizar esta ação. Em caso de dúvidas acesse <a href='http://forum.pagseguro.uol.com.br' target='_blank'>http://forum.pagseguro.uol.com.br</a>");
                         jQuery('#refund-table').dataTable().fnClearTable(true);
-                    } else if (xhrResult.status == false) {
+                    } else if (xhrResult.status == false && xhrResult.err == true) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
+                    } else if (xhrResult.status == false) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('success', '<?php echo $refundSuccess; ?>');
                     } else {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         jQuery('#refund-table').dataTable().fnAddData(xhrResult);
@@ -392,14 +395,14 @@ $html   = Mage::helper('pagseguro/html');
             if(getMoney(valueInput) > refund[3]){
                 jQuery('#refund-value').addClass('pagseguro-field-error');
                 jQuery('.error').text('Valor inserido é maior que o valor da venda.');
-            } else if (valueInput == 0) {
+            } else if (getMoney(valueInput) == 0) {
                 jQuery('#refund-value').addClass('pagseguro-field-error');
                 jQuery('.error').text('Valor de estorno não pode ser zero.');
             } else {
                 if(valueIsNumber(valueInput)){
                     refund[3] = valueInput;
                     clearModal();
-                    //doRefund(refund, true);
+                    doRefund(refund, true);
                 }
             }
         });

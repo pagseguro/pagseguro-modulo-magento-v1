@@ -562,28 +562,34 @@ function formatRealInput( field )
 }
 
 function valueIsNumber(tmp){
+
+    if(tmp.indexOf(",") == 0){
+        jQuery('#refund-value').addClass('pagseguro-field-error');
+        jQuery('.error').text('Valor inválido.');
+        return false;
+    }
+
     tmp = tmp.replace(",", "");
     tmp = tmp.replace(".", "");
 
     if(isNaN(tmp)) {
-        jQuery('#value_refund').addClass('pagseguro-field-error');
+        jQuery('#refund-value').addClass('pagseguro-field-error');
         jQuery('.error').text('Valor inválido.');
         return false;
     } else if(tmp.indexOf('-') != -1) {
-        jQuery('#value_refund').addClass('pagseguro-field-error');
+        jQuery('#refund-value').addClass('pagseguro-field-error');
         jQuery('.error').text('Valor não pode ser negativo.');
         return false;
     } else {
         jQuery('.error').text('');
-        jQuery('#value_refund').removeClass('pagseguro-field-error');
+        jQuery('#refund-value').removeClass('pagseguro-field-error');
         return true;
     }
 }
 
 function getMoney( strMoney )
 {
-        //return parseInt( strMoney.replace(/.[\D]+/g,'') );
-        strMoney = strMoney.replace(".", "");
-		strMoney = strMoney.replace(",", ".");
-		return parseFloat(strMoney);
+    strMoney = strMoney.replace(".", "");
+    strMoney = strMoney.replace(",", ".");
+    return parseFloat(strMoney);
 }
