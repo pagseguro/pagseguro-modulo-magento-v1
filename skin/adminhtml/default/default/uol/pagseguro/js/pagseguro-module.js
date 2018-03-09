@@ -582,5 +582,8 @@ function valueIsNumber(tmp){
 
 function getMoney( strMoney )
 {
-        return parseInt( strMoney.replace(/.[\D]+/g,'') );
+        //return parseInt( strMoney.replace(/.[\D]+/g,'') );
+        strMoney = strMoney.replace(".", "");
+		strMoney = strMoney.replace(",", ".");
+		return parseFloat(strMoney);
 }
