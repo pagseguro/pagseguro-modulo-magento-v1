@@ -100,6 +100,7 @@ $html   = Mage::helper('pagseguro/html');
 
 <script type="text/javascript">
     var i = 0;
+    var refund;
 
     jQuery(document).ready(function () {
         Menu.init();
@@ -108,7 +109,6 @@ $html   = Mage::helper('pagseguro/html');
 
     var PageRefund = new function () {
         var requestTransactions = function () {
-
             // show loading modal
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
@@ -154,7 +154,7 @@ $html   = Mage::helper('pagseguro/html');
             });
         }
 
-        var doRefund = function (config) {
+        var doRefund = function (config, isPartial) {
             jQuery('#messages').empty();
             var id = '';
             var code = '';
@@ -162,19 +162,19 @@ $html   = Mage::helper('pagseguro/html');
             var refundValue = '';
             var jsonArr = [];
 
-            if (config[3] == undefined && config[3] == false) {
+            if(isPartial){
+                jsonArr.push({
+                    id: config[0],
+                    code: config[1],
+                    status: config[2],
+                    refundValue: config[3]
+                });
+            }else{
                 config = config.split('/');
                 jsonArr.push({
                     id: config[0],
                     code: config[1],
                     status: config[2]
-                });
-            } else {
-                jsonArr.push({
-                    id: config[0],
-                    code: config[1],
-                    status: config[2],
-                    refundValue: jQuery('#value_refund').val()
                 });
             }
 
@@ -184,33 +184,46 @@ $html   = Mage::helper('pagseguro/html');
                 type: "POST",
                 data: {
                     form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                    //data: jsonArr,
+                    data: jsonArr,
                     days: jQuery('#pagseguro-refund-days-input').find(":selected").text()
                 },
                 success: function (xhrResult) {
-
                     xhrResult = JSON.parse(xhrResult);
-                    if (xhrResult.status == false) {
 
+                    if (xhrResult.status == false && xhrResult.err == 14002) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Valor do estorno está em um formato inválido!.');
+                    }   else if (xhrResult.status == false && xhrResult.err == 14003) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Valor do estorno inválido! O valor não pode ser negativo.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14004) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Valor do estorno é menor do que o permitido.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14005) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Valor do estorno é maior do que o permitido.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14006) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Saldo insuficiente para estornar a transação.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14007) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Status da transação é inválido para ser estornada.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14008) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Transação não encontrada.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14009) {
+                        Modal.message('error', "Sua conta PagSeguro não tem permissão para realizar esta ação. Em caso de dúvidas acesse <a href='http://forum.pagseguro.uol.com.br' target='_blank'>http://forum.pagseguro.uol.com.br</a>");
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                    } else if (xhrResult.status == false) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
-                    } else if (xhrResult.status == false && xhrResult.err == "[HTTP 403] - FORBIDDEN") {
-
-                        Modal.message('error', "Sua conta PagSeguro não tem permissão para realizar esta ação. Em caso de dúvidas acesse <a href='http://forum.pagseguro.uol.com.br' target='_blank'>http://forum.pagseguro.uol.com.br</a>");
-                    } else if (xhrResult.status == false) {
-
-                        jQuery('#refund-table').dataTable().fnClearTable(true);
-                        Modal.message('success', '<?php echo $refundSuccess; ?>');
                     } else {
-
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         jQuery('#refund-table').dataTable().fnAddData(xhrResult);
                         jQuery('#refund-table').dataTable()._fnInitComplete();
                         Modal.message('success', '<?php echo $refundSuccess; ?>');
                     }
-
-
-                },
+                 },
                 error: function () {
                     Modal.message('error', '<?php echo $refundError; ?>');
                 }
@@ -349,14 +362,13 @@ $html   = Mage::helper('pagseguro/html');
         }
 
         jQuery('#refund-table').on('click', 'a.action', function () {
-
-            var refund = jQuery(this);
+            refund = jQuery(this);
 
             if(refund.context.innerText == "Estornar"){
                 Modal.confirm('Não será possível reverter esta ação. Deseja continuar?');
                 jQuery('.pagseguro-confirm-button').on('click', function (target) {
                     if (target.currentTarget.id == 'accept') {
-                        doRefund(refund.data('config'));
+                        doRefund(refund.data('config'), false);
                     } else {
                         Modal.hideLoading();
                     }
@@ -369,26 +381,26 @@ $html   = Mage::helper('pagseguro/html');
                 jQuery('#id-magento').text('ID magento: ' + idMagento);
                 jQuery('#transaction-value').text('Valor total da venda: R$ ' + valueTotal);
                 jQuery('#modal-partial-reversal').css('display', 'block');
+            }
+        });
 
-                jQuery('#partial_refund').click(function(){
-                    var valueInput = jQuery('#value_refund').val();
-                    console.log(getMoney(valueInput))
-                    if(getMoney(valueInput) > getMoney(valueTotal)){
-                        jQuery('#value_refund').addClass('pagseguro-field-error');
-                        jQuery('.error').text('Valor inserido é maior que o valor da venda.');
-                    } else if (valueInput == 0) {
-                        jQuery('#value_refund').addClass('pagseguro-field-error');
-                        jQuery('.error').text('Valor de estorno não pode ser zero.');
-                    } else if (valueInput <= 0) {
-                        jQuery('#value_refund').addClass('pagseguro-field-error');
-                        jQuery('.error').text('Valor de estorno não pode ser negativo.');
-                    } else {
-                        if(valueIsNumber(valueInput)){
-                            clearModal();
-                            doRefund(refund);
-                        }
-                    }
-                });
+        jQuery('#partial_refund').click(function(){
+            var valueInput = jQuery('#value_refund').val();
+            if(getMoney(valueInput) > getMoney(refund[3])){
+                jQuery('#value_refund').addClass('pagseguro-field-error');
+                jQuery('.error').text('Valor inserido é maior que o valor da venda.');
+            } else if (valueInput == 0) {
+                jQuery('#value_refund').addClass('pagseguro-field-error');
+                jQuery('.error').text('Valor de estorno não pode ser zero.');
+            } else if (valueInput <= 0) {
+                jQuery('#value_refund').addClass('pagseguro-field-error');
+                jQuery('.error').text('Valor de estorno não pode ser negativo.');
+            } else {
+                if(valueIsNumber(valueInput)){
+                    refund[3] = valueInput;
+                    clearModal();
+                    doRefund(refund, true);
+                }
             }
         });
 
