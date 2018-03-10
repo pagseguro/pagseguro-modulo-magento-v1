@@ -48,100 +48,62 @@ class UOL_PagSeguro_Helper_Transactions extends HelperData
 
     public function getPagSeguroTransactions($paramsFilter)
     {
-        $pagseguroOrders = $this->getTransactionsDatabase($paramsFilter);
-
-        if(count($pagseguroOrders) > 0)
-        {
-            foreach ($pagseguroOrders as $key => $psOrder)
-            {
-                $order = $this->getOrderMagento($psOrder['order_id'], $paramsFilter);
-                
-                if(Mage::getStoreConfig('payment/pagseguro/environment') == strtolower(trim($this->getOrderEnvironment($psOrder)))) {
-                    if(!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
-                        if (Mage::getSingleton('core/session')->getData("store_id") == $order['store_id']) {
-                            $this->pagSeguroOrders = $psOrder;
-                            $this->pagSeguroOrders['status'] = $order['status'];
-
-                            if (!empty($this->getPaymentStatusFromValue($order['status']))){
-                                $this->arrayPagSeguroOrders[] = $this->build($order);
-                            }
-                        }
-                    }else {
-                        $this->pagSeguroOrders = $psOrder;
-                        $this->pagSeguroOrders['status'] = $order['status'];
-
-                        if (!empty($this->getPaymentStatusFromValue($order['status']))){
-                            $this->arrayPagSeguroOrders[] = $this->build($order);
-                        }
-                    }
-                }
-            }
-        }
+        $this->buildArrayPagSeguroOrders($this->getTransactionsDatabase($paramsFilter));
     }
 
+    /**
+     * Get all PagSeguro transactions in DB with an transaction_id associated from 
+     * pagseguro_orders table joined with orders table
+     *
+     * @param array $paramsFilter
+     * @return array
+     */
     private function getTransactionsDatabase($paramsFilter)
     {
-        $connection = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $table = Mage::getConfig()->getTablePrefix().'pagseguro_orders';
+        $resource = Mage::getSingleton('core/resource');
+        $read = $resource->getConnection('core_read');
+        $ordersTable = $resource->getTableName('sales/order');
+        $pagseguroTable = Mage::getConfig()->getTablePrefix().'pagseguro_orders';
 
-        $select  = "SELECT * FROM " . $table;
+        $select = $read->select()
+            ->from(array('order' => $ordersTable), array('status', 'created_at', 'increment_id', 'store_id'))
+            ->join(array('ps' => $pagseguroTable), 'order.entity_id = ps.order_id')
+            ->where('ps.transaction_code != ?', '')
+            ->order('created_at DESC')
+        ;
 
-        $where = array();
-
-        if(isset($paramsFilter['idMagento'])){
-            $where[] = "order_id = ".$paramsFilter['idMagento'];
+        if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
+            $select = $select->where('store_id = ?', Mage::getSingleton('core/session')->getData("store_id"));
         }
 
-        if(isset($paramsFilter['idPagSeguro'])){
-            $where[] = "transaction_code = '".$paramsFilter['idPagSeguro']."'";
+        if (Mage::getStoreConfig('payment/pagseguro/environment')) {
+            $select = $select->where('environment = ?', Mage::getStoreConfig('payment/pagseguro/environment'));
         }
 
-        if(isset($paramsFilter['environment'])){
-            $where[] = "environment = '".$paramsFilter['environment']."'";
+        if (isset($paramsFilter['idMagento'])) {
+            $select = $select->where('order.increment_id = ?', $paramsFilter['idMagento']);
         }
 
-        if(count($where) > 0){
-            $select .= ' WHERE ' . implode(' AND ', $where);
+        if (isset($paramsFilter['idPagSeguro'])) {
+            $select = $select->where('ps.transaction_code = ?', $paramsFilter['idPagSeguro']);
         }
 
-        return $connection->fetchAll($select);
-    }
-
-    private function getOrderMagento($orderId, $params)
-    {
-        $order = Mage::getModel('sales/order')->getCollection()->addFieldToFilter('entity_id', $orderId);
-
-        if(!empty($params['startDate']) && !empty($params['endDate'])){
-            $startDate = date('Y-m-d H:i:s', strtotime(str_replace("/", "-", $params['startDate'])));
-            $endDate = date('Y-m-d'.' 23:59:59', strtotime(str_replace("/", "-", $params['endDate'])));
-            $order->addFieldToFilter('created_at', array('from' => $startDate, 'to' => $endDate));
+        if (isset($paramsFilter['environment'])) {
+            $select = $select->where('ps.environment = ?', $paramsFilter['environment']);
         }
 
-        if(!empty($params['status'])){
-            $order->addFieldToFilter('status', $this->getPaymentStatusFromKey($params['status']));
+        if (isset($paramsFilter['status'])) {
+            $select = $select->where('order.status = ?', $this->getPaymentStatusFromKey($paramsFilter['status']));
         }
 
-        return current($order->getData());
-    }
+        if (isset($paramsFilter['startDate']) && isset($paramsFilter['endDate'])) {
+            $startDate = date('Y-m-d H:i:s', strtotime(str_replace("/", "-", $paramsFilter['startDate'])));
+            $endDate = date('Y-m-d'.' 23:59:59', strtotime(str_replace("/", "-", $paramsFilter['endDate'])));
+            $select = $select->where('order.created_at >= ?', $startDate)->where('order.created_at <= ?', $endDate);
+        }
 
-    public function build($order)
-    {
-        $action = "<a class='edit' target='_blank' href='".$this->getEditOrderUrl($order['entity_id'])."'>";
-        $action .= $this->__('Ver detalhes pedido')."</a>";
-
-        $config = "class='action' data-config='".$this->pagSeguroOrders['transaction_code']."'";
-
-        $action .= "<br><a ".$config." href='javascript:void(0)'>";
-        $action .= $this->__('Ver detalhes transação')."</a>";
-
-        return array(
-            'date'           => $this->getOrderMagetoDateConvert($order['created_at']),
-            'id_magento'     => "#".$order['increment_id'],
-            'id_pagseguro'   => $this->pagSeguroOrders['transaction_code'],
-            'environment'    => $this->pagSeguroOrders['environment'],
-            'status_magento' => $this->getPaymentStatusToString($this->getPaymentStatusFromValue($order['status'])),
-            'action'         => $action
-        );
+        $read->prepare($select);
+        return $read->fetchAll($select);
     }
 
     public function getTransactionByCode($transactionCode)
@@ -168,7 +130,7 @@ class UOL_PagSeguro_Helper_Transactions extends HelperData
             'date'              => $this->getOrderMagetoDateConvert($this->pagSeguroTransaction->getDate()),
             'code'              => $this->pagSeguroTransaction->getCode(),
             'reference'         => $this->pagSeguroTransaction->getReference(),
-            'type'              => $this->pagSeguroTransaction->getType(),
+            'type'              => $this->getTransactionTypeName($this->pagSeguroTransaction->getType()),
             'status'            => $this->getPaymentStatusToString($this->pagSeguroTransaction->getStatus()),
             'lastEventDate'     => $this->getOrderMagetoDateConvert($this->pagSeguroTransaction->getLastEventDate()),
             'installmentCount'  => $this->pagSeguroTransaction->getInstallmentCount(),
@@ -297,6 +259,34 @@ class UOL_PagSeguro_Helper_Transactions extends HelperData
             return "production";
         } else {
             return $orderPagSeguro['environment'];
+        }
+    }
+
+    /**
+     * Build an array and set it in the attribute arrayPagSeguroOrders. This array is used to show
+     * the PagSeguro transactions table
+     *
+     * @param array $pagSeguroOrders
+     * @return void
+     */
+    private function buildArrayPagSeguroOrders($pagSeguroOrders)
+    {
+        $action = "<a class='edit' target='_blank' href='%s'>%s</a> <br><a class='action' data-config='%s'href='javascript:void(0)'>%s</a>";
+        foreach ($pagSeguroOrders as $pagSeguroOrder) {
+            $this->arrayPagSeguroOrders[] = array(
+                'date'           => $this->getOrderMagetoDateConvert($pagSeguroOrder['created_at']),
+                'id_magento'     => $pagSeguroOrder['increment_id'],
+                'id_pagseguro'   => $pagSeguroOrder['transaction_code'],
+                'environment'    => $pagSeguroOrder['environment'],
+                'status_magento' => $this->getPaymentStatusToString($this->getPaymentStatusFromValue($pagSeguroOrder['status'])),
+                'action'         => sprintf(
+                    $action,
+                    $this->getEditOrderUrl($pagSeguroOrder['order_id']),
+                    $this->__('Ver detalhes pedido'),
+                    $pagSeguroOrder['transaction_code'],
+                    $this->__('Ver detalhes transação')
+                )
+            );
         }
     }
 }

@@ -752,4 +752,63 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
 
         return false;
     }
+
+    /**
+     * Translates the transation type code to his respective name, according with the api
+     *
+     * @param int $transactionTypeCode
+     * @return mixed string | int
+     */
+    public function getTransactionTypeName($transactionTypeCode)
+    {
+        if ($transactionTypeCode) {
+            switch ($transactionTypeCode) {
+                case 1:
+                    return $this->__('Venda');
+                    break;
+                case 2:
+                    return $this->__('Transferência');
+                    break;
+                case 3:
+                    return $this->__('Adição de fundos');
+                    break;
+                case 4:
+                    return $this->__('Saque');
+                    break;
+                case 5:
+                    return $this->__('Cobrança');
+                    break;
+                case 6:
+                    return $this->__('Doação');
+                    break;
+                case 7:
+                    return $this->__('Bônus');
+                    break;
+                case 8:
+                    return $this->__('Repasse de bônus');
+                    break;
+                case 9:
+                    return $this->__('Operacional');
+                    break;
+                case 10:
+                    return $this->__('Doação pública');
+                    break;
+                case 11:
+                    return $this->__('Pagamento pré aprovado');
+                    break;
+                case 12:
+                    return $this->__('Campanha bônus');
+                    break;
+                case 13:
+                    return $this->__('Secundária');
+                    break;
+                case 14:
+                    return $this->__('Validador');
+                    break;
+                default:
+                    return $transactionTypeCode;
+                    break;
+            }
+        }
+    }
 }

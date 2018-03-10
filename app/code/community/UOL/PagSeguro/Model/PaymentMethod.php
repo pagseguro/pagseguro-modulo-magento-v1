@@ -145,7 +145,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     {
         foreach ($this->order->getAllVisibleItems() as $product) {
             $payment->addItems()->withParameters(
-                $product->getId(),
+                $product->getProduct()->getId(),
                 substr($product->getName(), 0, 254),
                 (float)$product->getQtyOrdered(),
                 number_format((float)$product->getPrice(), 2, '.', ''),
