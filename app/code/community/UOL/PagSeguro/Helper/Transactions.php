@@ -88,10 +88,6 @@ class UOL_PagSeguro_Helper_Transactions extends HelperData
             $select = $select->where('ps.transaction_code = ?', $paramsFilter['idPagSeguro']);
         }
 
-        if (isset($paramsFilter['environment'])) {
-            $select = $select->where('ps.environment = ?', $paramsFilter['environment']);
-        }
-
         if (isset($paramsFilter['status'])) {
             $select = $select->where('order.status = ?', $this->getPaymentStatusFromKey($paramsFilter['status']));
         }
