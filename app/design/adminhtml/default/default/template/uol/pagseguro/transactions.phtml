@@ -211,14 +211,6 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                     {"sClass": "tabela", 'aTargets': [0, 1, 2, 3]},
                     {"sType": "date-br", 'aTargets': [0]}
                 ],
-                "aoColumns": [
-                    { "sType": 'date-br' },
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
 
                 // Creates paging and notifies when there is no record
                 "oLanguage": {
@@ -319,7 +311,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                         Modal.message('error', result.err);
                     } else {
                         if(result.paymentLink != false){
-                            jQuery('#group-father').append('<dl><dt>Link para pagamento: </dt><dd>' + '<a href=' + result.paymentLink + '>' + result.paymentLink +'</a>' + '</dd></dl>');
+                            jQuery('#group-father').append('<dl><dt>Link para pagamento: </dt><dd>' + '<a target="blank" href=' + result.paymentLink + '>' + result.paymentLink +'</a>' + '</dd></dl>');
                         }
                         jQuery('#group-father').append('<div id="transaction-group" class="group-side"></div>');
                         jQuery('#group-father').append('<div id="payment-group" class="group-side"></div>')
