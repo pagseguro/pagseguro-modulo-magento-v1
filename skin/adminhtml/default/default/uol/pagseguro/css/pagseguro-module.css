@@ -146,7 +146,7 @@ limitations under the License.
 .pagseguro-button.theme-gray:hover,
 .pagseguro-button.gray-theme:hover { background-color: #F9F9F9; }
 .pagseguro-button[disabled] { background-color: #CCC !important; color: #FFF !important; }
-.pagseguro-button.align-right { float: right };
+.pagseguro-button.align-right { float: right; }
 
 /*List Details*/
 .list-datails .group { border-bottom: solid 1px #F5F5F5; margin: 0 40px; padding: 10px 0; overflow: hidden; }
