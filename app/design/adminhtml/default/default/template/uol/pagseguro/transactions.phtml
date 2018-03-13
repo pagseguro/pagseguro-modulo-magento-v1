@@ -56,13 +56,9 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                         </th>
                         <th width="20%" class="input-search"><input type="text" class="pagseguro-field" name="id_magento" id="id_magento" placeholder="ID Magento"/></th>
                         <th width="35%" class="input-search"><input type="text" class="pagseguro-field" name="id_pagseguro" id="id_pagseguro" placeholder="ID PagSeguro"/></th>
-                        <th width="12%" class="input-search"><select type="text" class="pagseguro-field" name="enviroment" id="enviroment">
-                            <option value="">Ambiente</option>
-                            <option value='1'>Produção</option>
-                            <option value='2'>Sandbox</option>
-                        </select></th>
+                        <th width="12%" class="input-search"></th>
                         <th width="12%" class="input-search"><select class="pagseguro-field" id="status">
-                            <option value="">Status</option>
+                            <option value="">Todos</option>
                             <option value="1">Aguardando Pagamento</option>
                             <option value="2">Em análise</option>
                             <option value="3">Paga</option>
@@ -131,7 +127,6 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                     date_end: document.getElementById('date_end').value,
                     id_magento: document.getElementById('id_magento').value,
                     id_pagseguro: document.getElementById('id_pagseguro').value,
-                    enviroment: document.getElementById('enviroment').value,
                     status: document.getElementById('status').value
                 },
                 success: function (xhrResult) {
