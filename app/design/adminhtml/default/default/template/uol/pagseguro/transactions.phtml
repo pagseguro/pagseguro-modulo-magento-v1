@@ -56,13 +56,9 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                         </th>
                         <th width="20%" class="input-search"><input type="text" class="pagseguro-field" name="id_magento" id="id_magento" placeholder="ID Magento"/></th>
                         <th width="35%" class="input-search"><input type="text" class="pagseguro-field" name="id_pagseguro" id="id_pagseguro" placeholder="ID PagSeguro"/></th>
-                        <th width="12%" class="input-search"><select type="text" class="pagseguro-field" name="enviroment" id="enviroment">
-                            <option value="">Ambiente</option>
-                            <option value='1'>Produção</option>
-                            <option value='2'>Sandbox</option>
-                        </select></th>
+                        <th width="12%" class="input-search"></th>
                         <th width="12%" class="input-search"><select class="pagseguro-field" id="status">
-                            <option value="">Status</option>
+                            <option value="">Todos</option>
                             <option value="1">Aguardando Pagamento</option>
                             <option value="2">Em análise</option>
                             <option value="3">Paga</option>
@@ -95,7 +91,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                             <div id="group-father" class="group">
                                 
                             </div>
-                            <div id="itens" class="hidden-groups group">
+                            <div id="itens" class="hidden-groups group group-itens">
                             
                             </div>
 
@@ -131,7 +127,6 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                     date_end: document.getElementById('date_end').value,
                     id_magento: document.getElementById('id_magento').value,
                     id_pagseguro: document.getElementById('id_pagseguro').value,
-                    enviroment: document.getElementById('enviroment').value,
                     status: document.getElementById('status').value
                 },
                 success: function (xhrResult) {
@@ -146,7 +141,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                             jQuery('#transaction-table').dataTable().fnClearTable(true);
                             jQuery('#transaction-table').dataTable().fnAddData(xhrResult);
                             jQuery('#transaction-table').dataTable()._fnInitComplete();
-
+                            jQuery('td').css('cursor', 'auto');
                             Modal.hideLoading();
                         }
                     }
@@ -183,20 +178,46 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
 
                 // draw the 'current' page
                 oSettings.oApi._fnDraw(oSettings);
-            };                           
+            };
+
+            jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+                "date-br-pre": function ( a ) {
+                    var x;
+                    var dateParts = a.match(/(\d+)\/(\d+)\/(\d+) (\d+):(\d+):(\d+)/);
+                    return new Date(dateParts[3], parseInt(dateParts[2], 10) -1, dateParts[1], dateParts[4], dateParts[5], dateParts[6]);
+                },
+
+                "date-br-asc": function ( a, b ) {
+                    return b - a;
+                },
+
+                "date-br-desc": function ( a, b ) {
+                    return a - b;
+                },
+
+            } );
 
             // Initiates the creation of the table dataTable
             jQuery('#transaction-table').dataTable({
                 "info": false,
                 "lengthChange": false,
                 "searching": false,
-                "bStateSave": true,
+                "bStateSave": false,
                 "pageLength": 10,
                 "orderCellsTop": true,
                 "aaSorting": [[0, "desc"]],
                 "aoColumnDefs": [
-                    {'bSortable': false, 'aTargets': [5]},
-                    {"sClass": "tabela", 'aTargets': [0, 1, 2, 3]}
+                    {'bSortable': false, 'aTargets': [3, 5]},
+                    {"sClass": "tabela", 'aTargets': [0, 1, 2, 3]},
+                    {"sType": "date-br", 'aTargets': [0]}
+                ],
+                "aoColumns": [
+                    { "sType": 'date-br' },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
                 ],
 
                 // Creates paging and notifies when there is no record
@@ -486,7 +507,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
             }
         });
 
-        this.init = function () {
+    this.init = function () {
             prepareTable();
 
             jQuery('#list-button').click(function () {
