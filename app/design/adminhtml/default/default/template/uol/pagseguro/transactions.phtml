@@ -178,20 +178,46 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
 
                 // draw the 'current' page
                 oSettings.oApi._fnDraw(oSettings);
-            };                           
+            };
+
+            jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+                "date-br-pre": function ( a ) {
+                    var x;
+                    var dateParts = a.match(/(\d+)\/(\d+)\/(\d+) (\d+):(\d+):(\d+)/);
+                    return new Date(dateParts[3], parseInt(dateParts[2], 10) -1, dateParts[1], dateParts[4], dateParts[5], dateParts[6]);
+                },
+
+                "date-br-asc": function ( a, b ) {
+                    return b - a;
+                },
+
+                "date-br-desc": function ( a, b ) {
+                    return a - b;
+                },
+
+            } );
 
             // Initiates the creation of the table dataTable
             jQuery('#transaction-table').dataTable({
                 "info": false,
                 "lengthChange": false,
                 "searching": false,
-                "bStateSave": true,
+                "bStateSave": false,
                 "pageLength": 10,
                 "orderCellsTop": true,
                 "aaSorting": [[0, "desc"]],
                 "aoColumnDefs": [
-                    {'bSortable': false, 'aTargets': [5]},
-                    {"sClass": "tabela", 'aTargets': [0, 1, 2, 3]}
+                    {'bSortable': false, 'aTargets': [3, 5]},
+                    {"sClass": "tabela", 'aTargets': [0, 1, 2, 3]},
+                    {"sType": "date-br", 'aTargets': [0]}
+                ],
+                "aoColumns": [
+                    { "sType": 'date-br' },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
                 ],
 
                 // Creates paging and notifies when there is no record
@@ -481,7 +507,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
             }
         });
 
-        this.init = function () {
+    this.init = function () {
             prepareTable();
 
             jQuery('#list-button').click(function () {
