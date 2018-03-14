@@ -482,15 +482,15 @@ function dateVerify (field) {
 
     situacao = "";
 
-    if ((day < 01)||(day < 01 || day > 30) && (  month == 04 || month == 06 || month == 09 || month == 11 ) || day > 31) {
+    if ( isNaN(day) || ((day < 01)||(day < 01 || day > 30) && (  month == 04 || month == 06 || month == 09 || month == 11 ) || day > 31)) {
         situacao = "false";
     }
 
-    if (month < 01 || month > 12 ) {
+    if ( isNaN(month) || month < 01 || month > 12 ) {
         situacao = "false";
     }
 
-    if (month == 2 && ( day < 01 || day > 29 || ( day > 28 && (parseInt(year / 4) != year / 4)))) {
+    if ( isNaN(year) || month == 2 && ( day < 01 || day > 29 || ( day > 28 && (parseInt(year / 4) != year / 4)))) {
         situacao = "false";
     }
 
