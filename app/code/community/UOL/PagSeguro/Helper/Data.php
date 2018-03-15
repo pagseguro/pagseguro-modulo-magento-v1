@@ -464,6 +464,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
                 || $class == self::CANCELED_CLASS
                 || $class == self::REFUND_CLASS
             ) {
+                $comment = null;
                 if ($class == self::CANCELED_CLASS) {
                     if ($this->webserviceHelper()->cancelRequest($transactionCode)->getResult() == 'OK') {
                         $orderStatus = 'cancelada_ps';
@@ -471,10 +472,16 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
                 }
                 if ($class == self::REFUND_CLASS) {
                     if ($this->webserviceHelper()->refundRequest($transactionCode, $refundValue)->getResult() == 'OK') {
-                        $orderStatus = 'devolvida_ps';
+                        /* if have refund value is an partially refund, so the status should be keeped */
+                        if ($refundValue) {
+                            $comment = 'Estornado valor de $' . $refundValue . ' do seu pedido.';
+                            $this->setPartiallyRefundedStatus($orderId);
+                        } else {
+                            $orderStatus = 'devolvida_ps';
+                        }
                     }
                 }
-                $this->notifyCustomer($orderId, $orderStatus);
+                $this->notifyCustomer($orderId, $orderStatus, $comment);
                 Mage::helper('pagseguro/log')->setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus);
             }
             $this->setTransactionRecord($orderId, $transactionCode);
@@ -499,10 +506,9 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
      * @param $orderId
      * @param $orderStatus
      */
-    private function notifyCustomer($orderId, $orderStatus)
+    private function notifyCustomer($orderId, $orderStatus, $comment = null)
     {
         $status = $orderStatus;
-        $comment = null;
         $notify = true;
         $order = Mage::getModel('sales/order')->load($orderId);
         $order->addStatusToHistory($status, $comment, $notify);
@@ -751,5 +757,20 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
         }
 
         return false;
+    }
+
+    /**
+     * Updates respective order partially refunded status to 1 in pagseguro_orders table
+     * 
+     * @param string $orderId
+     * @return void
+     */
+    public function setPartiallyRefundedStatus($orderId)
+    {
+        try {
+            Mage::helper('pagseguro/refund')->setPartiallyRefunded($orderId);
+        } catch (Exception $pse) {
+            throw $pse;
+        }
     }
 }

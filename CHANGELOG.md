@@ -1,5 +1,14 @@
 Changelog
 ---------
+3.11.0
+- Checkout sem endereço (para produtos do tipo 'virtual' e 'downloadable')
+- Valida se o telefone do comprador foi configurado antes de tentar usar o telefone do endereço de entrega
+- Habilitar/desabilitar recuperação de carrinho do PagSeguro via admin
+- Atualizada versão da biblioteca PHP do PagSeguro usada no módulo
+- Tela de listar transações no admin, permitindo ver detalhes da transação
+- Estorno parcial
+- Fix: Corrigido id dos itens do pedido (carrinho) enviados para o PagSeguro
+
 3.5.1
 - Corrigido bug de incompatibilidade com PHP 5.4 no checkout
 
