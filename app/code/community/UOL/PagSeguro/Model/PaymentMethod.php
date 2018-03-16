@@ -112,26 +112,21 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
      */
     private function payment($payment)
     {
+        $this->setShoppingCartRecovery($payment);
         $payment->setReference(Mage::getStoreConfig('uol_pagseguro/store/reference').$this->order->getId());
         $payment->setCurrency('BRL');
         $this->setItems($payment);
         $payment->setSender()->setName($this->order->getCustomerName());
         $payment->setSender()->setEmail($this->order->getCustomerEmail());
+        $this->setSenderPhone($payment);
 
         if ($this->order->getShippingAddress() !== false) {
             $orderAddress = new UOL_PagSeguro_Model_OrderAddress($this->order);
             $payment->setShipping()->setAddress()->instance($orderAddress->getShippingAddress());
             $payment->setShipping()->setType()->withParameters(SHIPPING_TYPE);
-            $payment->setShipping()->setCost()->withParameters(number_format($this->order->getShippingAmount(), 2, '.',
-                ''));
-            //set phone
-            if ($this->order->getShippingAddress()->getTelephone()) {
-                $phone = $this->helper->formatPhone($this->order->getShippingAddress()->getTelephone());
-                $payment->setSender()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
-            }
-
+            $payment->setShipping()->setCost()->withParameters(number_format($this->order->getShippingAmount(), 2, '.', ''));
         }
-        
+
         $payment->setExtraAmount($this->order->getBaseDiscountAmount() + $this->order->getTaxAmount());
         $payment->setNotificationUrl($this->getNotificationURL());
 
@@ -143,7 +138,12 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
      */
     private function setItems($payment)
     {
+        $payment->setShipping()->setAddressRequired()->withParameters('false');
+
         foreach ($this->order->getAllVisibleItems() as $product) {
+            // check shipping necessity according with each product in the cart
+            $this->setShippingIsRequired($payment, $product->getData()['product_type']);
+
             $payment->addItems()->withParameters(
                 $product->getProduct()->getId(),
                 substr($product->getName(), 0, 254),
@@ -301,5 +301,77 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
     public function getOneStepCheckoutIsEnabled()
     {
         return (Mage::getStoreConfig("onestepcheckout/general/is_enabled") == 1) ? true : false;
+    }
+
+    /**
+     * Checks if the product type requires shipping and, if it is required, set
+     * the 'addressRequired' pagseguro api parameter to true
+     *
+     * @param \PagSeguro\Domains\Requests\DirectPayment\Boleto
+     *      | \PagSeguro\Domains\Requests\DirectPayment\CreditCard
+     *      | \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
+     *      | \PagSeguro\Domains\Requests\Payment
+     *      $payment
+     * @param string $productType
+     * @return void
+     */
+    private function setShippingIsRequired($payment, $productType)
+    {
+        if (! in_array($productType, $this->productTypesWithoutShipping())) {
+            $payment->setShipping()->setAddressRequired()->withParameters('true');
+        }
+    }
+
+    /**
+     * Return an array of magento product types that do not require shipping
+     *
+     * @return array
+     */
+    private function productTypesWithoutShipping()
+    {
+        return array('virtual', 'downloadable');
+    }
+
+    /**
+     * Set sender phone with magento phone from billing address or, in second case, from shipping address
+     *
+     * @param \PagSeguro\Domains\Requests\DirectPayment\Boleto
+     *      | \PagSeguro\Domains\Requests\DirectPayment\CreditCard
+     *      | \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
+     *      | \PagSeguro\Domains\Requests\Payment
+     *      $payment
+     * @return void
+     */
+    private function setSenderPhone($payment)
+    {
+        $phone = null;
+        if ($this->order->getBillingAddress() && $this->order->getBillingAddress()->getTelephone()) {
+            $phone = $this->helper->formatPhone($this->order->getBillingAddress()->getTelephone());
+        } else if ($this->order->getShippingAddress() && $this->order->getShippingAddress()->getTelephone()) {
+            $phone = $this->helper->formatPhone($this->order->getShippingAddress()->getTelephone());
+        }
+        if ($phone) {
+            $payment->setSender()->setPhone()->withParameters($phone['areaCode'], $phone['number']);
+        }
+    }
+
+    /**
+     * Set PagSeguro recovery shopping cart value
+     *
+     * @param \PagSeguro\Domains\Requests\DirectPayment\Boleto
+     *      | \PagSeguro\Domains\Requests\DirectPayment\CreditCard
+     *      | \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit
+     *      | \PagSeguro\Domains\Requests\Payment
+     *      $payment
+     * @return void
+     */
+    private function setShoppingCartRecovery($payment)
+    {
+        $recoveryValue = Mage::getStoreConfig('payment/pagseguro/shopping_cart_recovery');
+        if (Mage::getStoreConfig('payment/pagseguro/shopping_cart_recovery') == true) {
+            $payment->addParameter()->withParameters('enableRecovery', 'true');
+        } else {
+            $payment->addParameter()->withParameters('enableRecovery', 'false');
+        }
     }
 }
