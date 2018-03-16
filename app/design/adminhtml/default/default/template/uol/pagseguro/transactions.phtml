@@ -87,22 +87,12 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                 <div id="modal-details" class="modal">
                     <div class="modal-content">
                         <button id="modal-close"></button>
-                        <div- class="list-datails">
-                            <h3>Transação</h3>
-                            <div id="transaction-group" class="group">
-                                <div></div>
-                                <div></div>
-                            </div>
-                            <div id="payment-group" class="group">
+                        <div class="list-datails">
+                            <div class="group"><h3>Transação</h3></div>
+                            <div id="transaction-group" class="group"></div>
 
-                            </div>
-                            <div id="itens" class="hidden-groups group group-itens">
-                            
-                            </div>
-
-                            <div id="cost-data" class="hidden-groups group">
-                                
-                            </div>
+                            <div class="group"><h3>Pagamento</h3></div>
+                            <div id="payment-group" class="group"></div>
                         <div>
                     </div>
                 </div>
@@ -306,8 +296,6 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
         
         var requestTransactionDetails = function (transaction_code) {
             Modal.showLoading('Aguarde...');
-            var listItens = jQuery('#itens');
-            var listData = jQuery('#cost-data');
             var listItensBody;
             jQuery.ajax({
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transactions/getTransaction');?>",
@@ -318,18 +306,20 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                 },
                 success: function (result) {
                     result = JSON.parse(result);
+                    console.log(result)
                     if (result.status == false && result.err == "conciliate") {
                         Modal.message('error', 'É necessário utilizar a conciliação de transações primeiro.');
                     } else if (result.status == false) {
                         Modal.message('error', result.err);
                     } else {
-                        if(result.paymentLink != false){
-                            jQuery('#group-father').append('<dl><dt>Link para pagamento: </dt><dd>' + '<a href=' + result.paymentLink + '>' + result.paymentLink +'</a>' + '</dd></dl>');
-                        }
-
+                        jQuery('#transaction-group').append('<div></div>');
+                        jQuery('#transaction-group').append('<div></div>');
+                        jQuery('#payment-group').append('<div></div>');
+                        jQuery('#payment-group').append('<div></div>');
                         var listTransactionLine1 = jQuery('#transaction-group div:eq(0)');
                         var listTransactionLine2 = jQuery('#transaction-group div:eq(1)');
-                        var listPayment = jQuery('#payment-group');
+                        var listPaymentLine1 = jQuery('#payment-group div:eq(0)');
+                        var listPaymentLine2 = jQuery('#payment-group div:eq(1)');
 
                         if(result.date != undefined && result.date != false){
                             listTransactionLine1.append('<dl class=""><dt>Data e hora: </dt><dd>' + result.date + '</dd></dl>');
@@ -365,45 +355,54 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
 
                         jQuery('#transaction-group').append('<span id="btn-hidden-itens" class="link ">Exibir todos os itens &#9660</span>');
 
+                        jQuery('#transaction-group').append('<div id="itens" class="hidden-groups table"></div>');
+
                         if(result.paymentMethod.titleType != undefined && result.paymentMethod.titleType != false){
-                            listPayment.append('<dl><dt>Tipo de pagamento: </dt><dd>' + result.paymentMethod.titleType + '</dd></dl>');
+                            listPaymentLine1.append('<dl><dt>Tipo de pagamento: </dt><dd>' + result.paymentMethod.titleType + '</dd></dl>');
                         }
 
                         if(result.paymentMethod.titleCode != undefined && result.paymentMethod.titleCode != false){
-                            listPayment.append('<dl><dt>Meio de pagamento: </dt><dd>' + result.paymentMethod.titleCode +'</dd></dl>');
+                            listPaymentLine1.append('<dl><dt>Meio de pagamento: </dt><dd>' + result.paymentMethod.titleCode +'</dd></dl>');
+                        }
+
+                        if(result.paymentLink != false){
+                            listPaymentLine1.append('<dl><dt>Link para pagamento: </dt><dd>' + '<a href=' + result.paymentLink + '>' + 'Clique aqui para acessar' +'</a>' + '</dd></dl>');
                         }
 
                         if(result.installmentCount != undefined && result.installmentCount != false){
-                            listPayment.append('<dl><dt>Número de parcelas: </dt><dd>' + result.installmentCount + '</dd></dl>');
+                            listPaymentLine1.append('<dl><dt>Nº de parcelas: </dt><dd>' + result.installmentCount + '</dd></dl>');
                         }
 
                         if(result.extraAmount != undefined && result.extraAmount != false){
-                            listPayment.append('<dl class=""><dt>Valor extra(R$): </dt><dd>' + formatReal(result.extraAmount) + '</dd></dl>');
+                            listPaymentLine2.append('<dl class=""><dt>Valor extra: </dt><dd>(R$) ' + formatReal(result.extraAmount) + '</dd></dl>');
                         }
 
                         if(result.discountAmount != undefined && result.discountAmount != false){
-                            listPayment.append('<dl class=""><dt>Desconto(R$): </dt><dd>' + formatReal(result.discountAmount) + '</dd></dl>');
+                            listPaymentLine2.append('<dl class=""><dt>Desconto: </dt><dd> (R$)' + formatReal(result.discountAmount) + '</dd></dl>');
                         }
 
                         if(result.grossAmount != undefined && result.grossAmount != false){
-                            listPayment.append('<dl class=""><dt>Valor bruto(R$): </dt><dd>' + formatReal(result.grossAmount) +'</dd></dl>');
+                            listPaymentLine2.append('<dl class=""><dt>Valor bruto: </dt><dd>(R$) ' + formatReal(result.grossAmount) +'</dd></dl>');
                         }
 
                         if(result.netAmount != undefined && result.netAmount != false){
-                            listPayment.append('<dl class=""><dt>Valor líquido(R$): </dt><dd>' + formatReal(result.netAmount) + '</dd></dl>');
+                            listPaymentLine2.append('<dl class=""><dt>Valor líquido: </dt><dd>(R$) ' + formatReal(result.netAmount) + '</dd></dl>');
                         }
 
                         if(result.promoCode != undefined && result.promoCode != false){
-                            listPayment.append('<dl><dt>Código de promoção: </dt><dd>' + result.promoCode + '</dd></dl>');
+                            listPaymentLine2.append('<dl><dt>Código de promoção: </dt><dd>' + result.promoCode + '</dd></dl>');
                         }
 
                         if(result.escrowEndDate != undefined && result.escrowEndDate != false){
-                            listPayment.append('<dl><dt>Data de crédito: </dt><dd>' + result.escrowEndDate +'</dd></dl>');
+                            listPaymentLine1.append('<dl><dt>Data de crédito: </dt><dd>' + result.escrowEndDate +'</dd></dl>');
                         }
 
-                        listPayment.append('<span id="btn-hidden-data" class="link">Exibir todos os dados de custos cobrados &#9660</span>');
+                        jQuery('#payment-group').append('<span id="btn-hidden-data" class="link">Exibir todos os dados de custos cobrados &#9660</span>');
 
-                        listItens.append('<h3>Itens do carrinho</h3>');
+                        jQuery('#payment-group').append('<div id="cost-data" class="hidden-groups table"></div>');
+
+                        var listItens = jQuery('#itens');
+                        listItens.append('<h4>Itens do carrinho</h4>');
                         listItens.append('<div class="group-title"></div>');
                         listItens.append('<div class="group-table-itens"></div>');
                         var listItensTitle = jQuery('.group-title');
@@ -427,25 +426,30 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                             }
                         }
     
-                        listData.append('<h3>Dados dos custos cobrados</h3>');
+                        jQuery('#cost-data').append('<h4>Dados dos custos cobrados</h4>');
+
+                        jQuery('#cost-data').append('<div class="rate"></div>');
+
+                        var listData = jQuery('#cost-data div');
+
                         if(result.creditorFees.installmentFeeAmount != undefined && result.creditorFees.installmentFeeAmount != false){
-                            listData.append('<dl><dt>Taxa de parcelamento(R$): </dt><dd>' + formatReal(result.creditorFees.installmentFeeAmount) + '</dd></dl>');
+                            listData.append('<dl><dt>Taxa de parcelamento: </dt><dd> (R$)' + formatReal(result.creditorFees.installmentFeeAmount) + '</dd></dl>');
                         }
 
                         if(result.creditorFees.operationalFeeAmount != undefined && result.creditorFees.operationalFeeAmount != false){
-                            listData.append('<dl><dt>Taxa de operação(R$): </dt><dd>'+ formatReal(result.creditorFees.operationalFeeAmount) +'</dd></dl>');
+                            listData.append('<dl><dt>Taxa de operação: </dt><dd> (R$)'+ formatReal(result.creditorFees.operationalFeeAmount) +'</dd></dl>');
                         }
 
                         if(result.creditorFees.intermediationRateAmount != undefined && result.creditorFees.intermediationRateAmount != false){
-                            listData.append('<dl><dt>Tarifa de intermediação(R$): </dt><dd>' + formatReal(result.creditorFees.intermediationRateAmount) + '</dd></dl>');
+                            listData.append('<dl><dt>Tarifa de intermediação: </dt><dd>(R$) ' + formatReal(result.creditorFees.intermediationRateAmount) + '</dd></dl>');
                         }
 
                         if(result.creditorFees.intermediationFeeAmount != undefined && result.creditorFees.intermediationFeeAmount != false){
-                            listData.append('<dl><dt>Taxa de intermediação(R$): </dt><dd>' + formatReal(result.creditorFees.intermediationFeeAmount) + '</dd></dl>');
+                            listData.append('<dl><dt>Taxa de intermediação: </dt><dd>(R$) ' + formatReal(result.creditorFees.intermediationFeeAmount) + '</dd></dl>');
                         }
 
                         if(result.creditorFees.comissionFeeAmount != undefined && result.creditorFees.comissionFeeAmount != false){
-                            listData.append('<dl><dt>Taxa de comissão(R$): </dt><dd>' + formatReal(result.creditorFees.comissionFeeAmount) + '</dd></dl>');
+                            listData.append('<dl><dt>Taxa de comissão: </dt><dd>(R$) ' + formatReal(result.creditorFees.comissionFeeAmount) + '</dd></dl>');
                         }
     
                         Modal.hideLoading();
@@ -456,7 +460,8 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
         }
 
         function clearListDetails(){
-            jQuery('#group-father').empty();
+            jQuery('#transaction-group').empty();
+            jQuery('#payment-group').empty();
             jQuery('#cost-data').empty();
             jQuery('#itens').empty();
         }
