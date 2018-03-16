@@ -150,7 +150,9 @@ limitations under the License.
 
 /*List Details*/
 .list-datails .group { border-bottom: solid 1px #F5F5F5; margin: 0 40px; padding: 10px 0; overflow: hidden; }
-.list-datails .group dl dt{ float: left; padding: 0 .2em 0 0; }
+.list-datails .group div { display: flex; justify-content: space-between; }
+.list-datails .group div:nth-child(2) { justify-content: normal; }
+.list-datails .group div:nth-child(2) dl:last-child {  margin-left: 42px; }
 .list-datails .group dl dd{ font-weight: 700; }
 .group-title { font-weight: 700; display: flex; flex-direction: row; justify-content: space-around; }
 .itens-cell { width: 70px; }
