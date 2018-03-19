@@ -306,7 +306,6 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                 },
                 success: function (result) {
                     result = JSON.parse(result);
-                    console.log(result)
                     if (result.status == false && result.err == "conciliate") {
                         Modal.message('error', 'É necessário utilizar a conciliação de transações primeiro.');
                     } else if (result.status == false) {
@@ -374,19 +373,19 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                         }
 
                         if(result.extraAmount != undefined && result.extraAmount != false){
-                            listPaymentLine2.append('<dl class=""><dt>Valor extra: </dt><dd>(R$) ' + formatReal(result.extraAmount) + '</dd></dl>');
+                            listPaymentLine2.append('<dl class=""><dt>Valor extra: </dt><dd>R$ ' + formatReal(result.extraAmount) + '</dd></dl>');
                         }
 
                         if(result.discountAmount != undefined && result.discountAmount != false){
-                            listPaymentLine2.append('<dl class=""><dt>Desconto: </dt><dd> (R$)' + formatReal(result.discountAmount) + '</dd></dl>');
+                            listPaymentLine2.append('<dl class=""><dt>Desconto: </dt><dd> R$' + formatReal(result.discountAmount) + '</dd></dl>');
                         }
 
                         if(result.grossAmount != undefined && result.grossAmount != false){
-                            listPaymentLine2.append('<dl class=""><dt>Valor bruto: </dt><dd>(R$) ' + formatReal(result.grossAmount) +'</dd></dl>');
+                            listPaymentLine2.append('<dl class=""><dt>Valor bruto: </dt><dd>R$ ' + formatReal(result.grossAmount) +'</dd></dl>');
                         }
 
                         if(result.netAmount != undefined && result.netAmount != false){
-                            listPaymentLine2.append('<dl class=""><dt>Valor líquido: </dt><dd>(R$) ' + formatReal(result.netAmount) + '</dd></dl>');
+                            listPaymentLine2.append('<dl class=""><dt>Valor líquido: </dt><dd>R$ ' + formatReal(result.netAmount) + '</dd></dl>');
                         }
 
                         if(result.promoCode != undefined && result.promoCode != false){
@@ -433,23 +432,23 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                         var listData = jQuery('#cost-data div');
 
                         if(result.creditorFees.installmentFeeAmount != undefined && result.creditorFees.installmentFeeAmount != false){
-                            listData.append('<dl><dt>Taxa de parcelamento: </dt><dd> (R$)' + formatReal(result.creditorFees.installmentFeeAmount) + '</dd></dl>');
+                            listData.append('<dl><dt>Taxa de parcelamento: </dt><dd> R$' + formatReal(result.creditorFees.installmentFeeAmount) + '</dd></dl>');
                         }
 
                         if(result.creditorFees.operationalFeeAmount != undefined && result.creditorFees.operationalFeeAmount != false){
-                            listData.append('<dl><dt>Taxa de operação: </dt><dd> (R$)'+ formatReal(result.creditorFees.operationalFeeAmount) +'</dd></dl>');
+                            listData.append('<dl><dt>Taxa de operação: </dt><dd> R$'+ formatReal(result.creditorFees.operationalFeeAmount) +'</dd></dl>');
                         }
 
                         if(result.creditorFees.intermediationRateAmount != undefined && result.creditorFees.intermediationRateAmount != false){
-                            listData.append('<dl><dt>Tarifa de intermediação: </dt><dd>(R$) ' + formatReal(result.creditorFees.intermediationRateAmount) + '</dd></dl>');
+                            listData.append('<dl><dt>Tarifa de intermediação: </dt><dd>R$ ' + formatReal(result.creditorFees.intermediationRateAmount) + '</dd></dl>');
                         }
 
                         if(result.creditorFees.intermediationFeeAmount != undefined && result.creditorFees.intermediationFeeAmount != false){
-                            listData.append('<dl><dt>Taxa de intermediação: </dt><dd>(R$) ' + formatReal(result.creditorFees.intermediationFeeAmount) + '</dd></dl>');
+                            listData.append('<dl><dt>Taxa de intermediação: </dt><dd>R$ ' + formatReal(result.creditorFees.intermediationFeeAmount) + '</dd></dl>');
                         }
 
                         if(result.creditorFees.comissionFeeAmount != undefined && result.creditorFees.comissionFeeAmount != false){
-                            listData.append('<dl><dt>Taxa de comissão: </dt><dd>(R$) ' + formatReal(result.creditorFees.comissionFeeAmount) + '</dd></dl>');
+                            listData.append('<dl><dt>Taxa de comissão: </dt><dd>R$ ' + formatReal(result.creditorFees.comissionFeeAmount) + '</dd></dl>');
                         }
     
                         Modal.hideLoading();
