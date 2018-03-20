@@ -472,8 +472,19 @@ function dateMask (date, fieldName) {
     if (field.value == "") {
         field.classList.remove('pagseguro-field-error');
     }
-} 
-        
+}
+
+function dateVerifyOnLosesFocus(fieldName){
+    var mydate = '';
+    mydate = mydate + fieldName.value;
+
+    if(mydate.length > 0 && mydate.length < 10){
+        fieldName.classList.add('pagseguro-field-error');
+    }else{
+        dateVerify(fieldName);
+    }
+}
+
 function dateVerify (field) { 
 
     day = (field.value.substring(0,2)); 

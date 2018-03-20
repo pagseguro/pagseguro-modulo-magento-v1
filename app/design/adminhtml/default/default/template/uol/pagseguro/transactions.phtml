@@ -51,8 +51,8 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                     </tr>
                     <tr>
                         <th width="8%" class="input-search">
-                            <input type="text" class="pagseguro-field" name="date_begin" id="date_begin" OnKeyUp="dateMask(this.value, 'date_begin')" maxlength="10" placeholder="De"/>
-                            <input type="text" class="pagseguro-field input-date" name="date_end" id="date_end" OnKeyUp="dateMask(this.value, 'date_end')" maxlength="10" placeholder="Até"/>
+                            <input type="text" class="pagseguro-field" name="date_begin" id="date_begin" OnKeyUp="dateMask(this.value, 'date_begin')" onblur="dateVerifyOnLosesFocus(this)" maxlength="10" placeholder="De"/>
+                            <input type="text" class="pagseguro-field input-date" name="date_end" id="date_end" OnKeyUp="dateMask(this.value, 'date_end')" onblur="dateVerifyOnLosesFocus(this)" maxlength="10" placeholder="Até"/>
                         </th>
                         <th width="20%" class="input-search"><input type="text" class="pagseguro-field" name="id_magento" id="id_magento" placeholder="ID Magento"/></th>
                         <th width="35%" class="input-search"><input type="text" class="pagseguro-field" name="id_pagseguro" id="id_pagseguro" placeholder="ID PagSeguro"/></th>
