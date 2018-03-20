@@ -145,7 +145,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
             $this->setShippingIsRequired($payment, $product->getData()['product_type']);
 
             $payment->addItems()->withParameters(
-                $product->getId(),
+                $product->getProduct()->getId(),
                 substr($product->getName(), 0, 254),
                 (float)$product->getQtyOrdered(),
                 number_format((float)$product->getPrice(), 2, '.', ''),
