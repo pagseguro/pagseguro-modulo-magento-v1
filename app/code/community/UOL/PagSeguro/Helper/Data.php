@@ -49,6 +49,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
         7 => "cancelada_ps",
         8 => "chargeback_debitado_ps",
         9 => "em_contestacao_ps",
+        10 => "partially_refunded",
     );
 
     /**
@@ -474,7 +475,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
                     if ($this->webserviceHelper()->refundRequest($transactionCode, $refundValue)->getResult() == 'OK') {
                         /* if have refund value is an partially refund, so the status should be keeped */
                         if ($refundValue) {
-                            $comment = 'Estornado valor de $' . $refundValue . ' do seu pedido.';
+                            $comment = 'Estornado valor de R$' . $refundValue . ' do seu pedido.';
                             $this->setPartiallyRefundedStatus($orderId);
                         } else {
                             $orderStatus = 'devolvida_ps';

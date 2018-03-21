@@ -39,6 +39,13 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                     ?>
                 </p>
 
+                 <p>
+                    <?php
+                    echo $helper->__("<strong>Atenção: </strong>Toda transação estornada de forma parcial não tem seu status alterado. Por isso, ao filtrar 
+                        por \"Estornada Parcialmente\" o pedido exibirá o seu status original.");
+                    ?>
+                </p>
+
                 <table id="transaction-table" class="pagseguro-table">
                     <thead>
                     <tr>
@@ -66,6 +73,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                             <option value="5">Em disputa</option>
                             <option value="6">Devolvida</option>
                             <option value="7">Cancelada</option>
+                            <option value="10">Estornada Parcialmente</option>
                         </select></th>
                         <th width="15%" class="input-search">
                             <input type="button" class="pagseguro-button" id="list-filter-button" value="<?php echo $helper->__('Filtrar'); ?>">
@@ -357,7 +365,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                         }
 
                         if(result.paymentLink != false){
-                            listPaymentLine1.append('<dl><dt>Link para pagamento: </dt><dd>' + '<a href=' + result.paymentLink + '>' + 'Clique aqui para acessar' +'</a>' + '</dd></dl>');
+                            listPaymentLine1.append('<dl><dt>Link para pagamento: </dt><dd>' + '<a target=blank href=' + result.paymentLink + '>' + 'Clique aqui para acessar' +'</a>' + '</dd></dl>');
                         }
 
                         if(result.installmentCount != undefined && result.installmentCount != false){

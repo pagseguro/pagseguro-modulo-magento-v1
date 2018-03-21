@@ -89,7 +89,9 @@ class UOL_PagSeguro_Helper_Transactions extends HelperData
         }
 
         if (isset($paramsFilter['status'])) {
-            $select = $select->where('order.status = ?', $this->getPaymentStatusFromKey($paramsFilter['status']));
+            $select =  ($this->getPaymentStatusFromKey($paramsFilter['status']) == 'partially_refunded')
+                ? $select->where('ps.partially_refunded = ?', 1)
+                : $select->where('order.status = ?', $this->getPaymentStatusFromKey($paramsFilter['status']));
         }
 
         if (isset($paramsFilter['startDate']) && isset($paramsFilter['endDate'])) {

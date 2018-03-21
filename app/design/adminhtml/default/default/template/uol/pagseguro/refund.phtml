@@ -381,7 +381,7 @@ $html   = Mage::helper('pagseguro/html');
             } else {
                 refund = refund.data('config');
                 refund = refund.split('/');
-                var idMagento = refund[0];
+                var idMagento = refund[4];
                 var valueTotal = formatReal(refund[3]);
                 jQuery('#id-magento').text('ID magento: ' + idMagento);
                 jQuery('#transaction-value').text('Valor total da venda: R$ ' + valueTotal);
