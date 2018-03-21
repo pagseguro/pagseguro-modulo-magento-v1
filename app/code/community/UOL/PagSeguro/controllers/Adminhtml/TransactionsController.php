@@ -106,11 +106,6 @@ class UOL_PagSeguro_Adminhtml_TransactionsController extends Mage_Adminhtml_Cont
             $this->paramsFilter['idPagSeguro'] = $this->getRequest()->getPost('id_pagseguro');
         }
 
-        if($this->getRequest()->getPost('enviroment'))
-        {
-            $this->paramsFilter['environment'] = $this->getRequest()->getPost('enviroment') == "1" ? "production" : "sandbox";
-        }
-
         if($this->getRequest()->getPost('status'))
         {
             $this->paramsFilter['status'] = $this->getRequest()->getPost('status');

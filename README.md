@@ -61,6 +61,7 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **oferecer desconto para ...**: ativa/desativa desconto para checkouts utilizando este meio de pagamento
  - **percentual de desconto**: define o percentual de desconto a ser concedido para o meio de pagamento escolhido
  - **transações -> abandonadas**: permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar emails de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
+ - **habilitar recuperação de carrinho**: Habilita a recuperação de carrinho do PagSeguro. (por padrão está desabilitada)
  - **listar parcelamento**: Habilita a exibição de uma listagem de parcelas na tela de visualização do produto. (Irá exibir o maior parcelamento disponível para o produto na tela de exibição do mesmo)
  
  -------------------------
