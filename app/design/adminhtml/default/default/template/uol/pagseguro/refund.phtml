@@ -68,6 +68,7 @@ $html   = Mage::helper('pagseguro/html');
                 <?php
                 $noTransaction = 'Nenhum resultado.';
                 $refundSuccess = $helper->__("Transação estornada com sucesso!");
+                $partialRefundSuccess = $helper->__("Estorno parcial realizado com sucesso!");
                 $refundError   = $helper->__("Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.");
                 ?>
 
@@ -218,14 +219,21 @@ $html   = Mage::helper('pagseguro/html');
                     } else if (xhrResult.status == false && xhrResult.err == true) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
-                    } else if (xhrResult.status == false) {
+                    } else if (xhrResult.status == false && !isPartial) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('success', '<?php echo $refundSuccess; ?>');
+                    } else if (xhrResult.status == false && !isPartial) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('success', '<?php echo $partialRefundSuccess; ?>');
                     } else {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         jQuery('#refund-table').dataTable().fnAddData(xhrResult);
                         jQuery('#refund-table').dataTable()._fnInitComplete();
-                        Modal.message('success', '<?php echo $refundSuccess; ?>');
+                        if (isPartial) {
+                            Modal.message('success', '<?php echo $partialRefundSuccess; ?>');
+                        } else {
+                            Modal.message('success', '<?php echo $refundSuccess; ?>');
+                        }
                     }
                  },
                 error: function () {
@@ -398,6 +406,9 @@ $html   = Mage::helper('pagseguro/html');
             } else if (getMoney(valueInput) == 0) {
                 jQuery('#refund-value').addClass('pagseguro-field-error');
                 jQuery('.error').text('Valor de estorno não pode ser zero.');
+            }else if (valueInput == ""){
+                jQuery('#refund-value').addClass('pagseguro-field-error');
+                jQuery('.error').text('Informe o valor a ser estornado.');
             } else {
                 if(valueIsNumber(valueInput)){
                     refund[3] = valueInput;
