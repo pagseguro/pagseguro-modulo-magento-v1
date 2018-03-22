@@ -106,6 +106,7 @@ limitations under the License.
 .pagseguro-table tbody td i { margin: 0 0.4em; font-size: 0.9em; }
 .pagseguro-table thead .input-search { vertical-align: middle; }
 .pagseguro-table thead tr th .input-date { margin-top: 5px !important; }
+#transaction-table thead tr:nth-child(2) th:nth-child(3) input { width: 255px; }
 
 /* DataTable Sorting */
 .dataTable .sorting { background-image: url("../images/dataTable/sort_both.png"); cursor:pointer; }
@@ -149,17 +150,25 @@ limitations under the License.
 .pagseguro-button.align-right { float: right; }
 
 /*List Details*/
-.list-datails .group { border-bottom: solid 1px #F5F5F5; margin: 0 40px; padding: 10px 0; overflow: hidden; }
-.list-datails .group dl dt{ float: left; padding: 0 .2em 0 0; }
+.list-datails .group { border-bottom: solid 1px #DEDEDE; margin: 0 40px; padding: 10px 0; overflow: hidden; }
+.list-datails .group > div:not(:last-child) { display: flex; justify-content: flex-start; margin-bottom: 8px;}
+.list-datails .group h4 { margin-bottom: 0; }
+.list-datails > div:nth-child(3) { margin-top: 25px; }
+.list-datails  .group > div > dl:not(:last-child) {  margin-right: 40px; }
+.list-datails .group div dl:first-child {  width: 112px; }
 .list-datails .group dl dd{ font-weight: 700; }
-.group-title { font-weight: 700; display: flex; flex-direction: row; justify-content: space-around; }
-.itens-cell { width: 70px; }
-.description-cell { width: 150px; }
-.itens-line { display:flex; flex-flow: row wrap; justify-content: space-around; }
+.list-datails .table { background-color: #e9e9e9; padding: 10px 25px; margin-top: 5px; max-height: 92px; overflow: auto; }
+.list-datails .group-title { font-weight: 700; display: flex; flex-direction: row; justify-content: flex-start; margin-top: 7px; }
+.list-datails .group-title > div:not(:first-child), .itens-line > div:not(:first-child) { margin-right: 50px; }
+.list-datails .itens-cell { width: 70px; }
+.list-datails .description-cell { width: 200px; margin-right: 0 !important; }
+.list-datails .itens-line { display:flex; flex-flow: row wrap; justify-content: flex-start; }
+.list-datails .group .table .rate { display: flex; justify-content: flex-start; }
+.list-datails .group .table .rate dl { width: 140px; margin-top: 7px; margin-right: 45px; }
 
 /*Modal Details*/
 .modal { display: none; position: fixed; z-index: 101; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4); }
-.modal .modal-content { background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: 60%; border-radius: 10px; }
+.modal .modal-content { background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: 60%; border-radius: 10px; max-height: 500px; }
 .modal .modal-content-refund { background-color: #fefefe; margin: auto; padding: 20px; padding-bottom: 50px; border: 1px solid #888; width: 20%; border-radius: 10px; }
 .modal .modal-content-refund form div input{ width: 90px !important; }
 .modal .modal-content-refund form div label{ font-size: 16px !important; font-weight: 700 !important; color: #333 !important; display: inline-block; vertical-align: middle; }
