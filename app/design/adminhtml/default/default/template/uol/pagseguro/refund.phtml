@@ -377,7 +377,7 @@ $html   = Mage::helper('pagseguro/html');
         jQuery('#refund-table').on('click', 'a.action', function () {
             refund = jQuery(this);
 
-            if(refund.context.innerText == "Estornar"){
+            if(refund.context.innerText == "Estorno total"){
                 Modal.confirm('Não será possível reverter esta ação. Deseja continuar?');
                 jQuery('.pagseguro-confirm-button').on('click', function (target) {
                     if (target.currentTarget.id == 'accept') {

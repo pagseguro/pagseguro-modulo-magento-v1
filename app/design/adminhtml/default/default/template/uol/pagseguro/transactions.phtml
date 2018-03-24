@@ -33,8 +33,9 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                 <h2 class="title"><?php echo $helper->__('Lista de Transações'); ?></h2>
                 <p>
                     <?php
-                    $string .= "Com esta funcionalidade você poderá listar as suas transações. É aconselhável que antes de usar esta
-                            funcionalidade você faça a <a href='$url'><u>conciliação</u></a> de suas transações para obter os status mais atuais.";
+                    $string .= "Com esta funcionalidade você poderá listar as suas transações. Caso não encontre uma transação
+                        ou se o status de uma transação estiver desatualizada é aconselhável que você use a <a href='$url'><u>conciliação</u></a>
+                         de transações.";
                     echo $helper->__($string);
                     ?>
                 </p>

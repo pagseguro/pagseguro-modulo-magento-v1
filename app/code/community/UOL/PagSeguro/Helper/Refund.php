@@ -220,7 +220,7 @@ class UOL_PagSeguro_Helper_Refund extends UOL_PagSeguro_Helper_Data
         $actionOrder = "<a class='edit' target='_blank' href='".$this->getEditOrderUrl($order->getId())."'>";
         $actionOrder .= $this->__('Ver detalhes')."</a>";
         $actionOrder .= "<a ".$config." href='javascript:void(0)'>";
-        $actionOrder .= $this->__('Estornar')."</a>";
+        $actionOrder .= $this->__('Estorno total')."</a>";
         $config = "class='action' data-config='".$order->getId().'/'.$PagSeguroSummaryItem->getCode().'/'.$this->getPaymentStatusFromKey($PagSeguroSummaryItem->getStatus()).'/'.$PagSeguroSummaryItem->getGrossAmount().'/'.$order->getIncrementId()."'";
         $actionOrder .= "<a ".$config." href='javascript:void(0)'>";
         $actionOrder .= $this->__('Estorno parcial')."</a>";
