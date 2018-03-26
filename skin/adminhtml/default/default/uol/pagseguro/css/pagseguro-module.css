@@ -87,7 +87,7 @@ limitations under the License.
 }
 
 /* Tables */
-.pagseguro-table { border: 1px solid #e5e5e5; border-bottom-width: 3px; border-collapse: collapse; color: #444; width: 100%; }
+.pagseguro-table { border: 1px solid #e5e5e5; border-bottom-width: 3px; border-collapse: collapse; color: #444; width: 100%  !important; }
 .pagseguro-table th { background: #eee no-repeat center right; border: 1px solid #dbdbdb; color: #515151; font-size: 0.85em; font-weight: normal; padding: 10px 5px; text-transform: uppercase; text-align:center; }
 .pagseguro-table th:first-child + th { cursor: pointer; }
 .pagseguro-table tfoot td { text-align:center; padding: 5px; }
@@ -106,7 +106,14 @@ limitations under the License.
 .pagseguro-table tbody td i { margin: 0 0.4em; font-size: 0.9em; }
 .pagseguro-table thead .input-search { vertical-align: middle; }
 .pagseguro-table thead tr th .input-date { margin-top: 5px !important; }
-#transaction-table thead tr:nth-child(2) th:nth-child(3) input { width: 255px; }
+#transaction-table thead tr:nth-child(2) th:nth-child(1) input,
+#transaction-table thead tr:nth-child(2) th:nth-child(2) input,
+#transaction-table thead tr:nth-child(2) th:nth-child(3) input { width: 85%; }
+#transaction-table thead tr:nth-child(2) th:nth-child(1) input,
+#transaction-table thead tr:nth-child(2) th:nth-child(2) input { max-width: 110px; }
+#transaction-table thead tr:nth-child(2) th:nth-child(3) input { max-width: 270px; }
+
+
 
 /* DataTable Sorting */
 .dataTable .sorting { background-image: url("../images/dataTable/sort_both.png"); cursor:pointer; }

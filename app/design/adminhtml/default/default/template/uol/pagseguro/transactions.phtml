@@ -50,21 +50,21 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                 <table id="transaction-table" class="pagseguro-table">
                     <thead>
                     <tr>
-                        <th width="8%"><?php echo $helper->__('Data'); ?></th>
-                        <th width="20%"><?php echo $helper->__('ID Magento'); ?></th>
+                        <th width="14%"><?php echo $helper->__('Data'); ?></th>
+                        <th width="14%"><?php echo $helper->__('ID Magento'); ?></th>
                         <th width="35%"><?php echo $helper->__('ID PagSeguro'); ?></th>
-                        <th width="12%"><?php echo $helper->__('Ambiente'); ?></th>
+                        <th width="10%"><?php echo $helper->__('Ambiente'); ?></th>
                         <th width="12%"><?php echo $helper->__('Status PagSeguro'); ?></th>
                         <th width="15%"><?php echo $helper->__('Ação'); ?></th>
                     </tr>
                     <tr>
-                        <th width="8%" class="input-search">
+                        <th width="14%" class="input-search">
                             <input type="text" class="pagseguro-field" name="date_begin" id="date_begin" OnKeyUp="dateMask(this.value, 'date_begin')" onblur="dateVerifyOnLosesFocus(this)" maxlength="10" placeholder="De"/>
                             <input type="text" class="pagseguro-field input-date" name="date_end" id="date_end" OnKeyUp="dateMask(this.value, 'date_end')" onblur="dateVerifyOnLosesFocus(this)" maxlength="10" placeholder="Até"/>
                         </th>
-                        <th width="20%" class="input-search"><input type="text" class="pagseguro-field" name="id_magento" id="id_magento" placeholder="ID Magento"/></th>
+                        <th width="14%" class="input-search"><input type="text" class="pagseguro-field" name="id_magento" id="id_magento" placeholder="ID Magento"/></th>
                         <th width="35%" class="input-search"><input type="text" class="pagseguro-field" name="id_pagseguro" id="id_pagseguro" placeholder="ID PagSeguro"/></th>
-                        <th width="12%" class="input-search"></th>
+                        <th width="10%" class="input-search"></th>
                         <th width="12%" class="input-search"><select class="pagseguro-field" id="status">
                             <option value="">Todos</option>
                             <option value="1">Aguardando Pagamento</option>
@@ -215,6 +215,7 @@ $url = $obj->getUrl('pagseguro/adminhtml_conciliation');
                     {"sClass": "tabela", 'aTargets': [0, 1, 2, 3]},
                     {"sType": "date-br", 'aTargets': [0]}
                 ],
+                "bDestroy": true,
 
                 // Creates paging and notifies when there is no record
                 "oLanguage": {
