@@ -477,10 +477,11 @@ function dateMask (date, fieldName) {
 function dateVerifyOnLosesFocus(fieldName){
     var mydate = '';
     mydate = mydate + fieldName.value;
-
-    if(mydate.length > 0 && mydate.length < 10){
+    if(mydate.length > 0 && mydate.length < 10) {
         fieldName.classList.add('pagseguro-field-error');
-    }else{
+    } else if(mydate.length == 0) {
+        fieldName.classList.remove('pagseguro-field-error');
+    } else {
         dateVerify(fieldName);
     }
 }
