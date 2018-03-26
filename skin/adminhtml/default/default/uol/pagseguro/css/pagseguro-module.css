@@ -112,7 +112,7 @@ limitations under the License.
 #transaction-table thead tr:nth-child(2) th:nth-child(1) input,
 #transaction-table thead tr:nth-child(2) th:nth-child(2) input { max-width: 110px; }
 #transaction-table thead tr:nth-child(2) th:nth-child(3) input { max-width: 270px; }
-
+#transaction-table a:hover {text-decoration: underline; font-weight: bold}
 
 
 /* DataTable Sorting */
@@ -269,3 +269,7 @@ i.icon-pagseguro-msg.large,
 .pagseguro-adminhtml-canceled-index table.pagseguro-table a.edit,
 .pagseguro-adminhtml-refund-index table.pagseguro-table a.edit { display: none !important; }
 .ps_msg_hidden { display: none !important; }
+
+#canceled-table a:hover {text-decoration: underline; font-weight: bold}
+#refund-table a:hover {text-decoration: underline; font-weight: bold}
+#conciliation-table a:hover {text-decoration: underline; font-weight: bold}
