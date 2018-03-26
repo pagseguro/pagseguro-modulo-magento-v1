@@ -70,6 +70,7 @@ class UOL_PagSeguro_Helper_Transactions extends HelperData
             ->join(array('ps' => $pagseguroTable), 'order.entity_id = ps.order_id')
             ->where('ps.transaction_code != ?', '')
             ->order('created_at DESC')
+            ->limit(400)
         ;
 
         if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
