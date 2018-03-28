@@ -35,6 +35,15 @@ $html   = Mage::helper('pagseguro/html');
                     echo $helper->__($string);
                     ?>
                 </p>
+
+                <p>
+                    <?php
+                    echo $helper->__("<strong>Atenção: </strong>Ao realizar um <strong>Estorno total</strong> a transação será estornada e terá seu status alterado no PagSeguro para
+                    \"Devolvida\". Ao realizar um <strong>Estorno parcial</strong> será estornado o valor inserido, contudo, o status da transação no PagSeguro não será
+                     alterado (a transação manterá o seu último status).");
+                    ?>
+                </p>
+
                 <div class="pagseguro-search-tools">
                     <form action="javascript:void(0)" method="post">
                         <input type="hidden" name="form_key"

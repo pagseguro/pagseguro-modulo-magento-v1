@@ -279,7 +279,8 @@ class UOL_PagSeguro_Helper_Refund extends UOL_PagSeguro_Helper_Data
     {
         $pagseguroTable = Mage::getConfig()->getTablePrefix().'pagseguro_orders';
         $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $sql = "UPDATE `".$pagseguroTable."` SET partially_refunded = 1 WHERE order_id = ".$orderId;
-        $connection->query($sql);
+        $where = $connection->quoteInto('order_id = ?', $orderId);
+        $data = array('partially_refunded' => 1);
+        $connection->update($pagseguroTable, $data, $where);
     }
 }
