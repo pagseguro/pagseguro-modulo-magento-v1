@@ -30,7 +30,7 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 
 - Certifique-se de que não há instalação de outros módulos para o PagSeguro em seu sistema;
 - Caso utilize a compilação do Magento, desative-a e limpe-a *(Sistema -> Ferramentas -> Compilação)*;
-- Baixe a última versão do módulo **[nesse link](https://github.com/pagseguro/magento/raw/master/UOL_PagSeguro-3.5.1.tgz)** ou então baixe o repositório como arquivo zip através do botão do GitHub;
+- Baixe a última versão do módulo **[nesse link](https://github.com/pagseguro/magento/raw/master/UOL_PagSeguro-3.11.0.tgz)** ou então baixe o repositório como arquivo zip através do botão do GitHub;
 - Na área administrativa do seu Magento, acesse o menu *Sistema/System -> Magento Connect -> Magento Connect Manager*. Caso tenha uma versão anterior do módulo instalada faça a remoção agora;
 - No Magento Connect Manger, dentro da seção Direct package file upload, clique em **Escolher arquivo/Choose file**, selecione o arquivo UOL_PagSeguro-x.x.x.tgz (baixado anteriormente), clique no botão de upload e acompanhe a instalação do módulo no console da página;
 - Caso utilize a compilação, volte para a área administrativa do Magento, ative-a e execute-a novamente;
@@ -97,6 +97,7 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **transações -> cancelamento**: esta pesquisa retornará todas as transações que estejam com status "em análise" e "aguardando pagamento", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o cancelamento destas transações.
  - **transações -> conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30 dias. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
  - **transações -> estorno**: esta pesquisa retornará todas as transações que estejam com status "paga", "disponível" e "em disputa", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o estorno dos valores pagos para seus compradores.
+ - **transações -> listar transações**: esta pesquisa retorna as últimas transações realizadas pela sua loja no PagSeguro, permitindo utilizar diversos filtros (data, id do pedido, do pagseguro, status) ao realizar uma consulta. A partir do resultado dessa consulta é possível ver os detalhes de cada pedido no PagSeguro através da ação "Ver detalhes transação".
  - **requisitos**: exibe se os pré-requisitos básicos para o correto funcionamento do módulo estão sendo atendidos
  >  É aconselhável que antes de usar as funcionalidades de **estorno** ou **cancelamento** você faça a **conciliação** de suas transações para obter os status mais atuais.
 

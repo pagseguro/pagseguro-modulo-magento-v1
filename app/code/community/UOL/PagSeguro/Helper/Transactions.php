@@ -70,6 +70,7 @@ class UOL_PagSeguro_Helper_Transactions extends HelperData
             ->join(array('ps' => $pagseguroTable), 'order.entity_id = ps.order_id')
             ->where('ps.transaction_code != ?', '')
             ->order('created_at DESC')
+            ->limit(400)
         ;
 
         if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
@@ -89,7 +90,9 @@ class UOL_PagSeguro_Helper_Transactions extends HelperData
         }
 
         if (isset($paramsFilter['status'])) {
-            $select = $select->where('order.status = ?', $this->getPaymentStatusFromKey($paramsFilter['status']));
+            $select =  ($this->getPaymentStatusFromKey($paramsFilter['status']) == 'partially_refunded')
+                ? $select->where('ps.partially_refunded = ?', 1)
+                : $select->where('order.status = ?', $this->getPaymentStatusFromKey($paramsFilter['status']));
         }
 
         if (isset($paramsFilter['startDate']) && isset($paramsFilter['endDate'])) {
