@@ -270,22 +270,40 @@ class UOL_PagSeguro_Helper_Transactions extends HelperData
      */
     private function buildArrayPagSeguroOrders($pagSeguroOrders)
     {
-        $action = "<a class='edit' target='_blank' href='%s'>%s</a> <br><a class='action' data-config='%s'href='javascript:void(0)'>%s</a>";
+        $action = "<a class='action' data-config='%s'href='javascript:void(0)'>%s</a>";
+        $orderLink = "<a class='edit' target='_blank' href='%s'>%s</a>";
         foreach ($pagSeguroOrders as $pagSeguroOrder) {
             $this->arrayPagSeguroOrders[] = array(
                 'date'           => $this->getOrderMagetoDateConvert($pagSeguroOrder['created_at']),
-                'id_magento'     => $pagSeguroOrder['increment_id'],
+                'id_magento'     => sprintf(
+                    $orderLink,
+                    $this->getEditOrderUrl($pagSeguroOrder['order_id']),
+                    $pagSeguroOrder['increment_id']
+                ),
                 'id_pagseguro'   => $pagSeguroOrder['transaction_code'],
                 'environment'    => $pagSeguroOrder['environment'],
-                'status_magento' => $this->getPaymentStatusToString($this->getPaymentStatusFromValue($pagSeguroOrder['status'])),
+                'status_magento' => $this->formatStatus($pagSeguroOrder['status'], $pagSeguroOrder['partially_refunded']),
                 'action'         => sprintf(
                     $action,
-                    $this->getEditOrderUrl($pagSeguroOrder['order_id']),
-                    $this->__('Ver detalhes pedido'),
                     $pagSeguroOrder['transaction_code'],
-                    $this->__('Ver detalhes transação')
+                    $this->__('Ver detalhes do pagamento')
                 )
             );
         }
+    }
+
+    /**
+     * Format status name from number enum to human readable name and, if it is a partially refunded order,
+     * add a advice after the status name
+     *
+     * @param string $status
+     * @param integer $isPartiallyRefunded
+     * @return string
+     */
+    private function formatStatus($status, $isPartiallyRefunded = 0)
+    {
+        return $isPartiallyRefunded ?
+            $this->getPaymentStatusToString($this->getPaymentStatusFromValue($status)) . ' (estornada parcialmente)' :
+            $this->getPaymentStatusToString($this->getPaymentStatusFromValue($status));
     }
 }
