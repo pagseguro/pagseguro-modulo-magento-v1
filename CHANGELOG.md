@@ -1,5 +1,8 @@
 Changelog
 ---------
+3.12.1
+- Fix: corrigido erro do datatable após um estorno parcial quando não há mais transações para serem estornadas
+
 3.12.0
 - Melhorias na tela de Listar Transações (admin) referentes ao estorno parcial
 
