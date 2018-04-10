@@ -1,5 +1,8 @@
 Changelog
 ---------
+3.12.0
+- Melhorias na tela de Listar Transações (admin) referentes ao estorno parcial
+
 3.11.0
 - Checkout sem endereço (para produtos do tipo 'virtual' e 'downloadable')
 - Valida se o telefone do comprador foi configurado antes de tentar usar o telefone do endereço de entrega
