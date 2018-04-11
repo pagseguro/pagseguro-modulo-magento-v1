@@ -231,7 +231,7 @@ $html   = Mage::helper('pagseguro/html');
                     } else if (xhrResult.status == false && !isPartial) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('success', '<?php echo $refundSuccess; ?>');
-                    } else if (xhrResult.status == false && !isPartial) {
+                    } else if (xhrResult.status == false && isPartial) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('success', '<?php echo $partialRefundSuccess; ?>');
                     } else {
