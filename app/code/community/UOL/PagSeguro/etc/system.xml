@@ -403,7 +403,7 @@ limitations under the License.
                         </pagseguro_status_notification>
                         
                         <!--Checkout configuration-->
-                        <pagseguro_payment type="group" translate="label"   >
+                        <pagseguro_payment type="group" translate="label">
                             <label>Configurar Tipos de Checkout</label>
                             <sort_order>690</sort_order>
                             <show_in_default>1</show_in_default>
