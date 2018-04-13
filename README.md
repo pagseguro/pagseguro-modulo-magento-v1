@@ -25,6 +25,9 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 - [cURL](http://php.net/manual/en/book.curl.php)
 - [SimpleXML](http://php.net/manual/en/book.simplexml.php)
 
+### Compatibilidade com plugins de Checkout
+- IWD OnePageCheckout: versão 4.3.6
+
 ## Instalação
 > **ATENÇÃO** Recomendamos que seja feito backup da sua loja Magento antes de realizar qualquer instalação ou atualização do módulo.
 

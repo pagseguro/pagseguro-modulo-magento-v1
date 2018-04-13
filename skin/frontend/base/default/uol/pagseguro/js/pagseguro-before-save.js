@@ -1,3 +1,38 @@
+if (typeof IWD !== typeof undefined && IWD.OPC.savePayment) {
+  IWD.OPC.savePayment = IWD.OPC.savePayment.wrap(function(savePayment) {
+    if (validatePagSeguroActiveMethod()) {
+      if (document.querySelector('#checkout-payment-method-load .radio:checked').value == 'pagseguro_credit_card') {
+        var param = {
+          cardNumber: unmask(document.getElementById('creditCardNum').value),
+          brand: document.getElementById('creditCardBrand').value,
+          cvv: document.getElementById('creditCardCode').value,
+          expirationMonth: document.getElementById('creditCardExpirationMonth').value,
+          expirationYear: document.getElementById('creditCardExpirationYear').value,
+          success: function (response) {
+            document.getElementById('creditCardToken').value = response.card.token;
+            return savePayment();
+          },
+          error: function (error) {
+            displayError(document.getElementById('creditCardToken'));
+            IWD.OPC.Checkout.hideLoader();
+            IWD.OPC.Checkout.unlockPlaceOrder();
+            IWD.OPC.saveOrderStatus = false;
+            return false;
+          },
+        }
+        PagSeguroDirectPayment.createCardToken(param);
+      } else {
+        return savePayment();
+      }
+    } else {
+      IWD.OPC.Checkout.hideLoader();
+      IWD.OPC.Checkout.unlockPlaceOrder();
+      IWD.OPC.saveOrderStatus = false;
+      return false;
+    }
+  });
+}
+
 //call events before magento payment.save() event
 Payment.prototype.save = Payment.prototype.save.wrap(function(save) {
   var validator = new Validation(this.form);
