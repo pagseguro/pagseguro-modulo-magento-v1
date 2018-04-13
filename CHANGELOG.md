@@ -1,5 +1,10 @@
 Changelog
 ---------
+
+3.13.0
+- Inserir configuração de Status por Notificação (admin) 
+- Refatoração de métodos que salvam status, para usar os status da configuração do módulo
+
 3.12.1
 - Fix: corrigido erro do datatable após um estorno parcial quando não há mais transações para serem estornadas
 

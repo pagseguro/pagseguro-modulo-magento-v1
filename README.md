@@ -65,6 +65,20 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **listar parcelamento**: Habilita a exibição de uma listagem de parcelas na tela de visualização do produto. (Irá exibir o maior parcelamento disponível para o produto na tela de exibição do mesmo)
  
  -------------------------
+  **Configurar Status**
+  
+  - **pendente**: define qual state do Magento será associado ao status Pendente do PagSeguro.
+  - **aguardando pagamento**: define qual state do Magento será associado ao status Aguardando pagamento do PagSeguro.
+  - **em análise**: define qual state do Magento será associado ao status Em análise do PagSeguro.
+  - **paga**: define qual state do Magento será associado ao status Paga do PagSeguro.
+  - **disponível**: define qual state do Magento será associado ao status Disponível do PagSeguro.
+  - **em disputa**: define qual state do Magento será associado ao status Em disputa do PagSeguro.
+  - **devolvida**: define qual state do Magento será associado ao status Devolvida do PagSeguro.
+  - **cancelada**: define qual state do Magento será associado ao status Cancelada do PagSeguro.
+  - **chargeback debitado**: define qual state do Magento será associado ao status Chargeback Debitado do PagSeguro.
+  - **em contestação**: define qual state do Magento será associado ao status Em Contestação do PagSeguro.
+  
+ -------------------------
  **Configurar Tipos de Checkout**
  
  - *PagSeguro (Padrão ou Lightbox)*
