@@ -162,18 +162,42 @@ limitations under the License.
         </reference>
     </pagseguro_payment_payment>
 
+    <!-- Magento OnePage checkout compatibility -->
     <checkout_onepage_index translate="label">
         <reference name="head">
             <block type="uol_pagseguro/payment" name="loading"
                    template="uol/pagseguro/loading.phtml"/>
         </reference>
     </checkout_onepage_index>
+    <!-- \Magento OnePage checkout compatibility -->
     
+    <!-- Inovarti OneStepCheckout compatibility -->
      <onestepcheckout_index_index>
         <reference name="head">
             <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml"/>
         </reference>
      </onestepcheckout_index_index>
+     <!-- \Inovarti OneStepCheckout compatibility -->
+
+    <!-- IWD One Page checkout compatibility -->
+     <onepagecheckout_index_index>
+        <reference name="head">
+            <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml"/>
+        </reference>
+    </onepagecheckout_index_index>
+
+    <onepage_index_index>
+        <reference name="head">
+            <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml"/>
+        </reference>
+    </onepage_index_index>
+
+    <opc_index_index>
+		<reference name="head">
+            <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml"/>
+        </reference>
+	</opc_index_index>
+    <!-- \IWD One Page checkout compatibility -->
 
     <catalog_product_view>
         <reference name="head">
