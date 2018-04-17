@@ -10,12 +10,15 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
      */
     private $payment;
 
+    private $library;
+
     /**
      * UOL_PagSeguro_PaymentController constructor.
      */
     public function _construct()
     {
         $this->payment = new UOL_PagSeguro_Model_PaymentMethod();
+        $this->library = new UOL_PagSeguro_Model_Library();
     }
 
     public function canceledAction()
@@ -51,6 +54,7 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
      * @param bool  $returnAaJson
      *
      * @return $this
+     * @throws Mage_Core_Exception
      */
     private function loadAndRenderLayout(Array $items = [], $returnAaJson = false)
     {
@@ -70,6 +74,7 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
 
     /**
      * @return UOL_PagSeguro_PaymentController
+     * @throws Mage_Core_Exception
      */
     public function defaultAction()
     {
@@ -110,7 +115,7 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
     }
 
     /**
-     * @return UOL_PagSeguro_PaymentController
+     * @return Mage_Core_Controller_Varien_Action|UOL_PagSeguro_PaymentController
      */
     public function directAction()
     {
@@ -118,7 +123,6 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
         $order          = null;
         $link           = null;
         $result         = null;
-        $json           = false;
         $redirect       = null;
 
         try {
@@ -126,7 +130,7 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
             $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
 
             $orderData = $order->getData();
-            if(empty($orderData)) {
+            if (empty($orderData)) {
                 $this->norouteAction();
                 return;
             }
@@ -134,35 +138,67 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
             $customerPaymentData = Mage::getSingleton('customer/session')->getData();
 
             $this->payment->setOrder($order);
+
             /**
-             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
+             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto |
+             * \PagSeguro\Domains\Requests\DirectPayment\CreditCard |
+             * \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $payment
              */
             $payment = $this->payment->paymentDirect($order->getPayment()->getMethod(), $customerPaymentData);
             $this->payment->addPagseguroOrders($order);
             $this->payment->clearCheckoutSession($order);
+
             /**
-             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $result
+             * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto |
+             * \PagSeguro\Domains\Requests\DirectPayment\CreditCard |
+             * \PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $result
              */
             $result = $this->payment->paymentRegister($payment);
-            
-            if ($result === false) {
-                //\PagSeguro\Resources\Log\Logger::error('');
+
+            if ($result == false) {
                 $this->canceledStatus($order);
-                return Mage_Core_Controller_Varien_Action::_redirect('pagseguro/payment/error', array('_secure'=> false));
-            };
-            /** controy redirect url according with payment return link **/
-            if (method_exists($result, 'getPaymentLink') && $result->getPaymentLink()) {
-                $link     = $result->getPaymentLink();
-                $json     = true;
-                //$redirect = Mage::getUrl('pagseguro/payment/success').'?redirect='.$link;
-                $redirect = 'pagseguro/payment/success';//?redirect='.$link;
-                $redirectParams = array('_secure'=> false, '_query'=> array('redirect' => $link));
-            } else {
-                $json     = true;
-                //$redirect = Mage::getUrl('pagseguro/payment/success');
-                $redirect = 'pagseguro/payment/success';
-                $redirectParams = array();
+                if (Mage::getStoreConfig('payment/pagseguro/checkout_direct_retry') == true) {
+                    return Mage_Core_Controller_Varien_Action::_redirect(
+                        'pagseguro/payment/retry',
+                        ['_secure' => false]
+                    );
+                } else {
+                    return Mage_Core_Controller_Varien_Action::_redirect(
+                        'pagseguro/payment/error',
+                        ['_secure' => false]
+                    );
+                }
             }
+
+            $psOrder = \PagSeguro\Services\Transactions\Search\Code::search(
+                $this->library->getAccountCredentials(),
+                $result->getCode()
+            );
+
+            if (Mage::getStoreConfig('payment/pagseguro/checkout_direct_retry') == true &&
+                $psOrder->getStatus() == '7') {
+                $this->canceledStatus($order);
+
+                return Mage_Core_Controller_Varien_Action::_redirect(
+                    'pagseguro/payment/denied',
+                    ['_secure' => false]
+                );
+            }
+
+            if (method_exists($result, 'getPaymentLink') && $result->getPaymentLink()) {
+                $link = $result->getPaymentLink();
+                $redirect = 'pagseguro/payment/success';
+                $redirectParams = ['_secure' => false, '_query' => ['redirect' => $link]];
+            } else {
+                if (Mage::getStoreConfig('payment/pagseguro_credit_card/url_success') &&
+                    Mage::getStoreConfig('payment/pagseguro_credit_card/url_success') != '') {
+                    $redirect = Mage::getStoreConfig('payment/pagseguro_credit_card/url_success');
+                } else {
+                    $redirect = 'pagseguro/payment/success';
+                }
+                $redirectParams = [];
+            }
+
             $order->sendNewOrderEmail();
 
         } catch (\Exception $exception) {
@@ -246,17 +282,38 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
 
     /**
      * @return UOL_PagSeguro_PaymentController
+     * @throws Mage_Core_Exception
      */
     public function successAction()
     {
         return $this->loadAndRenderLayout();
     }
-    
+
     /**
      * Default payment error screen
+     *
      * @return UOL_PagSeguro_PaymentController
+     * @throws Mage_Core_Exception
      */
     public function errorAction()
+    {
+        return $this->loadAndRenderLayout();
+    }
+
+    /**
+     * @return UOL_PagSeguro_PaymentController
+     * @throws Mage_Core_Exception
+     */
+    public function retryAction()
+    {
+        return $this->loadAndRenderLayout();
+    }
+
+    /**
+     * @return UOL_PagSeguro_PaymentController
+     * @throws Mage_Core_Exception
+     */
+    public function deniedAction()
     {
         return $this->loadAndRenderLayout();
     }
