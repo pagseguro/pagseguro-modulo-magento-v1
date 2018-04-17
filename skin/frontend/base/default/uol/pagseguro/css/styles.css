@@ -2162,3 +2162,16 @@ button:not(.primary),
 input.form-control, .full-width {
     width: 100% !important;
 }
+
+.pagseguro-payment-retry-title {
+    text-align: center;
+}
+
+.pagseguro-payment-retry-p {
+    text-align: center;
+}
+
+.pagseguro-payment-retry-button-set {
+    padding-top: 1rem;
+    text-align: center;
+}
