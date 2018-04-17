@@ -19,7 +19,7 @@ limitations under the License.
 <config>
     <modules>
         <UOL_PagSeguro>
-            <version>3.12.1</version>
+            <version>3.13.0</version>
         </UOL_PagSeguro>
     </modules>
     <global>
@@ -249,6 +249,20 @@ limitations under the License.
                 <group>pagseguro</group>
             </pagseguro>
             <!-- End  (backward compatibility pagseguro node) -->
+
+            <pagseguro_status_notification>
+                <pending>new</pending>
+                <aguardando_pagamento_ps>pending_payment</aguardando_pagamento_ps>
+                <em_analise_ps>payment_review</em_analise_ps>
+                <paga_ps>processing</paga_ps>
+                <disponivel_ps>processing</disponivel_ps>
+                <em_disputa_ps>holded</em_disputa_ps>
+                <devolvida_ps>closed</devolvida_ps>
+                <cancelada_ps>canceled</cancelada_ps>
+                <chargeback_debitado_ps>closed</chargeback_debitado_ps>
+                <em_contestacao_ps>holded</em_contestacao_ps>
+                <sort_order>5</sort_order>
+            </pagseguro_status_notification>
         </payment>
     </default>
 </config>

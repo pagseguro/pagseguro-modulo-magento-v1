@@ -77,5 +77,30 @@ class UOL_PagSeguro_Model_Observer
         } else {
             throw new Exception("Certifique-se de que o e-mail e token foram preenchidos.");
         }
+
+        $this->configStatusPagSeguro();
+
+    }
+
+    public function configStatusPagSeguro()
+    {
+        $statusPagSeguro = array('pending', 'aguardando_pagamento_ps', 'cancelada_ps', 'em_analise_ps', 'paga_ps',
+                                'devolvida_ps', 'em_disputa_ps', 'disponivel_ps', 'em_contestacao_ps', 'chargeback_debitado_ps');
+        $statusPagSeguro = "'" . implode("','", $statusPagSeguro) . "'";
+
+        $resource = Mage::getSingleton('core/resource');
+        $readConnection = $resource->getConnection('core_read');
+        $writeConnection = $resource->getConnection('core_write');
+        $table = $resource->getTableName('sales_order_status_state');
+
+        $query = "SELECT * FROM $table WHERE status IN ($statusPagSeguro)";
+        $result = $readConnection->fetchAll($query);
+
+        foreach ($result as $status){
+            $sql = "UPDATE ".$table." SET state = '".Mage::getStoreConfig('payment/pagseguro_status_notification/'. $status['status'])."' 
+                    WHERE status = '".$status['status'] ."'";
+
+            $writeConnection->query($sql);
+        }
     }
 }

@@ -512,6 +512,14 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
         $status = $orderStatus;
         $notify = true;
         $order = Mage::getModel('sales/order')->load($orderId);
+
+        $state = Mage::getStoreConfig('payment/pagseguro_status_notification/'. $orderStatus);
+        if($state == Mage_Sales_Model_Order::STATE_CLOSED || $state == Mage_Sales_Model_Order::STATE_COMPLETE) {
+            $order->setData('state', $state);
+        }else{
+            $order->setState($state);
+        }
+
         $order->addStatusToHistory($status, $comment, $notify);
         $order->sendOrderUpdateEmail($notify, $comment);
         // Makes the notification of the order of historic displays the correct date and time
