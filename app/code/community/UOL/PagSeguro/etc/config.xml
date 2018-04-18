@@ -19,7 +19,7 @@ limitations under the License.
 <config>
     <modules>
         <UOL_PagSeguro>
-            <version>3.13.0</version>
+            <version>3.15.0</version>
         </UOL_PagSeguro>
     </modules>
     <global>

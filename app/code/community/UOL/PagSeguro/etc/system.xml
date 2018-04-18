@@ -290,7 +290,7 @@ limitations under the License.
                                     <show_in_store>1</show_in_store>
                                 </shopping_cart_recovery>
                                 <checkout_direct_retry translate="label">
-                                    <label>HABILITAR RETENTATIVA DE PAGAMENTO</label>
+                                    <label>Habilitar retentativa de pagamento</label>
                                     <tooltip>Habilita/desabilita a tela de retentativa de pagamento.</tooltip>
                                     <comment>Somente checkout transaparente.</comment>
                                     <frontend_type>select</frontend_type>

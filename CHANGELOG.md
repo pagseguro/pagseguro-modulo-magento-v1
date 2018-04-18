@@ -1,8 +1,10 @@
 Changelog
 ---------
 
-3.13.0
-- Inserir configuração de Status por Notificação (admin) 
+3.15.0
+- Inserir configuração de Status do PagSeguro por Notificação (admin) em relação ao states do Magento
+- Retentativa de pagamento ao finalizar um checkout com erro
+- Compatibilidade com IWD OnePageCheckout versão 4.3.6
 
 3.12.1
 - Fix: corrigido erro do datatable após um estorno parcial quando não há mais transações para serem estornadas
