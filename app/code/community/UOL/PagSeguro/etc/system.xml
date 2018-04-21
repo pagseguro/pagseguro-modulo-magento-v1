@@ -302,10 +302,160 @@ limitations under the License.
                                 </checkout_direct_retry>
                             </fields>
                         </pagseguro>
+                        
+                        <!--Checkout configuration-->
+                        <pagseguro_payment type="group" translate="label">
+                            <label>Configurar Tipos de Checkout</label>
+                            <sort_order>690</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <fields>
+                                <pagseguro_default_lightbox type="group" translate="label">
+                                    <label>PagSeguro (Padrão ou LightBox)</label>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <fields>
+                                        <active translate="label">
+                                            <label>Ativar</label>
+                                            <tooltip>Ativa/desativa o meio de pagamento PagSeguro (Padrão ou Lightbox)</tooltip>
+                                            <frontend_type>select</frontend_type>
+                                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                                            <sort_order>10</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </active>
+                                        <checkout translate="label">
+                                            <label>Tipo de checkout</label>
+                                            <tooltip>Selecione o tipo de checkout desejado para utilizar com o PagSeguro (Padrão ou Lightbox).</tooltip>
+                                            <frontend_type>select</frontend_type>
+                                            <source_model>uol_pagseguro/checkout</source_model>
+                                            <sort_order>20</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </checkout>
+                                        <title translate="label">
+                                            <label>Nome de exibição</label>
+                                            <tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
+                                            <frontend_type>text</frontend_type>
+                                            <sort_order>30</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </title>
+                                    </fields>
+                                </pagseguro_default_lightbox>
+                                <pagseguro_credit_card type="group" translate="label">
+                                    <label>Checkout Transparente - Cartão de Crédito</label>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <fields>
+                                        <active translate="label">
+                                            <label>Ativar</label>
+                                            <tooltip>Ativa / desativa o meio de pagamento Checkout Transparente - Cartão de Crédito</tooltip>
+                                            <frontend_type>select</frontend_type>
+                                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                                            <sort_order>10</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </active>
+                                        <title translate="label">
+                                            <label>Nome de exibição</label>
+                                            <tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
+                                            <frontend_type>text</frontend_type>
+                                            <sort_order>20</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </title>
+                                        <url_success translate="label">
+                                            <label>Url de sucesso</label>
+                                            <tooltip>Ao final do fluxo de pagamento do PagSeguro caso o pagamento seja efetuado com sucesso, seu cliente será direcionado para essa URL. Exemplo /checkout/onepage/success</tooltip>
+                                            <frontend_type>text</frontend_type>succ
+                                            <sort_order>75</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </url_success>
+                                    </fields>
+                                </pagseguro_credit_card>
+                                <pagseguro_boleto type="group" translate="label">
+                                    <label>Checkout Transparente - Boleto Bancário</label>
+                                    <sort_order>30</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <fields>
+                                        <active translate="label">
+                                            <label>Ativar</label>
+                                            <tooltip>Ativa / desativa o meio de pagamento Checkout Transparente - Boleto</tooltip>
+                                            <frontend_type>select</frontend_type>
+                                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                                            <sort_order>10</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </active>
+                                        <title translate="label">
+                                            <label>Nome de exibição</label>
+                                            <tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
+                                            <frontend_type>text</frontend_type>
+                                            <sort_order>20</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </title>
+                                    </fields>
+                                </pagseguro_boleto>
+                                <pagseguro_online_debit type="group" translate="label">
+                                    <label>Checkout Transparente - Débito Online</label>
+                                    <sort_order>40</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <fields>
+                                        <active translate="label">
+                                            <label>Ativar</label>
+                                            <tooltip>Ativa / desativa o meio de pagamento Checkout Transparente - Débito Online</tooltip>
+                                            <frontend_type>select</frontend_type>
+                                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                                            <sort_order>10</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </active>
+                                        <title translate="label">
+                                            <label>Nome de exibição</label>
+                                            <tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
+                                            <frontend_type>text</frontend_type>
+                                            <sort_order>20</sort_order>
+                                            <show_in_default>1</show_in_default>
+                                            <show_in_website>1</show_in_website>
+                                            <show_in_store>1</show_in_store>
+                                        </title>
+                                    </fields>
+                                </pagseguro_online_debit>
+                            </fields>
+                        </pagseguro_payment>
+
+                        <pagseguro_payments_enabled type="group" translate="label">
+                            <label>Consultar meios de pagamentos ativos na conta PagSeguro</label>
+                            <sort_order>900</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <expanded>0</expanded>
+                        </pagseguro_payments_enabled>
 
                         <pagseguro_status_notification type="group" translate="label">
                             <label>Configurar Status</label>
-                            <sort_order>30</sort_order>
+                            <comment><![CDATA[Não é necessário alterar essa configuração. O módulo já vem com uma configuração padrão de status mas, caso deseje personalizar, esta seção permite configurar para cada status do Pagseguro o respectivo status do Magento.]]></comment>
+                            <sort_order>1000</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -412,155 +562,6 @@ limitations under the License.
                                 </em_contestacao_ps>
                             </fields>
                         </pagseguro_status_notification>
-                        
-                        <!--Checkout configuration-->
-                        <pagseguro_payment type="group" translate="label">
-                            <label>Configurar Tipos de Checkout</label>
-                            <sort_order>690</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <fields>
-                                <pagseguro_default_lightbox type="group" translate="label">
-                                    <label>PagSeguro (Padrão ou LightBox)</label>
-                                    <sort_order>10</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                    <show_in_store>1</show_in_store>
-                                    <fields>
-                                        <active translate="label">
-                                            <label>Ativar</label>
-                                            <tooltip>Ativa/desativa o meio de pagamento PagSeguro (Padrão ou Lightbox)</tooltip>
-                                            <frontend_type>select</frontend_type>
-                                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                                            <sort_order>10</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </active>
-                                        <checkout translate="label">
-                                            <label>Tipo de checkout</label>
-                                            <tooltip>Selecione o tipo de checkout desejado para utilizar com o PagSeguro (Padrão ou Lightbox).</tooltip>
-                                            <frontend_type>select</frontend_type>
-                                            <source_model>uol_pagseguro/checkout</source_model>
-                                            <sort_order>20</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </checkout>
-                                        <title translate="label">
-                                            <label>Nome de exibição</label>
-                                            <tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
-                                            <frontend_type>text</frontend_type>
-                                            <sort_order>30</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </title>
-                                    </fields>
-                                </pagseguro_default_lightbox>
-                                <pagseguro_credit_card type="group" translate="label">
-                                    <label>Checkout Transparente - Cartão de Crédito</label>
-                                    <sort_order>20</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                    <show_in_store>1</show_in_store>
-                                    <fields>
-                                        <active translate="label">
-                                            <label>Ativar</label>
-                                            <tooltip>Ativa / desativa o meio de pagamento Checkout Transparente - Cartão de Crédito</tooltip>
-                                            <frontend_type>select</frontend_type>
-                                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                                            <sort_order>10</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </active>
-                                        <title translate="label">
-                                            <label>Nome de exibição</label>
-                                            <tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
-                                            <frontend_type>text</frontend_type>
-                                            <sort_order>20</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </title>
-                                        <url_success translate="label">
-                                            <label>URL DE SUCESSO</label>
-                                            <tooltip>Ao final do fluxo de pagamento do PagSeguro caso o pagamento seja efetuado com sucesso, seu cliente será direcionado para essa URL. Exemplo /checkout/onepage/success</tooltip>
-                                            <frontend_type>text</frontend_type>succ
-                                            <sort_order>75</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </url_success>
-                                    </fields>
-                                </pagseguro_credit_card>
-                                <pagseguro_boleto type="group" translate="label">
-                                    <label>Checkout Transparente - Boleto Bancário</label>
-                                    <sort_order>30</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                    <show_in_store>1</show_in_store>
-                                    <fields>
-                                        <active translate="label">
-                                            <label>Ativar</label>
-                                            <tooltip>Ativa / desativa o meio de pagamento Checkout Transparente - Boleto</tooltip>
-                                            <frontend_type>select</frontend_type>
-                                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                                            <sort_order>10</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </active>
-                                        <title translate="label">
-                                            <label>Nome de exibição</label>
-                                            <tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
-                                            <frontend_type>text</frontend_type>
-                                            <sort_order>20</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </title>
-                                    </fields>
-                                </pagseguro_boleto>
-                                <pagseguro_online_debit type="group" translate="label">
-                                    <label>Checkout Transparente - Débito Online</label>
-                                    <sort_order>40</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                    <show_in_store>1</show_in_store>
-                                    <fields>
-                                        <active translate="label">
-                                            <label>Ativar</label>
-                                            <tooltip>Ativa / desativa o meio de pagamento Checkout Transparente - Débito Online</tooltip>
-                                            <frontend_type>select</frontend_type>
-                                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                                            <sort_order>10</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </active>
-                                        <title translate="label">
-                                            <label>Nome de exibição</label>
-                                            <tooltip>Informe o nome que deve ser apresentado para este meio de pagamento no checkout de sua loja.</tooltip>
-                                            <frontend_type>text</frontend_type>
-                                            <sort_order>20</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </title>
-                                    </fields>
-                                </pagseguro_online_debit>
-                            </fields>
-                        </pagseguro_payment>
-
-                        <pagseguro_payments_enabled type="group" translate="label">
-                            <label>Consultar meios de pagamentos ativos na conta PagSeguro</label>
-                            <sort_order>900</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <expanded>0</expanded>
-                        </pagseguro_payments_enabled>
                     </fields>
                 </pagseguro_settings>
             </groups>

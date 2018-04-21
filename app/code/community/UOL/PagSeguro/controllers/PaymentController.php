@@ -157,7 +157,7 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
 
             if ($result == false) {
                 $this->canceledStatus($order);
-                if (Mage::getStoreConfig('payment/pagseguro/checkout_direct_retry') == true) {
+                if (! $order->getCustomerIsGuest() && Mage::getStoreConfig('payment/pagseguro/checkout_direct_retry') == true) {
                     return Mage_Core_Controller_Varien_Action::_redirect(
                         'pagseguro/payment/retry',
                         ['_secure' => false]
@@ -245,7 +245,8 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
             Mage::logException($exception);
             $this->canceledStatus($order);
         }
-        if ($this->payment->getEnvironment() === 'production') {
+
+        if ($this->library->getEnvironment() === 'production') {
             $lightboxJs  = 'https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.lightbox.js';
             $lightboxUrl = 'https://pagseguro.uol.com.br/v2/checkout/payment.html?code=';
         } else {

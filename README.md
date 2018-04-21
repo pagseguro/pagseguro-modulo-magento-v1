@@ -69,7 +69,8 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  
  -------------------------
   **Configurar Status**
-  O PagSeguro já vem com uma configuração padrão de status. Caso deseje você pode definir para cada status do Pagseguro o respectivo status do Magento que você desejar (opcional).
+
+  Não é necessário alterar essa configuração. O módulo já vem com uma configuração padrão de status mas, caso deseje personalizar, esta seção permite configurar para cada status do Pagseguro o respectivo status do Magento (opcional).
   - **pendente**: define qual state do Magento será associado ao status Pendente do PagSeguro.
   - **aguardando pagamento**: define qual state do Magento será associado ao status Aguardando pagamento do PagSeguro.
   - **em análise**: define qual state do Magento será associado ao status Em análise do PagSeguro.
