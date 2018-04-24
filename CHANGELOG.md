@@ -1,8 +1,13 @@
 Changelog
 ---------
 
-3.13.0
-- Inserir configuração de Status por Notificação (admin) 
+3.16.0
+- Inserir configuração de Status do PagSeguro por Notificação (admin) em relação ao states do Magento
+- Retentativa de pagamento ao finalizar um checkout com erro
+- Compatibilidade com IWD OnePageCheckout versão 4.3.6
+- Opção de definir a URL de sucesso do checkout transparente com cartão de crédito
+- Fixes: lightbox não estava carregando o ambiente corretamente e removido botão de retentativa de pagamento ao finalizar checkout como visitante 
+
 
 3.12.1
 - Fix: corrigido erro do datatable após um estorno parcial quando não há mais transações para serem estornadas
