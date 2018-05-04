@@ -102,11 +102,18 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
              * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $result
              */
             $link = $this->payment->paymentRegister($payment);
+            if ($link == false) {
+                throw new Exception('Can\'t generate PagSeguro payment url for lightbox checkout.');
+            }
             $order->sendNewOrderEmail();
         } catch (Exception $exception) {
             \PagSeguro\Resources\Log\Logger::error($exception);
             Mage::logException($exception);
             $this->canceledStatus($order);
+            return Mage_Core_Controller_Varien_Action::_redirect(
+                'pagseguro/payment/error',
+                ['_secure' => false]
+            );
         }
 
         return $this->loadAndRenderLayout([
@@ -239,11 +246,18 @@ class UOL_PagSeguro_PaymentController extends Mage_Core_Controller_Front_Action
              * @var \PagSeguro\Domains\Requests\DirectPayment\Boleto|\PagSeguro\Domains\Requests\DirectPayment\CreditCard|\PagSeguro\Domains\Requests\DirectPayment\OnlineDebit $result
              */
             $code = $this->payment->paymentRegister($payment, true);
+            if ($code == false) {
+                throw new Exception('Can\'t generate PagSeguro payment code for lightbox checkout.');
+            }
             $order->sendNewOrderEmail();
         } catch (Exception $exception) {
             \PagSeguro\Resources\Log\Logger::error($exception);
             Mage::logException($exception);
             $this->canceledStatus($order);
+            return Mage_Core_Controller_Varien_Action::_redirect(
+                'pagseguro/payment/error',
+                ['_secure' => false]
+            );
         }
 
         if ($this->library->getEnvironment() === 'production') {
