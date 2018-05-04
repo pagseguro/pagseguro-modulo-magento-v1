@@ -1,5 +1,5 @@
 <_>
-   <form_key>p14kBk6BRl5ky9IZ</form_key>
+   <form_key>RYCeDXpkv5vYlXl1</form_key>
    <name>UOL_PagSeguro</name>
    <channel>community</channel>
    <version_ids>
@@ -9,13 +9,9 @@
    <description>Aceite mais de 25 meios de pagamentos com apenas 1 contrato. Seus clientes podem parcelar no cartão em até 18x e se preferir, você também pode oferecer parcelamento sem acréscimo.</description>
    <license>Apache Software License</license>
    <license_uri>http://opensource.org/licenses/apachepl.php</license_uri>
-   <version>3.16.1</version>
+   <version>3.16.2</version>
    <stability>stable</stability>
-   <notes>- Add PagSeguro status to magento state configuration
-- Retry payment page when checkout finishes with error
-- Compatibility with IWD OnePageCheckout
-- Allow to customize direct payment with credit card success page
-- Fixes: lightbox in production</notes>
+   <notes>- Fix of the list view of banks in online debit</notes>
    <authors>
       <name>
          <name>pagseguro</name>
