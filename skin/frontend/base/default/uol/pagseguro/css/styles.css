@@ -2079,8 +2079,7 @@ a.btn-pagseguro:focus {
 }
 
 /* btn-pagseguro */
-button:not(.primary),
-.btn-pagseguro {
+.btn-pagseguro:not(.primary) {
     color: #4F7743;
     font-size: 1.2em;
     white-space: nowrap;
