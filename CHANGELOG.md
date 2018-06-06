@@ -1,6 +1,6 @@
 Changelog
 ---------
-3.16.2
+3.16.3
 - Fix: ajuste na regra css do botão "btn-pagseguro"
 
 3.16.1
