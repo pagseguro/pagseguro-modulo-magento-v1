@@ -1,5 +1,8 @@
 Changelog
 ---------
+3.16.2
+- Fix: ajuste na regra css do botão "btn-pagseguro"
+
 3.16.1
 - Fix: redirecionamento para tela de erro caso ocorra algum problema no checkout padrão ou lightbox
 
