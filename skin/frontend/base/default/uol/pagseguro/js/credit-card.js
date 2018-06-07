@@ -68,14 +68,14 @@ function cardInstallmentOnChange(data) {
   data = JSON.parse(data)
   document.getElementById('creditCardInstallment').value = data.quantity
   document.getElementById('creditCardInstallmentValue').value = data.installmentAmount
-  document.getElementById('card_total').innerHTML = 'R$ ' + data.totalAmount
+  document.getElementById('card_total').innerHTML = 'R$ ' + formatToReal(data.totalAmount)
 }
 
 function cardInstallment(data) {
   var select = document.getElementById('card_installment_option')
   data = data[Object.getOwnPropertyNames(data)[0]]
   data.forEach(function (item) {
-    select.options[select.options.length] = new Option(item.quantity + 'x de R$ ' + item.installmentAmount,
+    select.options[select.options.length] = new Option(item.quantity + 'x de R$ ' + formatToReal(item.installmentAmount),
             JSON.stringify(item))
   })
   if (data) {
@@ -200,3 +200,23 @@ function removeLetters(el) {
 function removeNumbers(el) {
   return el.replace(/[0-9]/g, '');
 }
+
+function formatToReal( int ) {
+  var tmp = int+'';
+  var index = tmp.indexOf('.');
+  if(index == -1) {
+    tmp = tmp + '00';
+  }else {
+    var afterDot = tmp.substring(index+1, tmp.length);
+    if (afterDot.length < 2) {
+      tmp = tmp + '0';
+    }
+  }
+  tmp = tmp.replace('.', ''); 
+  tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+  if( tmp.length > 6 ) {
+    tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+  }
+
+  return tmp;
+} 
