@@ -6,46 +6,47 @@
 
 <script>
   //<![CDATA[
-  var pagseguro_creditcard_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>')
-  var pagseguro_credit_card_options = jQuery('#pagseguro-credit-card-options')
-  paymentMethods()
-  var CreditcardOptions = false
+  //set pagseguro credit card session
+  setCreditCardSessionId("<?= $this->getCreditCardSession(); ?>");
 
-  pagseguroCreditcardOptions = function (res) {
-    if (!CreditcardOptions) {
+  paymentMethods();
+
+  pagseguroCreditcardOptions = function(res) {
+      var pagseguro_credit_card_options = jQuery('#pagseguro-credit-card-options');
+      
       pagseguro_credit_card_options.on('click', 'a', function () {
         pagseguro_credit_card_options.find('li').css('display', 'inline-flex')
         pagseguro_credit_card_options.find('li.more_cc').css('display', 'none')
       })
+      
       if (!res['error']) {
         if (res['paymentMethods'] && res['paymentMethods']['CREDIT_CARD'] && res['paymentMethods']['CREDIT_CARD']['options']) {
-          var k = 0
-          pagseguro_credit_card_options.empty()
+          var k = 0;
+          pagseguro_credit_card_options.empty();
           jQuery.each(res['paymentMethods']['CREDIT_CARD']['options'], function (i, item) {
             if (item['status'] === 'AVAILABLE') {
-              ++k
+              ++k;
               if (k > 0) {
-                pagseguro_creditcard_dt.show()
+                jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').show();
               }
               if (k <= 6) {
-                pagseguro_credit_card_options.append('<li style="display: inline-flex; padding: 0 3px 3px 0; margin: 0;"><img src="https://stc.pagseguro.uol.com.br' + item['images']['SMALL']['path'] + '"></li>')
+                pagseguro_credit_card_options.append('<li style="display: inline-flex; padding: 0 3px 3px 0; margin: 0;"><img src="https://stc.pagseguro.uol.com.br' + item['images']['SMALL']['path'] + '"></li>');
                 if (k === 6) {
-                  pagseguro_credit_card_options.append('<li style="display: inline-flex; padding: 0 3px 3px 0; margin: 0;" class="more_cc"><a >mais</a></li>')
+                  pagseguro_credit_card_options.append('<li style="display: inline-flex; padding: 0 3px 3px 0; margin: 0;" class="more_cc"><a >mais</a></li>');
                 }
               }
               if (k > 6) {
-                pagseguro_credit_card_options.append('<li style="display: none; padding: 0 3px 3px 0; margin: 0;"><img src="https://stc.pagseguro.uol.com.br' + item['images']['SMALL']['path'] + '"></li>')
+                pagseguro_credit_card_options.append('<li style="display: none; padding: 0 3px 3px 0; margin: 0;"><img src="https://stc.pagseguro.uol.com.br' + item['images']['SMALL']['path'] + '"></li>');
               }
             }
           })
           if (k === 0) {
-            pagseguro_onlinedebit_dt.find('input').prop('disabled', true)
+            pagseguro_onlinedebit_dt.find('input').prop('disabled', true);
           }
         }
       } else {
-        console.log(res['error'])
+        console.log(res['error']);
       }
-    }
   }
   //]]>
 </script>
@@ -62,9 +63,6 @@
             }
         }
     }
-
-    //set pagseguro credit card session
-    setCreditCardSessionId("<?= $this->getCreditCardSession(); ?>");
 //]]>
 </script>
 

@@ -1,29 +1,27 @@
 <style>
-  #dt_method_<?php echo $this->getMethodCode() ?> {
+  #dt_method_<?php echo $this->getMethodCode(); ?> {
     display: none;
   }
 </style>
 
 <script>
   //<![CDATA[
-  var pagseguro_boleto_options = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>')
-  paymentMethods()
-  var BoletoOptions = false
+  //set pagseguro session
+  setBoletoSessionId("<?php echo $this->getBoletoSession(); ?>");
 
-  pagseguroBoletoOptions = function (res) {
-    if (!BoletoOptions) {
-      BoletoOptions = true
-      if (!res['error']) {
-        if (res['paymentMethods']) {
-          if (res['paymentMethods'] && res['paymentMethods']['BOLETO'] && res['paymentMethods']['BOLETO']['options']['BOLETO']['status'] === 'AVAILABLE') {
-            pagseguro_boleto_options.show()
-          } else {
-            pagseguro_creditcard_dt.find('input').prop('disabled', true)
-          }
+  paymentMethods();
+
+  pagseguroBoletoOptions = function(res) {
+    if (!res['error']) {
+      if (res['paymentMethods']) {
+        if (res['paymentMethods'] && res['paymentMethods']['BOLETO'] && res['paymentMethods']['BOLETO']['options']['BOLETO']['status'] === 'AVAILABLE') {
+          jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').show();
+        } else {
+          pagseguro_creditcard_dt.find('input').prop('disabled', true);
         }
-      } else {
-        console.log(res['error'])
       }
+    } else {
+      console.log(res['error']);
     }
   }
   //]]>
@@ -41,9 +39,6 @@
             }
         }
     }
-
-    //set pagseguro session
-    setBoletoSessionId("<?= $this->getBoletoSession();?>");
 //]]>
 </script>
     
