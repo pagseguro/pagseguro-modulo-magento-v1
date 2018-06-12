@@ -1,18 +1,16 @@
-<style>
- #dt_method_<?php echo $this->getMethodCode(); ?> {
-   display: none;
- }
-</style>
-
 <script>
   //<![CDATA[
-  //set pagseguro session
+  var pagseguro_onlinedebit_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>');
+
+  if (!alreadyGetPaymentMethods) {
+    pagseguro_onlinedebit_dt.hide();
+  }
+
   setOnlineDebitSessionId("<?php echo $this->getOnlineDebitSession(); ?>");
 
   paymentMethods();
 
   pagseguroOnlinedebitOptions = function(res) {
-    var pagseguro_onlinedebit_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>');
     var pagseguro_online_debit_options = jQuery('#pagseguro-online-debit-options');
 
     if (!res['error']) {

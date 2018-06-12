@@ -1,12 +1,11 @@
-<style>
-  #dt_method_<?php echo $this->getMethodCode(); ?> {
-    display: none;
-  }
-</style>
-
 <script>
   //<![CDATA[
-  //set pagseguro session
+  var pagseguro_boleto_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>');
+
+  if (!alreadyGetPaymentMethods) {
+    pagseguro_boleto_dt.hide();
+  }
+
   setBoletoSessionId("<?php echo $this->getBoletoSession(); ?>");
 
   paymentMethods();
@@ -15,7 +14,7 @@
     if (!res['error']) {
       if (res['paymentMethods']) {
         if (res['paymentMethods'] && res['paymentMethods']['BOLETO'] && res['paymentMethods']['BOLETO']['options']['BOLETO']['status'] === 'AVAILABLE') {
-          jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').show();
+          pagseguro_boleto_dt.show();
         } else {
           pagseguro_creditcard_dt.find('input').prop('disabled', true);
         }

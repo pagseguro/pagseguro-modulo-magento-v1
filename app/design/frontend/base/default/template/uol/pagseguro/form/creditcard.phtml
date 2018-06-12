@@ -1,12 +1,11 @@
-<style>
-  #dt_method_<?php echo $this->getMethodCode() ?> {
-    display: none;
-  }
-</style>
-
 <script>
   //<![CDATA[
-  //set pagseguro credit card session
+  var pagseguro_credit_card_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>');
+
+  if (!alreadyGetPaymentMethods) {
+    pagseguro_credit_card_dt.hide();
+  }
+
   setCreditCardSessionId("<?= $this->getCreditCardSession(); ?>");
 
   paymentMethods();
@@ -27,7 +26,7 @@
             if (item['status'] === 'AVAILABLE') {
               ++k;
               if (k > 0) {
-                jQuery('#dt_method_<?php echo $this->getMethodCode() ?>').show();
+                pagseguro_credit_card_dt.show();
               }
               if (k <= 6) {
                 pagseguro_credit_card_options.append('<li style="display: inline-flex; padding: 0 3px 3px 0; margin: 0;"><img src="https://stc.pagseguro.uol.com.br' + item['images']['SMALL']['path'] + '"></li>');
