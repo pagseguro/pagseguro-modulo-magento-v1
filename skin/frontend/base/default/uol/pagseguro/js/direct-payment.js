@@ -332,6 +332,11 @@ function creditCardCodeMask(code) {
 var alreadyGetPaymentMethods = false;
 
 /**
+ * @type {string}
+ */
+var onlineDebitBanksHtml = '';
+
+/**
  *
  *
  */
