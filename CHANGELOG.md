@@ -1,5 +1,9 @@
 Changelog
 ---------
+3.16.4
+- Fix: ajuste na regra css do botão "btn-pagseguro"
+- Fix: ajuste na exibição dos meios de pagamento do checkout transparente
+
 3.16.2
 - Fix: exibição das opções de banco no método de pagamento Débito Online
 

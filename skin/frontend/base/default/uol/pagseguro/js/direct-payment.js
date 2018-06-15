@@ -329,19 +329,31 @@ function creditCardCodeMask(code) {
 /**
  * @type {boolean}
  */
-var alreadyGetPaymentMethods = false
+var alreadyGetPaymentMethods = false;
+
+/**
+ * @type {string}
+ */
+var onlineDebitBanksHtml = '';
 
 /**
  *
  *
  */
-function paymentMethods () {
+function paymentMethods() {
   if (!alreadyGetPaymentMethods) {
+    alreadyGetPaymentMethods = true;
     PagSeguroDirectPayment.getPaymentMethods({
-      success: function (res) {
-        pagseguroBoletoOptions(res)
-        pagseguroCreditcardOptions(res)
-        pagseguroOnlinedebitOptions(res)
+      success: function(res) {
+        if (typeof pagseguroCreditcardOptions === "function") {
+          pagseguroCreditcardOptions(res);  
+        }
+        if (typeof pagseguroBoletoOptions === "function") {
+          pagseguroBoletoOptions(res);  
+        }
+        if (typeof pagseguroOnlinedebitOptions === "function") {
+          pagseguroOnlinedebitOptions(res);  
+        }
       }
     })
   }
