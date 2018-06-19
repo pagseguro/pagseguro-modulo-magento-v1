@@ -9,10 +9,10 @@
    <description>Aceite mais de 25 meios de pagamentos com apenas 1 contrato. Seus clientes podem parcelar no cartão em até 18x e se preferir, você também pode oferecer parcelamento sem acréscimo.</description>
    <license>Apache Software License</license>
    <license_uri>http://opensource.org/licenses/apachepl.php</license_uri>
-   <version>3.16.4</version>
+   <version>3.16.6</version>
    <stability>stable</stability>
-   <notes>- Fixes: button &quot;btn-pagseguro&quot; css rule
-- Fixes: payment methods list - direct payment</notes>
+   <notes>- Fixes: In the list of banks on the online debit payment screen in versions 1.7 and 1.8 of Magento
+- Fixes: In the money mask in the fields installments and total on the payment screen</notes>
    <authors>
       <name>
          <name>pagseguro</name>

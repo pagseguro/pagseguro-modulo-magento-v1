@@ -1,5 +1,9 @@
 Changelog
 ---------
+3.16.6
+- Fix: Na listagem de bancos na tela de pagamento por débito online nas versões 1.7 e 1.8 do Magento
+- Fix: Na máscara de dinheiro nos campos parcelas e total na tela de pagamento
+
 3.16.4
 - Fix: ajuste na regra css do botão "btn-pagseguro"
 - Fix: ajuste na exibição dos meios de pagamento do checkout transparente
