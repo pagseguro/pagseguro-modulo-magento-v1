@@ -201,8 +201,13 @@ function removeNumbers(el) {
   return el.replace(/[0-9]/g, '');
 }
 
-function formatToReal( int ) {
-  var tmp = int+'';
+/**
+ * Returns the value of 'moneyValue' in the Brazilian real currency format
+ * @param {double} amount
+ * @returns {string}
+ */
+function formatToReal( amount ) {
+  var tmp = amount + '';
   var index = tmp.indexOf('.');
   if(index == -1) {
     tmp = tmp + '00';
@@ -219,4 +224,4 @@ function formatToReal( int ) {
   }
 
   return tmp;
-} 
+}
