@@ -149,7 +149,10 @@ function validateCnpj(self) {
  * @param {type} error
  * @returns {undefined}
  */
-function displayError(target, error = true) {
+function displayError(target, error) {
+  if(typeof error === "undefined"){
+    error = true;
+  }
   target = document.getElementsByClassName(target.id + '-error-message')[0]
   if (error && target.classList.contains('display-none')) {
     target.classList.remove('display-none')
