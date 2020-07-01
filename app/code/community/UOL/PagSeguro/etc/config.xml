@@ -19,10 +19,15 @@ limitations under the License.
 <config>
     <modules>
         <UOL_PagSeguro>
-            <version>2.8.0</version>
+            <version>3.16.6</version>
         </UOL_PagSeguro>
     </modules>
     <global>
+        <payment>
+            <groups>
+                <pagseguro>PagSeguro</pagseguro>
+            </groups>
+        </payment>
         <blocks>
             <uol_pagseguro>
                 <class>UOL_PagSeguro_Block</class>
@@ -38,6 +43,16 @@ limitations under the License.
                 <class>UOL_PagSeguro_Helper</class>
             </pagseguro>
         </helpers>
+        <events>
+            <resource_get_tablename>
+                <observers>
+                    <uol_pagseguro>
+                        <class>UOL_PagSeguro_Model_Observer</class>
+                        <method>addAutoloader</method>
+                    </uol_pagseguro>
+                </observers>
+            </resource_get_tablename>
+        </events>
         <template>
             <email>
                 <payment_pagseguro_template translate="label" module="pagseguro">
@@ -123,6 +138,11 @@ limitations under the License.
                                 <action>pagseguro/adminhtml_refund</action>
                                 <sort_order>2140</sort_order>
                             </pagseguro_refund>
+                            <pagseguro_transactions translate="title" module="pagseguro">
+                                <title>Listar transações</title>
+                                <action>pagseguro/adminhtml_transactions</action>
+                                <sort_order>2150</sort_order>
+                            </pagseguro_transactions>
                         </children>
                     </pagseguro_transaction>
                     <pagseguro_requirements translate="title" module="pagseguro">
@@ -194,12 +214,55 @@ limitations under the License.
     </frontend>
     <default>
         <payment>
+            <pagseguro_default_lightbox>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_DefaultLightbox</model>
+                <title>PagSeguro</title>
+                <group>pagseguro</group>
+                <sort_order>1</sort_order>
+            </pagseguro_default_lightbox>
+            <pagseguro_credit_card>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_CreditCard</model>
+                <title>Cartão de Crédito</title>
+                <group>pagseguro</group>
+                 <sort_order>2</sort_order>
+            </pagseguro_credit_card>
+            <pagseguro_boleto>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_Boleto</model>
+                <title>Boleto Bancário</title>
+                <group>pagseguro</group>
+                 <sort_order>3</sort_order>
+            </pagseguro_boleto>
+            <pagseguro_online_debit>
+                <active>0</active>
+                <model>UOL_PagSeguro_Model_OnlineDebit</model>
+                <title>Débito Online</title>
+                <group>pagseguro</group>
+                 <sort_order>4</sort_order>
+            </pagseguro_online_debit>
+            <!-- The <pagseguro> node is deprecated and not more used, it is here only to backward compatibility -->
             <pagseguro>
                 <active>0</active>
-                <model>UOL_PagSeguro_Model_PaymentMethod</model>
-                <title>PagSeguro</title>
-                <allowspecific>0</allowspecific>
+                <model>UOL_PagSeguro_Model_PagSeguroDeprecated</model>
+                <group>pagseguro</group>
             </pagseguro>
+            <!-- End  (backward compatibility pagseguro node) -->
+
+            <pagseguro_status_notification>
+                <pending>new</pending>
+                <aguardando_pagamento_ps>pending_payment</aguardando_pagamento_ps>
+                <em_analise_ps>payment_review</em_analise_ps>
+                <paga_ps>processing</paga_ps>
+                <disponivel_ps>processing</disponivel_ps>
+                <em_disputa_ps>holded</em_disputa_ps>
+                <devolvida_ps>closed</devolvida_ps>
+                <cancelada_ps>canceled</cancelada_ps>
+                <chargeback_debitado_ps>closed</chargeback_debitado_ps>
+                <em_contestacao_ps>holded</em_contestacao_ps>
+                <sort_order>5</sort_order>
+            </pagseguro_status_notification>
         </payment>
     </default>
 </config>

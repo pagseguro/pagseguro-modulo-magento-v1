@@ -1,0 +1,55 @@
+/**
+************************************************************************
+Copyright [2015] [PagSeguro Internet Ltda.]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+************************************************************************
+*/
+
+/*
+    ColorBox Core Style:
+    The following CSS is consistent between example themes and should not be altered.
+*/
+#colorbox,
+#cboxOverlay,
+#cboxWrapper { position: absolute; top:0; left:0; z-index: 9999; }
+#cboxOverlay { position: fixed; width: 100%; height: 100%; }
+#cboxMiddleLeft,
+#cboxBottomLeft { clear:left; }
+#cboxContent { position: relative; }
+#cboxLoadedContent { overflow: auto; }
+#cboxTitle { margin:0; }
+#cboxLoadingOverlay,
+#cboxLoadingGraphic { position: absolute; top:0; left:0; width: 110%; height: 100%; }
+#cboxPrevious,
+#cboxNext,
+#cboxClose,
+#cboxSlideshow { cursor: pointer; }
+.cboxPhoto { float: left; margin: auto; border: 0; display: block; max-width: none; }
+.cboxIframe  { width: 100%; height: 100%; display: block; border: 0; }
+#colorbox,
+#cboxContent,
+#cboxLoadedContent { box-sizing: content-box; }
+/*
+    User Style:
+    Change the following styles to modify the appearance of ColorBox.  They are
+    ordered & tabbed in a way that represents the nesting of the generated HTML.
+*/
+.cboxIframe { background:#FFF; }
+#cboxOverlay { background:#000; }
+#cboxContent { background:#fff; overflow:visible; border-radius:5px; }
+#cboxLoadedContent { margin:15px 10px 0; background: #FFF; }
+#cboxLoadingOverlay { background:#fff; }
+#cboxClose { display:block; position:absolute; right: -10px; top: -10px; padding: 12px; cursor: pointer; border: 0; border-radius: 50%; z-index: 10; background: center no-repeat #FFF url(data:image/gif;base64,R0lGODlhCgAKALMAANXV1dTU1O/v7/Dw8Ovr6+zs7Lu7u8DAwPX19QAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAKAAoAAAQqEKEhJZXgFFkOQMJhaN0oIIR4qESVGmNblePGqeo2sO9BBQdZKlC5WCQRADs=); box-shadow: -1px 1px 13px rgba(0, 0, 0, 0.4); overflow: hidden; width: 1.5em; height: 1.5em; text-indent: -9999px; }
+#cboxTitle { display: none !important; }
+#cboxLoadedContent .title { font-size: 1.8em; margin: 0 0 20px 0; padding: 0.1em 0; }

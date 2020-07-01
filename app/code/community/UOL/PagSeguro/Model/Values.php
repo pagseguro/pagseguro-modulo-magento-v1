@@ -1,5 +1,4 @@
 <?php
-
 /*
 ************************************************************************
 Copyright [2015] [PagSeguro Internet Ltda.]
@@ -21,18 +20,11 @@ limitations under the License.
 /**
  * Admin Charset Options
  */
-
 class UOL_PagSeguro_Model_Values
 {
     /**
-     * Construct
-     */
-    public function __construct()
-    {
-        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/config/PagSeguroConfig.class.php');
-    }
-    /**
      * Displays the settings to choose charset
+     *
      * @return array - Returns the available charsets
      */
     public function toOptionArray()
@@ -40,8 +32,10 @@ class UOL_PagSeguro_Model_Values
         self::alertRequeriments();
         $helper = Mage::helper('pagseguro');
 
-        return array(array("value" => "UTF-8" , "label" => $helper->__("UTF-8")),
-                     array("value" => "ISO-8859-1" , "label" => $helper->__("ISO-8859-1")));
+        return array(
+            array("value" => "UTF-8", "label" => $helper->__("UTF-8")),
+            array("value" => "ISO-8859-1", "label" => $helper->__("ISO-8859-1")),
+        );
     }
 
     /**
@@ -49,22 +43,9 @@ class UOL_PagSeguro_Model_Values
      */
     public function alertRequeriments()
     {
-        $requirements = PagSeguroConfig::validateRequirements();
-        $required = array();
-
-        foreach ($requirements as $key => $value) {
-            if ($value != '') {
-                $required[] = $value;
-            }
-        }
-
-        if (!empty($required)) {
-            $message = $helper = Mage::helper('pagseguro')->__("Requerimentos para o sistema funcionar:");
-
-            foreach ($required as $value) {
-                $message .= "<br />" . $value;
-            }
-
+        $requirements = \PagSeguro\Library::validate();
+        if (!$requirements) {
+            $message = $helper = Mage::helper('pagseguro')->__("Requerimentos para o sistema funcionar:".$requirements);
             Mage::getSingleton('core/session')->addError($message);
         }
     }

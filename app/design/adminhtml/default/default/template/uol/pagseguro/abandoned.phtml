@@ -1,115 +1,112 @@
 <?php
-
 /**
-************************************************************************
-Copyright [2015] [PagSeguro Internet Ltda.]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-************************************************************************
-*/
-
+ ************************************************************************
+ * Copyright [2015] [PagSeguro Internet Ltda.]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************
+ */
 ?>
 <?php
-    $helper = Mage::helper('pagseguro/abandoned');
-    $html   = Mage::helper('pagseguro/html');
-    $helper->checkViewAccess();
+$helper = Mage::helper('pagseguro/abandoned');
+$html   = Mage::helper('pagseguro/html');
+$helper->checkViewAccess();
 ?>
 
 <div id="pagseguro-module">
     <?php echo $html->getHeader(); ?>
     <div id="pagseguro-module-content">
         <div class="wrapper">
-            <?php echo $html->getSideMenu();?>
+            <?php echo $html->getSideMenu(); ?>
             <div id="pagseguro-module-contents">
                 <h2 class="title"><?php echo $helper->__('Transações Abandonadas'); ?></h2>
                 <p>
                     <?php
-                        $string = "Com esta funcionalidade você poderá listar as transações abandonadas durante o
+                    $string = "Com esta funcionalidade você poderá listar as transações abandonadas durante o
                             checkout PagSeguro e disparar, manualmente, um e-mail para seu comprador. Este e-mail
                             conterá um link que o redirecionará para o fluxo de pagamento, exatamente no ponto onde
                             ele parou.";
-                        echo $helper->__($string);
-                     ?>
+                    echo $helper->__($string);
+                    ?>
                 </p>
 
                 <div class="pagseguro-search-tools">
                     <form action="javascript:void(0)" method="post">
-                        <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
-                        <input type="submit" class="pagseguro-button" id="search-abandoned-button" value="<?php echo $helper->__('Pesquisar');?>" />
+                        <input type="hidden" name="form_key"
+                               value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>"/>
+                        <input type="submit" class="pagseguro-button" id="search-abandoned-button"
+                               value="<?php echo $helper->__('Pesquisar'); ?>"/>
                         <select name="pagseguro-days" class="pagseguro-field" id="pagseguro-daystorecovery-input">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
+                            <option value='5'>5</option>
+                            <option value='10'>10</option>
+                            <option value='15'>15</option>
+                            <option value='20'>20</option>
+                            <option value='25'>25</option>
+                            <option value='30'>30</option>
                         </select>
                         <label><?php echo $helper->__('Últimos Dias'); ?></label>
                         <div class="right-tools">
                             <span>Recuperação de carrinho:&nbsp;</span>
-                            <input type="submit"  class="pagseguro-button" id="send-email-button" value="<?php echo $helper->__("Enviar e-mail");?>" disabled />
+                            <input type="submit" class="pagseguro-button" id="send-email-button"
+                                   value="<?php echo $helper->__("Enviar e-mail"); ?>" disabled/>
                         </div>
                     </form>
                 </div>
 
                 <table id="abandoned-transactions-table" class="pagseguro-table">
                     <thead>
-                        <tr>
-                            <th class="select_checkbox" width="3%">
-                                <input type="checkbox" id="pagseguro-check-all" />
-                            </th>
-                            <th width="20%"><?php echo $helper->__('Data');?></th>
-                            <th width="20%"><?php echo $helper->__('ID Magento');?></th>
-                            <th width="20%"><?php echo $helper->__('Validade do Link');?></th>
-                            <th width="20%"><?php echo $helper->__('E-mails Enviados');?></th>
-                            <th width="17%"><?php echo $helper->__('Ação');?></th>
-                        </tr>
+                    <tr>
+                        <th class="select_checkbox" width="3%">
+                            <input type="checkbox" id="pagseguro-check-all"/>
+                        </th>
+                        <th width="20%"><?php echo $helper->__('Data'); ?></th>
+                        <th width="20%"><?php echo $helper->__('ID Magento'); ?></th>
+                        <th width="20%"><?php echo $helper->__('Validade do Link'); ?></th>
+                        <th width="20%"><?php echo $helper->__('E-mails Enviados'); ?></th>
+                        <th width="17%"><?php echo $helper->__('Ação'); ?></th>
+                    </tr>
                     </thead>
                 </table>
-                
+
                 <div id="abandoned-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
-					<p><?php echo $helper->__('Somente transações geradas a partir da versão 2.3 do módulo serão listadas.'); ?></p>
-				</div>
+                    <p><?php echo $helper->__('Somente transações geradas a partir da versão 2.3 do módulo serão listadas.'); ?></p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <?php
-    $noTransaction = $helper->__('Nenhum resultado.');
-    $noEmailSelected = $helper->__("Selecione pelo menos um campo da coluna 'Enviar'.");
-    $emailSendSuccess = $helper->__("E-mail enviado com sucesso!");
-    $emailsSendSuccess = $helper->__("E-mails enviado com sucesso!");
+$noTransaction     = $helper->__('Nenhum resultado.');
+$noEmailSelected   = $helper->__("Selecione pelo menos um campo da coluna 'Enviar'.");
+$emailSendSuccess  = $helper->__("E-mail enviado com sucesso!");
+$emailsSendSuccess = $helper->__("E-mails enviado com sucesso!");
 ?>
 
 <script type="text/javascript">
     var i = 0;
 
-    jQuery(document).ready(function(){
+    jQuery(document).ready(function () {
         Menu.init();
         PageAbandoned.init();
     });
 
-    var PageAbandoned = new function() {
+    var PageAbandoned = new function () {
         var transactionsTable; // DataTable
         var sendMultipleButton = jQuery("#send-email-button");
         var defaultPage = 0;
 
-        var onRequestTransactions = function(transactions, callback) {
+        var onRequestTransactions = function (transactions, callback) {
 
             if (transactions.status == false) {
 
@@ -130,7 +127,7 @@ limitations under the License.
             }
         };
 
-        var requestTransactions = function(callback) {
+        var requestTransactions = function (callback) {
 
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
@@ -138,10 +135,10 @@ limitations under the License.
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_abandoned/doPost'); ?>",
                 type: "POST",
                 data: {
-                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        days: jQuery('#pagseguro-daystorecovery-input').find(":selected").text()
-                      },
-                success: function(xhrResult) {
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                    days: jQuery('#pagseguro-daystorecovery-input').find(":selected").text()
+                },
+                success: function (xhrResult) {
 
                     xhrResult = JSON.parse(xhrResult);
 
@@ -151,13 +148,13 @@ limitations under the License.
                         onRequestTransactions(xhrResult, callback);
                     }
                 },
-                error: function() {
+                error: function () {
                     Modal.message('error', "Não foi possível realizar a consulta.");
                 }
-             });
+            });
         };
 
-        var sendMailRequest = function(params, count) {
+        var sendMailRequest = function (params, count) {
 
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
@@ -165,11 +162,11 @@ limitations under the License.
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_abandoned/doAbandoned'); ?>",
                 type: "POST",
                 data: {
-                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        data: params,
-                        days: jQuery('#pagseguro-daystorecovery-input').find(":selected").text()
-                      },
-                success: function(result) {
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                    data: params,
+                    days: jQuery('#pagseguro-daystorecovery-input').find(":selected").text()
+                },
+                success: function (result) {
 
                     result = JSON.parse(result);
 
@@ -179,30 +176,30 @@ limitations under the License.
                         Modal.message('error', result.err);
 
                     } else {
-                        jQuery(':checkbox').prop('checked','');
+                        jQuery(':checkbox').prop('checked', '');
                         jQuery('#messages').empty();
                         jQuery('#send-email-button').prop("disabled", true);
 
-                        requestTransactions(function(table) {
+                        requestTransactions(function (table) {
                             var msg = '';
 
                             if (count == 1)
-                                msg = '<?php echo " " . $helper->__($emailSendSuccess); ?>';
+                                msg = '<?php echo " ".$helper->__($emailSendSuccess); ?>';
                             else
-                                msg = count + '<?php echo " " . $helper->__($emailsSendSuccess); ?>';
+                                msg = count + '<?php echo " ".$helper->__($emailsSendSuccess); ?>';
                             Modal.message('success', msg);
                         });
 
                     }
                 },
-                error: function() {
+                error: function () {
                     // Remove the modal of loading
                     Modal.hideLoading();
                 }
-             });
+            });
         };
 
-        var sendMultipleEmails = function() {
+        var sendMultipleEmails = function () {
             var dataSelector = jQuery('input[name="send_emails[]"]');
 
             if (dataSelector.filter(":checked").length > 0) {
@@ -212,11 +209,12 @@ limitations under the License.
             }
         };
 
-        var sendMail = function() {
+        var sendMail = function () {
             var ckbFalse = 0;
+            ''
             var j = 0;
 
-            jQuery('input[name="send_emails[]"]').each(function() {
+            jQuery('input[name="send_emails[]"]').each(function () {
                 if (jQuery(this).is(':checked') == false) {
                     ckbFalse++;
                 }
@@ -225,7 +223,7 @@ limitations under the License.
 
             if (j == ckbFalse) {
                 jQuery('#messages').empty();
-                setMsgError("<?php echo $helper->__($noTransaSelected); ?>");
+                setMsgError("<?= isset($noTransaSelected) ? $helper->__($noTransaSelected) : '' ?>");
             } else {
                 jQuery('#messages').empty();
 
@@ -235,21 +233,21 @@ limitations under the License.
                 var jsonArr = [];
                 var count = 0;
 
-                jQuery('input[name="send_emails[]"]').each(function() {
+                jQuery('input[name="send_emails[]"]').each(function () {
                     if (jQuery(this).is(':checked') == true) {
-                            count++;
-                            config = jQuery(this).data('config').split('/');
-                            jsonArr.push({
-                                id: config[0],
-                                recovery: config[1]
-                            });
+                        count++;
+                        config = jQuery(this).data('config').split('/');
+                        jsonArr.push({
+                            id: config[0],
+                            recovery: config[1]
+                        });
                     }
                 });
                 sendMailRequest(jsonArr, count);
             }
         }
 
-        var prepareTable = function() {
+        var prepareTable = function () {
             var flow = 0;
             var totalRows = 0;
             var page = 0;
@@ -257,14 +255,14 @@ limitations under the License.
             var oTable;
             var pagination;
 
-            jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function(oSettings) {
+            jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function (oSettings) {
                 //redraw to account for filtering and sorting
                 // concept here is that (for client side) there is a row got inserted at the end (for an add)
                 // or when a record was modified it could be in the middle of the table
                 // that is probably not supposed to be there - due to filtering / sorting
                 // so we need to re process filtering and sorting
                 // BUT - if it is server side - then this should be handled by the server - so skip this step
-                if(oSettings.oFeatures.bServerSide === false){
+                if (oSettings.oFeatures.bServerSide === false) {
                     var before = oSettings._iDisplayStart;
 
                     oSettings.oApi._fnReDraw(oSettings);
@@ -283,15 +281,15 @@ limitations under the License.
                 "searching": false,
                 "bStateSave": true,
                 "pageLength": 10,
-                "aaSorting": [[ 1, "desc" ]],
+                "aaSorting": [[1, "desc"]],
                 "aoColumnDefs": [
-                    { 'bSortable': false, 'aTargets': [ 0, 4, 5 ] },
-                    { "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4, 5 ] }
+                    {'bSortable': false, 'aTargets': [0, 4, 5]},
+                    {"sClass": "tabela", 'aTargets': [1, 2, 3, 4, 5]}
                 ],
 
                 // Creates paging and notifies when there is no record
                 "oLanguage": {
-                    "sEmptyTable":"<?php echo $helper->__($noTransaction); ?>",
+                    "sEmptyTable": "<?php echo $helper->__($noTransaction); ?>",
                     "oPaginate": {
                         "sNext": '<?php echo $helper->__('Próximo');?>',
                         "sLast": '<?php echo $helper->__('Último');?>',
@@ -301,7 +299,7 @@ limitations under the License.
                 },
 
                 // Every interaction with the table it is called
-                "fnDrawCallback": function(oSettings) {
+                "fnDrawCallback": function (oSettings) {
 
                     // Makes when clicked on a registry is redirected to the editing order of Magento
                     oTable = this;
@@ -315,18 +313,18 @@ limitations under the License.
                         var href;
                         jQuery('#abandoned-transactions-table tbody tr').unbind('click');
                         jQuery('#abandoned-transactions-table tbody tr').bind('click', function () {
-                            href = jQuery(table.row( this ).data()[5])[0].href;
+                            href = jQuery(table.row(this).data()[5])[0].href;
                             jQuery('#abandoned-transactions-table tbody').off();
                             jQuery('#abandoned-transactions-table tbody').on('click', 'td', function () {
-                                if (jQuery(this).index() != 0 && jQuery(this).index() != 5){
+                                if (jQuery(this).index() != 0 && jQuery(this).index() != 5) {
                                     window.open(href, '_blank');
                                 }
-                            } );
-                        } );
+                            });
+                        });
                     }
 
                     //Checkbox enable | disable
-                    jQuery('.checkbox').change(function(){
+                    jQuery('.checkbox').change(function () {
                         var isChecked = jQuery(".checkbox:checked").length;
                         if (isChecked > 0) {
                             jQuery('#send-email-button').prop("disabled", false);
@@ -337,28 +335,28 @@ limitations under the License.
 
                     // Only if greater than 10 records show paging
                     if (totalRows > 10) {
-                        jQuery('.dataTables_paginate').css('display','block');
+                        jQuery('.dataTables_paginate').css('display', 'block');
                         flow = 1;
                     } else {
-                        jQuery('.dataTables_paginate').css('display','none');
+                        jQuery('.dataTables_paginate').css('display', 'none');
                         flow = 0;
                     }
 
                     // If the home page does not display the previous page button
                     if (info.page == 0) {
-                        jQuery('a#abandoned-transactions-table_previous').css('display','none');
+                        jQuery('a#abandoned-transactions-table_previous').css('display', 'none');
                     }
 
                     // If the last page does not display the next page button
-                    if ((info.page+1) == info.pages) {
-                        jQuery('a#abandoned-transactions-table_next').css('display','none');
+                    if ((info.page + 1) == info.pages) {
+                        jQuery('a#abandoned-transactions-table_next').css('display', 'none');
                     }
 
                     // Stores which is the page that appears after update
                     i++;
 
                     // Stores the current page, calculated by number of records and number of records per page
-                    page  = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);
+                    page = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);
                 },
 
                 // When it completes assembly of the table is executed
@@ -373,7 +371,7 @@ limitations under the License.
             });
         }
 
-        this.init = function() {
+        this.init = function () {
             prepareTable();
 
             jQuery('#search-abandoned-button').click(function () {
@@ -386,4 +384,4 @@ limitations under the License.
         };
     }
 </script>
-<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js'); ?>"></script>

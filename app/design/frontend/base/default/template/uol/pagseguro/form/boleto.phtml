@@ -1,0 +1,102 @@
+<script>
+  //<![CDATA[
+  var pagseguro_boleto_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>');
+
+  if (!alreadyGetPaymentMethods) {
+    pagseguro_boleto_dt.hide();
+  }
+
+  setBoletoSessionId("<?php echo $this->getBoletoSession(); ?>");
+
+  paymentMethods();
+
+  pagseguroBoletoOptions = function(res) {
+    if (!res['error']) {
+      if (res['paymentMethods']) {
+        if (res['paymentMethods'] && res['paymentMethods']['BOLETO'] && res['paymentMethods']['BOLETO']['options']['BOLETO']['status'] === 'AVAILABLE') {
+          pagseguro_boleto_dt.show();
+        } else {
+          pagseguro_creditcard_dt.find('input').prop('disabled', true);
+        }
+      }
+    } else {
+      console.log(res['error']);
+    }
+  }
+  //]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+    // get value fromm one step checkout guest document to be used in pagseguro direct payment
+    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange === null) {
+        document.getElementById('billing:taxvat').onchange = function (){
+            var documents =  document.querySelectorAll('.pagseguro-document');
+            var i;
+            for (i=0; i < documents.length; i++) {
+                documents[i].value = document.getElementById('billing:taxvat').value;
+            }
+        }
+    }
+//]]>
+</script>
+    
+<script type="text/javascript">
+//<![CDATA[
+    var beforeSaveJsUrl = "<?php echo $this->getPagSeguroBeforeSaveJsSkinUrl() ?>";
+    var x = document.getElementsByTagName("script");
+    var header_already_added = false;
+    for (var i=0; i< x.length; i++){
+        if (x[i].src == beforeSaveJsUrl){
+            header_already_added = true;
+        }
+    }
+
+    if (header_already_added == false){
+      // add header if not already added
+      var head = document.getElementsByTagName("head")[0];
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.src = beforeSaveJsUrl;
+      head.appendChild(s);
+    }
+//]]>
+</script>
+
+<div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
+    <input type="hidden" id="boletoHash" value="" name="payment[boleto_hash]">
+    <div style="float: left">
+        <div class="pagseguro-boleto-label-div">
+            <label class="pagseguro-required required-entry" ><?php echo $this->__('CPF ou CNPJ') ?></label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <input 
+                class="pagseguro-cc-input pagseguro-document required-entry" 
+                id="bilitDocument"  
+                onblur="validateDocument(this)" 
+                onkeydown="documentMask(this)"
+                type="text" 
+                title="<?php echo $this->__('CPF ou CNPJ') ?>" 
+                name="payment[boleto_cpf]" 
+                value="<?= $this->getBoletoDocument() ?>" 
+                maxlength="18"
+            />
+            <div class="display-none validation-advice bilitDocument-error-message">Insira um CPF ou CNPJ válido</div>
+        </div>
+    
+    <ul style="float: left;" class="pagseguro-direct-payment-ul">
+        <li>&#9679; Imprima o boleto e pague no banco ou na internet utilizando o seu c&oacute;digo de barras</li>
+        <li>&#9679; O prazo de validade do boleto &eacute; de 1 dia &uacute;til</li>
+    </ul>
+
+  </div>
+    <div style="display: inline-block; "class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <ul class="pagseguro-direct-payment-ul">
+            <div class="pagseguro-cc-input-div">
+                <li>Esta compra está sendo feita no Brasil 
+                    <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+                </li>
+            </div>
+        </ul>
+    </div>
+</div>

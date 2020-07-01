@@ -1,198 +1,184 @@
 <?php
+/**
+ ************************************************************************
+ * Copyright [2015] [PagSeguro Internet Ltda.]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************
+ */
 
 /**
-************************************************************************
-Copyright [2015] [PagSeguro Internet Ltda.]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-************************************************************************
-*/
-
-use UOL_PagSeguro_Helper_Data as HelperData;
-
-class UOL_PagSeguro_Helper_Webservice extends HelperData
+ * Class UOL_PagSeguro_Helper_Webservice
+ */
+class UOL_PagSeguro_Helper_Webservice extends UOL_PagSeguro_Helper_Data
 {
     /**
-     * @var PagSeguroAccountCredentials
+     * @var UOL_PagSeguro_Model_Library
      */
-    private $credentials;
-    
-    /**
-     * @var PagSeguroTransactionSearchService
-     */
-    private $searchService;
-    
-    /**
-     * @var PagSeguroCancelService
-     */
-    private $cancelService;
-    
-    /**
-     * @var PagSeguroRefundService
-     */
-    private $refundService;
-    
-    /**
-     * @var PagSeguroNotificationService
-     */
-    private $notificationService;
-    
-    /**
-     * @var unknown
-     */
-    private $initialDate;
+    private $library;
 
     /**
-     * Construct
+     * UOL_PagSeguro_Helper_Webservice constructor.
      */
     public function __construct()
     {
-        include_once (Mage::getBaseDir('lib') . '/PagSeguroLibrary/PagSeguroLibrary.php');
-        $this->credentials = $this->paymentModel()->getCredentialsInformation();
-        $this->searchService = new PagSeguroTransactionSearchService();
-        $this->cancelService = new PagSeguroCancelService();
-        $this->refundService = new PagSeguroRefundService();
-        $this->notificationService = new PagSeguroNotificationService();
+        parent::__construct();
+        $this->library = new UOL_PagSeguro_Model_Library();
     }
-    
+
     /**
-     * Request a PagSeguro Service
-     * @param $class string type of service
-     * @param $transactionCode code for this transaction
+     * @param     $initialDate
+     * @param int $page
+     * @param int $resultsInPage
+     *
+     * @return \PagSeguro\Services\Transactions\Search\Abandoned
+     */
+    public function abandonedRequest($initialDate, $page = 1, $resultsInPage = 1000)
+    {
+        return new \PagSeguro\Services\Transactions\Search\Abandoned($this->library->getAccountCredentials(),
+            array('initial_date' => $initialDate, 'max_per_page' => $resultsInPage, 'page' => $page));
+    }
+
+    /**
+     * @param $transactionCode
+     *
+     * @return \PagSeguro\Services\Transactions\Cancel
+     */
+    public function cancelRequest($transactionCode)
+    {
+        return \PagSeguro\Services\Transactions\Cancel::create(
+            $this->library->getAccountCredentials(),
+            $transactionCode
+        );
+    }
+
+    /**
+     * @param $transactionCode
+     *
+     * @return \PagSeguro\Services\Transactions\Notification
+     */
+    public function getNotification()
+    {
+        return \PagSeguro\Services\Transactions\Notification::check(
+            $this->library->getAccountCredentials()
+        );
+    }
+
+    /**
+     * @param $page
+     * @param $maxPageResults
+     * @param $initialDate
+     *
+     * @return null|string
+     * @throws Exception
+     */
+    public function getPagSeguroAbandonedList($page, $maxPageResults, $initialDate)
+    {
+        $response = null;
+        try {
+            $response = \PagSeguro\Services\Transactions\Search\Abandoned::search($this->library->getAccountCredentials(),
+                array('initial_date' => $initialDate, 'page' => $page, 'max_per_page' => $maxPageResults));
+        } catch (Exception $e) {
+            if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
+                throw new Exception($e->getMessage());
+            }
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param $page
+     * @param $maxPageResults
+     * @param $initialDate
+     *
+     * @return null|string
+     * @throws Exception
+     */
+    public function getTransactionsByDate($page, $maxPageResults, $initialDate)
+    {
+        $response = null;
+        try {
+            $response = \PagSeguro\Services\Transactions\Search\Date::search(
+                $this->library->getAccountCredentials(),
+                array('initial_date' => $initialDate, 'page' => $page, 'max_per_page' => $maxPageResults)
+            );
+        } catch (Exception $e) {
+            if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED' || $e->getCode() == 401) {
+                throw new Exception($e->getMessage());
+            }
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param $transactionCode
+     *
+     * @return \PagSeguro\Services\Transactions\Refund
+     */
+    public function refundRequest($transactionCode, $refundValue = null)
+    {
+        return \PagSeguro\Services\Transactions\Refund::create(
+            $this->library->getAccountCredentials(),
+            $transactionCode,
+            $refundValue
+        );
+    }
+
+    /**
+     * @param $class
+     * @param $transactionCode
+     *
+     * @return mixed|\PagSeguro\Parsers\Cancel\Response|string
+     * @throws Exception
      */
     public function requestPagSeguroService($class, $transactionCode)
     {
         try {
             if ($class == 'UOL_PagSeguro_Helper_Canceled') {
-                return $this->cancelService->createRequest($this->credentials, $transactionCode);
+                return \PagSeguro\Services\Transactions\Cancel::create($this->library->getAccountCredentials(),
+                    $transactionCode);
             } elseif ($class == 'UOL_PagSeguro_Adminhtml_RefundController') {
-                return $this->refundService->createRefundRequest($this->credentials, $transactionCode);
+                return \PagSeguro\Services\Transactions\Refund::create($this->library->getAccountCredentials(),
+                    $transactionCode);
             } elseif ($class == 'UOL_PagSeguro_Model_NotificationMethod') {
-                return $this->notificationService->checkTransaction($this->credentials, $transactionCode);
+                return \PagSeguro\Services\Transactions\Notification::check($this->library->getAccountCredentials());
             }
-
-        } catch (PagSeguroServiceException $e) {
+        } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
 
     /**
-     * Get a list with abandoned transactions
+     * @param $code
+     *
+     * @return null|string
      * @throws Exception
      */
-    public function getPagSeguroAbandonedList()
+    public function getTransactionsByCode($code)
     {
-        $this->initialDate = $this->getDateSubtracted($this->days);
-
+        $response = null;
         try {
-            $response = $this->searchService->searchAbandoned($this->credentials, 1, 1000, $this->getInitialDate());
-
-            return  $response->getTransactions();
-
-        } catch (PagSeguroServiceException $e) {
-            if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
-                throw new Exception($e->getMessage());
-            }
-        }
-    }
-    
-    /**
-     * Get a transaction information
-     * @param $type string type of transaction service
-     * @param $page int quantity of pages in result
-     * @param $nRecords int quantity of records to return in result
-     */
-    public function getTransactionService($type, $page, $nRecords)
-    {
-
-        try {
-            if ($type == 'searchByDate') {
-                return $this->searchService->searchByDate(
-                    $this->credentials,
-                    $page,
-                    $nRecords,
-                    $this->getInitialDate()
-                );
-            }
-        } catch (PagSeguroServiceException $e) {
-            if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
-                throw new Exception($e->getMessage());
-            }
-        }
-    }
-
-    /**
-     * Request abandoned PagSeguroTransactions
-     * @param DateTime $initialDate
-     * @param string $page
-     * @param string $resultsInPage
-     * @return PagSeguroTransactionSearchResult
-     */
-    public function abandonedRequest($initialDate, $page = null, $resultsInPage = null)
-    {
-        if (is_null($page)) {
-            $page = 1;
-        }
-        if (is_null($resultsInPage)) {
-            $resultsInPage = 1000;
+            $response = \PagSeguro\Services\Transactions\Search\Code::search(
+                $this->library->getAccountCredentials(),
+                $code
+            );
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
 
-        return $this->searchService->searchAbandoned($this->credentials, $page, $resultsInPage, $initialDate);
-
+        return $response;
     }
 
-    /**
-     * Request a PagSeguro refund
-     * @param string $transactionCode
-     * @return Ambigous <boolean, NULL, string, unknown>
-     */
-    public function refundRequest($transactionCode)
-    {
-        return $this->refundService->createRefundRequest($this->credentials, $transactionCode);
-    }
-
-    /**
-     * Request a PagSeguro cancel
-     * @param string $transactionCode
-     * @return Ambigous <boolean, NULL, string, unknown>
-     */
-    public function cancelRequest($transactionCode)
-    {
-        return $this->cancelService->createRequest($this->credentials, $transactionCode);
-    }
-
-    /**
-     * Request a list of  PagSeguraTransaction in a date range
-     * @param Integer $page
-     * @param Integer $maxPageResults
-     * @param DateTime $initialDate
-     * @return PagSeguroTransactionSearchResult
-     */
-    public function getTransactionsByDate(
-        Integer $page,
-        Integer $maxPageResults,
-        DateTime $initialDate
-    ) {
-        return $this->searchService->searchByDate($this->credentials, $page, $maxPageResults, $initialDate);
-    }
-
-    /**
-     * Request a list of  PagSeguraTransaction by notificationCode
-     * @param String $transactionCode
-     * @return PagSeguroTransactionSearchResult
-     */
-    public function getNotification($transactionCode)
-    {
-        return $this->notificationService->checkTransaction($this->credentials, $transactionCode);
-    }
 }

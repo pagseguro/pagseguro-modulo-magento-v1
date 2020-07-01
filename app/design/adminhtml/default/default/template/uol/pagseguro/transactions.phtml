@@ -1,0 +1,531 @@
+<?php
+/**
+ ************************************************************************
+ * Copyright [2015] [PagSeguro Internet Ltda.]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************
+ */
+?>
+<?php
+$helper = Mage::helper('pagseguro/transactions');
+$html   = Mage::helper('pagseguro/html');
+$obj = Mage::getSingleton('adminhtml/url');
+$url = $obj->getUrl('pagseguro/adminhtml_conciliation');
+?>
+
+<div id="pagseguro-module">
+    <?php echo $html->getHeader(); ?>
+    <div id="pagseguro-module-content">
+        <div class="wrapper">
+            <?php echo $html->getSideMenu(); ?>
+            <div id="pagseguro-module-contents">
+                <h2 class="title"><?php echo $helper->__('Lista de Transações'); ?></h2>
+                <p>
+                    <?php
+                    $string .= "Com esta funcionalidade você poderá listar as suas transações. Caso não encontre uma transação
+                        ou se o status de uma transação estiver desatualizado é aconselhável que você use a <a href='$url'><u>conciliação</u></a>
+                         de transações.";
+                    echo $helper->__($string);
+                    ?>
+                </p>
+
+                 <p>
+                    <?php
+                    echo $helper->__("<strong>Atenção: </strong>Toda transação estornada de forma parcial não tem seu status alterado. Por isso, ao filtrar 
+                        por \"Estornada Parcialmente\" o pedido exibirá o seu status original.");
+                    ?>
+                </p>
+
+                <table id="transaction-table" class="pagseguro-table">
+                    <thead>
+                    <tr>
+                        <th width="14%"><?php echo $helper->__('Data'); ?></th>
+                        <th width="14%"><?php echo $helper->__('ID Magento'); ?></th>
+                        <th width="35%"><?php echo $helper->__('ID PagSeguro'); ?></th>
+                        <th width="10%"><?php echo $helper->__('Ambiente'); ?></th>
+                        <th width="12%"><?php echo $helper->__('Status PagSeguro'); ?></th>
+                        <th width="15%"><?php echo $helper->__('Ação'); ?></th>
+                    </tr>
+                    <tr>
+                        <th width="14%" class="input-search">
+                            <input type="text" class="pagseguro-field" name="date_begin" id="date_begin" OnKeyUp="dateMask(this.value, 'date_begin')" onblur="dateVerifyOnLosesFocus(this)" maxlength="10" placeholder="De"/>
+                            <input type="text" class="pagseguro-field input-date" name="date_end" id="date_end" OnKeyUp="dateMask(this.value, 'date_end')" onblur="dateVerifyOnLosesFocus(this)" maxlength="10" placeholder="Até"/>
+                        </th>
+                        <th width="14%" class="input-search"><input type="text" class="pagseguro-field" name="id_magento" id="id_magento" placeholder="ID Magento"/></th>
+                        <th width="35%" class="input-search"><input type="text" class="pagseguro-field" name="id_pagseguro" id="id_pagseguro" placeholder="ID PagSeguro"/></th>
+                        <th width="10%" class="input-search"></th>
+                        <th width="12%" class="input-search"><select class="pagseguro-field" id="status">
+                            <option value="">Todos</option>
+                            <option value="1">Aguardando Pagamento</option>
+                            <option value="2">Em análise</option>
+                            <option value="3">Paga</option>
+                            <option value="4">Disponível</option>
+                            <option value="5">Em disputa</option>
+                            <option value="6">Devolvida</option>
+                            <option value="7">Cancelada</option>
+                            <option value="10">Estornada Parcialmente</option>
+                        </select></th>
+                        <th width="15%" class="input-search">
+                            <input type="button" class="pagseguro-button" id="list-filter-button" value="<?php echo $helper->__('Filtrar'); ?>">
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+
+                <?php
+                $noTransaction   = 'Nenhum resultado.';
+                $canceledSuccess = $helper->__("Transação cancelada com sucesso!");
+                $canceledError   = $helper->__("Não foi possível executar esta ação. <br /> Utilize a conciliação de transações primeiro ou tente novamente mais tarde.");
+                ?>
+
+                <div id="list-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
+                    <p><?php echo $helper->__('Somente transações geradas a partir da versão 2.3 do módulo serão listadas.'); ?></p>
+                </div>
+
+                <div id="modal-details" class="modal">
+                    <div class="modal-content">
+                        <button id="modal-close"></button>
+                        <div class="list-datails">
+                            <div class="group"><h3>Transação</h3></div>
+                            <div id="transaction-group" class="group"></div>
+
+                            <div class="group"><h3>Pagamento</h3></div>
+                            <div id="payment-group" class="group"></div>
+                        <div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var i = 0;
+    jQuery(document).ready(function () {
+        Menu.init();
+        PageList.init();
+        PageList.requestTransactions();
+    });
+
+    var PageList = new function () {
+        this.requestTransactions = function () {
+
+        Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
+            jQuery.ajax({
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transactions/doPost'); ?>",
+                type: "POST",
+                data: {
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                    date_begin: document.getElementById('date_begin').value,
+                    date_end: document.getElementById('date_end').value,
+                    id_magento: document.getElementById('id_magento').value,
+                    id_pagseguro: document.getElementById('id_pagseguro').value,
+                    status: document.getElementById('status').value
+                },
+                success: function (xhrResult) {
+                    xhrResult = JSON.parse(xhrResult);
+                    if (xhrResult.status == false && xhrResult.err == "[HTTP 401] - UNAUTHORIZED") {
+                        Modal.message('error', "Não foi possível realizar a consulta.");
+                    } else {
+                        if (xhrResult.status == false) {
+                            jQuery('#transaction-table').dataTable().fnClearTable(true);
+                            Modal.message('alert', "Sem resultados para o filtro informado.");
+                        } else {
+                            jQuery('#transaction-table').dataTable().fnClearTable(true);
+                            jQuery('#transaction-table').dataTable().fnAddData(xhrResult);
+                            jQuery('#transaction-table').dataTable()._fnInitComplete();
+                            jQuery('td').css('cursor', 'auto');
+                            Modal.hideLoading();
+                        }
+                    }
+                },
+                error: function (xhrErr) {
+                    Modal.message('error', xhrErr);
+                }
+            });
+        }
+
+        var prepareTable = function () {
+
+            var flow = 0;
+            var totalRows = 0;
+            var page = 0;
+            var currentPage = 0;
+            var oTable;
+
+            jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function (oSettings) {
+                // redraw to account for filtering and sorting
+                // concept here is that (for client side) there is a row got inserted at the end (for an add)
+                // or when a record was modified it could be in the middle of the table
+                // that is probably not supposed to be there - due to filtering / sorting
+                // so we need to re process filtering and sorting
+                // BUT - if it is server side - then this should be handled by the server - so skip this step
+                if (oSettings.oFeatures.bServerSide === false) {
+                    var before = oSettings._iDisplayStart;
+
+                    oSettings.oApi._fnReDraw(oSettings);
+                    // iDisplayStart has been reset to zero - so lets change it back
+                    oSettings._iDisplayStart = before;
+                    oSettings.oApi._fnCalculateEnd(oSettings);
+                }
+
+                // draw the 'current' page
+                oSettings.oApi._fnDraw(oSettings);
+            };
+
+            jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+                "date-br-pre": function ( a ) {
+                    var x;
+                    var dateParts = a.match(/(\d+)\/(\d+)\/(\d+) (\d+):(\d+):(\d+)/);
+                    return new Date(dateParts[3], parseInt(dateParts[2], 10) -1, dateParts[1], dateParts[4], dateParts[5], dateParts[6]);
+                },
+
+                "date-br-asc": function ( a, b ) {
+                    return b - a;
+                },
+
+                "date-br-desc": function ( a, b ) {
+                    return a - b;
+                },
+
+            } );
+
+            // Initiates the creation of the table dataTable
+            jQuery('#transaction-table').dataTable({
+                "info": false,
+                "lengthChange": false,
+                "searching": false,
+                "bStateSave": false,
+                "pageLength": 10,
+                "orderCellsTop": true,
+                "aaSorting": [[0, "desc"]],
+                "aoColumnDefs": [
+                    {'bSortable': false, 'aTargets': [3, 5]},
+                    {"sClass": "tabela", 'aTargets': [0, 1, 2, 3]},
+                    {"sType": "date-br", 'aTargets': [0]}
+                ],
+                "bDestroy": true,
+
+                // Creates paging and notifies when there is no record
+                "oLanguage": {
+                    "sEmptyTable": "<?php echo $helper->__($noTransaction); ?>",
+                    "oPaginate": {
+                        "sNext": '<?php echo $helper->__('Próximo');?>',
+                        "sLast": '<?php echo $helper->__('Último');?>',
+                        "sFirst": '<?php echo $helper->__('Primeiro');?>',
+                        "sPrevious": '<?php echo $helper->__('Anterior');?>'
+                    }
+                },
+
+                // Every interaction with the table it is called
+                "fnDrawCallback": function (oSettings) {
+                    // Makes when clicked on a registry is redirected to the editing order of Magento
+                    oTable = this;
+                    totalRows = oTable.fnGetData().length;
+
+                    var table = jQuery('#transaction-table').DataTable();
+                    var info = table.page.info();
+
+                    //Checkbox enable | disable
+                    jQuery('.checkbox').change(function () {
+                        var isChecked = jQuery(".checkbox:checked").length;
+
+                        if (isChecked > 0) {
+                            jQuery('#list-button').prop("disabled", false);
+                        } else {
+                            jQuery('#list-button').prop("disabled", true);
+                        }
+
+                    });
+
+                    // Only if greater than 10 records show paging
+                    if (totalRows > 10) {
+                        jQuery('.dataTables_paginate').css('display', 'block');
+                        flow = 1;
+                    } else {
+                        jQuery('.dataTables_paginate').css('display', 'none');
+                        flow = 0;
+                    }
+
+                    // If the home page does not display the previous page button
+                    if (info.page == 0) {
+                        jQuery('a#transaction-table_previous').css('display', 'none');
+                    }
+
+                    // If the last page does not display the next page button
+                    if ((info.page + 1) == info.pages) {
+                        jQuery('a#transaction-table_next').css('display', 'none');
+                    }
+
+                    i++;
+
+                    // Stores which is the page that appears after update
+                    if (i == 1) {
+                        if (page >= 1 && totalRows < 1) {
+                            currentPage = page - 1;
+                        } else {
+                            currentPage = page;
+                        }
+                    }
+
+                    // Stores the current page, calculated by number of records and number of records per page
+                    page = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);
+                },
+
+                // When it completes assembly of the table is executed
+                "initComplete": function (oSettings) {
+                    oTable = this;
+
+                    if (currentPage != 0) {
+                        // When upgraded back on the page that was
+                        oTable.fnPageChange(currentPage);
+                    }
+                }
+            });
+        }
+
+        
+        var requestTransactionDetails = function (transaction_code) {
+            Modal.showLoading('Aguarde...');
+            var listItensBody;
+            jQuery.ajax({
+                url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_transactions/getTransaction');?>",
+                type: "GET",
+                data: {
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                    transaction_code: transaction_code
+                },
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.status == false && result.err == "conciliate") {
+                        Modal.message('error', 'É necessário utilizar a conciliação de transações primeiro.');
+                    } else if (result.status == false) {
+                        Modal.message('error', result.err);
+                    } else {
+                        jQuery('#transaction-group').append('<div></div>');
+                        jQuery('#transaction-group').append('<div></div>');
+                        jQuery('#payment-group').append('<div></div>');
+                        jQuery('#payment-group').append('<div></div>');
+                        var listTransactionLine1 = jQuery('#transaction-group div:eq(0)');
+                        var listTransactionLine2 = jQuery('#transaction-group div:eq(1)');
+                        var listPaymentLine1 = jQuery('#payment-group div:eq(0)');
+                        var listPaymentLine2 = jQuery('#payment-group div:eq(1)');
+
+                        if(result.date != undefined && result.date != false){
+                            listTransactionLine1.append('<dl class=""><dt>Data e hora: </dt><dd>' + result.date + '</dd></dl>');
+                        }
+
+                        if(result.type != undefined && result.type != false){
+                            listTransactionLine1.append('<dl class=""><dt>Tipo: </dt><dd>' + result.type + '</dd></dl>');
+                        }
+
+                        if(result.status != undefined && result.status != false){
+                            listTransactionLine1.append('<dl><dt>Status: </dt><dd>' + result.status + '</dd></dl>');
+                        }
+                        
+                        if(result.code != undefined && result.code != false){
+                            listTransactionLine1.append('<dl><dt>Código da transação: </dt><dd>' + result.code + '</dd></dl>');
+                        }
+
+                        if(result.reference != undefined && result.reference != false){
+                            listTransactionLine1.append('<dl><dt>Código de referência: </dt><dd>' + result.reference + '</dd></dl>');
+                        }
+
+                        if(result.lastEventDate != undefined && result.lastEventDate != false){
+                            listTransactionLine2.append('<dl><dt>Último evento: </dt><dd>' + result.lastEventDate + '</dd></dl>');
+                        }
+
+                        if(result.cancelationSource != undefined && result.cancelationSource != false){
+                            listTransactionLine2.append('<dl><dt>Origem do cancelamento: </dt><dd>' + result.cancelationSource + '</dd></dl>');
+                        }
+
+                        if(result.itemCount != undefined && result.itemCount != false){
+                            listTransactionLine2.append('<dl><dt>Total de itens: </dt><dd>' + result.itemCount + '</dd></dl>');
+                        }
+
+                        jQuery('#transaction-group').append('<span id="btn-hidden-itens" class="link ">Exibir todos os itens &#9660</span>');
+
+                        jQuery('#transaction-group').append('<div id="itens" class="hidden-groups table"></div>');
+
+                        if(result.paymentMethod.titleType != undefined && result.paymentMethod.titleType != false){
+                            listPaymentLine1.append('<dl><dt>Tipo de pagamento: </dt><dd>' + result.paymentMethod.titleType + '</dd></dl>');
+                        }
+
+                        if(result.paymentMethod.titleCode != undefined && result.paymentMethod.titleCode != false){
+                            listPaymentLine1.append('<dl><dt>Meio de pagamento: </dt><dd>' + result.paymentMethod.titleCode +'</dd></dl>');
+                        }
+
+                        if(result.paymentLink != false){
+                            listPaymentLine1.append('<dl><dt>Link para pagamento: </dt><dd>' + '<a target=blank href=' + result.paymentLink + '>' + 'Clique aqui para acessar' +'</a>' + '</dd></dl>');
+                        }
+
+                        if(result.installmentCount != undefined && result.installmentCount != false){
+                            listPaymentLine1.append('<dl><dt>Nº de parcelas: </dt><dd>' + result.installmentCount + '</dd></dl>');
+                        }
+
+                        if(result.extraAmount != undefined && result.extraAmount != false){
+                            listPaymentLine2.append('<dl class=""><dt>Valor extra: </dt><dd>R$ ' + formatReal(result.extraAmount) + '</dd></dl>');
+                        }
+
+                        if(result.discountAmount != undefined && result.discountAmount != false){
+                            listPaymentLine2.append('<dl class=""><dt>Desconto: </dt><dd> R$' + formatReal(result.discountAmount) + '</dd></dl>');
+                        }
+
+                        if(result.grossAmount != undefined && result.grossAmount != false){
+                            listPaymentLine2.append('<dl class=""><dt>Valor bruto: </dt><dd>R$ ' + formatReal(result.grossAmount) +'</dd></dl>');
+                        }
+
+                        if(result.netAmount != undefined && result.netAmount != false){
+                            listPaymentLine2.append('<dl class=""><dt>Valor líquido: </dt><dd>R$ ' + formatReal(result.netAmount) + '</dd></dl>');
+                        }
+
+                        if(result.promoCode != undefined && result.promoCode != false){
+                            listPaymentLine2.append('<dl><dt>Código de promoção: </dt><dd>' + result.promoCode + '</dd></dl>');
+                        }
+
+                        if(result.escrowEndDate != undefined && result.escrowEndDate != false){
+                            listPaymentLine1.append('<dl><dt>Data de crédito: </dt><dd>' + result.escrowEndDate +'</dd></dl>');
+                        }
+
+                        jQuery('#payment-group').append('<span id="btn-hidden-data" class="link">Exibir todos os dados de custos cobrados &#9660</span>');
+
+                        jQuery('#payment-group').append('<div id="cost-data" class="hidden-groups table"></div>');
+
+                        var listItens = jQuery('#itens');
+                        listItens.append('<h4>Itens do carrinho</h4>');
+                        listItens.append('<div class="group-title"></div>');
+                        listItens.append('<div class="group-table-itens"></div>');
+                        var listItensTitle = jQuery('.group-title');
+
+                        if(result.itemCount > 0){
+                            listItensTitle.append('<div class="itens-cell">ID</div>');
+                            listItensTitle.append('<div class="description-cell">Produto</div>');
+                            listItensTitle.append('<div class="itens-cell">Quantidade</div>');
+                            listItensTitle.append('<div class="itens-cell">Valor</div>');
+                            listItensTitle.append('<div class="itens-cell">Total</div>');
+                            for(var i = 0; i<result.itemCount; i++){
+                                var total = (result.items[i].quantity * result.items[i].amount).toFixed(2);
+                                listItensBody = jQuery('.group-table-itens');
+                                listItensBody.append('<div id="item' + i + '" class="itens-line"></div>');
+                                listItensBody = jQuery('#item' + i);
+                                listItensBody.append('<div class="itens-cell">' + result.items[i].id +'</div>');
+                                listItensBody.append('<div class="description-cell">' + result.items[i].description +'</div>');
+                                listItensBody.append('<div class="itens-cell">' + result.items[i].quantity + '</div>');
+                                listItensBody.append('<div class="itens-cell">R$ ' + formatReal(result.items[i].amount) + '</div>');
+                                listItensBody.append('<div class="itens-cell"> R$ ' + formatReal(total) +'</div>');
+                            }
+                        }
+    
+                        jQuery('#cost-data').append('<h4>Dados dos custos cobrados</h4>');
+
+                        jQuery('#cost-data').append('<div class="rate"></div>');
+
+                        var listData = jQuery('#cost-data div');
+
+                        if(result.creditorFees.installmentFeeAmount != undefined && result.creditorFees.installmentFeeAmount != false){
+                            listData.append('<dl><dt>Taxa de parcelamento: </dt><dd> R$' + formatReal(result.creditorFees.installmentFeeAmount) + '</dd></dl>');
+                        }
+
+                        if(result.creditorFees.operationalFeeAmount != undefined && result.creditorFees.operationalFeeAmount != false){
+                            listData.append('<dl><dt>Taxa de operação: </dt><dd> R$'+ formatReal(result.creditorFees.operationalFeeAmount) +'</dd></dl>');
+                        }
+
+                        if(result.creditorFees.intermediationRateAmount != undefined && result.creditorFees.intermediationRateAmount != false){
+                            listData.append('<dl><dt>Tarifa de intermediação: </dt><dd>R$ ' + formatReal(result.creditorFees.intermediationRateAmount) + '</dd></dl>');
+                        }
+
+                        if(result.creditorFees.intermediationFeeAmount != undefined && result.creditorFees.intermediationFeeAmount != false){
+                            listData.append('<dl><dt>Taxa de intermediação: </dt><dd>R$ ' + formatReal(result.creditorFees.intermediationFeeAmount) + '</dd></dl>');
+                        }
+
+                        if(result.creditorFees.comissionFeeAmount != undefined && result.creditorFees.comissionFeeAmount != false){
+                            listData.append('<dl><dt>Taxa de comissão: </dt><dd>R$ ' + formatReal(result.creditorFees.comissionFeeAmount) + '</dd></dl>');
+                        }
+    
+                        Modal.hideLoading();
+                        jQuery('#modal-details').css('display', 'block');  
+                    }  
+                }
+        });
+        }
+
+        function clearListDetails(){
+            jQuery('#transaction-group').empty();
+            jQuery('#payment-group').empty();
+            jQuery('#cost-data').empty();
+            jQuery('#itens').empty();
+        }
+
+        jQuery('#list-filter-button').click(function () {
+            if (document.querySelectorAll('.pagseguro-field-error').length > 0){
+                Modal.message('alert', 'Data inválida!');
+            } else if (validateSearchByDate() == true) {
+                PageList.requestTransactions();
+            }
+        });
+
+        jQuery('#modal-close').click(function () {
+            jQuery('#modal-details').css('display', 'none');
+            jQuery('#itens').addClass('hidden-groups');
+            clearListDetails();
+        });
+
+        window.onclick = function (event) {
+            var modal = document.getElementById('modal-details');
+            if (event.target == modal) {
+                jQuery('#modal-details').css('display', 'none');
+                jQuery('#itens').addClass('hidden-groups');
+                clearListDetails();
+            }
+        }
+
+        $(document).on('click', '#btn-hidden-itens', function(){
+            if(jQuery('#itens').hasClass('hidden-groups')){
+                jQuery('#btn-hidden-itens').html('Ocultar os itens &#9650')
+                jQuery('#itens').removeClass('hidden-groups');
+                jQuery('#btn-hidden-data').html('Exibir todos os dados de custos cobrados &#9660')
+                jQuery('#cost-data').addClass('hidden-groups');
+            }else{
+                jQuery('#btn-hidden-itens').html('Exibir todos os itens &#9660')
+                jQuery('#itens').addClass('hidden-groups');
+            }
+        });
+
+        $(document).on('click', '#btn-hidden-data', function(){
+            if(jQuery('#cost-data').hasClass('hidden-groups')){
+                jQuery('#btn-hidden-data').html('Ocultar os dados dos custos cobrados &#9650')
+                jQuery('#cost-data').removeClass('hidden-groups');
+                jQuery('#btn-hidden-itens').html('Exibir todos os itens &#9660')
+                jQuery('#itens').addClass('hidden-groups');
+            }else{
+                jQuery('#btn-hidden-data').html('Exibir todos os dados de custos cobrados &#9660')
+                jQuery('#cost-data').addClass('hidden-groups');
+            }
+        });
+
+    this.init = function () {
+            prepareTable();
+
+            jQuery('#list-button').click(function () {
+                doConciliation();
+            });
+
+            jQuery('#transaction-table').on('click', 'a.action', function (e) {
+                var transaction = jQuery(this);
+                requestTransactionDetails(transaction.data('config'));
+            });
+        };
+    }
+</script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js'); ?>"></script>

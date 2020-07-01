@@ -20,6 +20,24 @@ limitations under the License.
 
 class UOL_PagSeguro_Model_Observer
 {
+
+    protected $lib_path;
+
+    /**
+     * UOL_PagSeguro_Model_Observer constructor.
+     * @param string $lib_path
+     */
+    public function __construct($lib_path)
+    {
+        $this->lib_path = Mage::getBaseDir('lib'). '/PagseguroPhpSdk/vendor/autoload.php';
+    }
+
+    public function addAutoloader()
+    {
+        include_once($this->lib_path);
+        return $this;
+    }
+
     /**
      * Query the existing transaction codes with the id of the request and assembles an array with these codes.
      * @param object $observer - It is an object of Event of observe.
@@ -47,9 +65,42 @@ class UOL_PagSeguro_Model_Observer
         }
 
         if (Mage::getStoreConfig("payment/pagseguro/email") && Mage::getStoreConfig("payment/pagseguro/token")) {
-            Mage::helper('pagseguro')->checkCredentials();
+            try {
+                Mage::helper('pagseguro')->checkCredentials();
+            } catch (Exception $exc) {
+                Mage::getSingleton('core/session')->addError(
+                    'PagSeguro: Credenciais (EMAIL ou TOKEN) inválidas para o AMBIENTE selecionado.'
+                        . 'Não será possível utilizar nenhum tipo de checkout enquanto não '
+                        . 'forem salvas credenciais válidas.'
+                );
+            }
         } else {
             throw new Exception("Certifique-se de que o e-mail e token foram preenchidos.");
+        }
+
+        $this->configStatusPagSeguro();
+
+    }
+
+    public function configStatusPagSeguro()
+    {
+        $statusPagSeguro = array('pending', 'aguardando_pagamento_ps', 'cancelada_ps', 'em_analise_ps', 'paga_ps',
+                                'devolvida_ps', 'em_disputa_ps', 'disponivel_ps', 'em_contestacao_ps', 'chargeback_debitado_ps');
+        $statusPagSeguro = "'" . implode("','", $statusPagSeguro) . "'";
+
+        $resource = Mage::getSingleton('core/resource');
+        $readConnection = $resource->getConnection('core_read');
+        $writeConnection = $resource->getConnection('core_write');
+        $table = $resource->getTableName('sales_order_status_state');
+
+        $query = "SELECT * FROM $table WHERE status IN ($statusPagSeguro)";
+        $result = $readConnection->fetchAll($query);
+
+        foreach ($result as $status){
+            $sql = "UPDATE ".$table." SET state = '".Mage::getStoreConfig('payment/pagseguro_status_notification/'. $status['status'])."' 
+                    WHERE status = '".$status['status'] ."'";
+
+            $writeConnection->query($sql);
         }
     }
 }

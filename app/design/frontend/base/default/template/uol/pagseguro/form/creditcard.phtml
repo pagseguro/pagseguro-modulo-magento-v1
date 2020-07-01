@@ -1,0 +1,238 @@
+<script>
+  //<![CDATA[
+  var pagseguro_credit_card_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>');
+
+  if (!alreadyGetPaymentMethods) {
+    pagseguro_credit_card_dt.hide();
+  }
+
+  setCreditCardSessionId("<?= $this->getCreditCardSession(); ?>");
+
+  paymentMethods();
+
+  pagseguroCreditcardOptions = function(res) {
+      var pagseguro_credit_card_options = jQuery('#pagseguro-credit-card-options');
+      
+      pagseguro_credit_card_options.on('click', 'a', function () {
+        pagseguro_credit_card_options.find('li').css('display', 'inline-flex')
+        pagseguro_credit_card_options.find('li.more_cc').css('display', 'none')
+      })
+      
+      if (!res['error']) {
+        if (res['paymentMethods'] && res['paymentMethods']['CREDIT_CARD'] && res['paymentMethods']['CREDIT_CARD']['options']) {
+          var k = 0;
+          pagseguro_credit_card_options.empty();
+          jQuery.each(res['paymentMethods']['CREDIT_CARD']['options'], function (i, item) {
+            if (item['status'] === 'AVAILABLE') {
+              ++k;
+              if (k > 0) {
+                pagseguro_credit_card_dt.show();
+              }
+              if (k <= 6) {
+                pagseguro_credit_card_options.append('<li style="display: inline-flex; padding: 0 3px 3px 0; margin: 0;"><img src="https://stc.pagseguro.uol.com.br' + item['images']['SMALL']['path'] + '"></li>');
+                if (k === 6) {
+                  pagseguro_credit_card_options.append('<li style="display: inline-flex; padding: 0 3px 3px 0; margin: 0;" class="more_cc"><a >mais</a></li>');
+                }
+              }
+              if (k > 6) {
+                pagseguro_credit_card_options.append('<li style="display: none; padding: 0 3px 3px 0; margin: 0;"><img src="https://stc.pagseguro.uol.com.br' + item['images']['SMALL']['path'] + '"></li>');
+              }
+            }
+          })
+          if (k === 0) {
+            pagseguro_onlinedebit_dt.find('input').prop('disabled', true);
+          }
+        }
+      } else {
+        console.log(res['error']);
+      }
+  }
+  //]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+    // get value from one step checkout guest (if it is enabled) document to be used in pagseguro direct payment
+    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange === null) {
+        document.getElementById('billing:taxvat').onchange = function (){
+            var documents =  document.querySelectorAll('.pagseguro-document');
+            var i;
+            for (i=0; i < documents.length; i++) {
+                documents[i].value = document.getElementById('billing:taxvat').value;
+            }
+        }
+    }
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+    var beforeSaveJsUrl = "<?php echo $this->getPagSeguroBeforeSaveJsSkinUrl() ?>";
+    var x = document.getElementsByTagName("script");
+    var header_already_added = false;
+    for (var i=0; i< x.length; i++){
+      if (x[i].src == beforeSaveJsUrl){
+             header_already_added = true;
+    }
+  }
+
+  if (header_already_added == false){
+    // add header if not already added
+    var head = document.getElementsByTagName("head")[0];
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.src = beforeSaveJsUrl;
+    head.appendChild(s);
+  }
+//]]>
+</script>
+
+<div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
+    <input type="hidden" id="creditCardHash" value="" name="payment[credit_card_hash]">
+    <input type="hidden" id="creditCardToken" value="" name="payment[credit_card_token]">
+    <input type="hidden" id="creditCardBrand">
+    <input type="hidden" id="creditCardInstallment" name="payment[credit_card_installment]">
+    <input type="hidden" id="creditCardInstallmentValue" name="payment[credit_card_installment_value]">
+    <input type="hidden" id="grand_total" value="<?= $this->getGrandTotal() ?>">
+
+    <div class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <div class="pagseguro-cc-label-div">
+            <label class="pagseguro-required" for="creditCardNum">Número do cartão</label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <input class="pagseguro-cc-input required-entry" type="text" id="creditCardNum" onkeydown="creditCardMask(this)" onblur="getBrand(this)" maxlength="19">
+            <div class="display-none validation-advice creditCardNum-error-message">Insira um número de cartão válido</div>
+            <ul id="pagseguro-credit-card-options" style="padding: 4px 0;"></ul>
+        </div>
+    </div>
+
+    <div class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <div class="pagseguro-cc-label-div">
+            <label class="pagseguro-required" for="creditCardHolder">Nome impresso no cartão</label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <input class="pagseguro-cc-input required-entry" type="text" name="payment[credit_card_holder]" id="creditCardHolder" required onblur="validateCardHolder(this)" onkeydown="notNumberMask(this)" minlength="3">
+            <div class="display-none validation-advice creditCardHolder-error-message">Insira um nome</div>
+        </div>
+    </div>
+
+    <div class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <div class="pagseguro-cc-label-div">
+        <label class="pagseguro-required" for="creditCardExpirationMonth">Validade</label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <select onclick="validateCreditCardMonth(this)" id="creditCardExpirationMonth" title="Cartão válido até" class="pagseguro-cc-select required-entry" required>
+                <option value="" disabled selected>Mês</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+            <div class="display-none validation-advice creditCardExpirationMonth-error-message">Escolha um mês</div>
+            <select onclick="validateCreditCardYear(this)" id="creditCardExpirationYear" title="Cartão válido até" class="pagseguro-cc-select required-entry" required>
+                <option value="" disabled selected>Ano</option>
+                <?php
+                $year = idate("Y");
+                $maxYear = $year + 20;
+                for ($i = $year; $i < $maxYear; $i++): ?>
+                    <option value="<?= $i; ?>"><?= $i; ?></option>
+                <?php endfor; ?>
+            </select>
+            <div class="display-none validation-advice creditCardExpirationYear-error-message">Escolha um ano</div>
+        </div>
+    </div>
+
+    <div class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <div class="pagseguro-cc-label-div">
+            <label class="pagseguro-required" for="creditCardCode">Código de segurança</label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <input class="pagseguro-cc-input form-control code-card-mask required-entry" id="creditCardCode" type="text" minlength="3"
+                   maxlength="4"
+                   onkeydown="creditCardCodeMask(this)"
+                   onblur="validateCreditCardCode(this)" required>
+            <div class="display-none validation-advice creditCardCode-error-message">Insira um código segurança válido.</div>
+        </div>
+    </div>
+    
+    <div class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <div class="pagseguro-cc-label-div">
+            <label class="pagseguro-required"><?php echo $this->__('CPF ou CNPJ') ?></label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <input
+                id="creditCardDocument"
+                class="pagseguro-cc-input pagseguro-document required-entry"
+                onblur="validateDocument(this)"
+                onkeydown="documentMask(this)"
+                type="text"
+                title="<?php echo $this->__('CPF ou CNPJ') ?>"
+                name="payment[credit_card_cpf]"
+                value="<?= $this->getCreditCardDocument() ?>" 
+                maxlength="18"
+            />
+            <div class="display-none validation-advice creditCardDocument-error-message">Insira um CPF ou CNPJ válido</div>
+        </div>
+    </div>
+
+    <div class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <div class="pagseguro-cc-label-div">
+        <label class="pagseguro-required" for="creditCardHolderBirthdate">Data de nascimento</label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <input maxlength="10" type="text" name="payment[credit_card_holder_birthdate]" class="form-control date-mask pagseguro-cc-input required-entry" id="creditCardHolderBirthdate" required
+                   placeholder="dd/mm/aaaa" onblur="validateCreditCardHolderBirthdate(this)" onkeydown="MascaraData(this)">
+            <div class="display-none validation-advice creditCardHolderBirthdate-error-message">Insira uma data de nascimento válida</div>
+        </div>
+    </div>
+
+    <div class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <div class="pagseguro-cc-label-div">
+            <label class="pagseguro-required" for="card_installments">Parcelas</label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <select class="pagseguro-cc-select required-entry" id="card_installment_option" title="Nº de parcelas" required
+                    disabled onchange="cardInstallmentOnChange(this.value)" onclick="validateCreditCardInstallment(this)">
+                <option value="null" disabled selected>Escolha o N° de parcelas</option>
+            </select>
+            <div class="display-none validation-advice card_installment_option-error-message">Escolha uma opção de parcelamento</div>
+        </div>
+    </div>
+
+    <div class="credit-total pagseguro-label-spacing pagseguro-cc-group-div">
+        <div class="pagseguro-cc-label-div">
+        <label class="pagseguro-required" for="card_installments">Total</label>
+        </div>
+        <div class="pagseguro-cc-input-div">
+            <span>
+                <span id="card_total">selecione o número de parcelas</span>
+            </span>
+        </div>
+    </div>
+    
+    <div class="credit-card-error-ps pagseguro-label-spacing pagseguro-cc-group-div" style="font-weight: bold; text-align: center;">
+        <span>
+            <div class="display-none validation-advice creditCardToken-error-message">
+                Dados do cartão inválidos. Verifique o número, a validade e o 	código de segurança do cartão inseridos e tente novamente.
+            </div>
+        </span>
+    </div>
+    
+    <div style="display: inline-block; "class="pagseguro-label-spacing pagseguro-cc-group-div">
+        <ul class="pagseguro-direct-payment-ul">
+            <div class="pagseguro-cc-input-div">
+                <li>Esta compra está sendo feita no Brasil 
+                    <img class="flag-origin-country-img" src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+                </li>
+            </div>
+        </ul>
+    </div>
+</div>

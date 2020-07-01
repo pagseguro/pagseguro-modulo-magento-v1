@@ -388,3 +388,220 @@ function maskDiscount(v) {
 
     return v;
 }
+
+/**
+ * List payments methods enabled for account
+ */
+jQuery(document).ready(function () {
+  var open = false
+  jQuery('#payment_pagseguro_payments_enabled-head').click(function () {
+    open = true
+    if (open) {
+      var body = jQuery('#payment_pagseguro_payments_enabled')
+      var loading = '<p>carregando...</p>'
+      body.append(loading)
+      PagSeguroDirectPayment.getPaymentMethods({
+        success: function (res) {
+          if (!res['error']) {
+            body.empty()
+            jQuery.each(res['paymentMethods'], function (i, items) {
+              if (i !== 'BALANCE' && i !== 'DEPOSIT') {
+                if (i === 'ONLINE_DEBIT') {
+                  body.append('<ul id="' + i + '">' +
+                    '<li style="display: inline-block; font-weight: bold; width: 100%;">Débito On-Line:</li>' +
+                    '<li style="display: inline-block; padding: 5px 15px;" class="none">nenhuma opção disponível</li>' +
+                    '</ul>')
+                } else if (i === 'CREDIT_CARD') {
+                  body.append('<ul id="' + i + '">' +
+                    '<li style="display: inline-block; font-weight: bold; width: 100%;">Cartão de Crédito:</li>' +
+                    '<li style="display: inline-block; padding: 5px 15px;" class="none">nenhuma opção disponível</li>' +
+                    '</ul>')
+                } else if (i === 'BOLETO') {
+                  body.append('<ul id="' + i + '">' +
+                    '<li style="display: inline-block; font-weight: bold; width: 100%;">Boleto:</li>' +
+                    '<li style="display: inline-block; padding: 5px 15px;" class="none">nenhuma opção disponível</li>' +
+                    '</ul>')
+                } else {
+                  body.append('<ul id="' + i + '">' +
+                    '<li style="display: inline-block; font-weight: bold; width: 100%;">' + i + ':</li>' +
+                    '<li style="display: inline-block; padding: 5px 15px;" class="none">nenhuma opção disponível</li>' +
+                    '</ul>')
+                }
+                jQuery.each(items['options'], function (k, item) {
+                  if (item['status'] === 'AVAILABLE') {
+                    body.find('ul#' + i).find('.none').hide()
+                    body.find('ul#' + i).append('<li style="display: inline-block; padding: 5px 15px;">' + item['displayName'] + '</li>')
+                  }
+                })
+              }
+            })
+          } else {
+            body.empty()
+            body.append('<p>Erro</p>')
+          }
+        },
+        error: function () {
+          body.empty()
+          body.append('<p>Erro</p>')
+        }
+      })
+    }
+  })
+})
+
+/* ************************************* */
+/* *************** DATE **************** */
+/* ************************************* */
+
+function dateMask (date, fieldName) { 
+    var mydate = '';
+    var field = document.getElementById(fieldName);
+    mydate = mydate + date;
+    if (mydate.length == 2 && event.keyCode != 8){
+        mydate = mydate + '/';
+        field.value = mydate;
+    } 
+    if (mydate.length == 5 && event.keyCode != 8){
+        mydate = mydate + '/';
+        field.value = mydate;
+    } 
+    if (mydate.length == 10){
+        dateVerify(field); 
+    }
+    
+    if (field.value == "") {
+        field.classList.remove('pagseguro-field-error');
+    }
+}
+
+function dateVerifyOnLosesFocus(fieldName){
+    var mydate = '';
+    mydate = mydate + fieldName.value;
+    if(mydate.length > 0 && mydate.length < 10) {
+        fieldName.classList.add('pagseguro-field-error');
+    } else if(mydate.length == 0) {
+        fieldName.classList.remove('pagseguro-field-error');
+    } else {
+        dateVerify(fieldName);
+    }
+}
+
+function dateVerify (field) { 
+
+    day = (field.value.substring(0,2)); 
+    month = (field.value.substring(3,5)); 
+    year = (field.value.substring(6,10)); 
+
+    situacao = "";
+
+    if ( isNaN(day) || ((day < 01)||(day < 01 || day > 30) && (  month == 04 || month == 06 || month == 09 || month == 11 ) || day > 31)) {
+        situacao = "false";
+    }
+
+    if ( isNaN(month) || month < 01 || month > 12 ) {
+        situacao = "false";
+    }
+
+    if ( isNaN(year) || month == 2 && ( day < 01 || day > 29 || ( day > 28 && (parseInt(year / 4) != year / 4)))) {
+        situacao = "false";
+    }
+
+    if (situacao == "false") {
+       field.classList.add('pagseguro-field-error');
+    }else{
+       field.classList.remove('pagseguro-field-error');
+    }
+    return;
+}
+
+function validateSearchByDate() {
+    var fieldDateFromValue = document.getElementById('date_begin').value;
+    var fieldDateToValue = document.getElementById('date_end').value;
+
+    if ((fieldDateFromValue.length > 0 && fieldDateToValue.length == 0) || (fieldDateFromValue.length == 0 && fieldDateToValue.length > 0)) {
+        Modal.message('alert', 'Data de início e fim devem ser informadas!');
+        return false;
+    }
+
+    dayFrom = (fieldDateFromValue.substring(0,2));
+    monthFrom = (fieldDateFromValue.substring(3,5));
+    yearFrom = (fieldDateFromValue.substring(6,10));
+
+    dayTo = (fieldDateToValue.substring(0,2));
+    monthTo = (fieldDateToValue.substring(3,5));
+    yearTo = (fieldDateToValue.substring(6,10));
+
+    var dateFrom = new Date(yearFrom, monthFrom, dayFrom);
+    var dateTo = new Date(yearTo, monthTo, dayTo);
+
+    if (dateFrom > dateTo) {
+        Modal.message('alert', 'Data de início maior que a data de fim!');
+        return false;
+    }
+
+    return true;
+}
+
+/* ************************************* */
+/* *************** MONEY *************** */
+/* ************************************* */
+
+function formatReal( int )
+{
+    var tmp = int+'';
+    tmp = tmp.replace(".", "");
+    tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+    if ( tmp.length > 6 ) {
+        tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+    }
+    return tmp;
+}
+
+function formatRealInput( field )
+{
+    var tmp = field.value;
+    tmp = tmp.replace(",", "");
+    tmp = tmp.replace(".", "");
+
+    valueIsNumber(tmp);
+
+    tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+
+    if ( tmp.length > 6 ) {
+        tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+    }
+    field.value = tmp;
+}
+
+function valueIsNumber(tmp){
+
+    if(tmp.indexOf(",") == 0){
+        jQuery('#refund-value').addClass('pagseguro-field-error');
+        jQuery('.error').text('Valor inválido.');
+        return false;
+    }
+
+    tmp = tmp.replace(",", "");
+    tmp = tmp.replace(".", "");
+
+    if(isNaN(tmp)) {
+        jQuery('#refund-value').addClass('pagseguro-field-error');
+        jQuery('.error').text('Valor inválido.');
+        return false;
+    } else if(tmp.indexOf('-') != -1) {
+        jQuery('#refund-value').addClass('pagseguro-field-error');
+        jQuery('.error').text('Valor não pode ser negativo.');
+        return false;
+    } else {
+        jQuery('.error').text('');
+        jQuery('#refund-value').removeClass('pagseguro-field-error');
+        return true;
+    }
+}
+
+function getMoney( strMoney )
+{
+    strMoney = strMoney.replace(".", "");
+    strMoney = strMoney.replace(",", ".");
+    return parseFloat(strMoney);
+}

@@ -21,6 +21,7 @@ limitations under the License.
 ?>
 <?php
     $helper = Mage::helper('pagseguro');
+    $pagSeguroDirectPaymentJs = $helper->getPagSeguroDirectPaymentJs();
     $baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
     $adminSkinUrl = $baseUrl . 'skin/adminhtml/default/default/';
 ?>
@@ -31,6 +32,7 @@ limitations under the License.
 <script type="text/javascript" src="<?php echo $adminSkinUrl . 'uol/pagseguro/js/jquery-1.11.1.js'; ?>"></script>
 <script type="text/javascript" src="<?php echo $adminSkinUrl . 'uol/pagseguro/js/jquery.colorbox-min.js'; ?>"></script>
 <script type="text/javascript" src="<?php echo $adminSkinUrl . 'uol/pagseguro/js/pagseguro-module.js';?>"></script>
+<script type="text/javascript" src="<?= $pagSeguroDirectPaymentJs ?>"></script>
 
 <script type="text/javascript">
     var jQuery = jQuery.noConflict();

@@ -1,47 +1,55 @@
 <?php
-
 /**
-************************************************************************
-Copyright [2015] [PagSeguro Internet Ltda.]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-************************************************************************
-*/
-
+ ************************************************************************
+ * Copyright [2015] [PagSeguro Internet Ltda.]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************
+ */
 ?>
 <?php
-    $helper = Mage::helper('pagseguro/refund');
-    $html   = Mage::helper('pagseguro/html');
+$helper = Mage::helper('pagseguro/refund');
+$html   = Mage::helper('pagseguro/html');
 ?>
 
 <div id="pagseguro-module">
     <?php echo $html->getHeader(); ?>
     <div id="pagseguro-module-content">
         <div class="wrapper">
-            <?php echo $html->getSideMenu();?>
+            <?php echo $html->getSideMenu(); ?>
             <div id="pagseguro-module-contents">
                 <h2 class="title"><?php echo $helper->__('Estorno'); ?></h2>
                 <p>
                     <?php
-                        $string .= 'Com esta funcionalidade você poderá estornar os valores de transações que estejam nos status “Paga”, “Disponível” e “Em disputa”. É aconselhável que antes de usar esta funcionalidade você faça a conciliação de suas transações para obter os status mais atuais.';
-                        echo $helper->__($string);
-                     ?>
+                    $string = 'Com esta funcionalidade você poderá estornar os valores de transações que estejam nos status “Paga”, “Disponível” e “Em disputa”. É aconselhável que antes de usar esta funcionalidade você faça a conciliação de suas transações para obter os status mais atuais.';
+                    echo $helper->__($string);
+                    ?>
+                </p>
+
+                <p>
+                    <?php
+                    echo $helper->__("<strong>Atenção: </strong>Ao realizar um <strong>Estorno total</strong> a transação será estornada e terá seu status alterado no PagSeguro para
+                    \"Devolvida\". Ao realizar um <strong>Estorno parcial</strong> será estornado o valor inserido, contudo, o status da transação no PagSeguro não será
+                     alterado (a transação manterá o seu último status).");
+                    ?>
                 </p>
 
                 <div class="pagseguro-search-tools">
-                    <form action="javascript:void(0)" method="post" >
-                        <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey();?>" />
-                        <input type="submit" class="pagseguro-button" id="refund-search-button" value="<?php echo $helper->__('Pesquisar');?>" />
+                    <form action="javascript:void(0)" method="post">
+                        <input type="hidden" name="form_key"
+                               value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>"/>
+                        <input type="submit" class="pagseguro-button" id="refund-search-button"
+                               value="<?php echo $helper->__('Pesquisar'); ?>"/>
                         <select class="pagseguro-field" name="pagseguro-days" id="pagseguro-refund-days-input">
                             <option value='5'>5</option>
                             <option value='10'>10</option>
@@ -56,24 +64,44 @@ limitations under the License.
 
                 <table id="refund-table" class="pagseguro-table">
                     <thead>
-                        <tr>
-                            <th width="14%"><?php echo $helper->__('Data');?></th>
-                            <th width="20%"><?php echo $helper->__('ID Magento');?></th>
-                            <th width="35%"><?php echo $helper->__('ID PagSeguro');?></th>
-                            <th width="20%"><?php echo $helper->__('Status Magento');?></th>
-                            <th width="11%"><?php echo $helper->__('Ação');?></th>
-                        </tr>
+                    <tr>
+                        <th width="14%"><?php echo $helper->__('Data'); ?></th>
+                        <th width="20%"><?php echo $helper->__('ID Magento'); ?></th>
+                        <th width="35%"><?php echo $helper->__('ID PagSeguro'); ?></th>
+                        <th width="20%"><?php echo $helper->__('Status Magento'); ?></th>
+                        <th width="11%"><?php echo $helper->__('Ação'); ?></th>
+                    </tr>
                     </thead>
                 </table>
 
                 <?php
-                    $noTransaction = 'Nenhum resultado.';
-                    $refundSuccess = $helper->__("Transação estornada com sucesso!");
-                    $refundError = $helper->__("Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.");
+                $noTransaction = 'Nenhum resultado.';
+                $refundSuccess = $helper->__("Transação estornada com sucesso!");
+                $partialRefundSuccess = $helper->__("Estorno parcial realizado com sucesso!");
+                $refundError   = $helper->__("Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.");
                 ?>
 
                 <div id="refund-info" class="pagseguro-msg pagseguro-msg-info pagseguro-msg-micro">
                     <p><?php echo $helper->__('Somente transações geradas a partir da versão 2.3 do módulo serão listadas.'); ?></p>
+                </div>
+
+                <div id="modal-partial-reversal" class="modal">
+                    <div class="modal-content-refund">
+                        <button id="modal-close"></button>
+                        <h2>Estorno parcial</h2>
+                        <h4 id="id-magento"></h4>
+                        <h4 id="transaction-value"></h4>
+                        <form>
+                            <p>Informe o valor a ser estornado:</p>
+                            <div>
+                                <label for="refund-value" >R$</label>
+                                <input type="text" class="pagseguro-field" onkeyup="formatRealInput(this)" onblur="formatRealInput(this)" name="refund-value" id="refund-value" placeholder="0,00"/>
+                                <p class="error"></p>
+                            </div>
+                            <p>Obs: O valor do estorno deve ser menor que o valor total da venda.</p>
+                            <input type="button" class="pagseguro-button align-right" id="partial-refund" value="<?php echo $helper->__('Estornar'); ?>">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,15 +110,16 @@ limitations under the License.
 
 <script type="text/javascript">
     var i = 0;
+    //refund variable to store partial transaction data
+    var refund;
 
-    jQuery(document).ready(function(){
+    jQuery(document).ready(function () {
         Menu.init();
         PageRefund.init();
     });
 
-    var PageRefund = new function(){
-        var requestTransactions = function() {
-
+    var PageRefund = new function () {
+        var requestTransactions = function () {
             // show loading modal
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
 
@@ -98,10 +127,10 @@ limitations under the License.
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_refund/doPost'); ?>",
                 type: "POST",
                 data: {
-                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        days: jQuery('#pagseguro-refund-days-input').find(":selected").text()
-                      },
-                success: function(xhrResult) {
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                    days: jQuery('#pagseguro-refund-days-input').find(":selected").text()
+                },
+                success: function (xhrResult) {
 
                     xhrResult = JSON.parse(xhrResult);
 
@@ -130,81 +159,113 @@ limitations under the License.
                     }
 
                 },
-                error: function(xhrErr) {
+                error: function (xhrErr) {
                     Modal.message('error', xhrErr);
                 }
             });
         }
 
-        var doRefund = function(config){
+        var doRefund = function (config, isPartial) {
             jQuery('#messages').empty();
             var id = '';
             var code = '';
             var status = '';
+            var refundValue = '';
             var jsonArr = [];
 
-            config = config.split('/');
-            jsonArr.push({
-                id: config[0],
-                code: config[1],
-                status: config[2]
-            });
+            if(isPartial){
+                jsonArr.push({
+                    id: config[0],
+                    code: config[1],
+                    status: config[2],
+                    refundValue: config[3]
+                });
+            }else{
+                config = config.split('/');
+                jsonArr.push({
+                    id: config[0],
+                    code: config[1],
+                    status: config[2]
+                });
+            }
 
             Modal.showLoading('<?php echo $helper->__('Aguarde...');?>');
             jQuery.ajax({
                 url: "<?php echo Mage::getSingleton('adminhtml/url')->getUrl('pagseguro/adminhtml_refund/doRefund'); ?>",
                 type: "POST",
                 data: {
-                        form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
-                        data: jsonArr,
-                        days: jQuery('#pagseguro-refund-days-input').find(":selected").text()
-                      },
-                success: function(xhrResult) {
-
+                    form_key: "<?php echo Mage::getSingleton('core/session')->getFormKey();?>",
+                    data: jsonArr,
+                    days: jQuery('#pagseguro-refund-days-input').find(":selected").text()
+                },
+                success: function (xhrResult) {
                     xhrResult = JSON.parse(xhrResult);
 
-                    if (xhrResult.status == false && xhrResult.err == true) {
-
+                    if (xhrResult.status == false && xhrResult.err == 14002) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Valor do estorno está em um formato inválido!.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14003) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Valor do estorno inválido! O valor não pode ser negativo.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14004) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Valor do estorno é menor do que o permitido.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14005) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Valor do estorno é maior do que o permitido.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14006) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Saldo insuficiente para estornar a transação.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14007) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Status da transação é inválido para ser estornada.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14008) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('error', 'Transação não encontrada.');
+                    } else if (xhrResult.status == false && xhrResult.err == 14009) {
+                        Modal.message('error', "Sua conta PagSeguro não tem permissão para realizar esta ação. Em caso de dúvidas acesse <a href='http://forum.pagseguro.uol.com.br' target='_blank'>http://forum.pagseguro.uol.com.br</a>");
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                    } else if (xhrResult.status == false && xhrResult.err == true) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('error', 'Não foi possível executar esta ação. Utilize a conciliação de transações primeiro ou tente novamente mais tarde.');
-                    } else if (xhrResult.status == false && xhrResult.err == "[HTTP 403] - FORBIDDEN") {
-                        
-                        Modal.message('error', "Sua conta PagSeguro não tem permissão para realizar esta ação. Em caso de dúvidas acesse <a href='http://forum.pagseguro.uol.com.br' target='_blank'>http://forum.pagseguro.uol.com.br</a>");
-                    } else if (xhrResult.status == false) {
-
+                    } else if (xhrResult.status == false && !isPartial) {
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         Modal.message('success', '<?php echo $refundSuccess; ?>');
+                    } else if (xhrResult.status == false && isPartial) {
+                        jQuery('#refund-table').dataTable().fnClearTable(true);
+                        Modal.message('success', '<?php echo $partialRefundSuccess; ?>');
                     } else {
-
                         jQuery('#refund-table').dataTable().fnClearTable(true);
                         jQuery('#refund-table').dataTable().fnAddData(xhrResult);
                         jQuery('#refund-table').dataTable()._fnInitComplete();
-                        Modal.message('success', '<?php echo $refundSuccess; ?>');
+                        if (isPartial) {
+                            Modal.message('success', '<?php echo $partialRefundSuccess; ?>');
+                        } else {
+                            Modal.message('success', '<?php echo $refundSuccess; ?>');
+                        }
                     }
-
-                    
-                },
-                error: function() {
-                     Modal.message('error', '<?php echo $refundError; ?>');
+                 },
+                error: function () {
+                    Modal.message('error', '<?php echo $refundError; ?>');
                 }
             });
         };
 
-        var prepareTable = function(){
+        var prepareTable = function () {
             var flow = 0;
             var totalRows = 0;
             var page = 0;
             var currentPage = 0;
             var oTable;
 
-            jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function(oSettings) {
+            jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function (oSettings) {
                 //redraw to account for filtering and sorting
                 // concept here is that (for client side) there is a row got inserted at the end (for an add)
                 // or when a record was modified it could be in the middle of the table
                 // that is probably not supposed to be there - due to filtering / sorting
                 // so we need to re process filtering and sorting
                 // BUT - if it is server side - then this should be handled by the server - so skip this step
-                if(oSettings.oFeatures.bServerSide === false){
+                if (oSettings.oFeatures.bServerSide === false) {
                     var before = oSettings._iDisplayStart;
                     oSettings.oApi._fnReDraw(oSettings);
                     //iDisplayStart has been reset to zero - so lets change it back
@@ -223,15 +284,15 @@ limitations under the License.
                 "searching": false,
                 "bStateSave": true,
                 "pageLength": 10,
-                "aaSorting": [[ 0, "desc" ]],
+                "aaSorting": [[0, "desc"]],
                 "aoColumnDefs": [
-                    { 'bSortable': false, 'aTargets': [ 4 ] },
-                    { "sClass": "tabela", 'aTargets': [ 1, 2, 3, 4 ] }
+                    {'bSortable': false, 'aTargets': [4]},
+                    {"sClass": "tabela", 'aTargets': [1, 2, 3, 4]}
                 ],
 
                 // Creates paging and notifies when there is no record
                 "oLanguage": {
-                    "sEmptyTable":"<?php echo $helper->__($noTransaction); ?>",
+                    "sEmptyTable": "<?php echo $helper->__($noTransaction); ?>",
                     "oPaginate": {
                         "sNext": '<?php echo $helper->__('Próximo');?>',
                         "sLast": '<?php echo $helper->__('Último');?>',
@@ -241,7 +302,7 @@ limitations under the License.
                 },
 
                 // Every interaction with the table it is called
-                "fnDrawCallback": function(oSettings) {
+                "fnDrawCallback": function (oSettings) {
                     // Makes when clicked on a registry is redirected to the editing order of Magento
                     oTable = this;
                     totalRows = oTable.fnGetData().length;
@@ -254,18 +315,18 @@ limitations under the License.
                         jQuery('#refund-table tbody tr').unbind('click');
 
                         jQuery('#refund-table tbody tr').bind('click', function () {
-                            href = jQuery(table.row( this ).data()[4])[0].href;
+                            href = jQuery(table.row(this).data()[4])[0].href;
                             jQuery('#refund-table tbody').off();
                             jQuery('#refund-table tbody').on('click', 'td', function () {
-                                if (jQuery(this).index() != 4){
+                                if (jQuery(this).index() != 4) {
                                     window.open(href, '_blank');
                                 }
-                            } );
-                        } );
+                            });
+                        });
                     }
 
                     //Checkbox enable | disable
-                    jQuery('#refund-table tbody input:checkbox').change(function(){
+                    jQuery('#refund-table tbody input:checkbox').change(function () {
                         var isChecked = jQuery("#refund-table tbody :checked").length;
 
                         if (isChecked > 0) {
@@ -277,21 +338,21 @@ limitations under the License.
 
                     // Only if greater than 10 records show paging
                     if (totalRows > 10) {
-                        jQuery('.dataTables_paginate').css('display','block');
+                        jQuery('.dataTables_paginate').css('display', 'block');
                         flow = 1;
                     } else {
-                        jQuery('.dataTables_paginate').css('display','none');
+                        jQuery('.dataTables_paginate').css('display', 'none');
                         flow = 0;
                     }
 
                     // If the home page does not display the previous page button
                     if (info.page == 0) {
-                        jQuery('a#refund-table_previous').css('display','none');
+                        jQuery('a#refund-table_previous').css('display', 'none');
                     }
 
                     // If the last page does not display the next page button
-                    if ((info.page+1) == info.pages) {
-                        jQuery('a#refund-table_next').css('display','none');
+                    if ((info.page + 1) == info.pages) {
+                        jQuery('a#refund-table_next').css('display', 'none');
                     }
 
                     i++;
@@ -306,7 +367,7 @@ limitations under the License.
                     }
 
                     // Stores the current page, calculated by number of records and number of records per page
-                    page  = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);
+                    page = Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength);
                 },
 
                 // When it completes assembly of the table is executed
@@ -320,29 +381,83 @@ limitations under the License.
                 }
             });
         }
+        
+        //When you click an action it redirects to the requested function
+        jQuery('#refund-table').on('click', 'a.action', function () {
+            refund = jQuery(this);
 
-        this.init = function() {
+            if(refund.context.innerText == "Estorno total"){
+                Modal.confirm('Não será possível reverter esta ação. Deseja continuar?');
+                jQuery('.pagseguro-confirm-button').on('click', function (target) {
+                    if (target.currentTarget.id == 'accept') {
+                        doRefund(refund.data('config'), false);
+                    } else {
+                        Modal.hideLoading();
+                    }
+                });
+            } else {
+                refund = refund.data('config');
+                refund = refund.split('/');
+                var idMagento = refund[4];
+                var valueTotal = formatReal(refund[3]);
+                jQuery('#id-magento').text('ID magento: ' + idMagento);
+                jQuery('#transaction-value').text('Valor total da venda: R$ ' + valueTotal);
+                jQuery('#modal-partial-reversal').css('display', 'block');
+            }
+        });
+
+        //validations and call for partial refund
+        jQuery('#partial-refund').click(function(){
+            var valueInput = jQuery('#refund-value').val();
+            if(getMoney(valueInput) > refund[3]){
+                jQuery('#refund-value').addClass('pagseguro-field-error');
+                jQuery('.error').text('Valor inserido é maior que o valor da venda.');
+            } else if (getMoney(valueInput) == 0) {
+                jQuery('#refund-value').addClass('pagseguro-field-error');
+                jQuery('.error').text('Valor de estorno não pode ser zero.');
+            }else if (valueInput == ""){
+                jQuery('#refund-value').addClass('pagseguro-field-error');
+                jQuery('.error').text('Informe o valor a ser estornado.');
+            } else {
+                if(valueIsNumber(valueInput)){
+                    refund[3] = valueInput;
+                    clearModal();
+                    doRefund(refund, true);
+                }
+            }
+        });
+
+        //clean modal error message
+        function clearValueError(){
+            jQuery('.error').text('');
+            jQuery('#refund-value').removeClass('pagseguro-field-error');
+        }
+
+        //clears modal values
+        function clearModal(){
+            jQuery('#refund-value').val('');
+            clearValueError();                
+            jQuery('#modal-partial-reversal').css('display', 'none');
+        }
+
+        this.init = function () {
             prepareTable();
 
             jQuery('#refund-search-button').click(function () {
                 requestTransactions();
             });
 
-            jQuery('#refund-table').on('click', 'a.action', function() {
-
-                var refund = jQuery(this);
-
-                Modal.confirm('Não será possível reverter esta ação. Deseja continuar?');
-
-                jQuery('.pagseguro-confirm-button').on('click', function(target) {
-                    if (target.currentTarget.id == 'accept') {
-                        doRefund(refund.data('config'));
-                    } else {
-                        Modal.hideLoading();
-                    }
-                });
+            jQuery('#modal-close').click(function () {
+                clearModal();
             });
+
+            window.onclick = function (event) {
+                var modal = document.getElementById('modal-partial-reversal');
+                if (event.target == modal) {
+                    clearModal();
+                }
+            }
         };
     }
 </script>
-<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js');?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('uol/pagseguro/js/pagseguro-module.js'); ?>"></script>

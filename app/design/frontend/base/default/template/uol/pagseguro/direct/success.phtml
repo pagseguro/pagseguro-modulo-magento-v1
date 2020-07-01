@@ -1,0 +1,23 @@
+<script type="">
+    <?php if ($_GET['redirect']): ?>
+        window.open('<?= $_GET['redirect']; ?>', '_blank');
+    <?php endif ?>
+</script>
+
+<div class="page-head">
+    <h2 class="sub-title">Pedido efetuado</h2>
+</div>
+<table style="width:100%;">
+    <tr>
+		<?php if ($_GET['redirect']) { ?>
+            <td style="width:100%">
+                Se a página de pagamento não abrir automaticamente
+                <a href="<?= $_GET['redirect'] ?>" target="_blank">clique aqui</a>.
+            </td>
+		<?php } else { ?>
+            <td style="width:100%">
+                Assim que o pagamento for confirmado você receberá um e-mail para acompanhar  seu pedido.
+            </td>
+		<?php } ?>
+    </tr>
+</table>

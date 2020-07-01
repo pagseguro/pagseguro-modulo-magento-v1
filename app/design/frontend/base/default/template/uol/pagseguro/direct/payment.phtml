@@ -1,0 +1,681 @@
+<!--<script type="text/javascript"
+        src="<?= Mage::registry('pagseguroJS') ?>">
+</script>
+<script type="text/javascript">
+  window.onload = function () {
+    setSessionId('<?= Mage::registry('paymentSession') ?>')
+    assignSenderHash()
+    VMasker(document.querySelector('#creditCardDocument')).maskPattern('999.999.999-99')
+    VMasker(document.querySelector('#creditCardNum')).maskPattern('9999 9999 9999 9999')
+    VMasker(document.querySelector('#creditCardHolderBirthdate')).maskPattern('99/99/9999')
+    VMasker(document.querySelector('#debitDocument')).maskPattern('999.999.999-99')
+    VMasker(document.querySelector('#bilitDocument')).maskPattern('999.999.999-99')
+    document.querySelector('#bilitDocument').onkeypress = function () {
+      if (this.value.length <= 14) {
+        VMasker(this).maskPattern('999.999.999-999')
+      }
+      if (this.value.length >= 15) {
+        VMasker(this).maskPattern('99.999.999/9999-99')
+      }
+    }
+  }
+  var $j = jQuery.noConflict()
+  $j(document).ready(function () {
+    (function tabsPagseguro ($j) {
+      var $action = $j('.js-tab-action')
+      $action.on('click', function (e) {
+        e.preventDefault()
+        var $itemtTab = $j(this).parent('.item')
+        var isActive = $itemtTab.hasClass('--active')
+        if (!isActive) {
+          var $newTabId = $j($j(this).attr('href'))
+          $j('#tabs-payment .item.--active').removeClass('--active')
+          $j('.item-tab.--current').removeClass('--current')
+          $itemtTab.addClass('--active')
+          $newTabId.addClass('--current')
+        } else {
+          return false
+        }
+      })
+    }($j))
+  })
+
+  function activeLoading () {
+    jQuery('#review-please-wait.please-wait').addClass('ps_msg_hidden')
+    jQuery('.btn-checkout').remove()
+    Modal.showLoading('Aguarde...')
+    jQuery('#pagseguro-loading-message h3').attr('style', 'min-width:210px; font-size: 16px !important;')
+    jQuery('#cboxContent').css('height', '104px')
+  }
+
+  function formDebit () {
+    if (validateDocument(document.getElementById('debitDocument')) &&
+      validateDebitBankName(document.getElementById('debitbankName'))) {
+      activeLoading()
+      var data = {
+        'debitDocument': document.getElementById('debitDocument').value,
+        'debitBankName': document.getElementById('debitbankName').value,
+        'senderHash': document.getElementById('senderHash').value,
+        'method': 'online-debit',
+      }
+      postAjax('<?= Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) ?>pagseguro/payment/direct', data, true, true)
+    }
+  }
+
+  function formBilit () {
+    if (validateDocument(document.querySelector('#bilitDocument'))) {
+      activeLoading()
+      var data = {
+        'bilitDocument': document.querySelector('#bilitDocument').value,
+        'senderHash': document.querySelector('#senderHash').value,
+        'method': 'boleto',
+      }
+      postAjax('<?= Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) ?>pagseguro/payment/direct', data, true, true)
+    } else {
+      displayError(document.querySelector('#bilitDocument'),)
+    }
+  }
+
+  function formCreditCard (token) {
+    activeLoading()
+    var data = {
+      'cardHolderDocument': unmask(document.getElementById('creditCardDocument').value),
+      'cardNumber': unmask(document.getElementById('creditCardNum').value),
+      'cardHolderName': document.getElementById('creditCardHolder').value,
+      'cardHolderBirthdate': document.getElementById('creditCardHolderBirthdate').value,
+      'cardExpirationMonth': document.getElementById('creditCardExpirationMonth').value,
+      'cardExpirationYear': document.getElementById('creditCardExpirationYear').value,
+      'cardCode': document.getElementById('creditCardCode').value,
+      'cardInstallment': document.getElementById('creditCardInstallment').value,
+      'cardInstallmentValue': document.getElementById('creditCardInstallmentValue').value,
+      'method': 'credit-card',
+      'token': token.card.token,
+      'senderHash': document.getElementById('senderHash').value,
+    }
+    postAjax('<?= Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) ?>pagseguro/payment/direct', data, false, true)
+  }
+
+  function postAjax (url, data = null, link = false, redirect = false) {
+    var params = typeof data === 'string' ? data : Object.keys(data).map(
+      function (k) {
+        return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+      }
+    ).join('&')
+    var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP')
+    xhr.open('POST', url)
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState > 3 && xhr.status === 200) {
+        var r = JSON.parse(xhr.responseText)
+        if (link) {
+          window.open(r.link, '_blank')
+        }
+        if (redirect) {
+          setTimeout(function () {
+            window.location.href = r.redirect
+          }, 1500)
+        }
+      }
+    }
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+    xhr.send(params)
+    return xhr
+  }
+
+  function assignSenderHash () {
+    setTimeout(function () {
+      document.getElementById('senderHash').value = getSenderHash()
+    }, 500)
+  }
+
+  function setSessionId (session) {
+    return PagSeguroDirectPayment.setSessionId(session)
+  }
+
+  function getSenderHash () {
+    return PagSeguroDirectPayment.getSenderHash()
+  }
+
+  function createCardToken () {
+    if (
+      validateCreditCard(document.querySelector('#creditCardNum')) &&
+      validateDocument(document.querySelector('#creditCardDocument')) &&
+      validateCardHolder(document.querySelector('#creditCardHolder')) &&
+      validateCreditCardHolderBirthdate(document.querySelector('#creditCardHolderBirthdate')) &&
+      validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
+      validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
+      validateCreditCardCode(document.querySelector('#creditCardCode')) &&
+      validateCreditCardInstallment(document.querySelector('#card_installment_option'))
+    ) {
+      var param = {
+        cardNumber: unmask(document.getElementById('creditCardNum').value),
+        brand: document.getElementById('creditCardBrand').value,
+        cvv: document.getElementById('creditCardCode').value,
+        expirationMonth: document.getElementById('creditCardExpirationMonth').value,
+        expirationYear: document.getElementById('creditCardExpirationYear').value,
+        success: function (response) {
+          formCreditCard(response)
+        },
+        error: function (error) {},
+      }
+      PagSeguroDirectPayment.createCardToken(param)
+    } else {
+      validateCreditCard(document.querySelector('#creditCardNum'))
+      validateDocument(document.querySelector('#creditCardDocument'))
+      validateCardHolder(document.querySelector('#creditCardHolder'))
+      validateCreditCardHolderBirthdate(document.querySelector('#creditCardHolderBirthdate'))
+      validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
+      validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
+      validateCreditCardCode(document.querySelector('#creditCardCode'))
+      validateCreditCardInstallment(document.querySelector('#card_installment_option'))
+    }
+  }
+
+  function getInstallments (brand) {
+    PagSeguroDirectPayment.getInstallments({
+      amount: document.getElementById('grand_total').value,
+      brand: brand,
+      success: function (response) {
+        cardInstallment(response.installments)
+      },
+      error: {},
+    })
+  }
+
+  function cardInstallmentOnChange (data) {
+    data = JSON.parse(data)
+    document.getElementById('creditCardInstallment').value = data.quantity
+    document.getElementById('creditCardInstallmentValue').value = data.installmentAmount
+    document.getElementById('card_total').innerHTML = 'R$ ' + data.totalAmount
+  }
+
+  function getBrand (self) {
+    if (validateCreditCard(self)) {
+      PagSeguroDirectPayment.getBrand({
+        cardBin: unmask(document.getElementById('creditCardNum').value),
+        success: function (response) {
+          document.getElementById('creditCardBrand').value = response.brand.name
+          getInstallments(response.brand.name)
+          displayError(document.getElementById('creditCardNum'), false)
+        },
+        error: function () {
+          displayError(document.getElementById('creditCardNum'))
+        },
+      })
+    } else {
+      displayError(document.getElementById('creditCardNum'))
+    }
+  }
+
+  function validateCpf (self) {
+    var cpf = unmask(self.value)
+    var numeros, digitos, soma, i, resultado, digitos_iguais
+    digitos_iguais = 1
+    if (cpf.length < 11) {
+      displayError(self)
+      return false
+    }
+    for (i = 0; i < cpf.length - 1; i++)
+      if (cpf.charAt(i) != cpf.charAt(i + 1)) {
+        digitos_iguais = 0
+        break
+      }
+    if (!digitos_iguais) {
+      numeros = cpf.substring(0, 9)
+      digitos = cpf.substring(9)
+      soma = 0
+      for (i = 10; i > 1; i--) {
+        soma += numeros.charAt(10 - i) * i
+      }
+      resultado = soma % 11 < 2 ? 0 : 11 - soma % 11
+      if (resultado != digitos.charAt(0)) {
+        displayError(self)
+        return false
+      }
+      numeros = cpf.substring(0, 10)
+      soma = 0
+      for (i = 11; i > 1; i--) {
+        soma += numeros.charAt(11 - i) * i
+      }
+      resultado = soma % 11 < 2 ? 0 : 11 - soma % 11
+      if (resultado != digitos.charAt(1)) {
+        displayError(self)
+        return false
+      }
+      displayError(self, false)
+      return true
+    } else {
+      displayError(self)
+      return false
+    }
+  }
+
+  function validateDocument (self) {
+    var value = unmask(self.value)
+    if (value.length === 11) {
+      return validateCpf(self)
+    } else if (value.length === 14) {
+      validateCnpj(self)
+    } else {
+      displayError(self)
+      return false
+    }
+  }
+
+  function validateCnpj (self) {
+    var cnpj = unmask(self.value)
+    var numbersVal
+    var digits
+    var sum
+    var i
+    var result
+    var pos
+    var size
+    var equal_digits
+    equal_digits = 1
+    if (cnpj.length < 14 && cnpj.length < 15) {
+      displayError(self)
+      return false
+    }
+    for (i = 0; i < cnpj.length - 1; i++) {
+      if (cnpj.charAt(i) != cnpj.charAt(i + 1)) {
+        equal_digits = 0
+        break
+      }
+    }
+    if (!equal_digits) {
+      size = cnpj.length - 2
+      numbersVal = cnpj.substring(0, size)
+      digits = cnpj.substring(size)
+      sum = 0
+      pos = size - 7
+      for (i = size; i >= 1; i--) {
+        sum += numbersVal.charAt(size - i) * pos--
+        if (pos < 2) {
+          pos = 9
+        }
+      }
+      result = sum % 11 < 2 ? 0 : 11 - sum % 11
+      if (result != digits.charAt(0)) {
+        displayError(self)
+        return false
+      }
+      size = size + 1
+      numbersVal = cnpj.substring(0, size)
+      sum = 0
+      pos = size - 7
+      for (i = size; i >= 1; i--) {
+        sum += numbersVal.charAt(size - i) * pos--
+        if (pos < 2) {
+          pos = 9
+        }
+      }
+      result = sum % 11 < 2 ? 0 : 11 - sum % 11
+      if (result != digits.charAt(1)) {
+        displayError(self)
+        return false
+      }
+      displayError(self, false)
+      return true
+    } else {
+      displayError(self)
+      return false
+    }
+  }
+
+  function validateCreditCard (self) {
+    if (self.validity.valid && (self.value.length >= 14 && self.value.length <= 22)) {
+      displayError(self, false)
+      return true
+    } else {
+      displayError(self)
+      return false
+    }
+  }
+
+  function validateCreditCardInstallment (self) {
+    if (self.validity.valid) {
+      displayError(self, false)
+      return true
+    } else {
+      displayError(self)
+      return false
+    }
+  }
+
+  function validateCreditCardMonth (self) {
+    if (self.validity.valid) {
+      displayError(self, false)
+      return true
+    } else {
+      displayError(self)
+      return false
+    }
+  }
+
+  function validateCreditCardYear (self) {
+    if (self.validity.valid) {
+      displayError(self, false)
+      return true
+    } else {
+      displayError(self)
+      return false
+    }
+  }
+
+  function cardInstallment (data) {
+    var select = document.getElementById('card_installment_option')
+    data = data[Object.getOwnPropertyNames(data)[0]]
+    data.forEach(function (item) {
+      select.options[select.options.length] = new Option(item.quantity + 'x de R$ ' + item.installmentAmount,
+        JSON.stringify(item))
+    })
+    if (data) {
+      select.removeAttribute('disabled')
+    }
+  }
+
+  function validateCreditCardCode (self) {
+    if (self.validity.tooLong || self.validity.tooShort || !self.validity.valid) {
+      displayError(self)
+      return false
+    } else {
+      displayError(self, false)
+      return true
+    }
+  }
+
+  function validateCardHolder (self) {
+    if (self.validity.tooShort || !self.validity.valid) {
+      displayError(self)
+      return false
+    } else {
+      displayError(self, false)
+      return true
+    }
+  }
+
+  function validateCreditCardHolderBirthdate (self) {
+    var val = self.value
+    var date_regex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/
+    if (!(date_regex.test(val))) {
+      displayError(self)
+      return false
+    } else {
+      displayError(self, false)
+      return true
+    }
+  }
+
+  function validateDebitBankName (self) {
+    if (!self.validity.valid) {
+      displayError(self)
+      return false
+    } else {
+      displayError(self, false)
+      return true
+    }
+  }
+
+  function displayError (target, error = true) {
+    target = document.getElementsByClassName(target.id + '-error-message')[0]
+    if (error && target.classList.contains('display-none')) {
+      target.classList.remove('display-none')
+    } else if (!error) {
+      target.classList.add('display-none')
+    }
+  }
+
+  function unmask (el) {
+    return el.replace(/[/ -. ]+/g, '').trim()
+  }
+</script>
+<section class="container">
+    <h2 class="title-payment">Formas de pagamento
+        <small>Escolha o método</small>
+    </h2>
+    <nav class="tabs-pagseguro clearfix" id="tabs-payment">
+        <ul class="items clearfix">
+            <li class="item --active">
+                <a class="action js-tab-action" href="#credit-card">
+                    <i class="fa fa-credit-card fa-4x"></i>
+                    <span class="name">Cartão de Crédito</span>
+                </a>
+            </li> /.item 
+            <li class="item">
+                <a class="action js-tab-action" href="#debit-online">
+                    <i class="fa fa-money fa-4x"></i>
+                    <span class="name">Débito Online</span>
+                </a>
+            </li> /.item 
+            <li class="item">
+                <a class="action js-tab-action" href="#bilet">
+                    <i class="fa fa-barcode fa-4x"></i>
+                    <span class="name">Boleto</span>
+                </a>
+            </li> /.item 
+        </ul> /.items 
+    </nav>
+    <div class="tabs-content col-xs-12">
+        <div class="item-tab --current" id="credit-card">
+            <form class="form-horizontal clearfix" id="form-credit">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label"
+                           for="creditCardDocument">CPF/CNPJ</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <input class="form-control" id="creditCardDocument" onblur="validateDocument(this)">
+                        <span class="display-none help-block creditCardDocument-error-message">Insira um CPF ou CNPJ válido</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label" for="creditCardNum">Número do
+                        cartão</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <input class="form-control" id="creditCardNum" required onblur="getBrand(this)">
+                        <span class="display-none help-block creditCardNum-error-message">Insira um número de cartão válido</span>
+                    </div>
+                </div> /.form-group 
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label" for="creditCardHolder">Nome impresso
+                        no
+                        cartão</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <input class="form-control" id="creditCardHolder" required onblur="validateCardHolder(this)"
+                               minlength="3">
+                        <span class="display-none help-block creditCardHolder-error-message">Insira um nome</span>
+                    </div>
+                </div> /.form-group 
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label" for="creditCardHolderBirthdate">Data
+                        de nascimento</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <input class="form-control date-mask" id="creditCardHolderBirthdate" required
+                               placeholder="dd/mm/aaaa" onblur="validateCreditCardHolderBirthdate(this)">
+                        <span class="display-none help-block creditCardHolderBirthdate-error-message">Insira uma data de nascimento válida</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label" for="creditCardExpirationMonth">Validade</label>
+                    <div class="col-xs-6 col-sm-3">
+                        <select class="form-control" id="creditCardExpirationMonth" title="Cartão válido até" required>
+                            <option value="" disabled selected>Mês</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                        <span class="display-none help-block creditCardExpirationMonth-error-message">Escolha um mês</span>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <select id="creditCardExpirationYear" class="form-control" title="Cartão válido até" required>
+                            <option value="" disabled selected>Ano</option>
+                            <?php
+                            $year = idate("Y");
+                            $maxYear = $year + 20;
+                            for ($i = $year; $i < $maxYear; $i++): ?>
+                                <option value="<?= $i; ?>"><?= $i; ?></option>
+                            <?php endfor; ?>
+                        </select>
+                        <span class="display-none help-block creditCardExpirationYear-error-message">Escolha um ano</span>
+                    </div>
+                </div> /.form-group 
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label" for="creditCardCode">Código de
+                        segurança</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <input class="form-control code-card-mask" id="creditCardCode" type="number" minlength="3"
+                               maxlength="4"
+                               onblur="validateCreditCardCode(this)" required>
+                        <span class="display-none help-block creditCardCode-error-message">Insira um código segurança válido</span>
+                    </div>
+                </div> /.form-group 
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label"
+                           for="card_installments">Parcelas</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <select id="card_installment_option" class="form-control" title="Nº de parcelas" required
+                                disabled onchange="cardInstallmentOnChange(this.value)">
+                            <option value="null" disabled selected>Escolha o N° de parcelas</option>
+                        </select>
+                        <span class="display-none help-block card_installment_option-error-message">Escolha uma opção de parcelamento</span>
+                    </div>
+                </div>
+                <div class="form-group credit-total">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label"
+                           for="card_installments">Total</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <span id="card_total">selecione o número de parcelas</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-2 col-sm-offset-8">
+                        <button class="full-width btn-pagseguro --align-right" type="button"
+                                onclick="createCardToken()">Concluir
+                        </button>
+                    </div>
+                    <div class="col-xs-12 col-sm-2 col-sm-offset-8">
+                        <small> Esta compra está sendo feita no Brasil
+                              <img src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+                        </small>
+                    </div>
+                </div>
+                <input type="hidden" id="creditCardBrand">
+                <input type="hidden" id="creditCardInstallment">
+                <input type="hidden" id="creditCardInstallmentValue">
+                <input type="hidden" id="grand_total" value="<?= Mage::registry('order')->getData()['grand_total'] ?>">
+            </form>
+        </div>
+        <div class="item-tab" id="debit-online">
+            <form class="form-horizontal" id="form-debit">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label" for="debitDocument">CPF/CNPJ</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <input class="form-control" id="debitDocument" onblur="validateDocument(this)">
+                        <span class="display-none help-block debitDocument-error-message">Insira um CPF ou CNPJ válido</span>
+                    </div>
+                </div> /.form-group 
+                <div class="form-group">
+                    <label class="col-xs-4 control-label">Banco</label>
+                    <div class="col-xs-8">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" id="debitbankName" name="debitbankName" value="itau"
+                                               required onclick="validateDebitBankName(this)">
+                                        Itaú
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" id="debitbankName" name="debitbankName" value="bradesco"
+                                               required onclick="validateDebitBankName(this)">
+                                        Bradesco
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" id="debitbankName" name="debitbankName" value="banrisul"
+                                               required onclick="validateDebitBankName(this)">
+                                        Banrisul
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="radio">
+                                    <label class="radio">
+                                        <input type="radio" id="debitbankName" name="debitbankName"
+                                               value="bancodobrasil" onclick="validateDebitBankName(this)">
+                                        Banco do Brasil
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <span class="display-none help-block debitbankName-error-message">Escolha um banco</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-2 col-sm-offset-8">
+                        <button class="full-width btn-pagseguro --align-right" id="payment-debit" type="button"
+                                onclick="formDebit()">
+                            Concluir
+                        </button>
+                    </div>
+                    <div class="col-xs-12 col-sm-2 col-sm-offset-8">
+                        <small> Esta compra está sendo feita no Brasil
+                            <img src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+                        </small>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="item-tab" id="bilet">
+            <form class="form-horizontal clearfix" id="form-bilit">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-sm-offset-2 control-label" for="bilitDocument">CPF/CNPJ</label>
+                    <div class="col-xs-12 col-sm-6">
+                        <input class="form-control" id="bilitDocument" onblur="validateDocument(this)">
+                        <span class="display-none help-block bilitDocument-error-message">Insira um CPF ou CNPJ válido</span>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-sm-offset-4">
+                  <ul>
+                    <small>
+                      <li>Imprima o boleto e pague no banco</li>
+                      <li>Ou pague pela internet utilizando o código de barras do boleto</li>
+                      <li>O prazo de validade do boleto é de 1 dia útil</li>
+                    </small>
+                  </ul>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-2 col-sm-offset-8">
+                        <button class="full-width btn-pagseguro --align-right" onclick="formBilit()" type="button">
+                            Concluir
+                        </button>
+                    </div>
+                    <div class="col-xs-12 col-sm-2 col-sm-offset-8">
+                        <small> Esta compra está sendo feita no Brasil
+                            <img src="<?php echo $this->getSkinUrl('uol/pagseguro/images/flag-origin-country.png'); ?>">
+                        </small>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</section>
+<input type="hidden" id="senderHash" value="">-->

@@ -19,7 +19,43 @@ limitations under the License.
 <layout>
     <sales_order_grid_update_handle>
         <reference name="sales_order.grid">
-            <action method="addColumnAfter" ifconfig="payment/pagseguro/active">
+            <action method="addColumnAfter" ifconfig="payment/pagseguro_default_lightbox/active">
+                <columnId>payment_method</columnId>
+                <arguments>
+                    <header>Código da Transação</header>
+                    <index>payment_code</index>
+                    <header_css_class>a-center</header_css_class>
+                    <align>center</align>
+                    <filter_index>payment.transaction_code</filter_index>
+                    <type>text</type>
+                </arguments>
+                <after>real_order_id</after>
+            </action>
+             <action method="addColumnAfter" ifconfig="payment/pagseguro_boleto/active">
+                <columnId>payment_method</columnId>
+                <arguments>
+                    <header>Código da Transação</header>
+                    <index>payment_code</index>
+                    <header_css_class>a-center</header_css_class>
+                    <align>center</align>
+                    <filter_index>payment.transaction_code</filter_index>
+                    <type>text</type>
+                </arguments>
+                <after>real_order_id</after>
+            </action>
+            <action method="addColumnAfter" ifconfig="payment/pagseguro_credit_card/active">
+                <columnId>payment_method</columnId>
+                <arguments>
+                    <header>Código da Transação</header>
+                    <index>payment_code</index>
+                    <header_css_class>a-center</header_css_class>
+                    <align>center</align>
+                    <filter_index>payment.transaction_code</filter_index>
+                    <type>text</type>
+                </arguments>
+                <after>real_order_id</after>
+            </action>
+            <action method="addColumnAfter" ifconfig="payment/pagseguro_online_debit/active">
                 <columnId>payment_method</columnId>
                 <arguments>
                     <header>Código da Transação</header>
@@ -33,7 +69,43 @@ limitations under the License.
             </action>
         </reference>
         <reference name="sales_order.grid">
-            <action method="addColumnAfter" ifconfig="payment/pagseguro/active">
+            <action method="addColumnAfter" ifconfig="payment/pagseguro_default_lightbox/active">
+                <columnId>payment_environment</columnId>
+                <arguments>
+                    <header>Ambiente</header>
+                    <index>payment_environment</index>
+                    <header_css_class>a-center</header_css_class>
+                    <align>center</align>
+                    <filter_index>payment.environment</filter_index>
+                    <type>text</type>
+                </arguments>
+                <after>payment_method</after>
+            </action>
+            <action method="addColumnAfter" ifconfig="payment/pagseguro_boleto/active">
+                <columnId>payment_environment</columnId>
+                <arguments>
+                    <header>Ambiente</header>
+                    <index>payment_environment</index>
+                    <header_css_class>a-center</header_css_class>
+                    <align>center</align>
+                    <filter_index>payment.environment</filter_index>
+                    <type>text</type>
+                </arguments>
+                <after>payment_method</after>
+            </action>
+            <action method="addColumnAfter" ifconfig="payment/pagseguro_credit_card/active">
+                <columnId>payment_environment</columnId>
+                <arguments>
+                    <header>Ambiente</header>
+                    <index>payment_environment</index>
+                    <header_css_class>a-center</header_css_class>
+                    <align>center</align>
+                    <filter_index>payment.environment</filter_index>
+                    <type>text</type>
+                </arguments>
+                <after>payment_method</after>
+            </action>
+            <action method="addColumnAfter" ifconfig="payment/pagseguro_online_debit/active">
                 <columnId>payment_environment</columnId>
                 <arguments>
                     <header>Ambiente</header>
@@ -109,6 +181,20 @@ limitations under the License.
             <block type="adminhtml/template" name="refund" template="uol/pagseguro/refund.phtml"/>
         </reference>
     </pagseguro_adminhtml_refund_index>
+    <pagseguro_adminhtml_transactions_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
+            <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-modal.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery-1.11.1.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/pagseguro-module.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.colorbox-min.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>uol/pagseguro/js/jquery.dataTables.js</name><params/><if/></action>
+        </reference>
+        <reference name="content">
+            <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="transactions" template="uol/pagseguro/transactions.phtml"/>
+        </reference>
+    </pagseguro_adminhtml_transactions_index>
     <pagseguro_adminhtml_requirements_index>
         <reference name="head">
             <action method="addCss"><stylesheet>uol/pagseguro/css/pagseguro-module.css</stylesheet></action>
