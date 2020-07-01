@@ -55,7 +55,14 @@ class UOL_PagSeguro_Model_NotificationMethod extends MethodAbstract
         $transaction = $this->helper->webserviceHelper()->getNotification();
         $orderId = $this->helper->getReferenceDecryptOrderID($transaction->getReference());
         $transactionCode = $transaction->getCode();
-        $orderStatus = $this->helper->getPaymentStatusFromKey($transaction->getStatus());
-        $this->helper->updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus);
+
+
+        $orderStatus = $this->helper->getPaymentStatusFromKey($transaction->getStatus()->getValue());
+
+        // não atualizar status do pedido quando a notificação de status for Disponivel
+        if ($orderStatus !== 'disponivel_ps') {
+            $this->helper->updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus);
+        }
+
     }
 }
