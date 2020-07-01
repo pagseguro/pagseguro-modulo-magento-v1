@@ -195,6 +195,15 @@ limitations under the License.
         </events>
     </adminhtml>
     <frontend>
+        <translate>
+            <modules>
+                <pagseguro>
+                    <files>
+                        <default>UOL_PagSeguro.csv</default>
+                    </files>
+                </pagseguro>
+            </modules>
+        </translate>
         <routers>
             <pagseguro>
                 <use>standard</use>

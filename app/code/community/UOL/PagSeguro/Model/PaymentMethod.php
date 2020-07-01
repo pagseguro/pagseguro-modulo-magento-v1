@@ -39,13 +39,21 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         $this->helper = new UOL_PagSeguro_Helper_Data();
     }
 
+
+    /**
+     * @return string
+     */
+    public function getEnvironment(){
+        return $this->library->getEnvironment();
+    }
+
     /**
      * @param Mage_Sales_Model_Order $order
      */
     public function addPagseguroOrders(Mage_Sales_Model_Order $order)
     {
         $orderId = $order->getEntityId();
-        $enviroment = $this->library->getEnvironment();
+        $enviroment = Mage::helper('pagseguro')->__($this->library->getEnvironment());
         $table = Mage::getConfig()->getTablePrefix().'pagseguro_orders';
         $read = Mage::getSingleton('core/resource')->getConnection('core_read');
         $value = $read->query("SELECT `order_id` FROM `$table` WHERE `order_id` = $orderId");
