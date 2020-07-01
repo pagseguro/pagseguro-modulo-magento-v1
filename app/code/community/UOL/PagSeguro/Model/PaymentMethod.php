@@ -116,7 +116,7 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         $payment->setReference(Mage::getStoreConfig('uol_pagseguro/store/reference').$this->order->getId());
         $payment->setCurrency('BRL');
         $this->setItems($payment);
-        $payment->setSender()->setName($this->order->getCustomerName());
+        $payment->setSender()->setName($this->GetCustomerName($this->order->getCustomerName()));
         $payment->setSender()->setEmail($this->order->getCustomerEmail());
         $this->setSenderPhone($payment);
 
@@ -373,5 +373,21 @@ class UOL_PagSeguro_Model_PaymentMethod extends Mage_Payment_Model_Method_Abstra
         } else {
             $payment->addParameter()->withParameters('enableRecovery', 'false');
         }
+    }
+    
+    /**
+     * Get Customer name removing extra spaces
+     *
+     * @param string $name
+     * @return string
+     */
+    private function GetCustomerName($name) {
+        $parts = explode(" ", $name);
+        $result = array();
+        foreach($parts as $part) {
+            if($part != "")
+                $result[] = $part;
+        }
+        return join($result, " ");
     }
 }
