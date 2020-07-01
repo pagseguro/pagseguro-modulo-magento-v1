@@ -85,6 +85,44 @@ limitations under the License.
         </reference>
     </pagseguro_payment_error>
 
+     <pagseguro_payment_retry>
+        <remove name="left"/>
+         <reference name="head">
+             <action method="addItem">
+                 <type>skin_css</type>
+                 <script>uol/pagseguro/css/styles.css</script>
+                 <params><![CDATA[media="all"]]></params>
+             </action>
+         </reference>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="page/html" name="direct" template="uol/pagseguro/payment-retry.phtml"/>
+        </reference>
+    </pagseguro_payment_retry>
+
+     <pagseguro_payment_denied>
+        <remove name="left"/>
+         <reference name="head">
+             <action method="addItem">
+                 <type>skin_css</type>
+                 <script>uol/pagseguro/css/styles.css</script>
+                 <params><![CDATA[media="all"]]></params>
+             </action>
+         </reference>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="page/html" name="direct" template="uol/pagseguro/payment-denied.phtml"/>
+        </reference>
+    </pagseguro_payment_denied>
+
     <pagseguro_payment_default>
         <remove name="left"/>
         <reference name="head">
@@ -162,18 +200,42 @@ limitations under the License.
         </reference>
     </pagseguro_payment_payment>
 
+    <!-- Magento OnePage checkout compatibility -->
     <checkout_onepage_index translate="label">
         <reference name="head">
             <block type="uol_pagseguro/payment" name="loading"
                    template="uol/pagseguro/loading.phtml"/>
         </reference>
     </checkout_onepage_index>
+    <!-- \Magento OnePage checkout compatibility -->
     
+    <!-- Inovarti OneStepCheckout compatibility -->
      <onestepcheckout_index_index>
         <reference name="head">
             <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml"/>
         </reference>
      </onestepcheckout_index_index>
+     <!-- \Inovarti OneStepCheckout compatibility -->
+
+    <!-- IWD One Page checkout compatibility -->
+     <onepagecheckout_index_index>
+        <reference name="head">
+            <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml"/>
+        </reference>
+    </onepagecheckout_index_index>
+
+    <onepage_index_index>
+        <reference name="head">
+            <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml"/>
+        </reference>
+    </onepage_index_index>
+
+    <opc_index_index>
+		<reference name="head">
+            <block type="uol_pagseguro/payment" name="loading" template="uol/pagseguro/loading.phtml"/>
+        </reference>
+	</opc_index_index>
+    <!-- \IWD One Page checkout compatibility -->
 
     <catalog_product_view>
         <reference name="head">

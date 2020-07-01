@@ -149,7 +149,10 @@ function validateCnpj(self) {
  * @param {type} error
  * @returns {undefined}
  */
-function displayError(target, error = true) {
+function displayError(target, error) {
+  if(typeof error === "undefined"){
+    error = true;
+  }
   target = document.getElementsByClassName(target.id + '-error-message')[0]
   if (error && target.classList.contains('display-none')) {
     target.classList.remove('display-none')
@@ -329,19 +332,31 @@ function creditCardCodeMask(code) {
 /**
  * @type {boolean}
  */
-var alreadyGetPaymentMethods = false
+var alreadyGetPaymentMethods = false;
+
+/**
+ * @type {string}
+ */
+var onlineDebitBanksHtml = '';
 
 /**
  *
  *
  */
-function paymentMethods () {
+function paymentMethods() {
   if (!alreadyGetPaymentMethods) {
+    alreadyGetPaymentMethods = true;
     PagSeguroDirectPayment.getPaymentMethods({
-      success: function (res) {
-        pagseguroBoletoOptions(res)
-        pagseguroCreditcardOptions(res)
-        pagseguroOnlinedebitOptions(res)
+      success: function(res) {
+        if (typeof pagseguroCreditcardOptions === "function") {
+          pagseguroCreditcardOptions(res);  
+        }
+        if (typeof pagseguroBoletoOptions === "function") {
+          pagseguroBoletoOptions(res);  
+        }
+        if (typeof pagseguroOnlinedebitOptions === "function") {
+          pagseguroOnlinedebitOptions(res);  
+        }
       }
     })
   }

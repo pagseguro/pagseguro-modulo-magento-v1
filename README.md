@@ -19,18 +19,21 @@ Com o módulo instalado e configurado, você pode pode oferecer o PagSeguro como
 **[Licença](#licença)**<br>
 
 ## Requisitos
-- [Magento](https://www.magentocommerce.com/) Community 1.9.0 até 1.9.3.7
+- [Magento](https://www.magentocommerce.com/) Community 1.9.0 até 1.9.3.8
 - [PHP](http://www.php.net/) 5.4.27+, 5.5.x+, 5.6.x+
 - [SPL](http://php.net/manual/en/book.spl.php)
 - [cURL](http://php.net/manual/en/book.curl.php)
 - [SimpleXML](http://php.net/manual/en/book.simplexml.php)
+
+### Compatibilidade com plugins de Checkout
+- IWD OnePageCheckout: versão 4.3.6
 
 ## Instalação
 > **ATENÇÃO** Recomendamos que seja feito backup da sua loja Magento antes de realizar qualquer instalação ou atualização do módulo.
 
 - Certifique-se de que não há instalação de outros módulos para o PagSeguro em seu sistema;
 - Caso utilize a compilação do Magento, desative-a e limpe-a *(Sistema -> Ferramentas -> Compilação)*;
-- Baixe a última versão do módulo **[nesse link](https://github.com/pagseguro/magento/raw/master/UOL_PagSeguro-3.5.1.tgz)** ou então baixe o repositório como arquivo zip através do botão do GitHub;
+- Baixe a última versão do módulo **[nesse link](https://github.com/pagseguro/magento/raw/master/UOL_PagSeguro-3.16.6.tgz)** ou então baixe o repositório como arquivo zip através do botão do GitHub;
 - Na área administrativa do seu Magento, acesse o menu *Sistema/System -> Magento Connect -> Magento Connect Manager*. Caso tenha uma versão anterior do módulo instalada faça a remoção agora;
 - No Magento Connect Manger, dentro da seção Direct package file upload, clique em **Escolher arquivo/Choose file**, selecione o arquivo UOL_PagSeguro-x.x.x.tgz (baixado anteriormente), clique no botão de upload e acompanhe a instalação do módulo no console da página;
 - Caso utilize a compilação, volte para a área administrativa do Magento, ative-a e execute-a novamente;
@@ -61,8 +64,24 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **oferecer desconto para ...**: ativa/desativa desconto para checkouts utilizando este meio de pagamento
  - **percentual de desconto**: define o percentual de desconto a ser concedido para o meio de pagamento escolhido
  - **transações -> abandonadas**: permite consultar as transações que foram abandonadas nos últimos 10 dias, desta forma você pode enviar emails de recuperação de venda. O e-mail conterá um link que redirecionará o comprador para o fluxo de pagamento, exatamente no ponto onde ele parou.
+ - **habilitar recuperação de carrinho**: Habilita a recuperação de carrinho do PagSeguro. (por padrão está desabilitada)
  - **listar parcelamento**: Habilita a exibição de uma listagem de parcelas na tela de visualização do produto. (Irá exibir o maior parcelamento disponível para o produto na tela de exibição do mesmo)
  
+ -------------------------
+  **Configurar Status**
+
+  Não é necessário alterar essa configuração. O módulo já vem com uma configuração padrão de status mas, caso deseje personalizar, esta seção permite configurar para cada status do Pagseguro o respectivo status do Magento (opcional).
+  - **pendente**: define qual state do Magento será associado ao status Pendente do PagSeguro.
+  - **aguardando pagamento**: define qual state do Magento será associado ao status Aguardando pagamento do PagSeguro.
+  - **em análise**: define qual state do Magento será associado ao status Em análise do PagSeguro.
+  - **paga**: define qual state do Magento será associado ao status Paga do PagSeguro.
+  - **disponível**: define qual state do Magento será associado ao status Disponível do PagSeguro.
+  - **em disputa**: define qual state do Magento será associado ao status Em disputa do PagSeguro.
+  - **devolvida**: define qual state do Magento será associado ao status Devolvida do PagSeguro.
+  - **cancelada**: define qual state do Magento será associado ao status Cancelada do PagSeguro.
+  - **chargeback debitado**: define qual state do Magento será associado ao status Chargeback Debitado do PagSeguro.
+  - **em contestação**: define qual state do Magento será associado ao status Em Contestação do PagSeguro.
+  
  -------------------------
  **Configurar Tipos de Checkout**
  
@@ -96,6 +115,7 @@ Para acessar e configurar o módulo acesse o menu PagSeguro -> Configurações. 
  - **transações -> cancelamento**: esta pesquisa retornará todas as transações que estejam com status "em análise" e "aguardando pagamento", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o cancelamento destas transações.
  - **transações -> conciliação**: permite consultar as transações efetivadas no PagSeguro nos últimos 30 dias. A pesquisa retornará um comparativo com o status das transações em sua base local e o status atual da transação no PagSeguro, desta forma você pode identificar e atualizar transações com status divergentes.
  - **transações -> estorno**: esta pesquisa retornará todas as transações que estejam com status "paga", "disponível" e "em disputa", dentro da quantidade de dias definidos para a pesquisa. Desta forma você pode solicitar o estorno dos valores pagos para seus compradores.
+ - **transações -> listar transações**: esta pesquisa retorna as últimas transações realizadas pela sua loja no PagSeguro, permitindo utilizar diversos filtros (data, id do pedido, do pagseguro, status) ao realizar uma consulta. A partir do resultado dessa consulta é possível ver os detalhes de cada pedido no PagSeguro através da ação "Ver detalhes transação".
  - **requisitos**: exibe se os pré-requisitos básicos para o correto funcionamento do módulo estão sendo atendidos
  >  É aconselhável que antes de usar as funcionalidades de **estorno** ou **cancelamento** você faça a **conciliação** de suas transações para obter os status mais atuais.
 

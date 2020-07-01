@@ -117,8 +117,13 @@ class UOL_PagSeguro_Helper_Refund extends UOL_PagSeguro_Helper_Data
         $date = $date->format("Y-m-d\TH:i:s");
         $collection = Mage::getModel('sales/order')->getCollection()
             ->addAttributeToFilter('created_at', array('from' => $date, 'to' => date('Y-m-d H:i:s')));
+        /** used to validate if an order is already refunded (could be refunded only one time) */
+        $partiallyRefundedOrdersArray = $this->getPartiallyRefundedOrders();
+
         foreach ($collection as $order) {
-            $this->magentoPaymentList[] = $order->getId();
+            if (! in_array($order->getId(), $partiallyRefundedOrdersArray)) {
+                $this->magentoPaymentList[] = $order->getId();
+            }
         }
     }
 
@@ -211,10 +216,14 @@ class UOL_PagSeguro_Helper_Refund extends UOL_PagSeguro_Helper_Data
             $config = " onclick='Modal.alertConciliation(&#34;"
                 .$this->alertConciliation($this->__('estornar'))."&#34;)'";
         }
+        //echo '<pre>';print_r($PagSeguroSummaryItem);exit;
         $actionOrder = "<a class='edit' target='_blank' href='".$this->getEditOrderUrl($order->getId())."'>";
         $actionOrder .= $this->__('Ver detalhes')."</a>";
         $actionOrder .= "<a ".$config." href='javascript:void(0)'>";
-        $actionOrder .= $this->__('Estornar')."</a>";
+        $actionOrder .= $this->__('Estorno total')."</a>";
+        $config = "class='action' data-config='".$order->getId().'/'.$PagSeguroSummaryItem->getCode().'/'.$this->getPaymentStatusFromKey($PagSeguroSummaryItem->getStatus()).'/'.$PagSeguroSummaryItem->getGrossAmount().'/'.$order->getIncrementId()."'";
+        $actionOrder .= "<a ".$config." href='javascript:void(0)'>";
+        $actionOrder .= $this->__('Estorno parcial')."</a>";
 
         return array(
             'date'           => $this->getOrderMagetoDateConvert($order->getCreatedAt()),
@@ -223,5 +232,55 @@ class UOL_PagSeguro_Helper_Refund extends UOL_PagSeguro_Helper_Data
             'status_magento' => $this->getPaymentStatusToString($this->getPaymentStatusFromValue($order->getStatus())),
             'action'         => $actionOrder,
         );
+    }
+
+    /**
+     * Get all pagseguro partially refunded orders id
+     *
+     * @return array
+     */
+    private function getPartiallyRefundedOrders()
+    {
+        $pagseguroOrdersIdArray = array();
+        $resource = Mage::getSingleton('core/resource');
+        $read = $resource->getConnection('core_read');
+        $pagseguroTable = Mage::getConfig()->getTablePrefix().'pagseguro_orders';
+
+
+        $select = $read->select()
+            ->from(array('ps' => $pagseguroTable), array('order_id'))
+            ->where('ps.partially_refunded = ?', '1')
+        ;
+
+        if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
+            $select = $select->where('ps.store_id = ?', Mage::getSingleton('core/session')->getData("store_id"));
+        }
+
+        if (Mage::getStoreConfig('payment/pagseguro/environment')) {
+            $select = $select->where('ps.environment = ?', Mage::getStoreConfig('payment/pagseguro/environment'));
+        }
+
+        $read->prepare($select);
+
+        foreach ($read->fetchAll($select) as $value) {
+            $pagseguroOrdersIdArray[] = $value['order_id'];
+        }
+
+        return $pagseguroOrdersIdArray;
+    }
+
+    /**
+     * Set 1 to partially_refunded field in pagseguro_orders table
+     *
+     * @param string $orderId
+     * @return void
+     */
+    public function setPartiallyRefunded($orderId)
+    {
+        $pagseguroTable = Mage::getConfig()->getTablePrefix().'pagseguro_orders';
+        $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+        $where = $connection->quoteInto('order_id = ?', $orderId);
+        $data = array('partially_refunded' => 1);
+        $connection->update($pagseguroTable, $data, $where);
     }
 }

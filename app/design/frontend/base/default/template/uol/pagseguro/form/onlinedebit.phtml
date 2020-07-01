@@ -1,40 +1,38 @@
-<style>
- #dt_method_<?php echo $this->getMethodCode() ?> {
-   display: none;
- }
-</style>
-
 <script>
   //<![CDATA[
-  var pagseguro_onlinedebit_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>')
-  var pagseguro_online_debit_options = jQuery('#pagseguro-online-debit-options')
-  paymentMethods()
-  var OnlinedebitOptions = false
+  var pagseguro_onlinedebit_dt = jQuery('#dt_method_<?php echo $this->getMethodCode() ?>');
+  var pagseguro_onlinedebit_options = jQuery('#pagseguro-online-debit-options');
 
-  pagseguroOnlinedebitOptions = function (res) {
-    if (!OnlinedebitOptions) {
-      if (!res['error']) {
-        if (res['paymentMethods'] && res['paymentMethods']['ONLINE_DEBIT'] && res['paymentMethods']['ONLINE_DEBIT']['options']) {
-          var k = 0
-          pagseguro_online_debit_options.empty()
-          jQuery.each(res['paymentMethods']['ONLINE_DEBIT']['options'], function (i, item) {
-            if (item['status'] === 'AVAILABLE') {
-              ++k
-              if (k > 0) {
-                pagseguro_onlinedebit_dt.show()
-              }
-              pagseguro_online_debit_options.append('<div><label>' +
-                '<input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="' + i + '" required onclick="validateDebitBankName(this)">'
-                + item['displayName'] + '</label></div>')
-            }
-          })
-          if (k === 0) {
-            pagseguro_onlinedebit_dt.find('input').prop('disabled', true)
+  if (!alreadyGetPaymentMethods) {
+    pagseguro_onlinedebit_dt.hide();
+  } else {
+    pagseguro_onlinedebit_options.html(onlineDebitBanksHtml);
+  }
+
+  setOnlineDebitSessionId("<?php echo $this->getOnlineDebitSession(); ?>");
+
+  paymentMethods();
+
+  pagseguroOnlinedebitOptions = function(res) {
+    if (!res['error']) {
+      if (res['paymentMethods'] && res['paymentMethods']['ONLINE_DEBIT'] && res['paymentMethods']['ONLINE_DEBIT']['options']) {
+        onlineDebitBanksHtml = ''; // variável declarada no arquivo "direct-payments.js" (para funcionar com o plugin IWD\OPC)
+        var onlineDebitOptions = res['paymentMethods']['ONLINE_DEBIT']['options'];
+        jQuery.each(onlineDebitOptions, function (i, item) {
+          if (item['status'] === 'AVAILABLE') {
+            onlineDebitBanksHtml += '<div><label><input class="input-radio required-entry" type="radio" id="debitbankName" name="debitbankName" value="' + i + '" required onclick="validateDebitBankName(this)">'
+              + item['displayName'] + '</label></div>';
           }
+        });
+        if (onlineDebitBanksHtml !== '') {
+          pagseguro_onlinedebit_dt.show();
+          pagseguro_onlinedebit_options.html(onlineDebitBanksHtml);
+        } else {
+          pagseguro_onlinedebit_dt.find('input').prop('disabled', true);
         }
-      } else {
-        console.log(res['error'])
       }
+    } else {
+      console.log(res['error']);
     }
   }
   //]]>
@@ -42,19 +40,16 @@
 
 <script type="text/javascript">
 //<![CDATA[
-    // get value from one step checkout guest (if it is enabled) document to be used in pagseguro direct payment
-    if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange === null) {
-        document.getElementById('billing:taxvat').onchange = function (){
-            var documents =  document.querySelectorAll('.pagseguro-document');
-            var i;
-            for (i=0; i < documents.length; i++) {
-                documents[i].value = document.getElementById('billing:taxvat').value;
-            }
-        }
+  // get value from one step checkout guest (if it is enabled) document to be used in pagseguro direct payment
+  if(document.getElementById('billing:taxvat') !== null && document.getElementById('billing:taxvat').onchange === null) {
+    document.getElementById('billing:taxvat').onchange = function (){
+      var documents =  document.querySelectorAll('.pagseguro-document');
+      var i;
+      for (i=0; i < documents.length; i++) {
+        documents[i].value = document.getElementById('billing:taxvat').value;
+      }
     }
-
-    //set pagseguro session
-    setOnlineDebitSessionId("<?= $this->getOnlineDebitSession();?>");
+  }
 //]]>
 </script>
 
@@ -104,7 +99,7 @@
             <div class="display-none validation-advice debitDocument-error-message">Insira um CPF ou CNPJ válido</div>
         </div>
     <div class="input-box">
-        <label class="required" style="padding: 0.9em 0em 0em;"><?php echo $this->__('Selecione abaixo seu banco') ?></label>
+        <label class="required" style="padding: 0.9em 0em 0em; width: 100%;"><?php echo $this->__('Selecione abaixo seu banco') ?></label>
         <div id="pagseguro-online-debit-options" style="padding: 0em 1em;"></div>
     </div>
     <div class="display-none validation-advice debitbankName-error-message">Escolha um banco</div>

@@ -93,4 +93,42 @@ class UOL_PagSeguro_Helper_Log
         $phrase .= "'orderStatus' => '".$orderStatus."'\n ) )";
         $this->setLog($phrase, $this->setModule($class));
     }
+
+    /**
+     * @param $class
+     * @param $parametros
+     */
+    public function setSearchListTransactionLog($class, $params)
+    {
+        $phrase = "Search(";
+
+        $filters = array();
+        if(isset($params['idMagento'])){
+            $filters[] = "idMagento = ".$params['idMagento'];
+        }
+
+        if(isset($params['idPagSeguro'])){
+            $filters[] = "idPagSeguro = '".$params['idPagSeguro']."'";
+        }
+
+        if(isset($params['environment'])){
+            $filters[] = "environment = '".$params['environment']."'";
+        }
+
+        if(isset($params['startDate']) && isset($params['endDate'])){
+            $filters[] = "range of dates = '".$params['startDate']." until ".$params['endDate']."'";
+        }
+
+        if(isset($params['status'])){
+            $filters[] = "status = '".$params['status']."'";
+        }
+
+        if(count($filters) > 0){
+            $phrase .= implode(' | ', $filters);
+        }
+
+        $phrase .= ")";
+        $this->setLog($phrase, $this->setModule($class));
+    }
+
 }

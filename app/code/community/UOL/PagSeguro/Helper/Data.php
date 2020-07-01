@@ -49,6 +49,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
         7 => "cancelada_ps",
         8 => "chargeback_debitado_ps",
         9 => "em_contestacao_ps",
+        10 => "partially_refunded",
     );
 
     /**
@@ -456,7 +457,7 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
      *
      * @throws Exception
      */
-    public function updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus)
+    public function updateOrderStatusMagento($class, $orderId, $transactionCode, $orderStatus, $refundValue = null)
     {
         try {
             if (
@@ -464,17 +465,24 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
                 || $class == self::CANCELED_CLASS
                 || $class == self::REFUND_CLASS
             ) {
+                $comment = null;
                 if ($class == self::CANCELED_CLASS) {
                     if ($this->webserviceHelper()->cancelRequest($transactionCode)->getResult() == 'OK') {
                         $orderStatus = 'cancelada_ps';
                     }
                 }
                 if ($class == self::REFUND_CLASS) {
-                    if ($this->webserviceHelper()->refundRequest($transactionCode)->getResult() == 'OK') {
-                        $orderStatus = 'devolvida_ps';
+                    if ($this->webserviceHelper()->refundRequest($transactionCode, $refundValue)->getResult() == 'OK') {
+                        /* if have refund value is an partially refund, so the status should be keeped */
+                        if ($refundValue) {
+                            $comment = 'Estornado valor de R$' . $refundValue . ' do seu pedido.';
+                            $this->setPartiallyRefundedStatus($orderId);
+                        } else {
+                            $orderStatus = 'devolvida_ps';
+                        }
                     }
                 }
-                $this->notifyCustomer($orderId, $orderStatus);
+                $this->notifyCustomer($orderId, $orderStatus, $comment);
                 Mage::helper('pagseguro/log')->setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus);
             }
             $this->setTransactionRecord($orderId, $transactionCode);
@@ -499,12 +507,19 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
      * @param $orderId
      * @param $orderStatus
      */
-    private function notifyCustomer($orderId, $orderStatus)
+    private function notifyCustomer($orderId, $orderStatus, $comment = null)
     {
         $status = $orderStatus;
-        $comment = null;
         $notify = true;
         $order = Mage::getModel('sales/order')->load($orderId);
+
+        $state = Mage::getStoreConfig('payment/pagseguro_status_notification/'. $orderStatus);
+        if($state == Mage_Sales_Model_Order::STATE_CLOSED || $state == Mage_Sales_Model_Order::STATE_COMPLETE) {
+            $order->setData('state', $state);
+        }else{
+            $order->setState($state);
+        }
+
         $order->addStatusToHistory($status, $comment, $notify);
         $order->sendOrderUpdateEmail($notify, $comment);
         // Makes the notification of the order of historic displays the correct date and time
@@ -600,6 +615,230 @@ class UOL_PagSeguro_Helper_Data extends Mage_Payment_Helper_Data
             default:
                 throw new Exception('Invalid document');
                 break;
+        }
+    }
+
+    /**
+     * @param $type
+     *
+     * @return bool|string
+     */
+    public function getTitleTypePaymentMethod($type)
+    {
+        if (!is_null($type)) {
+            switch ($type) {
+                case 1:
+                    return $this->__('Cartão de crédito');
+                    break;
+                case 2:
+                    return $this->__('Boleto');
+                    break;
+                case 3:
+                    return $this->__('Débito online(TEF)');
+                    break;
+                case 4:
+                    return $this->__('Saldo PagSeguro');
+                    break;
+                case 7:
+                    return $this->__('Depósito em conta');
+                    break;
+                default:
+                    return $type;
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $code
+     *
+     * @return bool|string
+     */
+    public function getTitleCodePaymentMethod($code)
+    {
+        if (!is_null($code)) {
+            switch ($code) {
+                case 101:
+                    return $this->__('Cartão de crédito Visa');
+                    break;
+                case 102:
+                    return $this->__('Cartão de crédito MasterCard');
+                    break;
+                case 103:
+                    return $this->__('Cartão de crédito American Express');
+                    break;
+                case 104:
+                    return $this->__('Cartão de crédito Diners');
+                    break;
+                case 105:
+                    return $this->__('Cartão de crédito Hipercard');
+                    break;
+                case 106:
+                    return $this->__('Cartão de crédito Aura');
+                    break;
+                case 107:
+                    return $this->__('Cartão de crédito Elo');
+                    break;
+                case 109:
+                    return $this->__('Cartão de crédito PersonalCard');
+                    break;
+                case 112:
+                    return $this->__('Cartão de crédito BrasilCard');
+                    break;
+                case 113:
+                    return $this->__('Cartão de crédito FORTBRASIL');
+                    break;
+                case 115:
+                    return $this->__('Cartão de crédito VALECARD');
+                    break;
+                case 116:
+                    return $this->__('Cartão de crédito Cabal');
+                    break;
+                case 117:
+                    return $this->__('Cartão de crédito Mais!');
+                    break;
+                case 119:
+                    return $this->__('Cartão de crédito GRANDCARD');
+                    break;
+                case 120:
+                    return $this->__('Cartão de crédito Sorocred');
+                    break;
+                case 122:
+                    return $this->__('Cartão de crédito Up Policard');
+                    break;
+                case 123:
+                    return $this->__('Cartão de crédito Banese Card');
+                    break;
+                case 201:
+                    return $this->__('Boleto Bradesco');
+                    break;
+                case 202:
+                    return $this->__('Boleto Santander');
+                    break;
+                case 301:
+                    return $this->__('Débito online Bradesco');
+                    break;
+                case 302:
+                    return $this->__('Débito online Itaú');
+                    break;
+                case 304:
+                    return $this->__('Débito online Banco do Brasil');
+                    break;
+                case 306:
+                    return $this->__('Débito online Banrisul');
+                    break;
+                case 401:
+                    return $this->__('Saldo PagSeguro');
+                    break;
+                case 701:
+                    return $this->__('Depósito em conta - Banco do Brasil');
+                    break;
+                default:
+                    return $code;
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $type
+     *
+     * @return bool|string
+     */
+    public function getTitleCancellationSourceTransaction($cancellationSource)
+    {
+        if (!is_null($cancellationSource)) {
+            switch ($cancellationSource) {
+                case "INTERNAL":
+                    return $this->__('PagSeguro');
+                    break;
+                case "EXTERNAL":
+                    return $this->__('Instituições Financeiras');
+                    break;
+                default:
+                    return $cancellationSource;
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Translates the transation type code to his respective name, according with the api
+     *
+     * @param int $transactionTypeCode
+     * @return mixed string | int
+     */
+    public function getTransactionTypeName($transactionTypeCode)
+    {
+        if ($transactionTypeCode) {
+            switch ($transactionTypeCode) {
+                case 1:
+                    return $this->__('Venda');
+                    break;
+                case 2:
+                    return $this->__('Transferência');
+                    break;
+                case 3:
+                    return $this->__('Adição de fundos');
+                    break;
+                case 4:
+                    return $this->__('Saque');
+                    break;
+                case 5:
+                    return $this->__('Cobrança');
+                    break;
+                case 6:
+                    return $this->__('Doação');
+                    break;
+                case 7:
+                    return $this->__('Bônus');
+                    break;
+                case 8:
+                    return $this->__('Repasse de bônus');
+                    break;
+                case 9:
+                    return $this->__('Operacional');
+                    break;
+                case 10:
+                    return $this->__('Doação pública');
+                    break;
+                case 11:
+                    return $this->__('Pagamento pré aprovado');
+                    break;
+                case 12:
+                    return $this->__('Campanha bônus');
+                    break;
+                case 13:
+                    return $this->__('Secundária');
+                    break;
+                case 14:
+                    return $this->__('Validador');
+                    break;
+                default:
+                    return $transactionTypeCode;
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Updates respective order partially refunded status to 1 in pagseguro_orders table
+     * 
+     * @param string $orderId
+     * @return void
+     */
+    public function setPartiallyRefundedStatus($orderId)
+    {
+        try {
+            Mage::helper('pagseguro/refund')->setPartiallyRefunded($orderId);
+        } catch (Exception $pse) {
+            throw $pse;
         }
     }
 }

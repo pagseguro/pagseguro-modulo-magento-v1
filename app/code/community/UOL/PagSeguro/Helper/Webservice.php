@@ -159,4 +159,26 @@ class UOL_PagSeguro_Helper_Webservice extends UOL_PagSeguro_Helper_Data
             throw new Exception($e->getMessage());
         }
     }
+
+    /**
+     * @param $code
+     *
+     * @return null|string
+     * @throws Exception
+     */
+    public function getTransactionsByCode($code)
+    {
+        $response = null;
+        try {
+            $response = \PagSeguro\Services\Transactions\Search\Code::search(
+                $this->library->getAccountCredentials(),
+                $code
+            );
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        return $response;
+    }
+
 }

@@ -86,3 +86,8 @@ span > input {
     text-align: right;
     padding-right: 4px;
 }
+
+#pagseguro-online-debit-options {
+    display: flex;
+    flex-direction: column;
+}

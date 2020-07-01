@@ -1,3 +1,20 @@
+### 4.0.0 (25/01/2018)
+
+#### Funcionalidades
+- **pagamento recorrente (assinatura) transparente:** editar valor de cobrança de planos ja criados
+- **autorização**: encaminhar os dados do cliente e sugestão para cadastro ao criar uma autorização
+- **checkout transparente:** removida funcionalidade depreciada (cartão de crédito internacional)
+
+3.4.1
+- Correção na requisição de Pagamento e Retentativa de Pagamento Recorrente
+
+3.4.0
+- Adicionada possibilidade de *não* enviar o endereço de entrega nas requisições (*shipping* opcional).
+
+3.3.2
+- Correção no charset das requisições
+- Correção do erro "Undefined class constant 'INSTALLMENT_NO_INTEREST_INSTALLMENT_QUANTITY'" ao configurar o número de parcelas no checkout transparente com cartão de crédito.
+
 3.3.0
 - Removidas funcionalidades depreciadas
 - Correções e melhorias gerais

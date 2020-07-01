@@ -1,5 +1,42 @@
 Changelog
 ---------
+3.16.6
+- Fix: Na listagem de bancos na tela de pagamento por débito online nas versões 1.7 e 1.8 do Magento
+- Fix: Na máscara de dinheiro nos campos parcelas e total na tela de pagamento
+
+3.16.4
+- Fix: ajuste na regra css do botão "btn-pagseguro"
+- Fix: ajuste na exibição dos meios de pagamento do checkout transparente
+
+3.16.2
+- Fix: exibição das opções de banco no método de pagamento Débito Online
+
+3.16.1
+- Fix: redirecionamento para tela de erro caso ocorra algum problema no checkout padrão ou lightbox
+
+3.16.0
+- Inserir configuração de Status do PagSeguro por Notificação (admin) em relação ao states do Magento
+- Retentativa de pagamento ao finalizar um checkout com erro
+- Compatibilidade com IWD OnePageCheckout versão 4.3.6
+- Opção de definir a URL de sucesso do checkout transparente com cartão de crédito
+- Fixes: lightbox não estava carregando o ambiente corretamente e removido botão de retentativa de pagamento ao finalizar checkout como visitante 
+
+
+3.12.1
+- Fix: corrigido erro do datatable após um estorno parcial quando não há mais transações para serem estornadas
+
+3.12.0
+- Melhorias na tela de Listar Transações (admin) referentes ao estorno parcial
+
+3.11.0
+- Checkout sem endereço (para produtos do tipo 'virtual' e 'downloadable')
+- Valida se o telefone do comprador foi configurado antes de tentar usar o telefone do endereço de entrega
+- Habilitar/desabilitar recuperação de carrinho do PagSeguro via admin
+- Atualizada versão da biblioteca PHP do PagSeguro usada no módulo
+- Tela de listar transações no admin, permitindo ver detalhes da transação
+- Estorno parcial
+- Fix: Corrigido id dos itens do pedido (carrinho) enviados para o PagSeguro
+
 3.5.1
 - Corrigido bug de incompatibilidade com PHP 5.4 no checkout
 

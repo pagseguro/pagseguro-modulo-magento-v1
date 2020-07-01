@@ -2079,8 +2079,7 @@ a.btn-pagseguro:focus {
 }
 
 /* btn-pagseguro */
-button:not(.primary),
-.btn-pagseguro {
+.btn-pagseguro:not(.primary) {
     color: #4F7743;
     font-size: 1.2em;
     white-space: nowrap;
@@ -2161,4 +2160,17 @@ button:not(.primary),
 
 input.form-control, .full-width {
     width: 100% !important;
+}
+
+.pagseguro-payment-retry-title {
+    text-align: center;
+}
+
+.pagseguro-payment-retry-p {
+    text-align: center;
+}
+
+.pagseguro-payment-retry-button-set {
+    padding-top: 1rem;
+    text-align: center;
 }
