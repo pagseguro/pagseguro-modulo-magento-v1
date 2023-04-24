@@ -1,4 +1,9 @@
-# Módulo de integração PagSeguro para Magento
+# Esse módulo foi DEPRECIADO!!!!!
+**Recomendamos usar o novo módulo Magento1** da Ricardo Martins, na url: https://github.com/r-martins/PagSeguro-Magento-Transparente
+
+---
+
+# [DEPRECIADO] Módulo de integração PagSeguro para Magento
 
 ## Descrição
 
